@@ -25,7 +25,7 @@ function Homepage(props) {
 
                         <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                             <Nav className="flex-column">
-                                <Nav.Link active={true}> Proposal List</Nav.Link>
+                                <Nav.Link active={true}> Proposals List</Nav.Link>
                             </Nav>
                         </Navbar>
 
