@@ -1,0 +1,19 @@
+.thesis-link {
+    color: white !important;
+    font-weight: normal;
+  }
+  
+  .thesis-link.active {
+    color: #FF7C11 !important;
+    font-weight: bold;
+  }
+
+  .nav-tabs{
+
+    background: #FF7C11;
+
+  }
+
+  .nav-tabs .nav-item.nav-link {
+    border: none; /* Remove the border */
+  }
