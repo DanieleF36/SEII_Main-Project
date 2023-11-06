@@ -1,0 +1,26 @@
+.custom-navbar {
+    background-color: #1d1b1b
+  }
+  
+  .custom-brand {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+  }
+  
+  .custom-brand img {
+    margin-right: 5px;
+  }
+  
+  .custom-brand .title {
+    color: white;
+  }
+  
+  .custom-navbar .lock-icon {
+    margin-left: auto;
+  }
+
+  .custom-link {
+    color: white;
+    margin-right: 10px;
+  }

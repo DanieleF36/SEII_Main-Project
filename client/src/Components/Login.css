@@ -1,0 +1,7 @@
+.background-image-container {
+    position: relative;
+    background: url('./background.jpg') repeat;
+    background-size: cover;
+    position: relative;
+    min-height: 100vh;
+  }
