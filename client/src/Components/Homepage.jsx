@@ -1,4 +1,4 @@
-import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, Nav } from 'react-bootstrap';
+import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, Nav, Accordion, Badge, Card } from 'react-bootstrap';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -31,10 +31,57 @@ function Homepage(props) {
 
                     </Col>
                     <Col xs={9}>
-                        <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <h2>(Proposal List)</h2>
+                        <div>
+                            {props.proposals.map((proposal) => (
+                                <Card key={proposal.id} style={{ marginBottom: '10px' }}>
+                                    <Accordion>
+                                        <Accordion.Item eventKey={proposal.id}>
+                                            <Accordion.Header>
+                                                <div className="d-md-flex justify-content-between">
+                                                    <div>
+                                                        <strong>Title:</strong> {proposal.title}&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    </div>
+                                                    <div>
+                                                        <strong>Supervisor:</strong> {proposal.supervisor}&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    </div>
+                                                    <div>
+                                                        <strong>Expiration date:</strong> {proposal.expDate}&nbsp;&nbsp;&nbsp;&nbsp;
+                                                    </div>
+                                                    <div>
+                                                        <strong>Status:</strong>{' '}
+                                                        {proposal.status === '1' ? (
+                                                            <Badge pill bg="success">A</Badge>
+                                                        ) : (
+                                                            <Badge pill bg="danger">D</Badge>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            </Accordion.Header>
+                                            <Accordion.Body>
+                                                <strong>Keywords:</strong> {proposal.keywords}
+                                                <br />
+                                                <strong>Type:</strong> {proposal.type}
+                                                <br />
+                                                <strong>Groups:</strong> {proposal.groups}
+                                                <br />
+                                                <strong>Description:</strong> {proposal.description}
+                                                <br />
+                                                <strong>Knowledge:</strong> {proposal.know}
+                                                <br />
+                                                <strong>Note:</strong> {proposal.note}
+                                                <br />
+                                                <strong>Level:</strong> {proposal.level}
+                                                <br />
+                                                <strong>CdS:</strong> {proposal.cds}
+                                                <br />
+                                                <strong>Creation Date:</strong> {proposal.creatDate}
+                                                <br />
+                                            </Accordion.Body>
+                                        </Accordion.Item>
+                                    </Accordion>
+                                </Card>
+                            ))}
                         </div>
-
                     </Col>
 
 
