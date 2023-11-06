@@ -17,6 +17,7 @@ function TitleBar(props) {
            props.setUser(1);
         else
          props.setUser(0);
+
     };
 
     return (
@@ -44,7 +45,7 @@ function TitleBar(props) {
                         </Nav>
                     </Col>
                     <Col xs="auto" className="ml-auto d-flex align-items-center">
-                        <BootstrapSwitchButton onChange={()=>handleSwitch()} checked={true} size="sm" onlabel='student' offlabel='professor' width={100} onstyle="success" offstyle="danger" style="border" />
+                        <BootstrapSwitchButton onChange={()=>handleSwitch()} checked={props.user===0} size="sm" onlabel='student' offlabel='professor' width={100} onstyle="success" offstyle="danger" style="border" />
                     </Col>
                 </Row>
             </Container>

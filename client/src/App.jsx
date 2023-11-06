@@ -17,7 +17,7 @@ function App() {
         <>
         <BrowserRouter>
           <Routes>
-          <Route path='/' element={<><TitleBar user={user} setUser={setUser}/><Homepage user={user}/></>} />
+          <Route path='/' element={<><Homepage user={user} setUser={setUser}/></>} />
           </Routes>
         </BrowserRouter>
       </>
