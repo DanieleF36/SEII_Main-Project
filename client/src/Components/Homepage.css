@@ -1,5 +1,6 @@
 #background-div {
     position: fixed;
+    overflow-x: auto; /* Enable horizontal scrolling when content overflows */
     top: 0;
     left: 0;
     width: 100%;

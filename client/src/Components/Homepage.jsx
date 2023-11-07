@@ -4,6 +4,8 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TitleBar } from './TitleBar';
 import './Homepage.css';
+import { FilterContainer } from './Filters';
+import AddProposalForm from './AddProposal';
 import API from '../API';
 
 
@@ -13,6 +15,47 @@ function Homepage(props) {
 
     const [add, setAdd] = useState(false);
     const [listA, setListA] = useState(false);
+
+   
+
+    const [filters, setFilters] = useState({
+        title: '',
+        supervisor: '',
+        expDate: '',
+        status: '',
+        keywords: '',
+        type: '',
+        groups: '',
+        level: '',
+        cds: '',
+        creatDate: ''
+      });
+
+    
+      const handleFilterChange = (e) => {
+        const { name, value } = e.target;
+        setFilters({ ...filters, [name]: value });
+      };
+
+      const handleResetChange = () => {
+        setFilters({
+            title: '',
+            supervisor: '',
+            expDate: '',
+            status: '',
+            keywords: '',
+            type: '',
+            groups: '',
+            level: '',
+            cds: '',
+            creatDate: ''
+          });
+      };
+    
+      const handleApplyFilters = () => {
+        console.log(filters);
+        //API--applyFilters(filters);
+      };
 
 
 
@@ -31,6 +74,7 @@ function Homepage(props) {
 
                     </Col>
                     <Col xs={9}>
+                        <FilterContainer handleApplyFilters={handleApplyFilters} filters={filters} handleFilterChange={handleFilterChange} handleResetChange={handleResetChange}></FilterContainer>
                         <div>
                             {props.proposals.map((proposal) => (
                                 <Card key={proposal.id} style={{ marginBottom: '10px' }}>
@@ -50,9 +94,9 @@ function Homepage(props) {
                                                     <div>
                                                         <strong>Status:</strong>{' '}
                                                         {proposal.status === '1' ? (
-                                                            <Badge pill bg="success">A</Badge>
+                                                            <Badge pill bg="success">P</Badge>
                                                         ) : (
-                                                            <Badge pill bg="danger">D</Badge>
+                                                            <Badge pill bg="danger">A</Badge>
                                                         )}
                                                     </div>
                                                 </div>
@@ -104,7 +148,7 @@ function Homepage(props) {
                     </Col>
                     <Col xs={9}>
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <h2>(Add Proposal Form)</h2>
+                            <AddProposalForm/>
                         </div>
 
                     </Col>
