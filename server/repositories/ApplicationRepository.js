@@ -7,6 +7,7 @@ const db = new sqlite.Database('db.sqlite', (err) => {
 });
 
 exports.listApplication = (id_teacher)=>{
+    console.log("APPLICATION");
     const sqlTeacher = "SELECT id_student,id_thesis,data,path_cv,status,id_teacher FROM Application WHERE id_teacher=?";
     return new Promise((resolve, reject)=>{
         db.all(sqlTeacher, [id_teacher], (err, row)=>{

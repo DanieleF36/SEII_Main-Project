@@ -11,7 +11,8 @@ exports.accRefApplication = function accRefApplication (req, res, next) {
     });
 };
 
-exports.listApplication = function listApplication (req, res, next, id_professor) {
+exports.listApplication = function listApplication (req, res, next) {
+    console.log("CONTROLLER");
     teacherService.listApplication(req.params.id_professor)
     .then(function (response) {
         res.status(200).json(response);

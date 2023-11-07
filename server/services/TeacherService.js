@@ -32,6 +32,7 @@ exports.accRefApplication = async function(accepted,id_professor,id_application)
 exports.listApplication = async function(id_professor) {
     try{
         if(id_professor!=null){
+            console.log("SERVICE");
             let res = await ApplicationRepository.getApplication(id_professor)
         }
         return res;
