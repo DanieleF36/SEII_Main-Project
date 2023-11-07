@@ -1,0 +1,3 @@
+@APIURL = http://localhost:3001/api
+//GET THE LIST OF APPLICATION
+GET {{{APIURL}}}/professor/1/applications
