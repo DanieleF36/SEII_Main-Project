@@ -3,12 +3,13 @@
 const thesisService = require('../services/ThesisService');
 
 exports.advancedResearchThesis = function advancedResearchThesis (req, res, next) {
-    thesisService.advancedResearchThesis(req.params.title,req.params.supervisor,req.params.coSupervisor,req.params.keyword,req.params.type,req.params.groups,req.params.knowledge,req.params.expiration_date,req.params.cds,req.params.creation_date)
+    console.log("dentro thesis controller");
+    thesisService.advancedResearchThesis(req.query.page,req.query.title,req.query.supervisor,req.query.coSupervisor,req.query.keyword,req.query.type,req.query.groups,req.query.knowledge,req.query.expiration_date,req.query.cds,req.query.creation_date)
       .then(function (response) {
         res.status(200).json(response);
       })
       .catch(function (response) {
-        
+        console.log("dentro errore di thesis controller "+JSON.stringify(response));
       });
   };
   
