@@ -7,22 +7,35 @@ const db = new sqlite.Database('db.sqlite', (err) => {
 });
 
 exports.listApplication = (id_teacher)=>{
-    const sqlTeacher = "SELECT * FROM Application WHERE id_teacher = ?";
+    const sqlTeacher = "SELECT id_student,id_thesis,data,path_cv,status,id_teacher FROM Application WHERE id_teacher=?";
     return new Promise((resolve, reject)=>{
         db.all(sqlTeacher, [id_teacher], (err, row)=>{
             if (err) {
                 reject(err);
                 return;
             }
-            resolve({id_student: row.id_student, id_thesis:row.id_thesis, data:row.data, path_cv:row.path_cv, status:row.status, id_teacher:row.id_teacher});
+            if(row==undefined) {
+                resolve({error: 'Application not found.'})
+            }
+            else{
+                const application = {
+                    id_student: row.id_student,
+                    id_thesis: row.id_thesis,
+                    data: row.data,
+                    path_cv: row.path_cv,
+                    status: row.status,
+                    id_teacher: row.id_teacher
+                }
+                resolve(application);
+            }
         });
     });
 }
 
-exports.accRefApplication = (status)=>{
-    const sqlTeacher = "UPDATE Application SET status = ? WHERE id_teacher = ?";
+exports.accRefApplication = (status,id_teacher,id_application)=>{
+    const sqlTeacher = "UPDATE Application SET status = ? WHERE id_teacher = ? AND id_application = ?";
     return new Promise((resolve, reject)=>{
-        db.run(sqlTeacher, [status,id_teacher], (err, row)=>{
+        db.run(sqlTeacher, [status,id_teacher,id_application], (err, row)=>{
             if (err) {
                 reject(err);
                 return;
