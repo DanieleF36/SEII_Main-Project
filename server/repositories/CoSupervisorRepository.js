@@ -7,8 +7,8 @@ const db = new sqlite.Database('db.sqlite', (err) => {
 });
 
 exports.findById = (id)=>{
-    const sqlCoSupervisor = "SELECT C.name AS name C.surname AS surname FROM CoSupervisorThesis CT, CoSupervisor C WHERE CT.id_cosupervisor = C.id AND CT.id_thesis = ?";
-    db.get(sqlCoSupervisor, [e.id], (err, row)=>{
+    const sqlCoSupervisor = "SELECT name, surname, email, company FROM CoSupervisor WHERE id ?";
+    db.get(sqlCoSupervisor, [id], (err, row)=>{
         if (err) {
             reject(err);
             return;
