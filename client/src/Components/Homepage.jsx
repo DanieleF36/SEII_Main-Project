@@ -16,7 +16,7 @@ function Homepage(props) {
     const [add, setAdd] = useState(false);
     const [listA, setListA] = useState(false);
 
-   
+
 
     const [filters, setFilters] = useState({
         title: '',
@@ -29,15 +29,20 @@ function Homepage(props) {
         level: '',
         cds: '',
         creatDate: ''
-      });
+    });
 
-    
-      const handleFilterChange = (e) => {
+
+    const handleFilterChange = (e) => {
         const { name, value } = e.target;
         setFilters({ ...filters, [name]: value });
-      };
+    };
 
-      const handleResetChange = () => {
+    const handleApplyProp = (e) => {
+
+        //API apply proposal ( e is the selected proposal)
+    };
+
+    const handleResetChange = () => {
         setFilters({
             title: '',
             supervisor: '',
@@ -49,13 +54,13 @@ function Homepage(props) {
             level: '',
             cds: '',
             creatDate: ''
-          });
-      };
-    
-      const handleApplyFilters = () => {
+        });
+    };
+
+    const handleApplyFilters = () => {
         console.log(filters);
         //API--applyFilters(filters);
-      };
+    };
 
 
 
@@ -81,7 +86,7 @@ function Homepage(props) {
                                     <Accordion>
                                         <Accordion.Item eventKey={proposal.id}>
                                             <Accordion.Header>
-                                                <div className="d-md-flex justify-content-between">
+                                                <div className="d-md-flex justify-content-center align-items-center">
                                                     <div>
                                                         <strong>Title:</strong> {proposal.title}&nbsp;&nbsp;&nbsp;&nbsp;
                                                     </div>
@@ -98,6 +103,12 @@ function Homepage(props) {
                                                         ) : (
                                                             <Badge pill bg="danger">A</Badge>
                                                         )}
+                                                    </div>
+                                                    <div>
+                                                        <img style={{marginLeft:'350px'}}src="./info-circle.svg"
+                                                            alt="info"
+                                                            className="img-responsive" />
+
                                                     </div>
                                                 </div>
                                             </Accordion.Header>
@@ -120,6 +131,8 @@ function Homepage(props) {
                                                 <br />
                                                 <strong>Creation Date:</strong> {proposal.creatDate}
                                                 <br />
+                                                <br />
+                                                {proposal.status === '1' ? <Button onClick={() => handleApplyProp(proposal)} variant='primary'>Apply</Button> : ''}
                                             </Accordion.Body>
                                         </Accordion.Item>
                                     </Accordion>
@@ -148,7 +161,7 @@ function Homepage(props) {
                     </Col>
                     <Col xs={9}>
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <AddProposalForm/>
+                            <AddProposalForm />
                         </div>
 
                     </Col>
