@@ -1,4 +1,4 @@
-import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, Nav, Accordion, Badge, Card, Modal } from 'react-bootstrap';
+import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, Nav, Accordion, Badge, Card, Modal, Pagination } from 'react-bootstrap';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -16,6 +16,11 @@ function Homepage(props) {
 
     const [add, setAdd] = useState(false);
     const [listA, setListA] = useState(false);
+    const [active, setActive] = useState(1);
+
+
+    const numPages = 5;
+    let items = [];
 
     const [show, setShow] = useState(false);
 
@@ -23,6 +28,13 @@ function Homepage(props) {
     const handleShow = () => setShow(true);
 
 
+    for (let number = 1; number <= numPages; number++) {
+            items.push(
+                <Pagination.Item key={number} active={number === active} onClick={()=>setActive(number)}>
+                    {number}
+                </Pagination.Item>
+        );
+    }
 
     const [filters, setFilters] = useState({
         title: '',
@@ -38,8 +50,17 @@ function Homepage(props) {
         cds: '',
         creatDate: '',
         order: '',
-        orderby: ''
+        orderby: '',
+        page: ''
     });
+
+    useEffect(() => {
+        items.map(e=>{if(e.key===active){e.props.active=true}});
+        setFilters({...filters, page: active});
+        //API.filter(active)
+      }, [active]);
+
+    
 
 
     const handleFilterChange = (e) => {
@@ -58,7 +79,7 @@ function Homepage(props) {
         //API apply proposal ( e is the selected proposal)
     };
 
-    
+
 
     const handleResetChange = () => {
         setFilters({
@@ -108,32 +129,32 @@ function Homepage(props) {
                                     <Accordion>
                                         <Accordion.Item eventKey={proposal.id}>
                                             <Accordion.Header>
-                                             <Container fluid>
-                                                <Row className="d-md-flex justify-content-center align-items-center">
-                                                    <Col xs='3'>
-                                                        <strong>Title:</strong> {proposal.title}
-                                                    </Col>
-                                                    <Col xs='3'>
-                                                        <strong>Supervisor:</strong> {proposal.supervisor}
-                                                    </Col>
-                                                    <Col xs='3'>
-                                                        <strong>Expiration date:</strong> {proposal.expDate}
-                                                    </Col>
-                                                    <Col xs='2'>
-                                                        <strong>Status:</strong>{' '}
-                                                        {proposal.status === '1' ? (
-                                                            <Badge pill bg="success">P</Badge>
-                                                        ) : (
-                                                            <Badge pill bg="danger">A</Badge>
-                                                        )}
-                                                    </Col>
-                                                    <Col xs='1'>
-                                                        <img src="./info-circle.svg"
-                                                            alt="info"
-                                                            className="img-responsive" />
+                                                <Container fluid>
+                                                    <Row className="d-md-flex justify-content-center align-items-center">
+                                                        <Col xs='3'>
+                                                            <strong>Title:</strong> {proposal.title}
+                                                        </Col>
+                                                        <Col xs='3'>
+                                                            <strong>Supervisor:</strong> {proposal.supervisor}
+                                                        </Col>
+                                                        <Col xs='3'>
+                                                            <strong>Expiration date:</strong> {proposal.expDate}
+                                                        </Col>
+                                                        <Col xs='2'>
+                                                            <strong>Status:</strong>{' '}
+                                                            {proposal.status === '1' ? (
+                                                                <Badge pill bg="success">P</Badge>
+                                                            ) : (
+                                                                <Badge pill bg="danger">A</Badge>
+                                                            )}
+                                                        </Col>
+                                                        <Col xs='1'>
+                                                            <img src="./info-circle.svg"
+                                                                alt="info"
+                                                                className="img-responsive" />
 
-                                                    </Col>
-                                                </Row>
+                                                        </Col>
+                                                    </Row>
                                                 </Container>
                                             </Accordion.Header>
                                             <Accordion.Body>
@@ -169,10 +190,10 @@ function Homepage(props) {
                                                             <Form.Label><strong>Upload your CV</strong></Form.Label>
                                                             <Form.Control
                                                                 type="file"
-                                                                //name=""
-                                                                //value={proposalData.cosupervisor}
-                                                                //onChange={handleCoSupChange} 
-                                                                />
+                                                            //name=""
+                                                            //value={proposalData.cosupervisor}
+                                                            //onChange={handleCoSupChange} 
+                                                            />
                                                         </Form.Group></Modal.Body>
                                                         <Modal.Footer>
                                                             <Button variant="secondary" onClick={handleClose}>
@@ -190,12 +211,21 @@ function Homepage(props) {
                                 </Card>
                             ))}
                         </div>
-                        
+
                     </Col>
 
 
                 </Row>
-                
+
+                <Row className="d-md-flex justify-content-center align-items-center">
+                 <Col xs='3'>
+                 </Col>
+                 <Col xs='9'className="d-md-flex justify-content-center align-items-center">
+                 <Pagination>{items}</Pagination>
+                 </Col>
+                    
+                </Row>
+
 
             </Container>
         </div> : add === true ? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
@@ -238,9 +268,9 @@ function Homepage(props) {
 
                     </Col>
                     <Col xs={9}>
-                        
+
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <ApplicationList  />
+                            <ApplicationList />
                         </div>
 
                     </Col>
