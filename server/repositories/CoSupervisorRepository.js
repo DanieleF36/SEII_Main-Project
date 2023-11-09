@@ -21,15 +21,15 @@ exports.findById = (id)=>{
 
 //return ids of co-supervisors that have something like them surname or name and surname
 exports.findByNSorS = (surname, name)=>{
-    let sql = "SELECT id FROM CoSupervisor LIKE 1=1 ";
+    let sql = "SELECT id FROM CoSupervisor WHERE ";
     let params = [];
     if(name != null && surname != null){
-        sql+="AND C.name AND C.surname=?";
+        sql+="name LIKE ? AND surname LIKE ?";
         params.push("%"+name+"%");
         params.push("%"+surname+"%");
     }
     else{
-            sql+="AND  T.surname=?";
+            sql+="surname LIKE ?";
             params.push("%"+coSupervisor+"%");
     }
     return new Promise((resolve, reject)=>{

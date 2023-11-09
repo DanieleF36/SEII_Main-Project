@@ -20,17 +20,16 @@ exports.findById = (id)=>{
 }
 
 //return ids of teachers that have sometingh like them surname or name and surname
-exports.findByNSorS = (name, surname)=>{
-    let sql = "SELECT id FROM Teacher LIKE 1=1 ";
+exports.findByNSorS = (surname, name)=>{
+    let sql = "SELECT id FROM Teacher WHERE ";
     let params = [];
-    
     if(name != null && surname != null){
-        sql+="AND T.name=? AND T.surname=?";
+        sql+="name LIKE ? AND surname LIKE ?";
         params.push("%"+name+"%");
         params.push("%"+surname+"%");
     }
     else{
-        sql+="AND  T.surname=?";
+        sql+="surname LIKE ?";
         params.push("%"+surname+"%");
     }
     return new Promise((resolve, reject)=>{

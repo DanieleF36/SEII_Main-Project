@@ -26,14 +26,14 @@ exports.advancedResearchThesis = async function(page,order,title,supervisor,coSu
     //If we don't find any supervisor or cosupervisors the research can stop
     let ok=!(supervisor || coSupervisor);
     //find information about id of theacer 
-    let idSupervisor = null;
+    let idSupervisors = null;
     if(supervisor != null){
         const ns = supervisor.split(" ");
-        idSupervisor = await teacherRepository.findByNSorS(ns[0], ns[1]);
-        if(idSupervisor!=null && idSupervisor>0)
+        idSupervisors = await teacherRepository.findByNSorS(ns[0], ns[1]);
+        if(idSupervisors!=null && idSupervisors.length>0)
             ok=true;
     }
-    //console.log("info abaut teacher");
+    //console.log("info abaut teacher "+JSON.stringify(idSupervisors));
     //find information about id of coSupervisor 
     let idCoSupervisorsThesis = [];
     if(coSupervisor != null){
@@ -51,9 +51,9 @@ exports.advancedResearchThesis = async function(page,order,title,supervisor,coSu
     //console.log("info about cosupervisor");
     //Check if has sense make others queries
     if(!ok)
-       return {};
+       return [{}];
     //find all thesis
-    let res = await thesisRepository.advancedResearch(nItem*(page-1),nItem*page,order,false, title,idSupervisor,idCoSupervisorsThesis,keyword,type,groups,knowledge,expiration_date,cds,creation_date);
+    let res = await thesisRepository.advancedResearch(nItem*(page-1),nItem*page,order,false, title,idSupervisors,idCoSupervisorsThesis,keyword,type,groups,knowledge,expiration_date,cds,creation_date);
     //find information about teacher
     
     for(let i=0;i<res.length;i++){

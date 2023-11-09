@@ -6,53 +6,73 @@ const db = new sqlite.Database('db.sqlite', (err) => {
     if(err) throw err;
 });
 //specific = true if your research is for something that is exactily like your params
-exports.advancedResearch = (from, to, order, specific, title, idSupervisor, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date)=>{
-    let sql = specific?"SELECT * FROM Thesis WHERE 1=1 ":"SELECT * FROM Thesis LIKE 1=1 ";//1=1 to can add AND to each possible if
+exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date)=>{
+    let sql = "SELECT * FROM Thesis WHERE 1=1 ";//1=1 to can add AND to each possible if
     let params = [];
-    if(title != null){
-        sql+="AND title=? ";
-        params.push(title)
+    specific = !specific;
+    if (title != null) {
+      sql += 'AND title ';
+      sql+=specific ? 'LIKE ?' : '= ?';
+      params.push(specific ? `%${title}%` : title);
     }
-    if(idSupervisor!=null){
-        sql+="AND supervisor = ?"
-        params.push(idSupervisor)
+    if (idSupervisors != null && idSupervisors.length > 0) {
+      sql += 'AND (supervisor ';
+      sql+=specific ? 'LIKE ?' : '= ?';
+      params.push(specific ? `%${idSupervisors[0].id}%` : idSupervisors[0].id);
+      idSupervisors.slice(1).forEach((e) => {
+        sql += 'OR supervisor ';
+        sql+=specific ? 'LIKE ?' : '= ?';
+        params.push(specific ? `%${e.id}%` : e.id);
+      });
+      sql += ') ';
     }
-    if(idCoSupervisorsThesis!=null && idCoSupervisorsThesis.length>0){
-        sql+="AND (id = ? OR ";
-        params.push(idsThesis[0]);
-        idCoSupervisorsThesis.shift().forEach((e)=>{
-            sql+="id = ? OR "
-            params.push(e.id);
-        });
-        sql+") ";
+    
+    if (idCoSupervisorsThesis != null && idCoSupervisorsThesis.length > 0) {
+      sql += 'AND (id ';
+      sql+=specific ? 'LIKE ?' : '= ?';
+      params.push(specific ? `%${idCoSupervisorsThesis[0]}%` : idCoSupervisorsThesis[0]);
+      idCoSupervisorsThesis.slice(1).forEach((e) => {
+        sql += 'OR id ';
+        sql+=specific ? 'LIKE ?' : '= ?';
+        params.push(specific ? `%${e.id}%` : e.id);
+      });
+      sql += ') ';
     }
-    if(keyword != null){
-        sql+="AND keywords=? ";
-        params.push(keyword);
+    
+    if (keyword != null) {
+      sql += 'AND keywords ';
+      sql+=specific ? 'LIKE ?' : '= ?';
+      params.push(specific ? `%${keyword}%` : keyword);
     }
-    if(type != null){
-        sql+="AND type=? ";
-        params.push(type);
+    if (type != null) {
+      sql += 'AND type ';
+      sql+=specific ? 'LIKE ?' : '= ?';
+      params.push(specific ? `%${type}%` : type);
     }
-    if(groups != null){
-        sql+="AND type=? ";
-        params.push(groups);
+    if (groups != null) {
+      sql += 'AND groups ';
+      sql+=specific ? 'LIKE ?' : '= ?';
+      params.push(specific ? `%${groups}%` : groups);
     }
-    if(knowledge != null){
-        sql+="AND knowledge=? ";
-        params.push(knowledge);
+    if (knowledge != null) {
+      sql += 'AND knowledge ';
+      sql+=specific ? 'LIKE ?' : '= ?';
+      params.push(specific ? `%${knowledge}%` : knowledge);
     }
-    if(expiration_date != null){
-        sql+="AND expiration_date=? ";
-        params.push(expiration_date);
+    if (expiration_date != null) {
+      sql += 'AND expiration_date ';
+      sql+=specific ? 'LIKE ?' : '= ?';
+      params.push(specific ? `%${expiration_date}%` : expiration_date);
     }
-    if(cds != null){
-        sql+="AND type=? ";
-        params.push(cds);
+    if (cds != null) {
+      sql += 'AND cds ';
+      sql+=specific ? 'LIKE ?' : '= ?';
+      params.push(specific ? `%${cds}%` : cds);
     }
-    if(creation_date != null){
-        sql+="AND creation_date=? ";
-        params.push(creation_date);
+    if (creation_date != null) {
+      sql += 'AND creation_date ';
+      sql+=specific ? 'LIKE ?' : '= ?';
+      params.push(specific ? `%${creation_date}%` : creation_date);
     }
     sql+="ORDER BY "+transformOrder(order);
     sql+="LIMIT "+(to-from)+" OFFSET "+from;
@@ -84,46 +104,46 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisor, idCo
 function transformOrder(order){
     switch (order) {
         case "titleD":
-          return "title DESC";
+          return "title DESC ";
         case "titleA":
-          return "title ASC";
+          return "title ASC ";
         case "supervisorD":
-          return "supervisor DESC";
+          return "supervisor DESC ";
         case "supervisorA":
-          return "supervisor ASC";
+          return "supervisor ASC ";
         case "co-supervisorD":
-          return "co-supervisor DESC";
+          return "co-supervisor DESC ";
         case "co-supervisorA":
-          return "co-supervisor ASC";
+          return "co-supervisor ASC ";
         case "keywordD":
-          return "keyword DESC";
+          return "keyword DESC ";
         case "keywordA":
-          return "keyword ASC";
+          return "keyword ASC ";
         case "typeD":
-          return "type DESC";
+          return "type DESC ";
         case "typeA":
-          return "type ASC";
+          return "type ASC ";
         case "groupsD":
-          return "groups DESC";
+          return "groups DESC ";
         case "groupsA":
-          return "groups ASC";
+          return "groups ASC ";
         case "knowledgeD":
-          return "knowledge DESC";
+          return "knowledge DESC ";
         case "knowledgeA":
-          return "knowledge ASC";
+          return "knowledge ASC ";
         case "expiration_dateD":
-          return "expiration_date DESC";
+          return "expiration_date DESC ";
         case "expiration_dateA":
-          return "expiration_date ASC";
+          return "expiration_date ASC ";
         case "cdsD":
-          return "cds DESC";
+          return "cds DESC ";
         case "cdsA":
-          return "cds ASC";
+          return "cds ASC ";
         case "creation_dateD":
-          return "creation_date DESC";
+          return "creation_date DESC ";
         case "creation_dateA":
-          return "creation_date ASC";
+          return "creation_date ASC ";
         default:
-          return `Azione non valida per ${item}`;
+          return `Azione non valida per ${order}`;
       }
 }
