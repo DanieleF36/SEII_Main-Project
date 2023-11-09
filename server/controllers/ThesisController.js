@@ -34,13 +34,13 @@ exports.advancedResearchThesis = function advancedResearchThesis (req, res, next
       });
   };
   
-exports.addThesis = function addThesis (req, res, next) {
-    thesisService.addThesis(req.body.thesis)
+exports.addThesis = function addThesis (req, res, next) { 
+  thesisService.addThesis(req.body)
       .then(function (response) {
         res.status(201).json(response);
       })
-      .catch(function (response) {
-        
+      .catch(function (err) {
+        res.status(err.status).json({error: err})
       });
   };
   

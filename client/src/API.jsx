@@ -19,6 +19,34 @@ async function listApplication() {
     }
   }
 
-const API = {listApplication};
+async function insertProposal(thesis) {
+  const response = await fetch(URL + '/thesis', {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(thesis)
+  })
+  if (response.ok) {
+    return response.map( item => ({
+              title: item.title,
+              supervisor: item.supervisor,
+              keywords: item.keywords,
+              type: item.type,
+              groups: item.groups,
+              description: item.description,
+              knowledge: item.knowledge,
+              note: item.note,
+              expiration_date: item.expiration_date,
+              level: item.level,
+              cds: item.cds,
+              status: item.status
+          ,}));
+  } else {
+    throw response.msg;
+  }
+}
+
+const API = {listApplication, insertProposal};
 
 export default API;
