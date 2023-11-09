@@ -30,5 +30,7 @@ const thesisController = require('./controllers/ThesisController');
 
 app.get('/thesis',(req, res) => thesisController.advancedResearchThesis(req, res));
 
+app.post('/thesis', (req, res) => thesisController.addThesis(req, res))
+
 const PORT = 3001;
 app.listen(PORT, ()=>console.log(`Server running on http://localhost:${PORT}`));

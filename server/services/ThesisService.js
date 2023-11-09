@@ -1,4 +1,5 @@
 'use strict';
+const dayjs = require('dayjs')
 
 const thesisRepository = require("../repositories/ThesisRepository");
 const coSupervisorRepository = require("../repositories/CoSupervisorRepository");
@@ -87,12 +88,91 @@ exports.addApplication = function(id) {
 
 
 /**
- * Add a thesis
- *
- * body Thesis
- * returns thesis
+ * Behaviour:
+ * - if even ONLY 1 co-supervisor is not found (so no entry in COSUPERVISOR), 400 error is returned
+ * - if the teacher is not found (so no entry in TEACHER), 400 is returned
+ * - if level and/or status are unexpected values, 400 is returned
+ * 
+ * Add a thesis to the table defining each field as follow:
+ * 
+ * @param {*} Thesis
+ * - id: incremental primary key, not requested
+ * - title: string
+ * - supervisor: teacher's ID defined into "TEACHER" table
+ * - co_supervisor: array of co_supervisors' ID, it could be also empty and added after the thesis creation
+ *                  for each co_supervisors, there should be a new entry into "COSUPERVISOR"
+ * - keywords: string
+ * - type: string
+ * - group: string
+ * - description: string
+ * - knowledge: string
+ * - note: string
+ * - expiration_date: string (TOBE parsed according to our choiced data format)
+ * - level: 0 (bachelor) | 1 (master)
+ * - cds: string
+ * - creation_date: current date query is performed here
+ * - status: MUST BE 1 ~scrum meeting 8 Nov
+ * 
+ * Moreover a CoSupervisor-Teacher-Thesis entry is added into "COSUPERVISORTHESIS" table for each CoSupervisor
+ * 
+ * @returns thesis obj
+ * 
+ * TODO: errors mgmt
  **/
-exports.addThesis = function(thesis) {
-  
-}
+exports.addThesis = async function(thesis) {
+    let thesis_res;
 
+    // // an ID in TEACHER must be defined
+    // if(!thesis.supervisor) {
+    //     console.log('supervisor not found in TEACHER, should return 400')
+    // }
+
+    // // look for the supervisor into TEACHER
+    // if(!teacherRepository.findById(thesis.supervisor)) {
+    //     console.log('supervisor not found in TEACHER, should return 400')
+    // }
+    thesis.supervisor = 't123456'
+
+    // look for each co-supervisor id into COSUPERVISOR
+    if(thesis.co_supervisor) {
+        for(let id of thesis.co_supervisor) {
+            if(Object.keys( await coSupervisorRepository.findById(id) ).length === 0 ) {
+                throw { status: 400, msg: 'supervisor not found in COSUPERVISOR, should return 400'}
+            }
+        }
+    }
+
+    // parse expiration date and creation date
+    const exp_date = dayjs(thesis.expiration_date, "MM-DD-YYYY").format('YYYY-MM-DD').toString()
+    thesis.expiration_date = exp_date
+    const creat_date = dayjs().format('YYYY-MM-DD').toString()
+    thesis.creation_date = creat_date;
+
+    // checks level, 0 (bachelor) | 1 (master)
+    if( !thesis.level || ( thesis.level != 0 && thesis.level != 1) ){
+        throw { status: 400, error: 'level not recognized, should return 400' }
+    }
+
+    // checks status, MUST BE 1 (published)
+    if( !thesis.status || thesis.status != 1) {
+        throw { status: 400, error: 'status not recognized, should return 400' }
+    }
+
+    // add an entry into THESIS
+    thesis_res = await thesisRepository.addThesis(thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)
+    if(thesis_res.err) {
+        throw { status: 500, error: thesis_res.err }
+    }
+
+    // // for each CoSupervisor, add an entry into COSUPERVISORTHESIS
+    if(thesis.co_supervisor) {
+        for(let id of thesis.co_supervisor) {
+            const result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, thesis.supervisor, id)
+            if(result.err) {
+                throw { status: 500, error: result.err }
+            }
+        }
+    }
+
+    return thesis
+}
