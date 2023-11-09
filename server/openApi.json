@@ -8,7 +8,7 @@
     "/thesis": {
       "post": {
         "tags": ["thesis"],
-        "description": "Add a thesis",
+        "description": "Add a thesis to the THESIS table and insert an entry for each co_supervisor into COSUPERVISORTHESIS table",
         "operationId": "addThesis",
         "requestBody": {
           "content": {
@@ -348,13 +348,27 @@
     "schemas": {
       "thesis": {
         "type": "object",
+        "example": {
+          "title": "new thesis with unique name",
+          "supervisor": 1,
+          "co_supervisor": [2],
+          "keywords": "SoftEng",
+          "type": "abroad",
+          "groups": "group1",
+          "description": "new thesis description",
+          "knowledge": "none",
+          "note": "",
+          "expiration_date": "01-01-2024",
+          "level": 1,
+          "cds": "ingInf",
+          "status": 1
+      },
         "properties": {
-          "id": { "type": "integer", "minimum": 0 },
           "title": { "type": "string", "minLength": 1 },
           "supervisor": { "type": "string", "minLength": 1 },
           "co_supervisor": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/co_supervisor" }
+            "items": { "type": "string", "minLength": 1} 
           },
           "keyword": { "type": "string" },
           "type": { "type": "string" },
@@ -366,7 +380,7 @@
           "level": { "type": "integer" },
           "cds": { "type": "string" },
           "creation_date": { "type": "string" },
-          "status": { "type": "integer" }
+          "status": { "enum": [0, 1] }
         },
         "required": ["title", "supervisor", "expiration_date", "level", "cds"]
       },
