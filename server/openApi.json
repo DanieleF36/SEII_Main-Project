@@ -331,7 +331,7 @@
                     "id":{"type": "integer", "minimum": 0},
                     "title":{"type": "string", "minLength": 1},
                     "supervisor":{"type": "string", "minLength": 1},
-                    "co_supervisor":{"type": "array", "items":{"$ref":"#/components/schemas/co_supervisor"}},
+                    "co_supervisor":{"type": "array", "items":{"type": "string"}},
                     "keyword":{"type": "string"},
                     "type":{"type": "string"},
                     "groups":{"type": "string"},

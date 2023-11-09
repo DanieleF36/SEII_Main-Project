@@ -6,8 +6,8 @@ const db = new sqlite.Database('db.sqlite', (err) => {
     if(err) throw err;
 });
 //specific = true if your research is for something that is exactily like your params
-exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date)=>{
-    let sql = "SELECT * FROM Thesis WHERE 1=1 ";//1=1 to can add AND to each possible if
+exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date,level)=>{
+    let sql = "SELECT * FROM Thesis WHERE status=0 AND level="+level+" ";
     let params = [];
     specific = !specific;
     if (title != null) {
