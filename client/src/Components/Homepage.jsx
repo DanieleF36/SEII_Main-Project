@@ -6,6 +6,7 @@ import { TitleBar } from './TitleBar';
 import './Homepage.css';
 import { FilterContainer } from './Filters';
 import AddProposalForm from './AddProposal';
+import ApplicationList from './ApplicationList';
 import API from '../API';
 
 
@@ -56,6 +57,8 @@ function Homepage(props) {
 
         //API apply proposal ( e is the selected proposal)
     };
+
+    
 
     const handleResetChange = () => {
         setFilters({
@@ -235,8 +238,9 @@ function Homepage(props) {
 
                     </Col>
                     <Col xs={9}>
+                        
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <h2>(Applications List)</h2>
+                            <ApplicationList  />
                         </div>
 
                     </Col>
