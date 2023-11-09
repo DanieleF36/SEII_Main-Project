@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, Nav, Accordion, Badge, Card } from 'react-bootstrap';
+import toast, { Toaster } from 'react-hot-toast';
 
 function ApplicationList() {
     
@@ -31,11 +32,38 @@ function ApplicationList() {
                                                         linkCv: 'cv.pdf', 
                                                         status: '0'}]);
     
+    //adding API from backend to set list of applications
     
+    /*useEffect(() => {
+      
+      API.listApplication()
+        .then((applications) => {
+        setApplications(applications);
+      })
+      .catch(toast.error(res.error));
+  
+    }, []);*/
 
-    const handlePropByProf = (e) => {
-        //API apply proposal ( e is the selected proposal)
+    //adding API from backend to post accept application
+    /*const acceptPropByProf = (id) => {
+        
+        API.accRefApplication(id)
+        .then(toast.success('Application successfully accepted'))
+        .catch(toast.error(res.error));
+
+    };*/
+
+    const acceptPropByProf = (id) => {
+        
+        toast.success('Application ' + id + ' successfully accepted');
+
     };
+    const rejectPropByProf = (id) => {
+        
+        toast.error('Application ' + id + ' rejected');
+
+    };
+    
 
 
         return (
@@ -43,6 +71,7 @@ function ApplicationList() {
             <div>
             {applications.map((application) => (
                 <Card key={application.id} style={{ marginBottom: '10px' }}>
+                    <Toaster position="top-center" reverseOrder={false}/>
                     <Accordion>
                         <Accordion.Item eventKey={application.id}>
                             <Accordion.Header>
@@ -90,9 +119,9 @@ function ApplicationList() {
                                 <br />
                                 <br />
                                 <br />
-                                {application.status === '0' ? <Button onClick={() => handlePropByProf(application.status)} variant='primary'>Accept</Button> : ''}
+                                {application.status === '0' ? <Button onClick={() => acceptPropByProf(application.id)} variant='primary'>Accept</Button> : ''}
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                {application.status === '0' ? <Button onClick={() => handlePropByProf(application.status)} variant='danger'>Reject</Button> : ''}
+                                {application.status === '0' ? <Button onClick={() => rejectPropByProf(application.id)} variant='danger'>Reject</Button> : ''}
                             </Accordion.Body>
                         </Accordion.Item>
                     </Accordion>
