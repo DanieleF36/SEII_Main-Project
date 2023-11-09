@@ -100,6 +100,43 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
         });
     });
 }
+
+/**
+ * @returns SUCCESS: the new entry ID is returned
+ * @returns ERROR: a -1 error code is returned
+ */
+exports.addThesis = (title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) => {
+    const sql = `INSERT INTO Thesis(title, supervisor, keywords, type, groups, description, 
+                                        knowledge, note, expiration_date, level, cds, creation_date, status)
+                 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+
+    return new Promise((resolve, reject)=>{
+        db.run(sql, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status], function(err) {
+            if (err) {
+                reject(err);
+                return;
+            }
+            const thesis_obj = {
+                id: this.lastID,
+                title: title,
+                supervisor: supervisor,
+                keywords: keywords,
+                type: type,
+                groups: groups,
+                description: description,
+                knowledge: knowledge,
+                note: note,
+                expiration_date: expiration_date,
+                level: level,
+                cds: cds,
+                creation_date: creation_date,
+                status: status
+            }
+            resolve(thesis_obj)
+        })
+    })
+}
+
 //Trasform order and make it suitable for an SQL query
 function transformOrder(order){
     switch (order) {

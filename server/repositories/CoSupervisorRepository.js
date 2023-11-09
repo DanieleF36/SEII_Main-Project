@@ -5,16 +5,20 @@ const sqlite = require('sqlite3');
 const db = new sqlite.Database('db.sqlite', (err) => {
     if(err) throw err;
 });
-
 exports.findById = (id)=>{
-    const sqlCoSupervisor = "SELECT name, surname, email, company FROM CoSupervisor WHERE id ?";
+    const sqlCoSupervisor = "SELECT name, surname, email, company FROM CoSupervisor WHERE id = ?";
+
     return new Promise((resolve, reject)=>{
         db.get(sqlCoSupervisor, [id], (err, row)=>{
             if (err) {
                 reject(err);
                 return;
             }
-            resolve({name:row.name, surname:row.surname, email:row.surname, company:row.company});
+            if(!row) 
+                resolve({})
+            else 
+                resolve({name:row.name, surname:row.surname, email:row.surname, company:row.company});
+
         });
     });
 }
