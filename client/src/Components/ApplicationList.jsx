@@ -5,7 +5,7 @@ function ApplicationList() {
     
     const [applications, setApplications] = useState([{id:0, 
                                                         title: 'AI system research',
-                                                        idStud: 's123',
+                                                        idStud: 's12345',
                                                         name: 'Luca',
                                                         surname: 'Bianchi',
                                                         cds: 'A2891',
@@ -14,7 +14,7 @@ function ApplicationList() {
                                                         status: '1'},
                                                     {id:1, 
                                                         title: 'AI system research',
-                                                        idStud: 's257',
+                                                        idStud: 's25767',
                                                         name: 'Aldo',
                                                         surname: 'Moro',
                                                         cds: 'A2891',
@@ -23,7 +23,7 @@ function ApplicationList() {
                                                         status: '2'},
                                                     {id:2, 
                                                         title: 'AI develop',
-                                                        idStud: 's257',
+                                                        idStud: 's25734',
                                                         name: 'Aldo',
                                                         surname: 'Moro',
                                                         cds: 'A2891',
@@ -40,21 +40,21 @@ function ApplicationList() {
 
         return (
             <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-            <h2>Applications List</h2>
             <div>
             {applications.map((application) => (
                 <Card key={application.id} style={{ marginBottom: '10px' }}>
                     <Accordion>
                         <Accordion.Item eventKey={application.id}>
                             <Accordion.Header>
-                                <div className="d-md-flex justify-content-center align-items-center">
-                                    <div>
-                                        <strong>Title:</strong> {application.title}&nbsp;&nbsp;&nbsp;&nbsp;
-                                    </div>
-                                    <div>
-                                        <strong>Student:</strong> {application.idStud}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    </div>
-                                    <div>
+                                <Container fluid>
+                                <Row className="d-md-flex justify-content-center align-items-center">
+                                    <Col xs='3'>
+                                        <strong>Title:</strong> {application.title}
+                                    </Col>
+                                    <Col xs='3'>
+                                        <strong>Student:</strong> {application.idStud}
+                                    </Col>
+                                    <Col xs='5'>
                                         <strong>Status:</strong>{' '}
                                         {application.status === '0' ? (
                                             <Badge pill bg="warning">P</Badge>
@@ -65,20 +65,15 @@ function ApplicationList() {
                                                 <Badge pill bg="danger">R</Badge>
                                             )
                                         )}
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    </div>
-                                    <div>
+                                    </Col>
+                                    <Col xs='1'>
                                         <img src="./info-circle.svg"
                                             alt="info"
                                             className="img-responsive" />
 
-                                    </div>
-                                </div>
+                                    </Col>
+                                </Row>
+                                </Container>
                             </Accordion.Header>
                             <Accordion.Body>
                                 <strong>IdStudent:</strong> {application.idStud}

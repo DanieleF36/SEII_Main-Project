@@ -108,34 +108,33 @@ function Homepage(props) {
                                     <Accordion>
                                         <Accordion.Item eventKey={proposal.id}>
                                             <Accordion.Header>
-                                                <div className="d-md-flex justify-content-center align-items-center">
-                                                    <div>
-                                                        <strong>Title:</strong> {proposal.title}&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    </div>
-                                                    <div>
-                                                        <strong>Supervisor:</strong> {proposal.supervisor}&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    </div>
-                                                    <div>
-                                                        <strong>Expiration date:</strong> {proposal.expDate}&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    </div>
-                                                    <div>
+                                             <Container fluid>
+                                                <Row className="d-md-flex justify-content-center align-items-center">
+                                                    <Col xs='3'>
+                                                        <strong>Title:</strong> {proposal.title}
+                                                    </Col>
+                                                    <Col xs='3'>
+                                                        <strong>Supervisor:</strong> {proposal.supervisor}
+                                                    </Col>
+                                                    <Col xs='3'>
+                                                        <strong>Expiration date:</strong> {proposal.expDate}
+                                                    </Col>
+                                                    <Col xs='2'>
                                                         <strong>Status:</strong>{' '}
                                                         {proposal.status === '1' ? (
                                                             <Badge pill bg="success">P</Badge>
                                                         ) : (
                                                             <Badge pill bg="danger">A</Badge>
-                                                        )}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                                    </div>
-                                                    <div>
+                                                        )}
+                                                    </Col>
+                                                    <Col xs='1'>
                                                         <img src="./info-circle.svg"
                                                             alt="info"
                                                             className="img-responsive" />
 
-                                                    </div>
-                                                </div>
+                                                    </Col>
+                                                </Row>
+                                                </Container>
                                             </Accordion.Header>
                                             <Accordion.Body>
                                                 <strong>Keywords:</strong> {proposal.keywords}
@@ -191,6 +190,7 @@ function Homepage(props) {
                                 </Card>
                             ))}
                         </div>
+                        
                     </Col>
 
 
