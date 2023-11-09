@@ -3,4 +3,9 @@
 GET {{APIURL}}/professor/1/applications
 ###  
 //UPDATE THE APPLICATION STATUS (PROFESSOR TASK)
-PUT {{{{APIURL}}}}/professor/1/applications/1
+POST {{APIURL}}/professor/1/applications/1
+content-type: application/json
+
+{
+    "accepted" : "1"
+}

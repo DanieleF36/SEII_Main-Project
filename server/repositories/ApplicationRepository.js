@@ -7,7 +7,6 @@ const db = new sqlite.Database("db.sqlite", (err) => {
 });
 
 exports.listApplication = (id_teacher) => {
-  console.log("APPLICATION");
   const sqlTeacher = "SELECT * FROM Application WHERE id_teacher=?";
   return new Promise((resolve, reject) => {
     db.all(sqlTeacher, [id_teacher], (err, rows) => {
@@ -15,7 +14,8 @@ exports.listApplication = (id_teacher) => {
         reject(err);
         return;
       }
-      if (rows == undefined) {
+      console.log(rows);
+      if (rows == []) {
         resolve({ error: "Application not found." });
       } else {
         const application = rows.map((a) => ({
@@ -33,11 +33,14 @@ exports.listApplication = (id_teacher) => {
 };
 
 exports.accRefApplication = (status, id_teacher, id_application) => {
+  console.log("APPLICATION");
+  console.log(status, id_teacher, id_application);
   const sqlTeacher =
-    "UPDATE Application SET status = ? WHERE id_teacher = ? AND id_application = ?";
+    "UPDATE Application SET status = ? WHERE id_teacher = ? AND id = ?";
   return new Promise((resolve, reject) => {
     db.run(sqlTeacher, [status, id_teacher, id_application], (err, row) => {
       if (err) {
+        console.error("SQLite Error:", err.message);
         reject(err);
         return;
       }
