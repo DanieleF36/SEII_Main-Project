@@ -1,4 +1,4 @@
-import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, Nav, Accordion, Badge, Card } from 'react-bootstrap';
+import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, Nav, Accordion, Badge, Card, Modal } from 'react-bootstrap';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -16,23 +16,28 @@ function Homepage(props) {
     const [add, setAdd] = useState(false);
     const [listA, setListA] = useState(false);
 
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
 
 
     const [filters, setFilters] = useState({
         title: '',
         supervisor: '',
-        cosupervisor:'',
+        cosupervisor: '',
         expDate: '',
         status: '',
         keywords: '',
         type: '',
         groups: '',
-        know:'',
+        know: '',
         level: '',
         cds: '',
         creatDate: '',
-        order:'',
-        orderby:''
+        order: '',
+        orderby: ''
     });
 
 
@@ -43,7 +48,7 @@ function Homepage(props) {
 
     const handleFilterCoSupChange = (e) => {
         let cosup_arr = e.target.value.split(",");
-        let co=cosup_arr.map(e=>e.trim());
+        let co = cosup_arr.map(e => e.trim());
         setFilters({ ...filters, cosupervisor: co });
     };
 
@@ -56,18 +61,18 @@ function Homepage(props) {
         setFilters({
             title: '',
             supervisor: '',
-            cosupervisor:'',
+            cosupervisor: '',
             expDate: '',
             status: '',
             keywords: '',
             type: '',
             groups: '',
-            know:'',
+            know: '',
             level: '',
             cds: '',
             creatDate: '',
-            order:'',
-            orderby:''
+            order: '',
+            orderby: ''
         });
     };
 
@@ -149,7 +154,34 @@ function Homepage(props) {
                                                 <strong>Creation Date:</strong> {proposal.creatDate}
                                                 <br />
                                                 <br />
-                                                {proposal.status === '1' ? <Button onClick={() => handleApplyProp(proposal)} variant='primary'>Apply</Button> : ''}
+                                                {proposal.status === '1' ? <>
+                                                    <Button variant="primary" onClick={handleShow}>
+                                                        Apply
+                                                    </Button>
+
+                                                    <Modal show={show} onHide={handleClose}>
+                                                        <Modal.Header closeButton>
+                                                            <Modal.Title>Apply for proposal</Modal.Title>
+                                                        </Modal.Header>
+                                                        <Modal.Body> <Form.Group controlId="formFile" className="mb-3">
+                                                            <Form.Label><strong>Upload your CV</strong></Form.Label>
+                                                            <Form.Control
+                                                                type="file"
+                                                                //name=""
+                                                                //value={proposalData.cosupervisor}
+                                                                //onChange={handleCoSupChange} 
+                                                                />
+                                                        </Form.Group></Modal.Body>
+                                                        <Modal.Footer>
+                                                            <Button variant="secondary" onClick={handleClose}>
+                                                                Close
+                                                            </Button>
+                                                            <Button variant="primary" onClick={handleClose}>
+                                                                Apply
+                                                            </Button>
+                                                        </Modal.Footer>
+                                                    </Modal>
+                                                </> : ''}
                                             </Accordion.Body>
                                         </Accordion.Item>
                                     </Accordion>
@@ -160,6 +192,7 @@ function Homepage(props) {
 
 
                 </Row>
+                
 
             </Container>
         </div> : add === true ? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>

@@ -98,18 +98,6 @@ function FilterContainer(props) {
               </Form.Group>
               <Form.Group className="mb-3">
                 <Form.Control
-                  as="select"
-                  name="level"
-                  value={props.filters.level}
-                  onChange={props.handleFilterChange}
-                >
-                  <option value="">Level</option>
-                  <option value="1">Master</option>
-                  <option value="0">Bachelor</option>
-                </Form.Control>
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Control
                   type="text"
                   name="cds"
                   value={props.filters.cds}
