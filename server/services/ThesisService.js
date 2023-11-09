@@ -11,8 +11,8 @@ const nItem=10;//number of item per page
  *
  * page Integer //Si parte dalla pagina 1
  * title String  (optional)
- * supervisor String  (optional)
- * coSupervisor List  (optional)
+ * supervisor String, name defined as: name, surname (optional)
+ * coSupervisor Listn, ame defined as: name, surname  (optional)
  * keyword String  (optional)
  * type String  (optional)
  * groups String  (optional)
@@ -54,7 +54,7 @@ exports.advancedResearchThesis = async function(page,order,title,supervisor,coSu
     if(!ok)
        return [{}];
     //find all thesis
-    let res = await thesisRepository.advancedResearch(nItem*(page-1),nItem*page,order,false, title,idSupervisors,idCoSupervisorsThesis,keyword,type,groups,knowledge,expiration_date,cds,creation_date);
+    let res = await thesisRepository.advancedResearch(nItem*(page-1),nItem*page,order,false, title,idSupervisors,idCoSupervisorsThesis,keyword,type,groups,knowledge,expiration_date,cds,creation_date, 1);
     //find information about teacher
     
     for(let i=0;i<res.length;i++){
