@@ -10,7 +10,7 @@ exports.findThesisByCoSupervisorId = (id)=>{
     let idsThesis = [];
     const sqlIdThesis = "SELECT id_thesis FROM CoSupervisorThesis WHERE id_cosupervisor = ?";
     return new Promise((resolve, reject)=>{
-        db.all(sqlIdThesis, [idsCo], (err, rows)=>{
+        db.all(sqlIdThesis, [id], (err, rows)=>{
             if (err) {
                 reject(err);
                 return;

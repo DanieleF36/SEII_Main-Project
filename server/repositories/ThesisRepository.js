@@ -5,14 +5,26 @@ const sqlite = require('sqlite3');
 const db = new sqlite.Database('db.sqlite', (err) => {
     if(err) throw err;
 });
-
-exports.advancedResearch = (from, to, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date)=>{
-    console.log("dentro thesis repository");
-    let sql = "SELECT * FROM Thesis WHERE 1=1 ";//1=1 to can add AND to each possible if
+//specific = true if your research is for something that is exactily like your params
+exports.advancedResearch = (from, to, order, specific, title, idSupervisor, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date)=>{
+    let sql = specific?"SELECT * FROM Thesis WHERE 1=1 ":"SELECT * FROM Thesis LIKE 1=1 ";//1=1 to can add AND to each possible if
     let params = [];
     if(title != null){
         sql+="AND title=? ";
         params.push(title)
+    }
+    if(idSupervisor!=null){
+        sql+="AND supervisor = ?"
+        params.push(idSupervisor)
+    }
+    if(idCoSupervisorsThesis!=null && idCoSupervisorsThesis.length>0){
+        sql+="AND (id = ? OR ";
+        params.push(idsThesis[0]);
+        idCoSupervisorsThesis.shift().forEach((e)=>{
+            sql+="id = ? OR "
+            params.push(e.id);
+        });
+        sql+") ";
     }
     if(keyword != null){
         sql+="AND keywords=? ";
@@ -42,11 +54,12 @@ exports.advancedResearch = (from, to, title, supervisor, coSupervisor, keyword, 
         sql+="AND creation_date=? ";
         params.push(creation_date);
     }
-    console.log("Prima della promise sql="+sql+" params="+params);
-    return new Promise((resolve, reject)=>{
+    sql+="ORDER BY "+transformOrder(order);
+    sql+="LIMIT "+(to-from)+" OFFSET "+from;
+   return new Promise((resolve, reject)=>{
         db.all(sql, params, (err, rows)=>{
             if (err) {
-                console.log("erorre in thesis repositori all'esecuzione della query "+err)
+                console.log("errore "+err);
                 reject(err);
                 return;
             }
@@ -54,7 +67,7 @@ exports.advancedResearch = (from, to, title, supervisor, coSupervisor, keyword, 
                 id: e.id,
                 title: e.title,
                 supervisor: e.supervisor,
-                coSupervisor: null,
+                coSupervisors: null,
                 keyword: e.keyword,
                 type: e.type,
                 groups: e.groups,
@@ -67,4 +80,50 @@ exports.advancedResearch = (from, to, title, supervisor, coSupervisor, keyword, 
         });
     });
 }
-
+//Trasform order and make it suitable for an SQL query
+function transformOrder(order){
+    switch (order) {
+        case "titleD":
+          return "title DESC";
+        case "titleA":
+          return "title ASC";
+        case "supervisorD":
+          return "supervisor DESC";
+        case "supervisorA":
+          return "supervisor ASC";
+        case "co-supervisorD":
+          return "co-supervisor DESC";
+        case "co-supervisorA":
+          return "co-supervisor ASC";
+        case "keywordD":
+          return "keyword DESC";
+        case "keywordA":
+          return "keyword ASC";
+        case "typeD":
+          return "type DESC";
+        case "typeA":
+          return "type ASC";
+        case "groupsD":
+          return "groups DESC";
+        case "groupsA":
+          return "groups ASC";
+        case "knowledgeD":
+          return "knowledge DESC";
+        case "knowledgeA":
+          return "knowledge ASC";
+        case "expiration_dateD":
+          return "expiration_date DESC";
+        case "expiration_dateA":
+          return "expiration_date ASC";
+        case "cdsD":
+          return "cds DESC";
+        case "cdsA":
+          return "cds ASC";
+        case "creation_dateD":
+          return "creation_date DESC";
+        case "creation_dateA":
+          return "creation_date ASC";
+        default:
+          return `Azione non valida per ${item}`;
+      }
+}
