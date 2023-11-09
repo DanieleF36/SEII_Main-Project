@@ -8,28 +8,29 @@ const db = new sqlite.Database('db.sqlite', (err) => {
 
 exports.findById = (id)=>{
     const sqlCoSupervisor = "SELECT name, surname, email, company FROM CoSupervisor WHERE id ?";
-    db.get(sqlCoSupervisor, [id], (err, row)=>{
-        if (err) {
-            reject(err);
-            return;
-        }
-        resolve({name:row.name, surname:row.surname, email:row.surname, company:row.company});
+    return new Promise((resolve, reject)=>{
+        db.get(sqlCoSupervisor, [id], (err, row)=>{
+            if (err) {
+                reject(err);
+                return;
+            }
+            resolve({name:row.name, surname:row.surname, email:row.surname, company:row.company});
+        });
     });
 }
 
-//return ids of co-supervisors with surname or name and surname
-exports.findByNSorS = (name, surname)=>{
-    let sql = "SELECT id FROM CoSupervisor WHERE 1=1 ";
+//return ids of co-supervisors that have something like them surname or name and surname
+exports.findByNSorS = (surname, name)=>{
+    let sql = "SELECT id FROM CoSupervisor WHERE ";
     let params = [];
     if(name != null && surname != null){
-        if(coSupervisor.split(' '.length==2)){
-            sql+="AND C.name AND C.surname=?";
-            params.concat(coSupervisor.split(' '));
-        }
-        else{
-            sql+="AND  T.surname=?";
-            params.push(coSupervisor);
-        }
+        sql+="name LIKE ? AND surname LIKE ?";
+        params.push("%"+name+"%");
+        params.push("%"+surname+"%");
+    }
+    else{
+            sql+="surname LIKE ?";
+            params.push("%"+coSupervisor+"%");
     }
     return new Promise((resolve, reject)=>{
         db.all(sql, params, (err, rows)=>{

@@ -14,24 +14,23 @@ exports.findById = (id)=>{
                 reject(err);
                 return;
             }
-            resolve({name: row.name, surname:row.surname, email:row.email, codGroup:row.cod_group, codDep:row.cod_dep});
+            resolve({id: row.id, name: row.name, surname:row.surname, email:row.email, codGroup:row.cod_group, codDep:row.cod_dep});
         });
     });
 }
 
-//return ids of teachers with surname or name and surname
-exports.findByNSorS = (name, surname)=>{
-    let sql = "SELECT id FROM Teacher WHERE 1=1 ";
+//return ids of teachers that have sometingh like them surname or name and surname
+exports.findByNSorS = (surname, name)=>{
+    let sql = "SELECT id FROM Teacher WHERE ";
     let params = [];
-    
     if(name != null && surname != null){
-        sql+="AND T.name=? AND T.surname=?";
-        params.push(name);
-        params.push(surname);
+        sql+="name LIKE ? AND surname LIKE ?";
+        params.push("%"+name+"%");
+        params.push("%"+surname+"%");
     }
     else{
-        sql+="AND  T.surname=?";
-        params.push(surname);
+        sql+="surname LIKE ?";
+        params.push("%"+surname+"%");
     }
     return new Promise((resolve, reject)=>{
         db.all(sql, params, (err, rows)=>{

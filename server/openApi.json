@@ -52,7 +52,39 @@
             "in": "query",
             "name": "page",
             "schema": {
-              "type": "integer"
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "description": "Order of results. D: discendent, A: ascendent",
+            "schema": {
+              "default": "titleD",
+              "enum": [
+                "titleD",
+                "titleA",
+                "supervisorD",
+                "supervisorA",
+                "co-supervisorD",
+                "co-supervisorA",
+                "keywordD",
+                "keywordA",
+                "typeD",
+                "typeA",
+                "groupsD",
+                "groupsA",
+                "knowledgeD",
+                "knowledgeA",
+                "expiration_dateD",
+                "expiration_dateA",
+                "cdsD",
+                "cdsA",
+                "creation_dateD",
+                "creation_dateA"
+              ]
             },
             "required": true
           },
@@ -145,6 +177,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/thesis"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
                 }
               }
             }
@@ -355,7 +397,6 @@
           "id": { "type": "integer", "minimum": 0 },
           "id_student": { "type": "integer", "minimum": 0 },
           "id_thesis": { "type": "integer", "minimum": 0 },
-          "id_teacher": { "type": "integer", "minimum": 0 },
           "date": { "type": "string" },
           "cv": {
             "type": "object",
