@@ -1,3 +1,6 @@
-@APIURL = http://localhost:3001/api
+@APIURL = http://localhost:3001
 //GET THE LIST OF APPLICATION
-GET {{{APIURL}}}/professor/1/applications
+GET {{APIURL}}/professor/1/applications
+###  
+//UPDATE THE APPLICATION STATUS (PROFESSOR TASK)
+PUT {{{{APIURL}}}}/professor/1/applications/1
