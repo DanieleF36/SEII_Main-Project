@@ -2,6 +2,25 @@
 
 const thesisService = require('../services/ThesisService');
 
+/**
+ * wrapper function for performing advanced search over the database, possible fields for the search are:
+ * - title
+ * - supervisor, name and/or lastname
+ * - cosupervisor, as above
+ * - keywords
+ * - type
+ * - groups
+ * - knowledge
+ * - expiration_date
+ * - cds
+ * - creation_date
+ * 
+ * @returns SUCCESS: a json object as follow: {
+ *  "nPage": nPage,
+ *  "thesis": [ thesis1, ... ]
+ * }
+ * @returns ERROR: common error handling object
+ */
 exports.advancedResearchThesis = function advancedResearchThesis (req, res, next) {
   const orderType = ["titleD", "titleA", "supervisorD", "supervisorA", "co-supervisorD","co-supervisorA","keywordD", "keywordA", "typeD", "typeA","groupsD","groupsA","knowledgeD","knowledgeA", "expiration_dateD","expiration_dateA", "cdsD", "cdsA", "creation_dateD", "creation_dateA"]
   /*  
@@ -12,14 +31,14 @@ exports.advancedResearchThesis = function advancedResearchThesis (req, res, next
       return;
     }
     */
-    console.log("Controller")
+
+    //checks if order is defined or not, otherwise titleD is setted as defaul value
     const order = req.query.order?req.query.order:"titleD";
+
     thesisService.advancedResearchThesis(req.query.page,order,req.query.title,req.query.supervisor,req.query.coSupervisor,req.query.keyword,req.query.type,req.query.groups,req.query.knowledge,req.query.expiration_date,req.query.cds,req.query.creation_date)
       .then(function (response) {
-        console.log("Controller response1 "+ JSON.stringify(response))
         let nPage = response[1];
         response = response[0];
-        console.log("Controller response2 "+ response)
         response.forEach((e)=>{
           e.supervisor = e.supervisor.name+" "+e.supervisor.surname;
           if(e.coSupervisors)

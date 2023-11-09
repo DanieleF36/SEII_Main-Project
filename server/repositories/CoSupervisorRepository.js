@@ -22,8 +22,19 @@ exports.findById = (id)=>{
         });
     });
 }
-
-//return ids of co-supervisors that have something like them surname or name and surname
+/**
+ * Perfoms a search according to the following possible combinations:
+ * 1. surname and name are defined, okay
+ * 2. only surname is defined, okay
+ * 3. only name is defined, error
+ * 4. none of them are defined, error (never possible)
+ * 
+ * This will return a list of ids because more cosupervisor with same name/lastname pair could exist
+ * 
+ * @param {String} surname
+ * @param {String} name 
+ * @returns [id1, id2, ...]
+ */
 exports.findByNSorS = (surname, name)=>{
     let sql = "SELECT id FROM CoSupervisor WHERE ";
     let params = [];
