@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
+import toast, { Toaster } from 'react-hot-toast';
 
 function AddProposalForm() {
     const [proposalData, setProposalData] = useState({
         title: '',
         supervisor: '',
+        cosupervisor: '',
         expDate: '',
         keywords: '',
         type: '',
@@ -23,20 +25,80 @@ function AddProposalForm() {
         setProposalData({ ...proposalData, [name]: value });
     };
 
+    const handleResetChange = () => {
+        setProposalData({
+            title: '',
+            supervisor: '',
+            cosupervisor: '',
+            expDate: '',
+            keywords: '',
+            type: '',
+            groups: '',
+            description: '',
+            know: '',
+            note: '',
+            level: '',
+            cds: '',
+        });
+    };
+
     const handleCheckboxChange = (selectedLevel) => {
         setProposalData({ ...proposalData, level: selectedLevel });
-      };
+    };
+
+    const handleCoSupChange = (e) => {
+        let cosup_arr = e.target.value.split(",");
+        let co=cosup_arr.map(e=>e.trim());
+        setProposalData({ ...proposalData, cosupervisor: co });
+    };
 
     const handleAddProposal = () => {
-        // Implement the logic to add the proposal using the proposalData state- API
+        console.log(proposalData);
+        if (proposalData.title === '') {
+            toast.error('Title field cannot be empty')
+            
+        }
+        else if (proposalData.keywords === '') {
+            toast.error('Keywords field cannot be empty')
+        }
+        else if (proposalData.type === '') {
+            toast.error('Type field cannot be empty')
+        }
+        else if (proposalData.groups === '') {
+            toast.error('Group field cannot be empty')
+        }
+        else if (proposalData.description === '') {
+            toast.error('Description field cannot be empty')
+        }
+        else if (proposalData.know === '') {
+            toast.error('Knowledge field cannot be empty')
+        }
+        else if (proposalData.expDate === '') {
+            toast.error('Expiration Date field cannot be empty')
+        }
+        else if (proposalData.level === '') {
+            toast.error('Level field cannot be unset')
+        }
+        else if (proposalData.cds === '') {
+            toast.error('CdS field cannot be empty')
+        }
+        else {
+            // Implement the logic to add the proposal using the proposalData state- API
+            //API.then(toast.success(res)).catch(toast.error(res.error))
+            toast.success('Thesis Proposal successfully added');
+        }
     };
 
     return (
         <Card>
+            <Toaster
+                position="top-center"
+                reverseOrder={false}
+            />
             <Card.Body>
                 <h2>Thesis Proposal</h2>
                 <Form>
-                    <Form.Group style={{ marginBottom: '10px', marginTop:'20px' }}>
+                    <Form.Group style={{ marginBottom: '10px', marginTop: '20px' }}>
                         <Form.Label><strong>Title</strong></Form.Label>
                         <Form.Control
                             type="text"
@@ -46,12 +108,12 @@ function AddProposalForm() {
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
-                        <Form.Label><strong>Supervisor</strong></Form.Label>
+                        <Form.Label><strong>CoSupervisors</strong>&nbsp;(separated by ',')</Form.Label>
                         <Form.Control
                             type="text"
-                            name="supervisor"
-                            value={proposalData.supervisor}
-                            onChange={handleInputChange}
+                            name="cosupervisor"
+                            value={proposalData.cosupervisor}
+                            onChange={handleCoSupChange}
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
@@ -147,8 +209,11 @@ function AddProposalForm() {
                             onChange={handleInputChange}
                         />
                     </Form.Group>
-                    <Button variant="primary" onClick={handleAddProposal}>
+                    <Button style={{marginTop:'5px'}} variant="primary" onClick={handleAddProposal}>
                         Add Proposal
+                    </Button><br/>
+                    <Button style={{marginTop:'5px'}} variant="danger" onClick={handleResetChange}>
+                        Reset Fields
                     </Button>
                 </Form>
             </Card.Body>
