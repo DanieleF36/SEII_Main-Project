@@ -22,20 +22,30 @@ function Homepage(props) {
     const [filters, setFilters] = useState({
         title: '',
         supervisor: '',
+        cosupervisor:'',
         expDate: '',
         status: '',
         keywords: '',
         type: '',
         groups: '',
+        know:'',
         level: '',
         cds: '',
-        creatDate: ''
+        creatDate: '',
+        order:'',
+        orderby:''
     });
 
 
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
         setFilters({ ...filters, [name]: value });
+    };
+
+    const handleFilterCoSupChange = (e) => {
+        let cosup_arr = e.target.value.split(",");
+        let co=cosup_arr.map(e=>e.trim());
+        setFilters({ ...filters, cosupervisor: co });
     };
 
     const handleApplyProp = (e) => {
@@ -49,14 +59,18 @@ function Homepage(props) {
         setFilters({
             title: '',
             supervisor: '',
+            cosupervisor:'',
             expDate: '',
             status: '',
             keywords: '',
             type: '',
             groups: '',
+            know:'',
             level: '',
             cds: '',
-            creatDate: ''
+            creatDate: '',
+            order:'',
+            orderby:''
         });
     };
 
@@ -82,7 +96,7 @@ function Homepage(props) {
 
                     </Col>
                     <Col xs={9}>
-                        <FilterContainer handleApplyFilters={handleApplyFilters} filters={filters} handleFilterChange={handleFilterChange} handleResetChange={handleResetChange}></FilterContainer>
+                        <FilterContainer handleApplyFilters={handleApplyFilters} filters={filters} handleFilterChange={handleFilterChange} handleFilterCoSupChange={handleFilterCoSupChange} handleResetChange={handleResetChange}></FilterContainer>
                         <div>
                             {props.proposals.map((proposal) => (
                                 <Card key={proposal.id} style={{ marginBottom: '10px' }}>
