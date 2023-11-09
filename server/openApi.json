@@ -354,7 +354,7 @@
           "supervisor": { "type": "string", "minLength": 1 },
           "co_supervisor": {
             "type": "array",
-            "items": { "$ref": "#/components/schemas/co_supervisor" }
+            "items": { "type": "string" }
           },
           "keyword": { "type": "string" },
           "type": { "type": "string" },
