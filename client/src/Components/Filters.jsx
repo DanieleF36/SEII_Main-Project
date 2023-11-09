@@ -133,6 +133,7 @@ function FilterContainer(props) {
               <Button variant="primary" onClick={props.handleApplyFilters}>
                 Search
               </Button>
+              <br />
               <Button variant="danger" onClick={props.handleResetChange} style={{ marginTop: '5px' }}>
                 Reset Filters
               </Button>
