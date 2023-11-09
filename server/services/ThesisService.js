@@ -34,7 +34,7 @@ exports.advancedResearchThesis = async function(page,order,title,supervisor,coSu
         if(idSupervisors!=null && idSupervisors.length>0)
             ok=true;
     }
-    //console.log("info abaut teacher "+JSON.stringify(idSupervisors));
+    console.log("info abaut teacher ");
     //find information about id of coSupervisor 
     let idCoSupervisorsThesis = [];
     if(coSupervisor != null){
@@ -49,19 +49,22 @@ exports.advancedResearchThesis = async function(page,order,title,supervisor,coSu
               ok = true;
           }          
     }   
-    //console.log("info about cosupervisor");
+    console.log("info about cosupervisor");
     //Check if has sense make others queries
     if(!ok)
        return [{}];
     //find all thesis
     let res = await thesisRepository.advancedResearch(nItem*(page-1),nItem*page,order,false, title,idSupervisors,idCoSupervisorsThesis,keyword,type,groups,knowledge,expiration_date,cds,creation_date, 1);
+    console.log("After thesis "+JSON.stringify(res));
+    //find number of page
+    let npage = await thesisRepository.numberOfPage(false, title,idSupervisors,idCoSupervisorsThesis,keyword,type,groups,knowledge,expiration_date,cds,creation_date, 1);
+    console.log("after page "+JSON.stringify(res));
     //find information about teacher
-    
     for(let i=0;i<res.length;i++){
         const t = await teacherRepository.findById(res[i].supervisor);
         res[i].supervisor=t;
     }
-    //console.log("info about supervisor "+JSON.stringify(res));
+    console.log("info about supervisor "+JSON.stringify(res));
     //find ids about co-supervisors
     for(let i=0;i<res.length;i++){
         const idList = await coSupervisorThesisRepository.findCoSupervisorIdsByThesisId(res[i].id);
@@ -76,7 +79,7 @@ exports.advancedResearchThesis = async function(page,order,title,supervisor,coSu
             }
         }
     }
-    return res;
+    return [res, npage];
 }
 
 

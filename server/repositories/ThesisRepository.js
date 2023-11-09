@@ -1,5 +1,6 @@
 'use strict';
 
+const { resolve } = require('path');
 const sqlite = require('sqlite3');
 
 const db = new sqlite.Database('db.sqlite', (err) => {
@@ -76,6 +77,7 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
     }
     sql+="ORDER BY "+transformOrder(order);
     sql+="LIMIT "+(to-from)+" OFFSET "+from;
+    console.log("Repo res "+sql)
    return new Promise((resolve, reject)=>{
         db.all(sql, params, (err, rows)=>{
             if (err) {
@@ -99,6 +101,88 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
         resolve(res);
         });
     });
+};
+
+exports.numberOfPage=(specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date,level)=>{
+  let sql = "SELECT COUNT(*) AS cnt FROM Thesis WHERE status=0 AND level="+level+" ";
+  let params = [];
+  specific = !specific;
+  if (title != null) {
+    sql += 'AND title ';
+    sql+=specific ? 'LIKE ?' : '= ?';
+    params.push(specific ? `%${title}%` : title);
+  }
+  if (idSupervisors != null && idSupervisors.length > 0) {
+    sql += 'AND (supervisor ';
+    sql+=specific ? 'LIKE ?' : '= ?';
+    params.push(specific ? `%${idSupervisors[0].id}%` : idSupervisors[0].id);
+    idSupervisors.slice(1).forEach((e) => {
+      sql += 'OR supervisor ';
+      sql+=specific ? 'LIKE ?' : '= ?';
+      params.push(specific ? `%${e.id}%` : e.id);
+    });
+    sql += ') ';
+  }
+  
+  if (idCoSupervisorsThesis != null && idCoSupervisorsThesis.length > 0) {
+    sql += 'AND (id ';
+    sql+=specific ? 'LIKE ?' : '= ?';
+    params.push(specific ? `%${idCoSupervisorsThesis[0]}%` : idCoSupervisorsThesis[0]);
+    idCoSupervisorsThesis.slice(1).forEach((e) => {
+      sql += 'OR id ';
+      sql+=specific ? 'LIKE ?' : '= ?';
+      params.push(specific ? `%${e.id}%` : e.id);
+    });
+    sql += ') ';
+  }
+  
+  if (keyword != null) {
+    sql += 'AND keywords ';
+    sql+=specific ? 'LIKE ?' : '= ?';
+    params.push(specific ? `%${keyword}%` : keyword);
+  }
+  if (type != null) {
+    sql += 'AND type ';
+    sql+=specific ? 'LIKE ?' : '= ?';
+    params.push(specific ? `%${type}%` : type);
+  }
+  if (groups != null) {
+    sql += 'AND groups ';
+    sql+=specific ? 'LIKE ?' : '= ?';
+    params.push(specific ? `%${groups}%` : groups);
+  }
+  if (knowledge != null) {
+    sql += 'AND knowledge ';
+    sql+=specific ? 'LIKE ?' : '= ?';
+    params.push(specific ? `%${knowledge}%` : knowledge);
+  }
+  if (expiration_date != null) {
+    sql += 'AND expiration_date ';
+    sql+=specific ? 'LIKE ?' : '= ?';
+    params.push(specific ? `%${expiration_date}%` : expiration_date);
+  }
+  if (cds != null) {
+    sql += 'AND cds ';
+    sql+=specific ? 'LIKE ?' : '= ?';
+    params.push(specific ? `%${cds}%` : cds);
+  }
+  if (creation_date != null) {
+    sql += 'AND creation_date ';
+    sql+=specific ? 'LIKE ?' : '= ?';
+    params.push(specific ? `%${creation_date}%` : creation_date);
+  }
+  console.log("Repo page "+sql)
+  return new Promise((resolve, reject)=>{
+    db.all(sql, params,(err, rows)=>{
+      if (err) {
+        console.log("errore "+err);
+        reject(err);
+        return;
+      }
+      console.log("REPO "+JSON.stringify(rows))
+      resolve({nPage: rows[0].cnt});
+    })
+  })
 }
 
 /**

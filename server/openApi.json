@@ -367,6 +367,7 @@
           "cds": { "type": "string" },
           "creation_date": { "type": "string" },
           "status": { "type": "integer" }
+          "nPage":{"type": "integer"}
         },
         "required": ["title", "supervisor", "expiration_date", "level", "cds"]
       },

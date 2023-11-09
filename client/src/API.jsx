@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
+import { title } from "process";
 
-const URL = 'http://localhost:3001/api';
+const URL = 'http://localhost:3001';
 
 async function listApplication() { 
     const response = await fetch(URL+ `/professor/${id_professor}/applications`);
@@ -47,6 +48,50 @@ async function insertProposal(thesis) {
   }
 }
 
-const API = {listApplication, insertProposal};
+async function advancedResearchThesis(params){
+  let ur="/thesis?";
+  Object.entries(params).forEach(([key, value], index, a) => {
+    if(!(value instanceof Array))
+      if(index!=a.length-1)
+        ur+=key+"="+value+"&";
+      else
+      ur+=key+"="+value;
+    else
+      value.forEach((e, i, array)=>{
+        if(i!=array.length-1)
+          ur+=key+"="+e+"&";
+        else
+          ur+=key+"="+e;  
+      });
+  });
+  const response = await fetch(URL+ur);
+  if(response.status==200){
+    const res = await response.json();
+
+    return [res[0], res[1].map((e)=>({
+      id:e.id,
+      title:e.title,
+      supervisor:e.supervisor,
+      co_supervisor:e.co_supervisor,
+      keyword:e.keyword ,
+      type:e.type ,
+      groups:e.groups ,
+      description:e.description ,
+      knowledge:e.knowledge ,
+      note:e.note ,
+      expiration_date:e.expiration_date ,
+      level:e.level ,
+      cds:e.cds ,
+      creation_date:e.creation_date ,
+      status:e.status, 
+      nPage:e.nPage
+    }))]
+  }
+  else{
+    throw res;
+  }
+}
+
+const API = {listApplication, insertProposal, advancedResearchThesis};
 
 export default API;
