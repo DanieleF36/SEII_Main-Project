@@ -136,7 +136,7 @@ exports.addApplication = function(id) {
  * - supervisor: teacher's ID defined into "TEACHER" table
  * - co_supervisor: array of co_supervisors' ID, it could be also empty and added after the thesis creation
  *                  for each co_supervisors, there should be a new entry into "COSUPERVISOR"
- * - keywords: string
+ * - keywords: string (with format: "%s,%s,%s,...")
  * - type: string
  * - group: string
  * - description: string
@@ -182,16 +182,6 @@ exports.addThesis = async function(thesis) {
     thesis.expiration_date = exp_date
     const creat_date = dayjs().format('YYYY-MM-DD').toString()
     thesis.creation_date = creat_date;
-
-    // checks level, 0 (bachelor) | 1 (master)
-    if( !thesis.level || ( thesis.level != 0 && thesis.level != 1) ){
-        throw { status: 400, error: 'level not recognized, should return 400' }
-    }
-
-    // checks status, MUST BE 1 (published)
-    if( !thesis.status || thesis.status != 1) {
-        throw { status: 400, error: 'status not recognized, should return 400' }
-    }
 
     // add an entry into THESIS
     thesis_res = await thesisRepository.addThesis(thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)

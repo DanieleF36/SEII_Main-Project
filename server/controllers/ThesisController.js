@@ -60,7 +60,40 @@ exports.advancedResearchThesis = function advancedResearchThesis (req, res, next
       });
   };
   
+/**
+ * Wrapper function for adding a new thesis to the database
+ * 
+ * @param {*} req in body: thesis object
+ * @param {*} res SUCCESS: thesis object | ERROR: {error: "error msg"}
+ * @param {*} next 
+ * @returns thesis object
+ */
 exports.addThesis = function addThesis (req, res, next) { 
+  if(!req.body) {
+    res.status(400).json({error: "body is missing"}).send()
+  }
+
+  if(!req.body.supervisor) {
+    res.status(400).json({error: "supervisor is missing"}).send()
+  }
+
+  if(!req.body.expiration_date | req.body.expiration_date == '') {
+    res.status(400).json({error: "expiration date is missing or not "}).send()
+  }
+
+  if(!req.body.level || ( req.body.level != 0 && req.body.level != 1)) {
+    res.status(400).json({error: "level value not recognized"}).send()
+  }
+
+  if(!req.body.status || req.body.status != 1) {
+    res.status(400).json({error: "status value not recognized or allowed"}).send()
+  }
+
+  // forcing the format
+  if(req.body.keywords) {
+    req.body.keywords = req.body.keywords.join()
+  }
+
   thesisService.addThesis(req.body)
       .then(function (response) {
         res.status(201).json(response);
