@@ -9,12 +9,12 @@ function AddProposalForm() {
         title: '',
         supervisor: '',
         cosupervisor: '',
-        expDate: '',
+        expirationDate: '',
         keywords: '',
         type: '',
         groups: '',
         description: '',
-        know: '',
+        knowledge: '',
         note: '',
         level: '',
         cds: '',
@@ -30,12 +30,12 @@ function AddProposalForm() {
             title: '',
             supervisor: '',
             cosupervisor: '',
-            expDate: '',
+            expirationDate: '',
             keywords: '',
             type: '',
             groups: '',
             description: '',
-            know: '',
+            knowledge: '',
             note: '',
             level: '',
             cds: '',
@@ -47,9 +47,10 @@ function AddProposalForm() {
     };
 
     const handleCoSupChange = (e) => {
+        let name = e.target.name;
         let cosup_arr = e.target.value.split(",");
         let co=cosup_arr.map(e=>e.trim());
-        setProposalData({ ...proposalData, cosupervisor: co });
+        setProposalData({ ...proposalData, [name]: co });
     };
 
     const handleAddProposal = () => {
@@ -70,10 +71,10 @@ function AddProposalForm() {
         else if (proposalData.description === '') {
             toast.error('Description field cannot be empty')
         }
-        else if (proposalData.know === '') {
+        else if (proposalData.knowledge === '') {
             toast.error('Knowledge field cannot be empty')
         }
-        else if (proposalData.expDate === '') {
+        else if (proposalData.expirationDate === '') {
             toast.error('Expiration Date field cannot be empty')
         }
         else if (proposalData.level === '') {
@@ -120,27 +121,27 @@ function AddProposalForm() {
                         <Form.Label><strong>Expiration Date</strong></Form.Label>
                         <Form.Control
                             type="date"
-                            name="expDate"
+                            name="expirationDate"
                             value={proposalData.expDate}
                             onChange={handleInputChange}
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
-                        <Form.Label><strong>Keywords</strong></Form.Label>
+                        <Form.Label><strong>Keywords</strong>&nbsp;(separated by ',')</Form.Label>
                         <Form.Control
                             type="text"
                             name="keywords"
                             value={proposalData.keywords}
-                            onChange={handleInputChange}
+                            onChange={handleCoSupChange}
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
-                        <Form.Label><strong>Type</strong></Form.Label>
+                        <Form.Label><strong>Type</strong>&nbsp;(separated by ',')</Form.Label>
                         <Form.Control
                             type="text"
                             name="type"
                             value={proposalData.type}
-                            onChange={handleInputChange}
+                            onChange={handleCoSupChange}
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
@@ -165,7 +166,7 @@ function AddProposalForm() {
                         <Form.Label><strong>Knowledge</strong></Form.Label>
                         <Form.Control
                             type="text"
-                            name="know"
+                            name="knowledge"
                             value={proposalData.know}
                             onChange={handleInputChange}
                         />

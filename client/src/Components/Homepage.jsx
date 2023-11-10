@@ -69,9 +69,10 @@ function Homepage(props) {
     };
 
     const handleFilterCoSupChange = (e) => {
+        let name = e.target.name;
         let cosup_arr = e.target.value.split(",");
         let co = cosup_arr.map(e => e.trim());
-        setFilters({ ...filters, cosupervisor: co });
+        setFilters({ ...filters, [name]: co });
     };
 
     const handleApplyProp = (e) => {
