@@ -4,6 +4,9 @@ import toast, { Toaster } from 'react-hot-toast';
 
 function ApplicationList() {
     
+    const [errorMsg, setErrorMsg] = useState(undefined);
+    const [dirty, setDirty] = useState(true);
+    const [id_professor, setId_professor]=useState('p123');
     const [applications, setApplications] = useState([{id_application:0, 
                                                         id_thesis: '1',
                                                         title: 'AI system research',
@@ -36,37 +39,44 @@ function ApplicationList() {
                                                         status: '0'}]);
     
     //adding API from backend to set list of applications
-    
-    /*useEffect(() => {
+    /*
+    useEffect(() => {
       
       API.listApplication()
         .then((applications) => {
         setApplications(applications);
+        setDirty(false);
       })
-      .catch(toast.error(res.error));
+      .catch((err) => {handleError(err);
+                       toast.error(errorMsg);});
   
-    }, []);*/
+    }, [dirty]);
 
     //adding API from backend to post accept application
-    /*const acceptPropByProf = (id) => {
-        
-        API.accRefApplication(id)
-        .then(toast.success('Application successfully accepted'))
-        .catch(toast.error(res.error));
-
-    };*/
-
-    const acceptPropByProf = (id) => {
-        
-        toast.success('Application ' + id + ' successfully accepted');
-
-    };
-    const rejectPropByProf = (id) => {
-        
-        toast.error('Application ' + id + ' rejected');
-
-    };
     
+    const acceptPropByProf = (status,id_prof,id_app) => {
+        
+        API.accRefApplication(status,id_prof,id_app)
+        .then(() => {setDirty(true);
+                    toast.success('Application successfully accepted')})
+        .catch((err) => {handleError(err);
+                        toast.error(errorMsg);});
+
+    };
+
+
+    function handleError(err) {
+        let errMsg = `Unknown Server error`;
+        if (err.errors) {
+          if (err.errors[0])
+            if (err.errors[0].msg)
+              errMsg = err.errors[0].msg;
+        } else if (err.error) {
+          errMsg = err.error;
+        }
+    
+        setErrorMsg(errMsg);
+      }*/
 
 
         return (
@@ -122,9 +132,9 @@ function ApplicationList() {
                                 <br />
                                 <br />
                                 <br />
-                                {application.status === '0' ? <Button onClick={() => acceptPropByProf(application.id_application)} variant='primary'>Accept</Button> : ''}
+                                {application.status === '0' ? <Button onClick={() => acceptPropByProf(1,id_professor,application.id_application)} variant='primary'>Accept</Button> : ''}
                                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                {application.status === '0' ? <Button onClick={() => rejectPropByProf(application.id_application)} variant='danger'>Reject</Button> : ''}
+                                {application.status === '0' ? <Button onClick={() => acceptPropByProf(2,id_professor,application.id_application)} variant='danger'>Reject</Button> : ''}
                             </Accordion.Body>
                         </Accordion.Item>
                     </Accordion>
