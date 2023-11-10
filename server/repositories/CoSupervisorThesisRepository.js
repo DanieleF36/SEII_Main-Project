@@ -48,11 +48,7 @@ exports.findThesisByCoSupervisorId = (id)=>{
  * @returns [id1, id2, ...]
  */
 exports.findCoSupervisorIdsByThesisId = (id)=>{
-
-    /*
-        TOASK: why there is surname as alias of id_cosupervisor? It should generate an error because it is referred as id_cosupervisor later
-    */
-    const sqlCoSupervisor = "SELECT id_teacher, id_cosupervisor AS surname FROM CoSupervisorThesis WHERE id_thesis = ?";
+    const sqlCoSupervisor = "SELECT id_teacher, id_cosupervisor FROM CoSupervisorThesis WHERE id_thesis = ?";
     return new Promise((resolve, reject)=>{
         db.all(sqlCoSupervisor, [id], (err, rows)=>{
             if (err) {

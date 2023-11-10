@@ -25,12 +25,7 @@ const nItem=10;     //number of item per page
  * @returns thesis 
  **/
 exports.advancedResearchThesis = async function(page,order,title,supervisor,coSupervisor,keyword,type,groups,knowledge,expiration_date,cds,creation_date) {
-
-    /*
-        TOASK: why can't I search according to other fields and ignoring supervisor? Like I only want a specific type
-    */
-
-    // If we don't find any supervisor or cosupervisors the research can stop
+    // If we don't find any supervisor or cosupervisors or any thesis linked to these the research can stop
     let ok=!(supervisor || coSupervisor);
 
     //find information about id of supervisor 
@@ -47,8 +42,7 @@ exports.advancedResearchThesis = async function(page,order,title,supervisor,coSu
         if(idSupervisors!=null && idSupervisors.length>0)
             ok=true;
     }
-    
-    // find information about id of coSupervisors
+    // find information about id of coSupervisors 
     let idCoSupervisorsThesis = [];
     if(coSupervisor != null){
         for (let i = 0; i < coSupervisor.length; i++) {
@@ -71,29 +65,21 @@ exports.advancedResearchThesis = async function(page,order,title,supervisor,coSu
     
     //Check if has sense make others queries
     if(!ok)
-       return [{}];
-
-    /*
-        TOASK: specific is always false so we are going to always perform precise searches
-    */
+       return [];
 
     //find all thesis
     let res = await thesisRepository.advancedResearch(nItem*(page-1),nItem*page,order,false, title,idSupervisors,idCoSupervisorsThesis,keyword,type,groups,knowledge,expiration_date,cds,creation_date, 1);
-    console.log("After thesis "+JSON.stringify(res));
-
     // res contains a list of thesis objects which are okay with given filters
-
+    
     //find number of page
     let npage = await thesisRepository.numberOfPage(false, title,idSupervisors,idCoSupervisorsThesis,keyword,type,groups,knowledge,expiration_date,cds,creation_date, 1);
-    console.log("after page "+JSON.stringify(res));
-
+    //find information about teacher
     for(let i=0;i<res.length;i++){
         // get all the superior's information given an id
         const t = await teacherRepository.findById(res[i].supervisor);
         // add superior's information to each thesis
         res[i].supervisor=t;
     }
-    console.log("info about supervisor "+JSON.stringify(res));
     //find ids about co-supervisors
     for(let i=0;i<res.length;i++){
         const idList = await coSupervisorThesisRepository.findCoSupervisorIdsByThesisId(res[i].id);
