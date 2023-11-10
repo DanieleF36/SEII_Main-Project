@@ -6,6 +6,11 @@ const db = new sqlite.Database('db.sqlite', (err) => {
     if(err) throw err;
 });
 
+/**
+ * Given a teacher's id, returns all the stored information
+ * @param {*} id teacher's id
+ * @returns all the teacher's information
+ */
 exports.findById = (id)=>{
     const sqlTeacher = "SELECT * FROM Teacher WHERE id = ?";
     return new Promise((resolve, reject)=>{
@@ -19,8 +24,19 @@ exports.findById = (id)=>{
     });
 }
 
-//return ids of teachers that have sometingh like them surname or name and surname
-exports.findByNSorS = (surname, name)=>{
+/**
+ * Perfoms a search according to the following possible combinations:
+ * 1. surname and name are defined, okay
+ * 2. only surname is defined, okay
+ * 3. only name is defined, error (never possible if checks are done over surname at controller level)
+ * 4. none of them are defined, error (never possible)
+ * 
+ * This will return a list of ids because more supervisor with same name/lastname pair could exist
+ * 
+ * @param {String} surname, must be defined
+ * @param {String} name, could be undefined
+ * @returns [id1, id2, ...]
+ */exports.findByNSorS = (surname, name)=>{
     let sql = "SELECT id FROM Teacher WHERE ";
     let params = [];
     if(name != null && surname != null){
