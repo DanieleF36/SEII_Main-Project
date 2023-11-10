@@ -129,6 +129,7 @@ exports.advancedResearchThesis = function advancedResearchThesis (req, res, next
     }
     //checks if order is defined or not, otherwise titleD is setted as defaul value
     const order = req.query.order?req.query.order:"titleD";
+
     thesisService.advancedResearchThesis(req.query.page,order,req.query.title,req.query.supervisor,req.query.coSupervisor,req.query.keyword,req.query.type,req.query.groups,req.query.knowledge,req.query.expiration_date,req.query.cds,req.query.creation_date)
       .then(function (response) {
         let nPage = response[1];

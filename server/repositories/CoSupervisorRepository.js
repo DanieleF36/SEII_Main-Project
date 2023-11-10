@@ -22,7 +22,6 @@ exports.findById = (id)=>{
         });
     });
 }
-
 /**
  * Perfoms a search according to the following possible combinations:
  * 1. surname and name are defined, okay
@@ -35,7 +34,8 @@ exports.findById = (id)=>{
  * @param {String} surname
  * @param {String} name 
  * @returns [id1, id2, ...]
- */exports.findByNSorS = (surname, name)=>{
+ */
+exports.findByNSorS = (surname, name)=>{
     let sql = "SELECT id FROM CoSupervisor WHERE ";
     let params = [];
     if(name != null && surname != null){

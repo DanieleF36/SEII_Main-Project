@@ -5,7 +5,8 @@ const thesisRepository = require("../repositories/ThesisRepository");
 const coSupervisorRepository = require("../repositories/CoSupervisorRepository");
 const coSupervisorThesisRepository = require("../repositories/CoSupervisorThesisRepository");
 const teacherRepository = require("../repositories/TeacherRepository");
-const nItem=10;//number of item per page
+const nItem=10;     //number of item per page
+
 /**
  * Return a list of thesis that respect all the parameters
  *
@@ -14,8 +15,8 @@ const nItem=10;//number of item per page
  * @param title String  (optional)
  * @param supervisor String, name defined as: name, surname (optional)
  * @param coSupervisor Listn, ame defined as: name, surname  (optional)
- * @param keyword List String,  (optional)
- * @param type List String  (optional)
+ * @param keyword String  (optional)
+ * @param type String  (optional)
  * @param groups String  (optional)
  * @param knowledge String  (optional)
  * @param expiration_date String  (optional)
@@ -26,14 +27,17 @@ const nItem=10;//number of item per page
 exports.advancedResearchThesis = async function(page,order,title,supervisor,coSupervisor,keyword,type,groups,knowledge,expiration_date,cds,creation_date) {
     // If we don't find any supervisor or cosupervisors or any thesis linked to these the research can stop
     let ok=!(supervisor || coSupervisor);
-    //find information about id of theacer 
-    //find information about id of supervisor
+
+    //find information about id of supervisor 
     let idSupervisors = null;
     if(supervisor != null){
         const ns = supervisor.split(" ");
+
         // ns[1] is going to be undefined in case we did not put a name
+
         // performs a search by name and/or lastname and returns an array of ids
         idSupervisors = await teacherRepository.findByNSorS(ns[0], ns[1]);
+
         // if idSupervisors is defined we found a user(s) who is managing a thesis in our system
         if(idSupervisors!=null && idSupervisors.length>0)
             ok=true;
@@ -44,18 +48,21 @@ exports.advancedResearchThesis = async function(page,order,title,supervisor,coSu
         for (let i = 0; i < coSupervisor.length; i++) {
             const e = coSupervisor[i];
             const ns = e.split(" ");
+
             let idsCo = await coSupervisorRepository.findByNSorS(ns[0], ns[1]);
             if (idsCo > 0)
-              // add the thesis managed by the chosen cosupervisor
+              // add the thesis managed by the chosen cosupervisor 
               idCoSupervisorsThesis.push(await coSupervisorThesisRepository.findThesisByCoSupervisorId(idsCo));
+
             // if no. idCoSupervisorsThesis.length > 0 some data have been found
             if (idCoSupervisorsThesis.length > 0) 
               ok = true;
           }          
-    }
+    }   
+
     //idSupervisors: [id1, id2, ...] list of ids with common lastname/name pair
     //idCoSupervisorsThesis [idThesis1, idThesis2, ...] list of thesis ids managed by the cosupervisor
-
+    
     //Check if has sense make others queries
     if(!ok)
        return [];
@@ -66,6 +73,7 @@ exports.advancedResearchThesis = async function(page,order,title,supervisor,coSu
     
     //find number of page
     let npage = await thesisRepository.numberOfPage(false, title,idSupervisors,idCoSupervisorsThesis,keyword,type,groups,knowledge,expiration_date,cds,creation_date, 1);
+    console.log("after page "+JSON.stringify(res));
     //find information about teacher
     for(let i=0;i<res.length;i++){
         // get all the superior's information given an id

@@ -41,10 +41,11 @@ exports.findThesisByCoSupervisorId = (id)=>{
         });
     });
 }
+
 /**
  * Given a selected thesis the ids of the supervisor and cosupervisors will be returned
  * @param {*} id of a selected thesis 
- * @returns [{id_teacher, id_thesis}, ...]
+ * @returns [id1, id2, ...]
  */
 exports.findCoSupervisorIdsByThesisId = (id)=>{
     const sqlCoSupervisor = "SELECT id_teacher, id_cosupervisor FROM CoSupervisorThesis WHERE id_thesis = ?";
