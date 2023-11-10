@@ -7,6 +7,7 @@ import './Homepage.css';
 import { FilterContainer } from './Filters';
 import AddProposalForm from './AddProposal';
 import ApplicationList from './ApplicationList';
+import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
 
 
@@ -54,6 +55,11 @@ function Homepage(props) {
         page: ''
     });
 
+    const [application, setApplication] = useState({
+        id_thesis: '',
+        cv: ''
+    });
+
     useEffect(() => {
         items.map(e=>{if(e.key===active){e.props.active=true}});
         setFilters({...filters, page: active});
@@ -75,9 +81,26 @@ function Homepage(props) {
         setFilters({ ...filters, [name]: co });
     };
 
-    const handleApplyProp = (e) => {
+    const handleApplyChange = (e) => {
+
+        let name = e.target.name;
+        let file = e.target.files[0];
+        setApplication({ ...application, [name]: file });
 
         //API apply proposal ( e is the selected proposal)
+    };
+
+    const handleApplyProp = () => {
+        if(application.cv!==''){
+           console.log(application);
+           toast.success('Application successfully sended')
+           setApplication({ ...application, cv: '' });
+           //API.applyproposal(application)
+        }
+        else(
+            toast.error('CV upload missing')
+        )
+        
     };
 
 
@@ -112,6 +135,10 @@ function Homepage(props) {
         props.user === 0 ? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
             <TitleBar user={props.user} setUser={props.setUser} />
             <Container fluid style={{ marginTop: '20px' }}>
+            <Toaster
+                position="top-center"
+                reverseOrder={false}
+            />
                 <Row>
                     <Col xs={3}>
 
@@ -179,7 +206,7 @@ function Homepage(props) {
                                                 <br />
                                                 <br />
                                                 {proposal.status === '1' ? <>
-                                                    <Button variant="primary" onClick={handleShow}>
+                                                    <Button variant="primary" onClick={()=>{handleShow();setApplication({ ...application, id_thesis: proposal.id });}}>
                                                         Apply
                                                     </Button>
 
@@ -191,16 +218,15 @@ function Homepage(props) {
                                                             <Form.Label><strong>Upload your CV</strong></Form.Label>
                                                             <Form.Control
                                                                 type="file"
-                                                            //name=""
-                                                            //value={proposalData.cosupervisor}
-                                                            //onChange={handleCoSupChange} 
+                                                                name="cv"
+                                                                onChange={handleApplyChange} 
                                                             />
                                                         </Form.Group></Modal.Body>
                                                         <Modal.Footer>
                                                             <Button variant="secondary" onClick={handleClose}>
                                                                 Close
                                                             </Button>
-                                                            <Button variant="primary" onClick={handleClose}>
+                                                            <Button variant="primary" onClick={()=>{handleClose();handleApplyProp()}}>
                                                                 Apply
                                                             </Button>
                                                         </Modal.Footer>
