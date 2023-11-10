@@ -27,52 +27,50 @@ const db = new sqlite.Database('db.sqlite', (err) => {
  * @param {*} level 0 (bachelor) | 1 (master)
  * @returns list of thesis objects
  */
-exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date,level)=>{
-    let sql = "SELECT * FROM Thesis WHERE status=0 AND level="+level+" ";
-    let params = [];
-    specific = !specific;
 
-    // checks for title if exists
-    if (title != null) {
-      sql += 'AND title ';
+//Only for advancedSearch
+function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date,level){
+  let sql = "SELECT * FROM Thesis WHERE status=0 AND level="+level+" ";
+  let params = [];
+  specific = !specific;
+  // checks for title if exists
+  if (title != null) {
+    sql += 'AND title ';
+    sql+=specific ? 'LIKE ?' : '= ?';
+    params.push(specific ? `%${title}%` : title);
+  }
+  // checks for supervisors ids if the array is defined
+  if (idSupervisors != null && idSupervisors.length > 0) {
+    sql += 'AND (supervisor ';
+    sql+=specific ? 'LIKE ?' : '= ?';
+    sql+=specific ? 'LIKE ? ' : '= ? ';
+    params.push(specific ? `%${idSupervisors[0].id}%` : idSupervisors[0].id);
+    // adding to the query each id we got considering also homonyms, slice for skipping the first one (already handled)
+    idSupervisors.slice(1).forEach((e) => {
+      sql += 'OR supervisor ';
       sql+=specific ? 'LIKE ?' : '= ?';
-      params.push(specific ? `%${title}%` : title);
-    }
-
-    // checks for supervisors ids if the array is defined
-    if (idSupervisors != null && idSupervisors.length > 0) {
-      sql += 'AND (supervisor ';
+      params.push(specific ? `%${e.id}%` : e.id);
+    });
+    sql += ') ';
+  }
+  
+  // checks for cosupervisors ids if the array is defined
+  if (idCoSupervisorsThesis != null && idCoSupervisorsThesis.length > 0) {
+    sql += 'AND (id ';
+    sql+=specific ? 'LIKE ?' : '= ?';
+    params.push(specific ? `%${idCoSupervisorsThesis[0]}%` : idCoSupervisorsThesis[0]);
+    // adding to the query each id we got considering also homonyms, slice for skipping the first one (already handled)
+    idCoSupervisorsThesis.slice(1).forEach((e) => {
+      sql += 'OR id ';
       sql+=specific ? 'LIKE ?' : '= ?';
-      params.push(specific ? `%${idSupervisors[0].id}%` : idSupervisors[0].id);
-
-      // adding to the query each id we got considering also homonyms, slice for skipping the first one (already handled)
-      idSupervisors.slice(1).forEach((e) => {
-        sql += 'OR supervisor ';
-        sql+=specific ? 'LIKE ?' : '= ?';
-        params.push(specific ? `%${e.id}%` : e.id);
-      });
-      sql += ') ';
-    }
-    
-    // checks for cosupervisors ids if the array is defined
-    if (idCoSupervisorsThesis != null && idCoSupervisorsThesis.length > 0) {
-      sql += 'AND (id ';
-      sql+=specific ? 'LIKE ?' : '= ?';
-      params.push(specific ? `%${idCoSupervisorsThesis[0]}%` : idCoSupervisorsThesis[0]);
-
-      // adding to the query each id we got considering also homonyms, slice for skipping the first one (already handled)
-      idCoSupervisorsThesis.slice(1).forEach((e) => {
-        sql += 'OR id ';
-        sql+=specific ? 'LIKE ?' : '= ?';
-        params.push(specific ? `%${e.id}%` : e.id);
-      });
-      sql += ') ';
-    }
-    
+      params.push(specific ? `%${e.id}%` : e.id);
+    });
+    sql += ') ';
+  }
   
   if (keyword != null) {
     sql += 'AND keywords ';
-    sql+=specific ? 'LIKE ? ' : '= ? ';
+    sql+=specific ? 'LIKE ?' : '= ?';
     let k = Array.isArray(keyword)?"": keyword;
     if(Array.isArray(keyword))
       keyword.forEach((e)=>{
@@ -92,12 +90,12 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
   }
   if (groups != null) {
     sql += 'AND groups ';
-    sql+=specific ? 'LIKE ? ' : '= ? ';
+    sql+=specific ? 'LIKE ?' : '= ?';
     params.push(specific ? `%${groups}%` : groups);
   }
   if (knowledge != null) {
     sql += 'AND knowledge ';
-    sql+=specific ? 'LIKE ? ' : '= ? ';
+    sql+=specific ? 'LIKE ?' : '= ?';
     params.push(specific ? `%${knowledge}%` : knowledge);
   }
   if (expiration_date != null) {
@@ -107,7 +105,7 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
   }
   if (cds != null) {
     sql += 'AND cds ';
-    sql+=specific ? 'LIKE ? ' : '= ? ';
+    sql+=specific ? 'LIKE ?' : '= ?';
     params.push(specific ? `%${cds}%` : cds);
   }
   if (creation_date != null) {
@@ -156,7 +154,7 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
               title: e.title,
               supervisor: e.supervisor,
               coSupervisors: null,
-              keyword: e.keyword,
+              keywords: e.keywords,
               type: e.type,
               groups: e.groups,
               knowledge: e.knowledge,

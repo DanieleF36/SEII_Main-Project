@@ -73,7 +73,6 @@ exports.advancedResearchThesis = async function(page,order,title,supervisor,coSu
     
     //find number of page
     let npage = await thesisRepository.numberOfPage(false, title,idSupervisors,idCoSupervisorsThesis,keyword,type,groups,knowledge,expiration_date,cds,creation_date, 1);
-    console.log("after page "+JSON.stringify(res));
     //find information about teacher
     for(let i=0;i<res.length;i++){
         // get all the superior's information given an id
