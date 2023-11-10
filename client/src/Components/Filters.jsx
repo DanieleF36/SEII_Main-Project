@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form';
 function FilterContainer(props) {
 
   return (
-    <Card style={{ width: '300px', maxHeight: '400px', overflowY: 'auto', marginBottom: '20px' }}>
+    <Card style={{ width: '235px', maxHeight: '400px', overflowY: 'auto', marginBottom: '20px' }}>
       <Accordion>
         <Accordion.Item eventKey="0">
           <Accordion.Header>
@@ -39,7 +39,7 @@ function FilterContainer(props) {
                   name="cosupervisor"
                   value={props.filters.cosupervisor}
                   onChange={props.handleFilterCoSupChange}
-                  placeholder="CoSupervisors Surnames"
+                  placeholder="Cosupervisors Surnames"
                 />
               </Form.Group>
               <p><strong>Expiration Date</strong></p>
