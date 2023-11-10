@@ -31,7 +31,7 @@ function Homepage(props) {
 
     for (let number = 1; number <= numPages; number++) {
             items.push(
-                <Pagination.Item key={number} active={number === active} onClick={()=>setActive(number)}>
+                <Pagination.Item key={number} active={number === active} onClick={()=>{setActive(number);setFilters({...filters, page: number});}}>
                     {number}
                 </Pagination.Item>
         );
@@ -62,8 +62,8 @@ function Homepage(props) {
 
     useEffect(() => {
         items.map(e=>{if(e.key===active){e.props.active=true}});
-        setFilters({...filters, page: active});
-        //API.filter(active)
+        console.log(filters);
+        //API.applyfilter(filters)
       }, [active]);
 
     
@@ -86,16 +86,16 @@ function Homepage(props) {
         let name = e.target.name;
         let file = e.target.files[0];
         setApplication({ ...application, [name]: file });
-
-        //API apply proposal ( e is the selected proposal)
     };
 
     const handleApplyProp = () => {
         if(application.cv!==''){
            console.log(application);
            toast.success('Application successfully sended')
+           //API.applyproposal(application).then(..
            setApplication({ ...application, cv: '' });
-           //API.applyproposal(application)
+           //..)
+           
         }
         else(
             toast.error('CV upload missing')
