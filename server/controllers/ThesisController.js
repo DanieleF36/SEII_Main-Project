@@ -248,31 +248,29 @@ exports.addApplication = function addApplication(req, res, next) {
  * @param {*} next
  * @returns thesis object
  */
-exports.addThesis = function addThesis(req, res, next) {
+exports.addThesis = function addThesis(req, res) {
   if (!req.body) {
-    res.status(400).json({ error: "body is missing" }).send();
+    return res.status(400).json({ error: "body is missing" });
   }
 
   if (!req.body.supervisor) {
-    res.status(400).json({ error: "supervisor is missing" }).send();
+    return res.status(400).json({ error: "supervisor is missing" });
   }
 
   if (!req.body.expiration_date | (req.body.expiration_date == "")) {
-    res
+    return res
       .status(400)
-      .json({ error: "expiration date is missing or not valid" })
-      .send();
+      .json({ error: "expiration date is missing or not valid" });
   }
 
   if (!req.body.level || (req.body.level != 0 && req.body.level != 1)) {
-    res.status(400).json({ error: "level value not recognized" }).send();
+    return res.status(400).json({ error: "level value not recognized" });
   }
 
   if (!req.body.status || req.body.status != 1) {
-    res
+    return res
       .status(400)
-      .json({ error: "status value not recognized or allowed" })
-      .send();
+      .json({ error: "status value not recognized or allowed" });
   }
 
   // forcing the format
