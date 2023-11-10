@@ -131,16 +131,16 @@ function Homepage(props) {
                                             <Accordion.Header>
                                                 <Container fluid>
                                                     <Row className="d-md-flex justify-content-center align-items-center">
-                                                        <Col xs='3'>
+                                                        <Col md='3' sm='3' xs='12'>
                                                             <strong>Title:</strong> {proposal.title}
                                                         </Col>
-                                                        <Col xs='3'>
+                                                        <Col md='3' sm='3' xs='12'>
                                                             <strong>Supervisor:</strong> {proposal.supervisor}
                                                         </Col>
-                                                        <Col xs='3'>
+                                                        <Col md='3' sm='3' xs='12'>
                                                             <strong>Expiration date:</strong> {proposal.expDate}
                                                         </Col>
-                                                        <Col xs='2'>
+                                                        <Col md='2' sm='2' xs='12'>
                                                             <strong>Status:</strong>{' '}
                                                             {proposal.status === '1' ? (
                                                                 <Badge pill bg="success">P</Badge>
@@ -148,7 +148,7 @@ function Homepage(props) {
                                                                 <Badge pill bg="danger">A</Badge>
                                                             )}
                                                         </Col>
-                                                        <Col xs='1'>
+                                                        <Col md='1' sm='1' xs='12'>
                                                             <img src="./info-circle.svg"
                                                                 alt="info"
                                                                 className="img-responsive" />

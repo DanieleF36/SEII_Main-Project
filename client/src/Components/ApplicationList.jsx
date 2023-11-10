@@ -77,13 +77,13 @@ function ApplicationList() {
                             <Accordion.Header>
                                 <Container fluid>
                                 <Row className="d-md-flex justify-content-center align-items-center">
-                                    <Col xs='3'>
+                                    <Col md='3' sm='3' xs='12'>
                                         <strong>Title:</strong> {application.title}
                                     </Col>
-                                    <Col xs='3'>
+                                    <Col md='3' sm='3' xs='12'>
                                         <strong>Student:</strong> {application.idStud}
                                     </Col>
-                                    <Col xs='5'>
+                                    <Col md='5' sm='5' xs='12'>
                                         <strong>Status:</strong>{' '}
                                         {application.status === '0' ? (
                                             <Badge pill bg="warning">P</Badge>
@@ -95,7 +95,7 @@ function ApplicationList() {
                                             )
                                         )}
                                     </Col>
-                                    <Col xs='1'>
+                                    <Col md='1' sm='1' xs='12'>
                                         <img src="./info-circle.svg"
                                             alt="info"
                                             className="img-responsive" />
