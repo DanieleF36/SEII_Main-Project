@@ -23,6 +23,8 @@ exports.accRefApplication = async function (
       id_application
     );
     return res;
+  } else {
+    return res.error;
   }
 };
 
@@ -37,5 +39,7 @@ exports.listApplication = async function (id_professor) {
     console.log("SERVICE");
     let res = await applicationRepository.listApplication(id_professor);
     return res;
+  } else {
+    return res.error;
   }
 };

@@ -7,5 +7,5 @@ POST {{APIURL}}/professor/1/applications/1
 content-type: application/json
 
 {
-    "accepted" : "1"
+    
 }

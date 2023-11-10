@@ -3,7 +3,9 @@
 const teacherService = require("../services/TeacherService");
 
 exports.accRefApplication = function accRefApplication(req, res, next) {
-  console.log("CONTROLLER");
+  if (req.body.accepted == undefined) {
+    return res.status(400).json({ error: "Missing new status" });
+  }
   teacherService
     .accRefApplication(
       req.body.accepted,
