@@ -1,4 +1,12 @@
 {
+  "scripts": {
+    "start": "npx nodemon server.js",
+    "test": "jest",
+    "test:coverage": "jest --runInBand --coverage --colors",
+    "test:unit": "npx jest --runInBand --coverage --coverageDirectory=coverage/coverage_unit --colors auth.unit.test.js controller.unit.test.js users.unit.test.js utils.unit.test.js",
+    "test:integration": "npx jest --runInBand --coverage --coverageDirectory=coverage/coverage_integration --colors auth.integration.test.js controller.integration.test.js users.integration.test.js utils.integration.test.js",
+    "test:official": "npx jest --runInBand --coverage --colors --coverageDirectory=coverage/coverage_official --testPathPattern=test_official/.*\\.test\\.js$"
+  },
   "dependencies": {
     "connect": "^3.2.0",
     "cors": "^2.8.5",
@@ -14,6 +22,7 @@
     "oas3-tools": "^2.2.3",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "supertest": "^6.3.3"
   }
 }

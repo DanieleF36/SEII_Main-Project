@@ -260,7 +260,7 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "accepted": { "type": "boolean" }
+                  "accepted": { "type": "integer" }
                 }
               }
             }
@@ -268,9 +268,6 @@
           "required": true
         },
         "responses": {
-          "204": {
-            "description": "No content"
-          },
           "400": {
             "description": "Bad request",
             "content": {

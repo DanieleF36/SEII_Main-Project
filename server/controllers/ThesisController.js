@@ -1,20 +1,27 @@
-'use strict';
+"use strict";
 
-const thesisService = require('../services/ThesisService');
+const thesisService = require("../services/ThesisService");
 
 function isConvertible(str) {
   try {
     JSON.parse(str);
     return true;
-  } catch (error) {
-  }
+  } catch (error) {}
   try {
     JSON.parse(`{${str}}`);
     return true;
-  } catch (error) {
-  }
-  const sqlKeywords = ["SELECT", "INSERT", "UPDATE", "DELETE", "FROM", "WHERE", "AND", "OR"];
-  if (sqlKeywords.some(keyword => str.includes(keyword))) {
+  } catch (error) {}
+  const sqlKeywords = [
+    "SELECT",
+    "INSERT",
+    "UPDATE",
+    "DELETE",
+    "FROM",
+    "WHERE",
+    "AND",
+    "OR",
+  ];
+  if (sqlKeywords.some((keyword) => str.includes(keyword))) {
     return true;
   }
   if (str.length >= 30) {
@@ -23,11 +30,32 @@ function isConvertible(str) {
   return false;
 }
 
-function checkQuery(req){
-  const orderType = ["titleD", "titleA", "supervisorD", "supervisorA", "co-supervisorD","co-supervisorA","keywordD", "keywordA", "typeD", "typeA","groupsD","groupsA","knowledgeD","knowledgeA", "expiration_dateD","expiration_dateA", "cdsD", "cdsA", "creation_dateD", "creation_dateA"]
- 
+function checkQuery(req) {
+  const orderType = [
+    "titleD",
+    "titleA",
+    "supervisorD",
+    "supervisorA",
+    "co-supervisorD",
+    "co-supervisorA",
+    "keywordD",
+    "keywordA",
+    "typeD",
+    "typeA",
+    "groupsD",
+    "groupsA",
+    "knowledgeD",
+    "knowledgeA",
+    "expiration_dateD",
+    "expiration_dateA",
+    "cdsD",
+    "cdsA",
+    "creation_dateD",
+    "creation_dateA",
+  ];
+
   if (!(req.query.page && parseInt(req.query.page) > 0)) {
-    return "Wronged Value of page "+req.query.page;
+    return "Wronged Value of page " + req.query.page;
   }
   
   if (req.query.order && orderType.indexOf(req.query.order) < 0) {
@@ -52,7 +80,7 @@ function checkQuery(req){
           return "Wronged Value of coSupervisor"+req.query.coSupervisor
         };
       });
-    }  
+    }
   }
   if (req.query.keyword) {
     if(!Array.isArray(req.query.keyword)){
@@ -78,7 +106,7 @@ function checkQuery(req){
         if(isConvertible(e)){
           return "Wronged Value of type"+req.query.type
         }
-      })
+      });
   }
   
   if (req.query.groups && (Array.isArray(req.query.groups) || isConvertible(req.query.groups))) {
@@ -114,54 +142,108 @@ function checkQuery(req){
  * - expiration_date
  * - cds
  * - creation_date
- * 
+ *
  * @returns SUCCESS: a json object as follow: {
  *  "nPage": nPage,
  *  "thesis": [ thesis1, ... ]
  * }
  * @returns ERROR: common error handling object
  */
-exports.advancedResearchThesis = function advancedResearchThesis (req, res, next) {
-  const error = checkQuery(req) 
-  if(error){
-      res.status(400).json({error:error});
-      return;
-    }
-    //checks if order is defined or not, otherwise titleD is setted as defaul value
-    const order = req.query.order?req.query.order:"titleD";
+exports.advancedResearchThesis = function advancedResearchThesis(
+  req,
+  res,
+  next
+) {
+  const error = checkQuery(req);
+  if (error) {
+    res.status(400).json({ error: error });
+    return;
+  }
+  //checks if order is defined or not, otherwise titleD is setted as defaul value
+  const order = req.query.order ? req.query.order : "titleD";
 
-    thesisService.advancedResearchThesis(req.query.page,order,req.query.title,req.query.supervisor,req.query.coSupervisor,req.query.keyword,req.query.type,req.query.groups,req.query.knowledge,req.query.expiration_date,req.query.cds,req.query.creation_date)
-      .then(function (response) {
-        let nPage = response[1];
-        response = response[0];
-        response.forEach((e)=>{
-          e.supervisor = e.supervisor.name+" "+e.supervisor.surname;
-          if(e.coSupervisors)
-            e.coSupervisors.forEach((e1, index, v) => {
-              v[index] = e1.name+" "+e1.surname;
-            });
-        });
-        res.status(200).json({"nPage":nPage, "thesis":response});
-      })
-  };
-  
-  exports.addApplication = function addApplication (req, res, next) {
-    thesisService.addApplication(req.params.id)
-      .then(function (response) {
-        res.status(201).json(response);
-      })
-      .catch(function (response) {
+  thesisService
+    .advancedResearchThesis(
+      req.query.page,
+      order,
+      req.query.title,
+      req.query.supervisor,
+      req.query.coSupervisor,
+      req.query.keyword,
+      req.query.type,
+      req.query.groups,
+      req.query.knowledge,
+      req.query.expiration_date,
+      req.query.cds,
+      req.query.creation_date
+    )
+    .then(function (response) {
+      let nPage = response[1];
+      response = response[0];
+      response.forEach((e) => {
+        e.supervisor = e.supervisor.name + " " + e.supervisor.surname;
+        if (e.coSupervisors)
+          e.coSupervisors.forEach((e1, index, v) => {
+            v[index] = e1.name + " " + e1.surname;
+          });
+      });
+      res.status(200).json({ nPage: nPage, thesis: response });
+    });
+};
 
-      });
-  };
-  
-exports.addThesis = function addThesis (req, res, next) { 
-  thesisService.addThesis(req.body)
-      .then(function (response) {
-        res.status(201).json(response);
-      })
-      .catch(function (err) {
-        res.status(err.status).json({error: err})
-      });
-  };
-  
+exports.addApplication = function addApplication(req, res, next) {
+  thesisService
+    .addApplication(req.params.id)
+    .then(function (response) {
+      res.status(201).json(response);
+    })
+    .catch(function (response) {});
+};
+
+/**
+ * Wrapper function for adding a new thesis to the database
+ *
+ * @param {*} req in body: thesis object
+ * @param {*} res SUCCESS: thesis object | ERROR: {error: "error msg"}
+ * @param {*} next
+ * @returns thesis object
+ */
+exports.addThesis = function addThesis(req, res) {
+  if (!req.body) {
+    return res.status(400).json({ error: "body is missing" });
+  }
+
+  if (!req.body.supervisor) {
+    return res.status(400).json({ error: "supervisor is missing" });
+  }
+
+  if (!req.body.expiration_date | (req.body.expiration_date == "")) {
+    return res
+      .status(400)
+      .json({ error: "expiration date is missing or not valid" });
+  }
+
+  if (!req.body.level || (req.body.level != 0 && req.body.level != 1)) {
+    return res.status(400).json({ error: "level value not recognized" });
+  }
+
+  if (!req.body.status || req.body.status != 1) {
+    return res
+      .status(400)
+      .json({ error: "status value not recognized or allowed" });
+  }
+
+  // forcing the format
+  if (req.body.keywords) {
+    req.body.keywords = req.body.keywords.join();
+  }
+
+  thesisService
+    .addThesis(req.body)
+    .then(function (response) {
+      res.status(201).json(response);
+    })
+    .catch(function (err) {
+      res.status(500).json(err);
+    });
+};
