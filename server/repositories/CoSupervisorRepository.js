@@ -45,7 +45,7 @@ exports.findByNSorS = (surname, name)=>{
     }
     else{
             sql+="surname LIKE ?";
-            params.push("%"+coSupervisor+"%");
+            params.push("%"+surname+"%");
     }
     return new Promise((resolve, reject)=>{
         db.all(sql, params, (err, rows)=>{
