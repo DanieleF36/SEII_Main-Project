@@ -2,7 +2,7 @@
 
 const thesisService = require('../services/ThesisService');
 
-function isNotConvertible(str) {
+function isConvertible(str) {
   try {
     JSON.parse(str);
     return true;
@@ -30,25 +30,25 @@ function checkQuery(req){
     return "Wronged Value of page "+req.query.page;
   }
   
-  if (!(!req.query.order || orderType.indexOf(req.query.order) >= 0)) {
+  if (req.query.order && orderType.indexOf(req.query.order) < 0) {
     return "Wronged Value of order"+req.query.order
   }
   
-  if (!(!req.query.title || !Array.isArray(req.query.title) || !isNotConvertible(req.query.title))) {
+  if (req.query.title && (Array.isArray(req.query.title) || isConvertible(req.query.title))) {
     return "Wronged Value of title"+req.query.title
   }
-  if (!(!req.query.supervisor || !Array.isArray(req.query.supervisor) || !isNotConvertible(req.query.supervisor))) {
+  if ((req.query.supervisor && (Array.isArray(req.query.supervisor) || isConvertible(req.query.supervisor)))) {
     return "Wronged Value of supervisor"+req.query.supervisor
   }
   if (req.query.coSupervisor){
     if(!Array.isArray(req.query.coSupervisor)){
-      if( isNotConvertible(e)) {
+      if( isConvertible(e)) {
         return "Wronged Value of coSupervisor"+req.query.coSupervisor
       };
     }
     else{
       req.query.coSupervisor.forEach((e)=>{
-        if( isNotConvertible(e)) {
+        if( isConvertible(e)) {
           return "Wronged Value of coSupervisor"+req.query.coSupervisor
         };
       });
@@ -56,48 +56,48 @@ function checkQuery(req){
   }
   if (req.query.keyword) {
     if(!Array.isArray(req.query.keyword)){
-      if( isNotConvertible(req.query.keyword)) {
+      if( isConvertible(req.query.keyword)) {
         return "Wronged Value of keyword"+req.query.keyword
       };
     }
     else
       req.query.keyword.forEach((e)=>{
-        if(isNotConvertible(e)){
+        if(isConvertible(e)){
           return "Wronged Value of keyword"+req.query.keyword  
         }    
       })
   }
   if (req.query.type ) {
     if(!Array.isArray(req.query.type)){
-      if( isNotConvertible(req.query.type)) {
+      if( isConvertible(req.query.type)) {
         return "Wronged Value of keyword"+req.query.type
       };
     }
     else
       req.query.type.forEach((e)=>{
-        if(isNotConvertible(e)){
+        if(isConvertible(e)){
           return "Wronged Value of type"+req.query.type
         }
       })
   }
   
-  if (!(!req.query.groups || !Array.isArray(req.query.groups) || !isNotConvertible(req.query.groups))) {
+  if (req.query.groups && (Array.isArray(req.query.groups) || isConvertible(req.query.groups))) {
     return "Wronged Value of groups"+req.query.groups
   }
   
-  if (!(!req.query.knowledge || !Array.isArray(req.query.knowledge) || !Array.isArray(req.query.title) || !isNotConvertible(req.query.knowledge))) {
+  if (req.query.knowledge && (Array.isArray(req.query.knowledge) || isConvertible(req.query.knowledge))) {
     return "Wronged Value of knowledge"+req.query.knowledge
   }
   
-  if (!(!req.query.expiration_date || !Array.isArray(req.query.expiration_date) || !isNotConvertible(req.query.expiration_date))) {
+  if (req.query.expiration_date && (Array.isArray(req.query.expiration_date) || isConvertible(req.query.expiration_date))) {
     return "Wronged Value of expiration_date"+req.query.expiration_date
   }
   
-  if (!(!req.query.cds || !Array.isArray(req.query.cds) || !isNotConvertible(req.query.cds))) {
+  if (req.query.cds && (Array.isArray(req.query.cds) || isConvertible(req.query.cds))) {
     return "Wronged Value of cds"+req.query.cds
   }
   
-  if (!(!req.query.creation_date || !Array.isArray(req.query.creation_date) || !isNotConvertible(req.query.creation_date))) {
+  if (req.query.creation_date && (Array.isArray(req.query.creation_date) || isConvertible(req.query.creation_date))) {
     return "Wronged Value of creation_date"+req.query.creation_date
   }
   return false;

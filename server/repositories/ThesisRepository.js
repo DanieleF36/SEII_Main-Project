@@ -43,7 +43,6 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   if (idSupervisors != null && idSupervisors.length > 0) {
     sql += 'AND (supervisor ';
     sql+=specific ? 'LIKE ?' : '= ?';
-    sql+=specific ? 'LIKE ? ' : '= ? ';
     params.push(specific ? `%${idSupervisors[0].id}%` : idSupervisors[0].id);
     // adding to the query each id we got considering also homonyms, slice for skipping the first one (already handled)
     idSupervisors.slice(1).forEach((e) => {

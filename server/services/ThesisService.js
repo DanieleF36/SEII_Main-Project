@@ -34,10 +34,13 @@ exports.advancedResearchThesis = async function(page,order,title,supervisor,coSu
         const ns = supervisor.split(" ");
 
         // ns[1] is going to be undefined in case we did not put a name
-
+        
         // performs a search by name and/or lastname and returns an array of ids
-        idSupervisors = await teacherRepository.findByNSorS(ns[0], ns[1]);
-
+        if(ns.length>1)
+            idSupervisors = await teacherRepository.findByNSorS(ns[1], ns[0]);
+        else
+        idSupervisors = await teacherRepository.findByNSorS(ns[0]);
+        
         // if idSupervisors is defined we found a user(s) who is managing a thesis in our system
         if(idSupervisors!=null && idSupervisors.length>0)
             ok=true;
@@ -48,8 +51,11 @@ exports.advancedResearchThesis = async function(page,order,title,supervisor,coSu
         for (let i = 0; i < coSupervisor.length; i++) {
             const e = coSupervisor[i];
             const ns = e.split(" ");
-
-            let idsCo = await coSupervisorRepository.findByNSorS(ns[0], ns[1]);
+            let idsCo;
+            if(ns.length>1)
+                idsCo = await coSupervisorRepository.findByNSorS(ns[1], ns[0]);
+            else
+                idsCo = await coSupervisorRepository.findByNSorS(ns[0]);
             if (idsCo > 0)
               // add the thesis managed by the chosen cosupervisor 
               idCoSupervisorsThesis.push(await coSupervisorThesisRepository.findThesisByCoSupervisorId(idsCo));
@@ -65,7 +71,7 @@ exports.advancedResearchThesis = async function(page,order,title,supervisor,coSu
     
     //Check if has sense make others queries
     if(!ok)
-       return [];
+       return [[], 0];
 
     //find all thesis
     let res = await thesisRepository.advancedResearch(nItem*(page-1),nItem*page,order,false, title,idSupervisors,idCoSupervisorsThesis,keyword,type,groups,knowledge,expiration_date,cds,creation_date, 1);
