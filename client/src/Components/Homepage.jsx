@@ -52,7 +52,7 @@ function Homepage(props) {
         creatDate: '',
         order: '',
         orderby: '',
-        page: ''
+        page: 1
     });
 
     const [application, setApplication] = useState({
