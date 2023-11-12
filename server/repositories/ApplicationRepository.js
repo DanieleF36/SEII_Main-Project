@@ -93,3 +93,48 @@ exports.accRefApplication = (status, id_teacher, id_application) => {
     });
   });
 };
+
+exports.applyForProposal = (studentId, thesisId, cvPath) => {
+  console.log("applyForProposal REPO studentID = " + studentId);
+
+  return new Promise((resolve, reject) => {
+    // Fetch supervisor based on the given thesisId
+    const getSupervisorSql = 'SELECT supervisor FROM Thesis WHERE id = ?';
+
+    db.get(getSupervisorSql, [thesisId], (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      const supervisorId = result.supervisor;
+
+      const currentDate = new Date().toISOString();
+      const sql = 'INSERT INTO Application (id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?)';
+      db.run(sql, [studentId, thesisId, currentDate, cvPath, 0, supervisorId], function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          // Access the auto-generated ID if needed.
+          const insertedId = this.lastID;
+          resolve(insertedId);
+        }
+      });
+    });
+  });
+};
+
+exports.acceptApplication = (status, teacherID, applicationID,) => {
+  console.log("accApplication REPO = " + status);
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE Application SET status = ? WHERE id_teacher = ? AND id = ?';
+    db.run(sql, [status, teacherID, applicationID], function (err) {
+      if (err) {
+        console.error("Error in SQLDatabase:", err.message);
+        reject(err);
+      } else {
+        resolve(this.changes);
+      }
+    });
+  });
+};

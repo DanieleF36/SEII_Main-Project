@@ -30,3 +30,36 @@ exports.listApplication = function listApplication(req, res, next) {
       res.status(500).json(response);
     });
 };
+
+exports.acceptApplication = function acceptApplication(req, res, next) {
+  if (req.body.accepted == undefined) {
+    return res.status(400).json({ error: "Missing new status accpetApplication" });
+  }
+  console.log("acceptApplication CONTROLLER status = " + req.body.accepted);
+  teacherService
+    .acceptApplication(
+      req.body.accepted,
+      req.params.id_professor,
+      req.params.id_application
+    )
+    .then(function (response) {
+      res.status(200).json(response);
+    })
+    .catch(function (response) {
+      res.status(500).json(response);
+    });
+};
+
+exports.applyForProposal = async function (req, res, next) {
+  console.log("applyForProposal CONTROLLER");
+  teacherService.applyForProposal(
+    1,
+    req.params.id_thesis,
+    req.body.cv_path
+  ).then(function (response) {
+    res.status(200).json(response);
+  })
+  .catch(function (response) {
+    res.status(500).json(response);
+  });
+};
