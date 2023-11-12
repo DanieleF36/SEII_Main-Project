@@ -72,14 +72,14 @@ function sqlQueryCreator(
   // checks for cosupervisors ids if the array is defined
   if (idCoSupervisorsThesis != null && idCoSupervisorsThesis.length > 0) {
     sql += "AND (id ";
-    sql += specific ? "LIKE ?" : "= ?";
+    sql += "= ?";
     params.push(
       specific ? `%${idCoSupervisorsThesis[0]}%` : idCoSupervisorsThesis[0]
     );
     // adding to the query each id we got considering also homonyms, slice for skipping the first one (already handled)
     idCoSupervisorsThesis.slice(1).forEach((e) => {
       sql += "OR id ";
-      sql += specific ? "LIKE ?" : "= ?";
+      sql += "= ?";
       params.push(specific ? `%${e.id}%` : e.id);
     });
     sql += ") ";

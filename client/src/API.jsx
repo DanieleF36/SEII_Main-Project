@@ -48,22 +48,45 @@ async function insertProposal(thesis) {
   }
 }
 
-async function advancedResearchThesis(params){
-  let ur="/thesis?";
-  Object.entries(params).forEach(([key, value], index, a) => {
-    if(!(value instanceof Array))
-      if(index!=a.length-1)
-        ur+=key+"="+value+"&";
-      else
-      ur+=key+"="+value;
-    else
-      value.forEach((e, i, array)=>{
-        if(i!=array.length-1)
-          ur+=key+"="+e+"&";
-        else
-          ur+=key+"="+e;  
-      });
+async function advancedSearchThesis(params){
+  let ur="/thesis";
+  if(params)
+    ur+="?";
+    if(params.page)
+    ur+="page="+params.page;
+  if(params.title)
+    ur+="&title="+params.title;
+  if(params.supervisor)
+    ur+="&supervisor="+params.supervisor;
+  if(params.cosupervisor)
+    params.cosupervisor.forEach((e, i, a)=>{
+      ur+="&coSupervisor="+a[i];
   });
+  if(params.expDate)
+    ur+="&expiration_date="+params.expDate;
+  if(params.keywords)
+    params.keywords.forEach((e, i, a)=>{
+      ur+="&keyword="+a[i];
+  });
+  if(params.type)
+    if(params.type)
+    params.type.forEach((e, i, a)=>{
+      ur+="&type="+a[i];
+  });
+  if(params.groups)
+    ur+="&groups="+params.groups;
+  if(params.know)
+    ur+="&knowledge="+params.know;
+  if(params.cds)
+    ur+="&cds="+params.cds;
+  if(params.creatDate)
+    ur+="&creation_date="+params.creatDate;
+  if(params.ordeBy)
+    switch(ordeBy){
+      case "expDate": ur+="&order=expiration_date"+params.order;break;
+      case "title": ur+="&order=title"+params.order;break;
+      case "supervisor": ur+="&order=supervisor"+params.order;break;
+    }
   const response = await fetch(URL+ur);
   if(response.status==200){
     const res = await response.json();

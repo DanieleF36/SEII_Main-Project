@@ -104,37 +104,47 @@ exports.accRefApplication = (status, id_teacher, id_application) => {
   });
 };
 
-//        .,,,,.
-//       :::;;ii,                                         .,,,
-//      .;,it1t11.                                        ;i:;,
-//       ,;:111i1i                                        .::;.
-//        :iii;ii1:.....                        ....        ;;,
-//         .11;::i;;;;:;:.                  ..,;;iii;.      ,;;,
-//        ,;;;;;:;;i:,:;;;,            .,:;;ii;;;;;;;;. ..,,.,:;::;:
-//      .;i;:::;1ttti,::::;;.        .;iii;;;;:::::,,,;i11t11ii;,:i:
-//      ii;;;:;i1i;::::::,,;;:       :i;;;;::::::::;;::i1111111;;;1i;.
-//     :i;:::::,:::,,,,,,,,,:i;.     .i;;;;;;iiiii;,,,,;i11111i;;::;;.
-//     i;;;:::,,,,,,,,,::;:,iii:..,,;tCCCGG00Gfiiii;;;;;iiii;:,. .,,,
-//    ,i:::,,,....,,,,,:::,:i;,:::ifG888880Cf1i;;;:;i;;:,,.         ,.
-//    ,i::,,;:,...,,,,,,,,,,,,:;iffffffft1i;:::,,,,,,.              .,
-//     ,:::,:;,...,....,itLCGG00GL111;::::::,,...                    ,
-//           .::,,,...,iG88800Gf11111;,,,,..                         .,
-//             :;,.,,,;1tt111111ii;;:,.                               :
-//              ,;,,::::;;iii;;:,.                                    ,.
-//               ,;,,:;;:::,.                                          .
-//              .,;,.::..                                              .:
-//             .;;i,:ii,      BACKEND TEAM IS THE BEST TEAM             ;.
-//              ..;;1:ii,                                               .,
-//                  :i.i1:                                              .:;;;:;:
-//                   i;.;t;                                            .iiiiii;:
-//                   .;. ,t,              CHANGE MY MIND               ....,,;i,
-//                        ,;.                                  ..,,..    .:,
-//                         ,,                             ..,,..
-//                          .:                          ....
-//                           ,:                      .
-//                            :,                ..
-//                            .;.
-//                          .,;t;;;,...
-//                         .;iff1;i,,,.
-//                          ,i;,.:;,
-//                          .,   .:,
+exports.applyForProposal = (studentId, thesisId, cvPath) => {
+  console.log("applyForProposal REPO studentID = " + studentId);
+
+  return new Promise((resolve, reject) => {
+    // Fetch supervisor based on the given thesisId
+    const getSupervisorSql = 'SELECT supervisor FROM Thesis WHERE id = ?';
+
+    db.get(getSupervisorSql, [thesisId], (error, result) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      const supervisorId = result.supervisor;
+
+      const currentDate = new Date().toISOString();
+      const sql = 'INSERT INTO Application (id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?)';
+      db.run(sql, [studentId, thesisId, currentDate, cvPath, 0, supervisorId], function (err) {
+        if (err) {
+          reject(err);
+        } else {
+          // Access the auto-generated ID if needed.
+          const insertedId = this.lastID;
+          resolve(insertedId);
+        }
+      });
+    });
+  });
+};
+
+exports.acceptApplication = (status, teacherID, applicationID,) => {
+  console.log("accApplication REPO = " + status);
+  return new Promise((resolve, reject) => {
+    const sql = 'UPDATE Application SET status = ? WHERE id_teacher = ? AND id = ?';
+    db.run(sql, [status, teacherID, applicationID], function (err) {
+      if (err) {
+        console.error("Error in SQLDatabase:", err.message);
+        reject(err);
+      } else {
+        resolve(this.changes);
+      }
+    });
+  });
+};
