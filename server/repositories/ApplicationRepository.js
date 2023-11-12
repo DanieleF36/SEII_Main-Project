@@ -6,6 +6,14 @@ const db = new sqlite.Database("db.sqlite", (err) => {
   if (err) throw err;
 });
 
+/**
+ * Performs queries to the database for retriving all the needed information given a supervisor's id
+ * 
+ * first applications are obtained throught id_teacher, then for each of them student's information are added (name and lastname) as well as thesis information (title and cds)
+ * 
+ * @param {*} id_teacher 
+ * @returns object { application: application, thesis: thesis, student: student } defined in controller file
+ */
 exports.listApplication = (id_teacher) => {
   const sqlApplication =
     "SELECT id,id_student,path_cv,status,id_thesis,data FROM Application WHERE id_teacher=?";
@@ -13,7 +21,7 @@ exports.listApplication = (id_teacher) => {
   const sqlThesis = "SELECT title,cds FROM Thesis WHERE id=?";
   let student;
   return new Promise((resolve, reject) => {
-    //! QUERY TO THE APPLICATION DATABASE
+    //! QUERY TO THE APPLICATION DATABASE, asks for the whole set of applications given a supervisor's id
     db.all(sqlApplication, [id_teacher], (err, rows) => {
       if (err) {
         console.error("SQLite Error:", err.message);
@@ -32,6 +40,7 @@ exports.listApplication = (id_teacher) => {
           path_cv: a.path_cv,
           status: a.status,
         }));
+        // for each application found student's information are requested
         application.forEach((element) => {
           //! QUERY TO THE STUDENT DATABASE
           db.all(sqlStudent, [element.id_student], (err, rows) => {
@@ -49,6 +58,7 @@ exports.listApplication = (id_teacher) => {
                 name: s.name,
               }));
             }
+            // asks for the thesis linked to the current application's id
             db.all(sqlThesis, [element.id_thesis], (err, rows) => {
               if (err) {
                 console.error("SQLite Error:", err.message);
@@ -93,3 +103,38 @@ exports.accRefApplication = (status, id_teacher, id_application) => {
     });
   });
 };
+
+//        .,,,,.
+//       :::;;ii,                                         .,,,
+//      .;,it1t11.                                        ;i:;,
+//       ,;:111i1i                                        .::;.
+//        :iii;ii1:.....                        ....        ;;,
+//         .11;::i;;;;:;:.                  ..,;;iii;.      ,;;,
+//        ,;;;;;:;;i:,:;;;,            .,:;;ii;;;;;;;;. ..,,.,:;::;:
+//      .;i;:::;1ttti,::::;;.        .;iii;;;;:::::,,,;i11t11ii;,:i:
+//      ii;;;:;i1i;::::::,,;;:       :i;;;;::::::::;;::i1111111;;;1i;.
+//     :i;:::::,:::,,,,,,,,,:i;.     .i;;;;;;iiiii;,,,,;i11111i;;::;;.
+//     i;;;:::,,,,,,,,,::;:,iii:..,,;tCCCGG00Gfiiii;;;;;iiii;:,. .,,,
+//    ,i:::,,,....,,,,,:::,:i;,:::ifG888880Cf1i;;;:;i;;:,,.         ,.
+//    ,i::,,;:,...,,,,,,,,,,,,:;iffffffft1i;:::,,,,,,.              .,
+//     ,:::,:;,...,....,itLCGG00GL111;::::::,,...                    ,
+//           .::,,,...,iG88800Gf11111;,,,,..                         .,
+//             :;,.,,,;1tt111111ii;;:,.                               :
+//              ,;,,::::;;iii;;:,.                                    ,.
+//               ,;,,:;;:::,.                                          .
+//              .,;,.::..                                              .:
+//             .;;i,:ii,      BACKEND TEAM IS THE BEST TEAM             ;.
+//              ..;;1:ii,                                               .,
+//                  :i.i1:                                              .:;;;:;:
+//                   i;.;t;                                            .iiiiii;:
+//                   .;. ,t,              CHANGE MY MIND               ....,,;i,
+//                        ,;.                                  ..,,..    .:,
+//                         ,,                             ..,,..
+//                          .:                          ....
+//                           ,:                      .
+//                            :,                ..
+//                            .;.
+//                          .,;t;;;,...
+//                         .;iff1;i,,,.
+//                          ,i;,.:;,
+//                          .,   .:,

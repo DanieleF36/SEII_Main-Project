@@ -31,15 +31,10 @@ exports.accRefApplication = async function (
 /**
  * Get all the application for the professor
  *
- * id_professor Integer
- * returns List
+ * @param {*} id_professor Integer
+ * @returns object { application: application, thesis: thesis, student: student } defined in controller file
  **/
 exports.listApplication = async function (id_professor) {
-  if (id_professor != null) {
-    console.log("SERVICE");
     let res = await applicationRepository.listApplication(id_professor);
     return res;
-  } else {
-    return res.error;
-  }
 };
