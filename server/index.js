@@ -2,9 +2,7 @@
 const express = require("express");
 const morgan = require("morgan"); // logging middleware
 const { check, validationResult } = require("express-validator"); // validation middleware
-const dao = require("./dao"); // module for accessing the DB
 const session = require("express-session"); // enable sessions
-const userDao = require("./user-dao"); // module for accessing the user info in the DB
 const cors = require("cors");
 const app = express();
 
@@ -30,6 +28,7 @@ app.use(
 
 const thesisController = require("./controllers/ThesisController");
 const teacherController = require("./controllers/TeacherController");
+const studentController = require("./controllers/StudentController");
 
 app.get("/thesis", (req, res) =>
   thesisController.advancedResearchThesis(req, res)
@@ -44,9 +43,7 @@ app.post("/professor/:id_professor/applications/:id_application", (req, res) =>
   teacherController.acceptApplication(req, res)
 );
 
-app.post("/thesis/:id_thesis/applications", (req, res) =>
-  teacherController.applyForProposal(req, res)
-);
+app.post("/thesis/:id_thesis/applications", (req, res) => studentController.applyForProposal(req, res));
 
 const PORT = 3001;
 app.listen(PORT, () =>

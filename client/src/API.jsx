@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import { title } from "process";
+import { emitKeypressEvents } from "readline";
 
 const URL = 'http://localhost:3001';
 
@@ -132,21 +133,30 @@ async function acceptApplication() {
   }
 }
 
-async function applyForProposal() { 
-  const response = await fetch(URL+ `/professor/${id_professor}/applications/${id_application}`);
-  const application = await response.json();
-  if (response.ok) {
-    return application.map((a) => ({
-              id_student: a.id_student,
-              id_thesis: a.id_thesis,
-              data: a.data,
-              path_cv: a.path_cv,
-              status: a.status,
-              id_teacher: a.id_teacher
-          ,}));
-  } else {
-    throw services;  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
-  }
+async function applyForProposal(application) { 
+    const formData = new FormData();
+    formData.append('cv', application.cv);
+    const response = await fetch(URL+ `/thesis/${application.id_thesis}/applications`,{
+        method: "POST",
+        headers: {
+        "Content-Type": "application/pdf",
+        },
+        body: formData
+    });
+    const app = await response.json();
+    if (response.status==201) {
+        return app.map((a) => ({
+                id_student: a.id_student,
+                id_thesis: a.id_thesis,
+                data: a.data,
+                path_cv: a.path_cv,
+                status: a.status,
+                id_teacher: a.id_teacher
+            ,}));
+    }
+    else if(response.status==400 || response.status==404){
+        return{error: app.error}
+    }
 }
 
 const API = {listApplication, insertProposal, advancedResearchThesis, acceptApplication, applyForProposal};

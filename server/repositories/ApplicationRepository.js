@@ -104,7 +104,7 @@ exports.accRefApplication = (status, id_teacher, id_application) => {
   });
 };
 
-exports.applyForProposal = (studentId, thesisId, cvPath) => {
+exports.addProposal = (studentId, thesisId, cvPath) => {
   return new Promise((resolve, reject) => {
     // Fetch supervisor id based on the given thesisId
     const getSupervisorSql = 'SELECT supervisor FROM Thesis WHERE id = ?';

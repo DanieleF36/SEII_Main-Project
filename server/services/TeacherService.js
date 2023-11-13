@@ -64,34 +64,3 @@ exports.acceptApplication = async function (
     return res.error;
   }
 };
-
-/**
- * Apply for a proposal
- *
- * @param {*} studentId Integer
- * @param {*} thesisId Integer
- * @param {*} cvPath String
- * @returns 
- * in case of succes
- *  object{}
- * in case of error
- *  object {error: string}
- **/
-exports.applyForProposal = async function (studentId, thesisId, cvPath) {
-  console.log("Student ID:", studentId);
-  console.log("Thesis ID:", thesisId);
-  console.log("CV Path:", cvPath);
-  
-  console.log("applyForProposal SERVICE studentID = " + studentId);
-  try {
-    let res = await applicationRepository.applyForProposal(
-      studentId,
-      thesisId,
-      cvPath
-    );
-    return res;
-  } catch (error) {
-    return { error: error.message };
-  }
-  
-};
