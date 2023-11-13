@@ -107,8 +107,13 @@ exports.applyForProposal = (studentId, thesisId, cvPath) => {
         return;
       }
 
-      const supervisorId = result.supervisor;
+      if (!result.supervisor) {
+        reject({error: "Not found"});
+        return;
+      }
 
+      const supervisorId = result.supervisor;
+      
       const currentDate = new Date().toISOString();
       const sql = 'INSERT INTO Application (id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?)';
       db.run(sql, [studentId, thesisId, currentDate, cvPath, 0, supervisorId], function (err) {
@@ -117,7 +122,14 @@ exports.applyForProposal = (studentId, thesisId, cvPath) => {
         } else {
           // Access the auto-generated ID if needed.
           const insertedId = this.lastID;
-          resolve(insertedId);
+          resolve({
+            applicationID: insertedId,
+            studentId: studentId,
+            date: currentDate,
+            cvPath: cvPath,
+            status: 0,
+            professorId: supervisorId
+          });
         }
       });
     });
@@ -133,7 +145,9 @@ exports.acceptApplication = (status, teacherID, applicationID,) => {
         console.error("Error in SQLDatabase:", err.message);
         reject(err);
       } else {
-        resolve(this.changes);
+        resolve(resolve({
+          status: status
+        }));
       }
     });
   });

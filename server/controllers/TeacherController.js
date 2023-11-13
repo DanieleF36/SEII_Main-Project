@@ -49,17 +49,3 @@ exports.acceptApplication = function acceptApplication(req, res, next) {
       res.status(500).json(response);
     });
 };
-
-exports.applyForProposal = async function (req, res, next) {
-  console.log("applyForProposal CONTROLLER");
-  teacherService.applyForProposal(
-    1,
-    req.params.id_thesis,
-    req.body.cv_path
-  ).then(function (response) {
-    res.status(200).json(response);
-  })
-  .catch(function (response) {
-    res.status(500).json(response);
-  });
-};
