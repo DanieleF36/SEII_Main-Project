@@ -41,7 +41,6 @@ exports.listApplication = async function (id_professor) {
 
 /**
  * Teacher accept or reject an application
- *
  * accepted bool
  * id_professor Integer
  * id_application Integer
@@ -79,14 +78,20 @@ exports.acceptApplication = async function (
  *  object {error: string}
  **/
 exports.applyForProposal = async function (studentId, thesisId, cvPath) {
-    if (studentId != null && thesisId != null && cvPath != null) {
-      try {
-        let res = await applicationRepository.applyForProposal( studentId, thesisId, cvPath);
-        return res;
-      } catch (error) {
-        return { error: error.message };
-      }
-    } else {
-      return { error: "Missing required parameters" };
+  console.log("Student ID:", studentId);
+  console.log("Thesis ID:", thesisId);
+  console.log("CV Path:", cvPath);
+  
+  console.log("applyForProposal SERVICE studentID = " + studentId);
+  try {
+    let res = await applicationRepository.applyForProposal(
+      studentId,
+      thesisId,
+      cvPath
+    );
+    return res;
+  } catch (error) {
+    return { error: error.message };
   }
+  
 };
