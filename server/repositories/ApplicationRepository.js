@@ -2,7 +2,9 @@
 
 const sqlite = require("sqlite3");
 
-const db = new sqlite.Database("db.sqlite", (err) => {
+require('dotenv').config({path: './variable.env'})
+
+const db = new sqlite.Database(process.env.INUSE_DATABASE, (err) => {
   if (err) throw err;
 });
 
