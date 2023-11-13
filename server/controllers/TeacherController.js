@@ -85,14 +85,24 @@ exports.acceptApplication = function acceptApplication(req, res, next) {
     });
 };
 
+/**
+ * wrapper function for apply to a thesis proposal with id = id_thesis 
+ * @param {*} req in req.params.id_thesis there is an iteger for the thesis
+ *                in req.body.cv there is the cv in a PDF form
+ * @param {*} res the returned object is defined as follow:
+ * {
+ *   id: integer,
+ *   id_student: integer,
+ *   id_thesis: integer,
+ *   date: string,
+ *   cv: {
+ *     cv: //TODO
+ *     }
+ *   }
+ */
 exports.applyForProposal = async function (req, res, next) {
-  console.log("applyForProposal CONTROLLER");
-  teacherService.applyForProposal(
-    1,
-    req.params.id_thesis,
-    req.body.cv_path
-  ).then(function (response) {
-    res.status(200).json(response);
+  teacherService.applyForProposal(1, req.params.id_thesis, req.body.cv_path).then(function (response) {
+    res.status(201).json(response);
   })
   .catch(function (response) {
     res.status(500).json(response);

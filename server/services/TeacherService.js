@@ -69,29 +69,24 @@ exports.acceptApplication = async function (
 /**
  * Apply for a proposal
  *
- * studentId Integer
- * thesisId Integer
- * cvPath String
- * teacherID Integer
- * no response value expected for this operation
+ * @param {*} studentId Integer
+ * @param {*} thesisId Integer
+ * @param {*} cvPath String
+ * @returns 
+ * in case of succes
+ *  object{}
+ * in case of error
+ *  object {error: string}
  **/
 exports.applyForProposal = async function (studentId, thesisId, cvPath) {
-  console.log("Student ID:", studentId);
-  console.log("Thesis ID:", thesisId);
-  console.log("CV Path:", cvPath);
-  if (studentId != null && thesisId != null && cvPath != null) {
-    console.log("applyForProposal SERVICE studentID = " + studentId);
-    try {
-      let res = await applicationRepository.applyForProposal(
-        studentId,
-        thesisId,
-        cvPath
-      );
-      return res;
-    } catch (error) {
-      return { error: error.message };
-    }
-  } else {
-    return { error: "Missing required parameters" };
+    if (studentId != null && thesisId != null && cvPath != null) {
+      try {
+        let res = await applicationRepository.applyForProposal( studentId, thesisId, cvPath);
+        return res;
+      } catch (error) {
+        return { error: error.message };
+      }
+    } else {
+      return { error: "Missing required parameters" };
   }
 };

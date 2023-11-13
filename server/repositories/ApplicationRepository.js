@@ -105,10 +105,8 @@ exports.accRefApplication = (status, id_teacher, id_application) => {
 };
 
 exports.applyForProposal = (studentId, thesisId, cvPath) => {
-  console.log("applyForProposal REPO studentID = " + studentId);
-
   return new Promise((resolve, reject) => {
-    // Fetch supervisor based on the given thesisId
+    // Fetch supervisor id based on the given thesisId
     const getSupervisorSql = 'SELECT supervisor FROM Thesis WHERE id = ?';
 
     db.get(getSupervisorSql, [thesisId], (error, result) => {
@@ -116,9 +114,8 @@ exports.applyForProposal = (studentId, thesisId, cvPath) => {
         reject(error);
         return;
       }
-
       const supervisorId = result.supervisor;
-
+      //Create a current date to add at the new application 
       const currentDate = new Date().toISOString();
       const sql = 'INSERT INTO Application (id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?)';
       db.run(sql, [studentId, thesisId, currentDate, cvPath, 0, supervisorId], function (err) {

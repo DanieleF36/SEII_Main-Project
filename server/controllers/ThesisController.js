@@ -133,10 +133,10 @@ function checkQuery(req) {
 /**
  * wrapper function for performing advanced search over the database, possible fields for the search are:
  * - title
- * - supervisor, name and/or lastname
- * - cosupervisor, as above
- * - keywords
- * - type
+ * - supervisor, name lastname or lastname
+ * - cosupervisor, array of as above  
+ * - keywords array of string
+ * - type array of string
  * - groups
  * - knowledge
  * - expiration_date

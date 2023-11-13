@@ -176,7 +176,11 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/thesis"
+                  "type":"object",
+                  "properties": {
+                    "nPage":{"type": "integer", "minimum": 0},
+                    "thesis":{"type":"object", "$ref": "#/components/schemas/thesis"}
+                  }
                 }
               }
             }
