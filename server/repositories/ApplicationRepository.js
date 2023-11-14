@@ -87,23 +87,6 @@ exports.listApplication = (id_teacher) => {
   });
 };
 
-exports.accRefApplication = (status, id_teacher, id_application) => {
-  console.log("APPLICATION");
-  console.log(status, id_teacher, id_application);
-  const sqlTeacher =
-    "UPDATE Application SET status = ? WHERE id_teacher = ? AND id = ?";
-  return new Promise((resolve, reject) => {
-    db.run(sqlTeacher, [status, id_teacher, id_application], (err, row) => {
-      if (err) {
-        console.error("SQLite Error:", err.message);
-        reject(err);
-        return;
-      }
-      resolve(this.changes);
-    });
-  });
-};
-
 exports.addProposal = (studentId, thesisId, cvPath) => {
   return new Promise((resolve, reject) => {
     // Fetch supervisor id based on the given thesisId
@@ -145,7 +128,6 @@ exports.addProposal = (studentId, thesisId, cvPath) => {
 };
 
 exports.acceptApplication = (status, teacherID, applicationID,) => {
-  console.log("accApplication REPO = " + status);
   return new Promise((resolve, reject) => {
     const sql = 'UPDATE Application SET status = ? WHERE id_teacher = ? AND id = ?';
     db.run(sql, [status, teacherID, applicationID], function (err) {
@@ -153,9 +135,12 @@ exports.acceptApplication = (status, teacherID, applicationID,) => {
         console.error("Error in SQLDatabase:", err.message);
         reject(err);
       } else {
-        resolve(resolve({
+        if (this.changes === 0) {
+          reject({ error : "No rows updated. Teacher ID or Application Id not found."});
+        }
+        resolve({
           status: status
-        }));
+        });
       }
     });
   });
