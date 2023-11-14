@@ -91,10 +91,8 @@ function Homepage(props) {
     const handleApplyProp = () => {
         if(application.cv!==''){
            console.log(application);
-           toast.success('Application successfully sended')
-           //API.applyproposal(application).then(..
-           setApplication({ ...application, cv: '' });
-           //..)
+           API.applyForProposal(application).then(()=>{ toast.success('Application successfully sended');setApplication({ ...application, cv: '' })})
+           .catch((msg)=>toast.error(msg));
            
         }
         else(
