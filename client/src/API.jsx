@@ -22,6 +22,7 @@ async function listApplication(id_professor) {
 
 async function insertProposal(thesis) {
     thesis.status = 1;
+    thesis.cosupervisor = thesis.cosupervisor === '' ? [''] : thesis.cosupervisor
     console.log(thesis)
   let response = await fetch(URL + '/thesis', {
     method: "POST",
@@ -31,11 +32,8 @@ async function insertProposal(thesis) {
     body: JSON.stringify(thesis)
   
   })
-  
-
+  let risposta = await response.json();
   if (response.ok) {
-    let risposta = await response.json();
-    
     return true;
   } else {
     throw response.error;

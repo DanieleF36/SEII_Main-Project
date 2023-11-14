@@ -33,44 +33,44 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   if (supervisor != null) {
     const ns = supervisor.split(" ");
 
-        // ns[1] is going to be undefined in case we did not put a name
-        
-        // performs a search by name and/or lastname and returns an array of ids
-        if(ns.length>1)
-            idSupervisors = await teacherRepository.findByNSorS(ns[1], ns[0]);
-        else
-          idSupervisors = await teacherRepository.findByNSorS(ns[0]);
-        
-        // if idSupervisors is defined we found a user(s) who is managing a thesis in our system
-        if(idSupervisors!=null && idSupervisors.length>0)
-            ok=true;
-    }
-    // find information about id of coSupervisors 
-    let idCoSupervisorsThesis = [];
-    if(coSupervisor != null){
-        for (let i = 0; i < coSupervisor.length; i++) {
-            const e = coSupervisor[i];
-            const ns = e.split(" ");
-            let idsCo;
-            if(ns.length>1)
-                idsCo = await coSupervisorRepository.findByNSorS(ns[1], ns[0]);
-            else
-                idsCo = await coSupervisorRepository.findByNSorS(ns[0]);
-            if (idsCo > 0)
-              // add the thesis managed by the chosen cosupervisor 
-              idCoSupervisorsThesis.push(await coSupervisorThesisRepository.findThesisByCoSupervisorId(idsCo));
+    // ns[1] is going to be undefined in case we did not put a name
+
+    // performs a search by name and/or lastname and returns an array of ids
+    if (ns.length > 1)
+      idSupervisors = await teacherRepository.findByNSorS(ns[1], ns[0]);
+    else
+      idSupervisors = await teacherRepository.findByNSorS(ns[0]);
+
+    // if idSupervisors is defined we found a user(s) who is managing a thesis in our system
+    if (idSupervisors != null && idSupervisors.length > 0)
+      ok = true;
+  }
+  // find information about id of coSupervisors 
+  let idCoSupervisorsThesis = [];
+  if (coSupervisor != null) {
+    for (let i = 0; i < coSupervisor.length; i++) {
+      const e = coSupervisor[i];
+      const ns = e.split(" ");
+      let idsCo;
+      if (ns.length > 1)
+        idsCo = await coSupervisorRepository.findByNSorS(ns[1], ns[0]);
+      else
+        idsCo = await coSupervisorRepository.findByNSorS(ns[0]);
+      if (idsCo > 0)
+        // add the thesis managed by the chosen cosupervisor 
+        idCoSupervisorsThesis.push(await coSupervisorThesisRepository.findThesisByCoSupervisorId(idsCo));
 
       // if no. idCoSupervisorsThesis.length > 0 some data have been found
       if (idCoSupervisorsThesis.length > 0) ok = true;
     }
   }
 
-    //idSupervisors: [id1, id2, ...] list of ids with common lastname/name pair
-    //idCoSupervisorsThesis [idThesis1, idThesis2, ...] list of thesis ids managed by the cosupervisor
-    
-    //Check if has sense make others queries
-    if(!ok)
-       return [[], 0];
+  //idSupervisors: [id1, id2, ...] list of ids with common lastname/name pair
+  //idCoSupervisorsThesis [idThesis1, idThesis2, ...] list of thesis ids managed by the cosupervisor
+
+  //Check if has sense make others queries
+  if (!ok)
+    return [[], 0];
 
   //find all thesis
   let res = await thesisRepository.advancedResearch(nItem * (page - 1), nItem * page, order, false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, 1);
@@ -114,7 +114,7 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
  *
  * id Integer
  **/
-exports.addApplication = function (id) {};
+exports.addApplication = function (id) { };
 
 /**
  * Behaviour:
@@ -149,92 +149,95 @@ exports.addApplication = function (id) {};
  * TODO: errors mgmt
  **/
 exports.addThesis = async function (thesis) {
-  
 
-  // // an ID in TEACHER must be defined
-  // if(!thesis.supervisor) {
-  //     console.log('supervisor not found in TEACHER, should return 400')
-  // }
+  try {
 
-  // // look for the supervisor into TEACHER
-  // if(!teacherRepository.findById(thesis.supervisor)) {
-  //     console.log('supervisor not found in TEACHER, should return 400')
-  // }
+    // // an ID in TEACHER must be defined
+    // if(!thesis.supervisor) {
+    //     console.log('supervisor not found in TEACHER, should return 400')
+    // }
 
-  // look for each co-supervisor id into COSUPERVISOR
-  console.log(thesis)
-  if (thesis.cosupervisor) {
-    for (let id of thesis.cosupervisor) {
-      if (Object.keys(await coSupervisorRepository.findById(parseInt(id))).length === 0) {
-        throw {
-          status: 400,
-          error: "supervisor not found in COSUPERVISOR, should return 400",
-        };
+    // // look for the supervisor into TEACHER
+    // if(!teacherRepository.findById(thesis.supervisor)) {
+    //     console.log('supervisor not found in TEACHER, should return 400')
+    // }
+
+    // look for each co-supervisor id into COSUPERVISOR
+    if (thesis.cosupervisor) {
+      for (let id of thesis.cosupervisor) {
+        if (Object.keys(await coSupervisorRepository.findById(parseInt(id))).length === 0) {
+          throw {
+            status: 400,
+            error: "supervisor not found in COSUPERVISOR, should return 400",
+          };
+        }
       }
     }
-  }
 
-  // parse expiration date and creation date
-  const exp_date = dayjs(thesis.expiration_date, "MM-DD-YYYY")
-    .format("YYYY-MM-DD")
-    .toString();
-  thesis.expiration_date = exp_date;
-  const creat_date = dayjs().format("YYYY-MM-DD").toString();
-  thesis.creation_date = creat_date;
+    // parse expiration date and creation date
+    const exp_date = dayjs(thesis.expiration_date, "MM-DD-YYYY")
+      .format("YYYY-MM-DD")
+      .toString();
+    thesis.expiration_date = exp_date;
+    const creat_date = dayjs().format("YYYY-MM-DD").toString();
+    thesis.creation_date = creat_date;
 
-  // add an entry into THESIS
-  // thesis_res = await thesisRepository.addThesis(
-  //   thesis.title,
-  //   thesis.supervisor,
-  //   thesis.keywords,
-  //   thesis.type,
-  //   thesis.groups,
-  //   thesis.description,
-  //   thesis.knowledge,
-  //   thesis.note,
-  //   thesis.expiration_date,
-  //   thesis.level,
-  //   thesis.cds,
-  //   thesis.creation_date,
-  //   thesis.status
-  //   );
-  // console.log(thesis_res)
-  // if (thesis_res.err) {
-  //   throw { status: 500, error: thesis_res.err };
-  // }
-  const thesis_res = await thesisRepository.addThesis(
-    thesis.title,
-    thesis.supervisor,
-    thesis.keywords,
-    thesis.type,
-    thesis.groups,
-    thesis.description,
-    thesis.knowledge,
-    thesis.note,
-    thesis.expiration_date,
-    thesis.level,
-    thesis.cds,
-    thesis.creation_date,
-    thesis.status
+    // add an entry into THESIS
+    // thesis_res = await thesisRepository.addThesis(
+    //   thesis.title,
+    //   thesis.supervisor,
+    //   thesis.keywords,
+    //   thesis.type,
+    //   thesis.groups,
+    //   thesis.description,
+    //   thesis.knowledge,
+    //   thesis.note,
+    //   thesis.expiration_date,
+    //   thesis.level,
+    //   thesis.cds,
+    //   thesis.creation_date,
+    //   thesis.status
+    //   );
+    // console.log(thesis_res)
+    // if (thesis_res.err) {
+    //   throw { status: 500, error: thesis_res.err };
+    // }
+    const thesis_res = await thesisRepository.addThesis(
+      thesis.title,
+      thesis.supervisor,
+      thesis.keywords,
+      thesis.type,
+      thesis.groups,
+      thesis.description,
+      thesis.knowledge,
+      thesis.note,
+      thesis.expiration_date,
+      thesis.level,
+      thesis.cds,
+      thesis.creation_date,
+      thesis.status
     )
-  if(thesis_res.err_message) {
-    throw { status: 500, error: thesis_res.err };
-  }
-  console.log(thesis_res.id)
-    
-  // // for each CoSupervisor, add an entry into COSUPERVISORTHESIS
-  if (thesis.cosupervisor) {
-    for (let id of thesis.cosupervisor) {
-      const result = await coSupervisorThesisRepository.addCoSupervisorThesis(
-        thesis_res.id,
-        thesis.supervisor,
-        id
-      );
-      if (result.err) {
-        throw { status: 500, error: result.err };
+    if (thesis_res.err_message) {
+      throw { status: 500, error: thesis_res.err };
+    }
+
+    // // for each CoSupervisor, add an entry into COSUPERVISORTHESIS
+    if (thesis.cosupervisor) {
+      for (let id of thesis.cosupervisor) {
+        const result = await coSupervisorThesisRepository.addCoSupervisorThesis(
+          thesis_res.id,
+          thesis.supervisor,
+          id
+        );
+        if (result.err) {
+          throw { status: 500, error: result.err };
+        }
       }
     }
-  }
 
-  return thesis;
+    return thesis;
+  }
+  catch (error) {
+    return error
+  }
 };

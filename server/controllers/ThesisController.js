@@ -194,7 +194,7 @@ exports.addApplication = function addApplication(req, res, next) {
  * @param {*} next
  * @returns thesis object
  */
-exports.addThesis = function addThesis(req, res) {
+exports.addThesis = async function addThesis(req, res) {
   
   req.body.supervisor = 1; //TOBE Changed
   if( req.body.level === 'Master'){
@@ -248,13 +248,20 @@ exports.addThesis = function addThesis(req, res) {
   }
 
   // console.log(req.body)
-  thesisService
-    .addThesis(req.body)
-    .then(function (response) {
-      return res.status(201).json(response);
-    })
-    .catch(function (err) {
-      console.log(err)
-      return res.status(500).json(err.error);
-    });
+  // thesisService
+  //   .addThesis(req.body)
+  //   .then(function (response) {
+  //     return res.status(201).json(response);
+  //   })
+  //   .catch(function (err) {
+  //     console.log(err)
+  //     return res.status(500).json(err.error);
+  //   });
+  const response = await thesisService.addThesis(req.body)
+  if(response.error) {
+    return res.status(response.status).json(response.error)
+  }
+  else {
+    return res.status(200).json(response)
+  }
 };
