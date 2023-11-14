@@ -2,24 +2,6 @@
 
 const teacherService = require("../services/TeacherService");
 
-exports.accRefApplication = function accRefApplication(req, res, next) {
-  if (req.body.accepted == undefined) {
-    return res.status(400).json({ error: "Missing new status" });
-  }
-  teacherService
-    .accRefApplication(
-      req.body.accepted,
-      req.params.id_professor,
-      req.params.id_application
-    )
-    .then(function (response) {
-      res.status(200).json(response);
-    })
-    .catch(function (response) {
-      res.status(500).json(response);
-    });
-};
-
 /**
  * wrapper function for showing the list of application received by a defined teacher given his id number
  * @param {*} req in params.id_professor is store the id
@@ -62,25 +44,30 @@ exports.listApplication = function listApplication(req, res, next) {
     return res.status(200).json(response)
   })
   .catch(function (response) {
-    return res.status(500).json(response.message);
+    return res.status(500).json(response);
     });
 };
 
-exports.acceptApplication = function acceptApplication(req, res, next) {
+exports.acceptApplication = function acceptApplication(req, res) {
   if (req.body.accepted == undefined) {
-    return res.status(400).json({ error: "Missing new status accpetApplication" });
+    return res.status(400).json({ error: "Missing new status acceptApplication" });
   }
-  console.log("acceptApplication CONTROLLER status = " + req.body.accepted);
-  teacherService
+  console.log(req.body.accepted)
+  if(req.body.accepted == 0 || req.body.accepted == 1 || req.body.accepted == 2){
+    teacherService
     .acceptApplication(
       req.body.accepted,
       req.params.id_professor,
       req.params.id_application
     )
     .then(function (response) {
-      res.status(200).json(response);
+      return res.status(200).json(response);
     })
     .catch(function (response) {
-      res.status(500).json(response);
+      return res.status(500).json(response);
     });
+  }
+  else{
+    return res.status(400).json({error : "Invalid new status entered"})
+  }
 };

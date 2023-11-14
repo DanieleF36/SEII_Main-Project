@@ -3,7 +3,6 @@ const request = require("supertest");
 const controller = require("../controllers/TeacherController.js");
 const applicationRepository = require("../repositories/ApplicationRepository.js")
 const teacherService = require("../services/TeacherService.js")
-const sqlite = require('sqlite3')
 
 // jest.mock('sqlite3', () => {
 //     const originalDb = jest.requireActual('sqlite3');
@@ -12,6 +11,10 @@ const sqlite = require('sqlite3')
 //         all: jest.fn()
 //     };
 // });
+
+beforeEach(() => {
+    jest.clearAllMocks();
+  });  
 
 describe("BROWSE APPLICATION UNIT TEST", () => {
     test("U1: no supervisor's id is defined, an error should occur", async () => {
@@ -147,4 +150,82 @@ describe("BROWSE APPLICATION UNIT TEST", () => {
         expect(jsonResponse.error).toBeDefined()
     })
 
+})
+
+describe("ACCEPT APPLICATION UNIT TEST", () => {
+    test("U1: Missing body", async () => {
+      const mockReq = {
+        body: {}
+      };
+      const mockRes = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+      await controller.acceptApplication(mockReq, mockRes);
+      expect(mockRes.status).toHaveBeenCalledWith(400);
+      expect(mockRes.json).toBeDefined();
+    });
+    test("U2: Invalid new status", async () => {
+        const mockReq = {
+            body: {
+                accepted : 500
+            }
+        };
+        const mockRes = {
+          status: jest.fn().mockReturnThis(),
+          json: jest.fn(),
+        };
+        await controller.acceptApplication(mockReq, mockRes);
+        expect(mockRes.status).toHaveBeenCalledWith(400);
+        expect(mockRes.json).toBeDefined();
+      });
+      test("U3: Invalid teacherId or ApplicationId", async () => {
+        const mockReq = {
+            body: {
+                accepted : 1
+            },
+            params:{
+                id_professor : 100,
+                id_application : 1
+            }
+        };
+        const mockRes = {
+          status: jest.fn().mockReturnThis(),
+          json: jest.fn(),
+        };
+        const mockError = {
+             error: "No rows updated. Teacher ID or Application Id not found."
+        }
+        jest.spyOn(teacherService, "acceptApplication").mockRejectedValue(mockError);          
+        await controller.acceptApplication(mockReq, mockRes)
+        expect(mockRes.status).toHaveBeenCalledWith(500);
+        expect(mockRes.json).toBeDefined()
+      });
+      test("U4: Application accepted or rejected correctly", async () => {
+        const mockReq = {
+            body: {
+                accepted : 1
+            },
+            params:{
+                id_professor : 1,
+                id_application : 1
+            }
+        };
+        const mockRes = {
+          status: jest.fn().mockReturnThis(),
+          json: jest.fn(),
+        };
+        jest.spyOn(teacherService, "acceptApplication").mockImplementationOnce(() => {
+            return {
+              then: function(callback) {
+                callback();
+                return this; // Return the same object to allow chaining
+              },
+              catch: function(err) {}
+            };
+          });          
+          await controller.acceptApplication(mockReq, mockRes)
+          expect(mockRes.status).toHaveBeenCalledWith(200);
+          expect(mockRes.json).toBeDefined()
+      });
 })

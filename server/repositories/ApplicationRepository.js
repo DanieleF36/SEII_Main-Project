@@ -30,7 +30,8 @@ exports.listApplication = (id_teacher) => {
       }
       //! CHECK IF THE APPLICATION EXIST OR NOT
       if (rows.length == 0) {
-        return resolve({ error: "Application not found." });
+         reject({ error: "Application not found." });
+         return
       } else {
         const application = rows.map((a) => ({
           id_application: a.id,
@@ -51,7 +52,8 @@ exports.listApplication = (id_teacher) => {
             }
             //! CHECK TO SEE IF STUDENT EXIST OR NOT
             if (rows.length == 0) {
-              return resolve({ error: "Student not found." });
+              reject({ error: "Student not found." });
+              return;
             } else {
               student = rows.map((s) => ({
                 surname: s.surname,
@@ -67,7 +69,8 @@ exports.listApplication = (id_teacher) => {
               }
               //! CHECK TO SEE IF THE THESIS EXIST OR NOT
               if (rows.length == 0) {
-                return resolve({ error: "Thesis not found." });
+                reject({ error: "Thesis not found." });
+                return
               } else {
                 const thesis = rows.map((t) => ({
                   title: t.title,
@@ -83,23 +86,6 @@ exports.listApplication = (id_teacher) => {
           });
         });
       }
-    });
-  });
-};
-
-exports.accRefApplication = (status, id_teacher, id_application) => {
-  console.log("APPLICATION");
-  console.log(status, id_teacher, id_application);
-  const sqlTeacher =
-    "UPDATE Application SET status = ? WHERE id_teacher = ? AND id = ?";
-  return new Promise((resolve, reject) => {
-    db.run(sqlTeacher, [status, id_teacher, id_application], (err, row) => {
-      if (err) {
-        console.error("SQLite Error:", err.message);
-        reject(err);
-        return;
-      }
-      resolve(this.changes);
     });
   });
 };
@@ -144,17 +130,21 @@ exports.addProposal = (studentId, thesisId, cvPath) => {
 };
 
 exports.acceptApplication = (status, teacherID, applicationID,) => {
-  console.log("accApplication REPO = " + status);
   return new Promise((resolve, reject) => {
     const sql = 'UPDATE Application SET status = ? WHERE id_teacher = ? AND id = ?';
     db.run(sql, [status, teacherID, applicationID], function (err) {
       if (err) {
         console.error("Error in SQLDatabase:", err.message);
         reject(err);
+        return
       } else {
-        resolve(resolve({
+        if (this.changes === 0) {
+          reject({ error : "No rows updated. Teacher ID or Application Id not found."});
+          return
+        }
+        resolve({
           status: status
-        }));
+        });
       }
     });
   });
