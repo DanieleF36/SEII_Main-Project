@@ -137,9 +137,11 @@ exports.acceptApplication = (status, teacherID, applicationID,) => {
       if (err) {
         console.error("Error in SQLDatabase:", err.message);
         reject(err);
+        return
       } else {
         if (this.changes === 0) {
           reject({ error : "No rows updated. Teacher ID or Application Id not found."});
+          return
         }
         resolve({
           status: status

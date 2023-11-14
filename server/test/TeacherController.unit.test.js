@@ -12,6 +12,10 @@ const teacherService = require("../services/TeacherService.js")
 //     };
 // });
 
+beforeEach(() => {
+    jest.clearAllMocks();
+  });  
+
 describe("BROWSE APPLICATION UNIT TEST", () => {
     test("U1: no supervisor's id is defined, an error should occur", async () => {
         const mockReq = {
@@ -175,13 +179,13 @@ describe("ACCEPT APPLICATION UNIT TEST", () => {
         expect(mockRes.status).toHaveBeenCalledWith(400);
         expect(mockRes.json).toBeDefined();
       });
-      test.skip("U3: Invalid teacherId or ApplicationId", async () => {
+      test("U3: Invalid teacherId or ApplicationId", async () => {
         const mockReq = {
             body: {
                 accepted : 1
             },
             params:{
-                id_professor : 1,
+                id_professor : 100,
                 id_application : 1
             }
         };
@@ -189,25 +193,13 @@ describe("ACCEPT APPLICATION UNIT TEST", () => {
           status: jest.fn().mockReturnThis(),
           json: jest.fn(),
         };
-        jest.spyOn(teacherService, "acceptApplication").mockImplementationOnce(() => {
-            return {
-              then: function(callback) {
-                callback();
-                return this; // Return the same object to allow chaining
-              },
-              catch: function(err) {
-                err([
-                  [
-                    { error: "No rows updated. Teacher ID or Application Id not found." }
-                  ]
-                ]);
-                return this; // Return the same object to allow chaining
-              }
-            };
-          });          
-          await controller.acceptApplication(mockReq, mockRes)
-          expect(mockRes.status).toHaveBeenCalledWith(200);
-          expect(mockRes.json).toBeDefined()
+        const mockError = {
+             error: "No rows updated. Teacher ID or Application Id not found."
+        }
+        jest.spyOn(teacherService, "acceptApplication").mockRejectedValue(mockError);          
+        await controller.acceptApplication(mockReq, mockRes)
+        expect(mockRes.status).toHaveBeenCalledWith(500);
+        expect(mockRes.json).toBeDefined()
       });
       test("U4: Application accepted or rejected correctly", async () => {
         const mockReq = {
@@ -228,7 +220,8 @@ describe("ACCEPT APPLICATION UNIT TEST", () => {
               then: function(callback) {
                 callback();
                 return this; // Return the same object to allow chaining
-              }
+              },
+              catch: function(err) {}
             };
           });          
           await controller.acceptApplication(mockReq, mockRes)

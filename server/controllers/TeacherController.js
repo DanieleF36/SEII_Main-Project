@@ -61,10 +61,10 @@ exports.acceptApplication = function acceptApplication(req, res) {
       req.params.id_application
     )
     .then(function (response) {
-      res.status(200).json(response);
+      return res.status(200).json(response);
     })
     .catch(function (response) {
-      res.status(500).json(response);
+      return res.status(500).json(response);
     });
   }
   else{
