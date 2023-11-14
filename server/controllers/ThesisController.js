@@ -232,7 +232,7 @@ exports.addThesis = function addThesis(req, res) {
       .json({ error: "expiration date is missing or not valid" });
   }
 
-  if (!req.body.level || (req.body.level != 0 && req.body.level != 1)) {
+  if (req.body.level===undefined || (req.body.level !== 0 && req.body.level !== 1)) {
     return res.status(402).json({ error: "level value not recognized" });
   }
 
