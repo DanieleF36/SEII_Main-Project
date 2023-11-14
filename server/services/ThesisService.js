@@ -190,7 +190,7 @@ exports.addApplication = function (id) {};
  * TODO: errors mgmt
  **/
 exports.addThesis = async function (thesis) {
-  let thesis_res;
+  
 
   // // an ID in TEACHER must be defined
   // if(!thesis.supervisor) {
@@ -203,12 +203,13 @@ exports.addThesis = async function (thesis) {
   // }
 
   // look for each co-supervisor id into COSUPERVISOR
-  if (thesis.co_supervisor) {
-    for (let id of thesis.co_supervisor) {
-      if (Object.keys(await coSupervisorRepository.findById(id)).length === 0) {
+  console.log(thesis)
+  if (thesis.cosupervisor) {
+    for (let id of thesis.cosupervisor) {
+      if (Object.keys(await coSupervisorRepository.findById(parseInt(id))).length === 0) {
         throw {
           status: 400,
-          msg: "supervisor not found in COSUPERVISOR, should return 400",
+          error: "supervisor not found in COSUPERVISOR, should return 400",
         };
       }
     }
@@ -223,7 +224,26 @@ exports.addThesis = async function (thesis) {
   thesis.creation_date = creat_date;
 
   // add an entry into THESIS
-  thesis_res = await thesisRepository.addThesis(
+  // thesis_res = await thesisRepository.addThesis(
+  //   thesis.title,
+  //   thesis.supervisor,
+  //   thesis.keywords,
+  //   thesis.type,
+  //   thesis.groups,
+  //   thesis.description,
+  //   thesis.knowledge,
+  //   thesis.note,
+  //   thesis.expiration_date,
+  //   thesis.level,
+  //   thesis.cds,
+  //   thesis.creation_date,
+  //   thesis.status
+  //   );
+  // console.log(thesis_res)
+  // if (thesis_res.err) {
+  //   throw { status: 500, error: thesis_res.err };
+  // }
+  const thesis_res = await thesisRepository.addThesis(
     thesis.title,
     thesis.supervisor,
     thesis.keywords,
@@ -237,14 +257,15 @@ exports.addThesis = async function (thesis) {
     thesis.cds,
     thesis.creation_date,
     thesis.status
-  );
-  if (thesis_res.err) {
+    )
+  if(thesis_res.err_message) {
     throw { status: 500, error: thesis_res.err };
   }
-
+  console.log(thesis_res.id)
+    
   // // for each CoSupervisor, add an entry into COSUPERVISORTHESIS
-  if (thesis.co_supervisor) {
-    for (let id of thesis.co_supervisor) {
+  if (thesis.cosupervisor) {
+    for (let id of thesis.cosupervisor) {
       const result = await coSupervisorThesisRepository.addCoSupervisorThesis(
         thesis_res.id,
         thesis.supervisor,
