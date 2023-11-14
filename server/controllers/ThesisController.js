@@ -209,27 +209,36 @@ exports.addApplication = function addApplication(req, res, next) {
  * @returns thesis object
  */
 exports.addThesis = function addThesis(req, res) {
+  
+  req.body.supervisor=1;
+  if(req.body.level==='Master'){
+    req.body.level=1;
+  }else{
+    req.body.level=0;
+  }
+  console.log(req.body);
+
   if (!req.body) {
-    return res.status(400).json({ error: "body is missing" });
+    return res.status(403).json({ error: "body is missing" });
   }
 
   if (!req.body.supervisor) {
-    return res.status(400).json({ error: "supervisor is missing" });
+    return res.status(409).json({ error: "supervisor is missing" });
   }
 
   if (!req.body.expiration_date | (req.body.expiration_date == "")) {
     return res
-      .status(400)
+      .status(401)
       .json({ error: "expiration date is missing or not valid" });
   }
 
   if (!req.body.level || (req.body.level != 0 && req.body.level != 1)) {
-    return res.status(400).json({ error: "level value not recognized" });
+    return res.status(402).json({ error: "level value not recognized" });
   }
 
   if (!req.body.status || req.body.status != 1) {
     return res
-      .status(400)
+      .status(405)
       .json({ error: "status value not recognized or allowed" });
   }
 
@@ -241,6 +250,7 @@ exports.addThesis = function addThesis(req, res) {
   thesisService
     .addThesis(req.body)
     .then(function (response) {
+      console.log(response);
       res.status(201).json(response);
     })
     .catch(function (err) {

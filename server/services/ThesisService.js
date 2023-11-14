@@ -201,7 +201,6 @@ exports.addThesis = async function (thesis) {
   // if(!teacherRepository.findById(thesis.supervisor)) {
   //     console.log('supervisor not found in TEACHER, should return 400')
   // }
-  thesis.supervisor = "t123456";
 
   // look for each co-supervisor id into COSUPERVISOR
   if (thesis.co_supervisor) {

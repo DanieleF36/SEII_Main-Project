@@ -1,6 +1,3 @@
-import dayjs from "dayjs";
-import { title } from "process";
-import { emitKeypressEvents } from "readline";
 
 const URL = 'http://localhost:3001';
 
@@ -22,30 +19,30 @@ async function listApplication() {
   }
 
 async function insertProposal(thesis) {
-  const response = await fetch(URL + '/thesis', {
+    thesis.status=1;
+    console.log( JSON.stringify(thesis))
+  let response = await fetch(URL + '/thesis', {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(thesis)
+  
   })
+  
+
   if (response.ok) {
-    return response.map( item => ({
-              title: item.title,
-              supervisor: item.supervisor,
-              keywords: item.keywords,
-              type: item.type,
-              groups: item.groups,
-              description: item.description,
-              knowledge: item.knowledge,
-              note: item.note,
-              expiration_date: item.expiration_date,
-              level: item.level,
-              cds: item.cds,
-              status: item.status
-          ,}));
+    console.log("ciao")
+      let risposta = await response.json();
+      console.log(risposta)
+
+    
+    return true;
+    
   } else {
-    throw response.msg;
+    console.log("ciao");
+    console.log(response.error);
+    throw response.error;
   }
 }
 
@@ -159,6 +156,6 @@ async function applyForProposal(application) {
     }
 }
 
-const API = {listApplication, insertProposal, advancedResearchThesis, acceptApplication, applyForProposal};
+const API = {listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal};
 
 export default API;

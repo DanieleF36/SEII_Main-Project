@@ -3,13 +3,14 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import toast, { Toaster } from 'react-hot-toast';
+import API from '../API';
 
 function AddProposalForm() {
     const [proposalData, setProposalData] = useState({
         title: '',
         supervisor: '',
         cosupervisor: '',
-        expirationDate: '',
+        expiration_date: '',
         keywords: '',
         type: '',
         groups: '',
@@ -30,7 +31,7 @@ function AddProposalForm() {
             title: '',
             supervisor: '',
             cosupervisor: '',
-            expirationDate: '',
+            expiration_date: '',
             keywords: '',
             type: '',
             groups: '',
@@ -74,7 +75,7 @@ function AddProposalForm() {
         else if (proposalData.knowledge === '') {
             toast.error('Knowledge field cannot be empty')
         }
-        else if (proposalData.expirationDate === '') {
+        else if (proposalData.expiration_date === '') {
             toast.error('Expiration Date field cannot be empty')
         }
         else if (proposalData.level === '') {
@@ -85,8 +86,9 @@ function AddProposalForm() {
         }
         else {
             // Implement the logic to add the proposal using the proposalData state- API
-            //API.then(toast.success(res)).catch(toast.error(res.error))
-            toast.success('Thesis Proposal successfully added');
+            API.insertProposal(proposalData)
+            .then(toast.success('Thesis Proposal successfully added'))
+            .catch((msg)=>toast.error(msg));
         }
     };
 
@@ -121,8 +123,8 @@ function AddProposalForm() {
                         <Form.Label><strong>Expiration Date</strong></Form.Label>
                         <Form.Control
                             type="date"
-                            name="expirationDate"
-                            value={proposalData.expDate}
+                            name="expiration_date"
+                            value={proposalData.expiration_date}
                             onChange={handleInputChange}
                         />
                     </Form.Group>
