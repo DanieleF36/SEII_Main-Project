@@ -41,6 +41,9 @@ exports.listApplication = (id_teacher) => {
           path_cv: a.path_cv,
           status: a.status,
         }));
+
+        resolve(application);
+        /*
         // for each application found student's information are requested
         application.forEach((element) => {
           //! QUERY TO THE STUDENT DATABASE
@@ -84,7 +87,7 @@ exports.listApplication = (id_teacher) => {
               }
             });
           });
-        });
+        });*/
       }
     });
   });
@@ -142,9 +145,7 @@ exports.acceptApplication = (status, teacherID, applicationID,) => {
           reject({ error : "No rows updated. Teacher ID or Application Id not found."});
           return
         }
-        resolve({
-          status: status
-        });
+        resolve(status);
       }
     });
   });
