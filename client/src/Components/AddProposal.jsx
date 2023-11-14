@@ -169,7 +169,7 @@ function AddProposalForm() {
                         <Form.Control
                             type="text"
                             name="knowledge"
-                            value={proposalData.know}
+                            value={proposalData.knowledge}
                             onChange={handleInputChange}
                         />
                     </Form.Group>
