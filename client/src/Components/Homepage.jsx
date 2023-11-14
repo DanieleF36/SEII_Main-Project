@@ -60,11 +60,11 @@ function Homepage(props) {
         cv: ''
     });
 
-    useEffect(() => {
+    /*useEffect(() => {
         items.map(e=>{if(e.key===active){e.props.active=true}});
         console.log(filters);
         //API.applyfilter(filters)
-      }, [active]);
+      }, [active]);*/
 
     
 

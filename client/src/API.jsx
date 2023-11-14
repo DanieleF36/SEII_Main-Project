@@ -1,18 +1,20 @@
+import { alignPropType } from "react-bootstrap/esm/types";
 
 const URL = 'http://localhost:3001';
 
-async function listApplication() { 
+async function listApplication(id_professor) { 
     const response = await fetch(URL+ `/professor/${id_professor}/applications`);
     const application = await response.json();
     if (response.ok) {
-      return application.map((a) => ({
+        console.log(application)
+       return application.map((a) => ({
+                id_application: a.id_application,
                 id_student: a.id_student,
                 id_thesis: a.id_thesis,
                 data: a.data,
                 path_cv: a.path_cv,
                 status: a.status,
-                id_teacher: a.id_teacher
-            ,}));
+            }));
     } else {
       throw services;  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
     }
@@ -38,7 +40,7 @@ async function insertProposal(thesis) {
 
     
     return true;
-    
+
   } else {
     console.log("ciao");
     console.log(response.error);
@@ -113,18 +115,23 @@ async function advancedSearchThesis(params){
   }
 }
 
-async function acceptApplication() { 
-  const response = await fetch(URL+ `/professor/${id_professor}/applications/${id_application}`);
+async function acceptApplication(status,id_professor,id_application) { 
+  const response = await fetch(URL+ `/professor/${id_professor}/applications/${id_application}`,{
+                        method: "POST",
+
+                        body: status});              
   const application = await response.json();
   if (response.ok) {
-    return application.map((a) => ({
+    console.log("ciao");
+    console.log(application);
+    return application;/*application.map((a) => ({
               id_student: a.id_student,
               id_thesis: a.id_thesis,
               data: a.data,
               path_cv: a.path_cv,
               status: a.status,
               id_teacher: a.id_teacher
-          ,}));
+          ,}));*/
   } else {
     throw services;  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
   }
