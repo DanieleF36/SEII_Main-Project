@@ -29,24 +29,8 @@ const db = new sqlite.Database("db.sqlite", (err) => {
  */
 
 //Only for advancedSearch
-function sqlQueryCreator(
-  from,
-  to,
-  order,
-  specific,
-  title,
-  idSupervisors,
-  idCoSupervisorsThesis,
-  keyword,
-  type,
-  groups,
-  knowledge,
-  expiration_date,
-  cds,
-  creation_date,
-  level
-) {
-  let sql = "SELECT * FROM Thesis WHERE status=0 AND level=" + level + " ";
+function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) {
+  let sql = "SELECT * FROM Thesis WHERE status=1 AND level=" + level + " ";
   let params = [];
   specific = !specific;
   // checks for title if exists
@@ -131,7 +115,7 @@ function sqlQueryCreator(
     params.push(specific ? `%${creation_date}%` : creation_date);
   }
   sql += "ORDER BY " + transformOrder(order);
-  if (to && from) sql += " LIMIT " + (to - from) + " OFFSET " + from;
+  if (to != undefined && from != undefined) sql += " LIMIT " + (to - from) + " OFFSET " + from;
   return [sql, params];
 }
 
@@ -155,40 +139,8 @@ function sqlQueryCreator(
  * @param {*} level 0 (bachelor) | 1 (master)
  * @returns list of thesis objects
  */
-exports.advancedResearch = (
-  from,
-  to,
-  order,
-  specific,
-  title,
-  idSupervisors,
-  idCoSupervisorsThesis,
-  keyword,
-  type,
-  groups,
-  knowledge,
-  expiration_date,
-  cds,
-  creation_date,
-  level
-) => {
-  let sql = sqlQueryCreator(
-    from,
-    to,
-    order,
-    specific,
-    title,
-    idSupervisors,
-    idCoSupervisorsThesis,
-    keyword,
-    type,
-    groups,
-    knowledge,
-    expiration_date,
-    cds,
-    creation_date,
-    level
-  );
+exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
+  let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
   const params = sql[1];
   sql = sql[0];
   return new Promise((resolve, reject) => {
@@ -209,6 +161,7 @@ exports.advancedResearch = (
         expiration_date: e.expiration_date,
         cds: e.cds,
         creation_date: e.creation_date,
+        status: e.status
       }));
       resolve(res);
     });
@@ -218,39 +171,12 @@ exports.advancedResearch = (
  * @returns SUCCESS: the new entry ID is returned
  * @returns ERROR: sqlite error is returned
  */
-exports.numberOfPage = (
-  specific,
-  title,
-  idSupervisors,
-  idCoSupervisorsThesis,
-  keyword,
-  type,
-  groups,
-  knowledge,
-  expiration_date,
-  cds,
-  creation_date,
-  level
-) => {
-  let sql = sqlQueryCreator(
-    undefined,
-    undefined,
-    "titleD",
-    specific,
-    title,
-    idSupervisors,
-    idCoSupervisorsThesis,
-    keyword,
-    type,
-    groups,
-    knowledge,
-    expiration_date,
-    cds,
-    creation_date,
-    level
-  );
+exports.numberOfPage = (specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
+  let sql = sqlQueryCreator( undefined, undefined, "titleD", specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
   const params = sql[1];
   sql = sql[0];
+  sql = sql.slice(8);
+  sql = "SELECT COUNT(*) AS cnt"+sql;
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {
       if (err) {
@@ -258,7 +184,7 @@ exports.numberOfPage = (
         reject(err);
         return;
       }
-      resolve({ nPage: rows[0] ? rows[0].cnt : 0 });
+      resolve({ nRows: rows[0] ? rows[0].cnt : 0 });
     });
   });
 };

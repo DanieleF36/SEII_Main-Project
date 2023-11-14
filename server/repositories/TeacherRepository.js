@@ -19,6 +19,8 @@ exports.findById = (id)=>{
                 reject(err);
                 return;
             }
+            if(row==undefined)
+                return resolve({});
             resolve({id: row.id, name: row.name, surname:row.surname, email:row.email, codGroup:row.cod_group, codDep:row.cod_dep});
         });
     });

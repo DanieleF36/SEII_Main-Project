@@ -19,8 +19,6 @@ function Homepage(props) {
     const [listA, setListA] = useState(false);
     const [active, setActive] = useState(1);
 
-
-    const numPages = 5;
     let items = [];
 
     const [show, setShow] = useState(false);
@@ -29,7 +27,8 @@ function Homepage(props) {
     const handleShow = () => setShow(true);
 
 
-    for (let number = 1; number <= numPages; number++) {
+    for (let number = 1; number <= props.pages; number++) {
+        console.log(props.pages);
             items.push(
                 <Pagination.Item key={number} active={number === active} onClick={()=>{setActive(number);setFilters({...filters, page: number});}}>
                     {number}
@@ -63,7 +62,7 @@ function Homepage(props) {
     useEffect(() => {
         items.map(e=>{if(e.key===active){e.props.active=true}});
         console.log(filters);
-        //API.applyfilter(filters)
+        API.advancedSearchThesis(filters);
       }, [active]);
 
     
@@ -126,7 +125,10 @@ function Homepage(props) {
 
     const handleApplyFilters = () => {
         console.log(filters);
-        //API--applyFilters(filters);
+        API.advancedSearchThesis(filters).then(res=>{
+            props.setProposals(res[1]);
+            props.setPages(res[0]);
+        });
     };
 
 
@@ -170,7 +172,7 @@ function Homepage(props) {
                                                         </Col>
                                                         <Col md='2' sm='2' xs='12'>
                                                             <strong>Status:</strong>{' '}
-                                                            {proposal.status === '1' ? (
+                                                            {proposal.status === 1 ? (
                                                                 <Badge pill bg="success">P</Badge>
                                                             ) : (
                                                                 <Badge pill bg="danger">A</Badge>

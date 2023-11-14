@@ -47,11 +47,11 @@ async function insertProposal(thesis) {
 }
 
 async function advancedSearchThesis(params){
-  let ur="/thesis";
-  if(params)
-    ur+="?";
-    if(params.page)
+  let ur="/thesis?";
+  if(params.page)
     ur+="page="+params.page;
+  else
+  ur+="page=1";
   if(params.title)
     ur+="&title="+params.title;
   if(params.supervisor)
@@ -88,8 +88,7 @@ async function advancedSearchThesis(params){
   const response = await fetch(URL+ur);
   if(response.status==200){
     const res = await response.json();
-
-    return [res[0], res[1].map((e)=>({
+    return [res.nPage, res.thesis.map((e)=>({
       id:e.id,
       title:e.title,
       supervisor:e.supervisor,
