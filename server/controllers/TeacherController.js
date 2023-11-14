@@ -44,7 +44,7 @@ exports.listApplication = function listApplication(req, res, next) {
     return res.status(200).json(response)
   })
   .catch(function (response) {
-    return res.status(500).json(response.message);
+    return res.status(500).json(response);
     });
 };
 

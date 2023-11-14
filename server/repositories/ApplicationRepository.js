@@ -30,7 +30,8 @@ exports.listApplication = (id_teacher) => {
       }
       //! CHECK IF THE APPLICATION EXIST OR NOT
       if (rows.length == 0) {
-        return resolve({ error: "Application not found." });
+         reject({ error: "Application not found." });
+         return
       } else {
         const application = rows.map((a) => ({
           id_application: a.id,
@@ -51,7 +52,8 @@ exports.listApplication = (id_teacher) => {
             }
             //! CHECK TO SEE IF STUDENT EXIST OR NOT
             if (rows.length == 0) {
-              return resolve({ error: "Student not found." });
+              reject({ error: "Student not found." });
+              return;
             } else {
               student = rows.map((s) => ({
                 surname: s.surname,
@@ -67,7 +69,8 @@ exports.listApplication = (id_teacher) => {
               }
               //! CHECK TO SEE IF THE THESIS EXIST OR NOT
               if (rows.length == 0) {
-                return resolve({ error: "Thesis not found." });
+                reject({ error: "Thesis not found." });
+                return
               } else {
                 const thesis = rows.map((t) => ({
                   title: t.title,
