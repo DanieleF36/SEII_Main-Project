@@ -19,8 +19,8 @@ async function listApplication() {
   }
 
 async function insertProposal(thesis) {
-    thesis.status=1;
-    console.log( JSON.stringify(thesis))
+    thesis.status = 1;
+    console.log(thesis)
   let response = await fetch(URL + '/thesis', {
     method: "POST",
     headers: {
@@ -32,16 +32,10 @@ async function insertProposal(thesis) {
   
 
   if (response.ok) {
-    console.log("ciao")
-      let risposta = await response.json();
-      console.log(risposta)
-
+    let risposta = await response.json();
     
     return true;
-    
   } else {
-    console.log("ciao");
-    console.log(response.error);
     throw response.error;
   }
 }

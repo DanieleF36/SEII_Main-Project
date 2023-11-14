@@ -210,50 +210,65 @@ exports.addApplication = function addApplication(req, res, next) {
  */
 exports.addThesis = function addThesis(req, res) {
   
-  req.body.supervisor=1;
-  if(req.body.level==='Master'){
-    req.body.level=1;
-  }else{
-    req.body.level=0;
+  req.body.supervisor = 1; //TOBE Changed
+  if( req.body.level === 'Master'){
+    req.body.level = 1;
   }
-  console.log(req.body);
-
-  if (!req.body) {
-    return res.status(403).json({ error: "body is missing" });
+  else{
+    req.body.level = 0;
   }
 
-  if (!req.body.supervisor) {
-    return res.status(409).json({ error: "supervisor is missing" });
+  
+  if (req.body === undefined) {
+    return res.status(400).json({ error: "body is missing" });
   }
 
-  if (!req.body.expiration_date | (req.body.expiration_date == "")) {
+  if (req.body.supervisor === undefined) {
+    return res.status(400).json({ error: "supervisor is missing" });
+  }
+  
+  if (!Array.isArray(req.body.cosupervisor)) {
+    return res.status(400).json({ error: "cosupervisor is not an array" });
+  }
+  if (req.body.expiration_date === undefined | (req.body.expiration_date == "")) {
     return res
-      .status(401)
+      .status(400)
       .json({ error: "expiration date is missing or not valid" });
+    }
+    
+  if (req.body.level === undefined || (req.body.level !== 0 && req.body.level !== 1)) {
+    return res.status(400).json({ error: "level value not recognized" });
   }
-
-  if (req.body.level===undefined || (req.body.level !== 0 && req.body.level !== 1)) {
-    return res.status(402).json({ error: "level value not recognized" });
-  }
-
-  if (!req.body.status || req.body.status != 1) {
+  
+  
+  if (req.body.status === undefined || req.body.status != 1) {
     return res
-      .status(405)
-      .json({ error: "status value not recognized or allowed" });
+    .status(400)
+    .json({ error: "status value not recognized or allowed" });
   }
-
+  
   // forcing the format
-  if (req.body.keywords) {
+  if (!Array.isArray(req.body.keywords)) {
+    return res.status(400).json({ error: "keywords value not recognized" });
+  }
+  else {
     req.body.keywords = req.body.keywords.join();
   }
+  if (req.body.type === undefined || !Array.isArray(req.body.type)) {
+    return res.status(400).json({ error: "type value not recognized" });
+  }
+  else {
+    req.body.type = req.body.type.join();
+  }
 
+  // console.log(req.body)
   thesisService
     .addThesis(req.body)
     .then(function (response) {
-      console.log(response);
-      res.status(201).json(response);
+      return res.status(201).json(response);
     })
     .catch(function (err) {
-      res.status(500).json(err);
+      console.log(err)
+      return res.status(500).json(err.error);
     });
 };
