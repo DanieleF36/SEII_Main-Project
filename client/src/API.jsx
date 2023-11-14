@@ -135,9 +135,6 @@ async function applyForProposal(application) {
     formData.append('cv', application.cv);
     const response = await fetch(URL+ `/thesis/${application.id_thesis}/applications`,{
         method: "POST",
-        headers: {
-        "Content-Type": "multipart/form-data",
-        },
         body: formData
     });
     const app = await response.json();

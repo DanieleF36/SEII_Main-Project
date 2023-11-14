@@ -59,13 +59,11 @@ function Homepage(props) {
         cv: ''
     });
 
-    /*useEffect(() => {
+    useEffect(() => {
         items.map(e=>{if(e.key===active){e.props.active=true}});
         console.log(filters);
         API.advancedSearchThesis(filters);
       }, [active]);
-
-    
 
 
     const handleFilterChange = (e) => {
@@ -90,7 +88,7 @@ function Homepage(props) {
     const handleApplyProp = () => {
         if(application.cv!==''){
            console.log(application);
-           API.applyForProposal(application).then(()=>{ toast.success('Application successfully sended');setApplication({ ...application, cv: '' })})
+           API.applyForProposal(application).then((res)=>{ toast.success('Application successfully sended');setApplication({ ...application, cv: '' })})
            .catch((msg)=>toast.error(msg));
            
         }
@@ -205,7 +203,7 @@ function Homepage(props) {
                                                 <strong>Creation Date:</strong> {proposal.creatDate}
                                                 <br />
                                                 <br />
-                                                {proposal.status === '1' ? <>
+                                                {proposal.status === 1 ? <>
                                                     <Button variant="primary" onClick={()=>{handleShow();setApplication({ ...application, id_thesis: proposal.id });}}>
                                                         Apply
                                                     </Button>
