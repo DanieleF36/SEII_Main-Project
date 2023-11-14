@@ -139,7 +139,7 @@ async function applyForProposal(application) {
     const response = await fetch(URL+ `/thesis/${application.id_thesis}/applications`,{
         method: "POST",
         headers: {
-        "Content-Type": "application/pdf",
+        "Content-Type": "multipart/form-data",
         },
         body: formData
     });

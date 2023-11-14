@@ -7,22 +7,29 @@ const applicationRepository = require("../repositories/ApplicationRepository");
  *
  * @param {*} studentId Integer
  * @param {*} thesisId Integer
- * @param {*} cv file
+ * @param {*} cv codified file in an js object  
  * @returns 
  * in case of succes
- *  object{}
+ *  object{ applicationID: "integer",
+            studentId: "integer",
+            date: "string",
+            status: 0,
+            professorId: "integer"
+          }
  * in case of error
- *  object {error: string}
+ *  object {error: "string"}
  **/
 exports.addProposal = function (studentId, thesisId, cv) {
     return new Promise((resolve, reject) => {
+      //At the begginning the file is saved in tmp 
       let oldPath = cv.filepath;
       let newPath = 'C:\\Users\\danie\\Desktop\\provs\\' + cv.originalFilename;
-  
+      //move the file from the old path to the new 
       fs.rename(oldPath, newPath, async (err) => {
         if (err) {
           reject({ error: err.message });
-        } else {
+        } 
+        else {
           try {
             let res = await applicationRepository.addProposal(studentId, thesisId, newPath);
             resolve(res);

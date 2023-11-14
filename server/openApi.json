@@ -306,14 +306,7 @@
         "operationId": "addApplication",
         "requestBody": {
           "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "cv": { "type": "string" }
-                }
-              }
-            }
+            "multipart/form-data":{}
           },
           "required": true
         },
@@ -340,6 +333,9 @@
           },
           "404": {
             "description": "Not found"
+          },
+          "500":{
+            "description": "Internel error"
           }
         }
       }
@@ -399,13 +395,7 @@
           "id": { "type": "integer", "minimum": 0 },
           "id_student": { "type": "integer", "minimum": 0 },
           "id_thesis": { "type": "integer", "minimum": 0 },
-          "date": { "type": "string" },
-          "cv": {
-            "type": "object",
-            "properties": {
-              "cv": { "type": "string" }
-            }
-          }
+          "date": { "type": "string" }
         }
       },
       "error": {

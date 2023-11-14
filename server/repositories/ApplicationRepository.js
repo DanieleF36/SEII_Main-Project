@@ -134,7 +134,6 @@ exports.addProposal = (studentId, thesisId, cvPath) => {
             applicationID: insertedId,
             studentId: studentId,
             date: currentDate,
-            cvPath: cvPath,
             status: 0,
             professorId: supervisorId
           });
