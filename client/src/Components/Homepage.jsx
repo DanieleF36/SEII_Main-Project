@@ -65,7 +65,6 @@ function Homepage(props) {
         API.advancedSearchThesis(filters).then(res=>{
             props.setProposals(res[1]);
             props.setPages(res[0]);
-            handleResetChange();
         });
       }, [active]);
 
