@@ -7,7 +7,7 @@ const applicationRepository = require("../repositories/ApplicationRepository");
  *
  * @param {*} studentId Integer
  * @param {*} thesisId Integer
- * @param {*} cv codified file in an js object  
+ * @param {*} cv codified file in an js object wich has at least originalFilename and filepath as propreties
  * @returns 
  * in case of succes
  *  object{ applicationID: "integer",
@@ -34,7 +34,8 @@ exports.addProposal = function (studentId, thesisId, cv) {
             let res = await applicationRepository.addProposal(studentId, thesisId, newPath);
             resolve(res);
           } catch (error) {
-            reject({ error: error.message });
+            console.log(error);
+            reject(error);
           }
         }
       });
