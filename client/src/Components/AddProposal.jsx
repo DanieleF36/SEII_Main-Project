@@ -7,18 +7,18 @@ import API from '../API';
 
 function AddProposalForm() {
     const [proposalData, setProposalData] = useState({
-        title: '',
+        title: 'Demo1',
         supervisor: '',
         cosupervisor: '',
         expiration_date: '',
-        keywords: '',
-        type: '',
-        groups: '',
-        description: '',
-        knowledge: '',
-        note: '',
-        level: '',
-        cds: '',
+        keywords: ['D1','M1'],
+        type: ['Demo'],
+        groups: 'Group14',
+        description: 'Demo Presentation',
+        knowledge: 'Team Organization',
+        note: 'DEMO1',
+        level: 'Master',
+        cds: 'LM-32',
     });
 
     const handleInputChange = (e) => {

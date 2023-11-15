@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, Nav, Accordion, Badge, Card } from 'react-bootstrap';
+import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, NavLink, Accordion, Badge, Card } from 'react-bootstrap';
 import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
 
 function ApplicationList() {
-    
+
     const [errorMsg, setErrorMsg] = useState(undefined);
     const [dirty, setDirty] = useState(true);
-    const [id_professor, setId_professor]=useState(1);
-    const [student, setStudent]=useState([{id_stud: 0,
-                                            name: 'Marco',
-                                            surname: 'Rossi'},
-                                          {id_stud:1,
-                                                name: 'Giovanni',
-                                                surname: 'Rossi'}]);                                           
+    const [id_professor, setId_professor] = useState(1);
+    const [student, setStudent] = useState([{
+        id_stud: 0,
+        name: 'Marco',
+        surname: 'Rossi'
+    },
+    {
+        id_stud: 1,
+        name: 'Giovanni',
+        surname: 'Rossi'
+    }]);
     const [applications, setApplications] = useState([]/*[{id_application:0, 
                                                         id_thesis: '1',
                                                         title: 'AI system research',
@@ -44,99 +48,101 @@ function ApplicationList() {
                                                         data: '11/10/2024',
                                                         path_cv: 'cv.pdf', 
                                                         status: '0'}]*/);
-    
+
     //adding API from backend to set list of applications
-    
+
     useEffect(() => {
-      
-      API.listApplication(id_professor)
-        .then((applications) => {
-        setApplications(applications);
-        setDirty(false);
-      })
-      .catch((err) => {toast.error(err.error);});
-      
+
+        API.listApplication(id_professor)
+            .then((applications) => {
+                setApplications(applications);
+                setDirty(false);
+            })
+            .catch((err) => { toast.error(err.error); });
+
     }, [dirty]);
 
     //applications.map((e)=>{console.log(e.id_application)});
 
     //adding API from backend to post accept application
-    const acceptPropByProf = (status,id_professor,id_app) => {
+    const acceptPropByProf = (status, id_professor, id_app) => {
         //console.log(status,id_professor,id_app);
-        
-        API.acceptApplication(status,id_professor,id_app)
-        .then((res) => {setDirty(true);
-                    if(res==1){
-                        toast.success('Application successfully accepted')
-                    }else if(res==2){
-                        toast.error('Application successfully rejected')
-                    }})
-        .catch((err) => {toast.error(err.error);});
+
+        API.acceptApplication(status, id_professor, id_app)
+            .then((res) => {
+                setDirty(true);
+                if (res == 1) {
+                    toast.success('Application successfully accepted')
+                } else if (res == 2) {
+                    toast.error('Application successfully rejected')
+                }
+            })
+            .catch((err) => { toast.error(err.error); });
     };
 
-    
 
 
-        return (
-            <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
+
+    return (
+        <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
+             <Toaster position="top-center" reverseOrder={false} />
             <div>
-            {applications.map((application) => (
-                <Card key={application.id_application} style={{ marginBottom: '10px' }}>
-                    <Toaster position="top-center" reverseOrder={false}/>
-                    <Accordion>
-                        <Accordion.Item eventKey={application.id_application}>
-                            <Accordion.Header>
-                                <Container fluid>
-                                <Row className="d-md-flex justify-content-center align-items-center">
-                                    <Col md='3' sm='3' xs='12'>
-                                        <strong>IdThesis:</strong> {application.id_thesis}
-                                    </Col>
-                                    <Col md='3' sm='3' xs='12'>
-                                        <strong>Student:</strong> {student[application.id_student].surname+' '+student[application.id_student].name}
-                                    </Col>
-                                    <Col md='5' sm='5' xs='12'>
-                                        <strong>Status:</strong>{' '}
-                                        {application.status == '0' ? (
-                                            <Badge pill bg="warning">P</Badge>
-                                        ) : (
-                                            application.status == '1' ? (
-                                                <Badge pill bg="success">A</Badge>
-                                            ) : (
-                                                <Badge pill bg="danger">R</Badge>
-                                            )
-                                        )}
-                                    </Col>
-                                    <Col md='1' sm='1' xs='12'>
-                                        <img src="./info-circle.svg"
-                                            alt="info"
-                                            className="img-responsive" />
+                {applications.map((application) => (
+                    <Card key={application.id_application} style={{ marginBottom: '10px' }}>
+                        <Accordion>
+                            <Accordion.Item eventKey={application.id_application}>
+                                <Accordion.Header>
+                                    <Container fluid>
+                                        <Row className="d-md-flex justify-content-center align-items-center">
+                                            <Col md='3' sm='3' xs='12'>
+                                                <strong>IdThesis:</strong> {application.id_thesis}
+                                            </Col>
+                                            <Col md='3' sm='3' xs='12'>
+                                                <strong>Student:</strong> {student[application.id_student].surname + ' ' + student[application.id_student].name}
+                                            </Col>
+                                            <Col md='5' sm='5' xs='12'>
+                                                <strong>Status:</strong>{' '}
+                                                {application.status == '0' ? (
+                                                    <Badge pill bg="warning">P</Badge>
+                                                ) : (
+                                                    application.status == '1' ? (
+                                                        <Badge pill bg="success">A</Badge>
+                                                    ) : (
+                                                        <Badge pill bg="danger">R</Badge>
+                                                    )
+                                                )}
+                                            </Col>
+                                            <Col md='1' sm='1' xs='12'>
+                                                <img src="./info-circle.svg"
+                                                    alt="info"
+                                                    className="img-responsive" />
 
-                                    </Col>
-                                </Row>
-                                </Container>
-                            </Accordion.Header>
-                            <Accordion.Body>
-                                <strong>IdStudent:</strong> {application.id_student}
-                                <br />
-                                <strong>Name:</strong> {student[application.id_student].name}
-                                <br />
-                                <strong>Surname:</strong> {student[application.id_student].surname}
-                                <br />
-                                <strong>Application Date:</strong> {application.data}
-                                <br />
-                                <strong>Link Cv: </strong> {application.path_cv}
-                                <br />
-                                <br />
-                                <br />
-                                {application.status == '0' ? <Button onClick={() => acceptPropByProf(1,id_professor,application.id_application)} variant='primary'>Accept</Button> : ''}
-                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                {application.status == '0' ? <Button onClick={() => acceptPropByProf(2,id_professor,application.id_application)} variant='danger'>Reject</Button> : ''}
-                            </Accordion.Body>
-                        </Accordion.Item>
-                    </Accordion>
-                </Card>
-            ))}
-        </div>
+                                            </Col>
+                                        </Row>
+                                    </Container>
+                                </Accordion.Header>
+                                <Accordion.Body>
+                                    <strong>IdStudent:</strong> {application.id_student}
+                                    <br />
+                                    <strong>Name:</strong> {student[application.id_student].name}
+                                    <br />
+                                    <strong>Surname:</strong> {student[application.id_student].surname}
+                                    <br />
+                                    <strong>Application Date:</strong> {application.data}
+                                    <br />
+                                    <strong>Path Cv: </strong>  <a href={application.path_cv}>Cv.pdf</a>
+                                    <br />
+                                    <br />
+                                    <br />
+                                    {application.status == '0' ? <Button onClick={() => acceptPropByProf(1, id_professor, application.id_application)} variant='primary'>Accept</Button> : ''}
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    {application.status == '0' ? <Button onClick={() => acceptPropByProf(2, id_professor, application.id_application)} variant='danger'>Reject</Button> : ''}
+                                </Accordion.Body>
+                            </Accordion.Item>
+                        </Accordion>
+                    </Card>
+                ))}
+            </div>
         </div>);
 
 }
