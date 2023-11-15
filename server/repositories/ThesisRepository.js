@@ -87,7 +87,7 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
       type.forEach((e) => {
         t += e + ", ";
       });
-    params.push(specific ? `%${e}%` : e);
+    params.push(specific ? `%${t}%` : e);
   }
   if (groups != null) {
     sql += "AND groups ";
