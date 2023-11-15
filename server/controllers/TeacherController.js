@@ -33,7 +33,7 @@ const teacherService = require("../services/TeacherService");
  *        }
  * @param {*} next 
  */
-exports.listApplication = function listApplication(req, res, next) {
+exports.listApplication = function listApplication(req, res) {
   if (!req.params.id_professor) {
     res.status(400).json({error: "given supervisor's id is not valid"})
     return
@@ -49,14 +49,13 @@ exports.listApplication = function listApplication(req, res, next) {
 };
 
 exports.acceptApplication = function acceptApplication(req, res) {
-  if (req.body.accepted == undefined) {
+  if (req.body.status == undefined) {
     return res.status(400).json({ error: "Missing new status acceptApplication" });
   }
-  console.log(req.body.accepted)
-  if(req.body.accepted == 0 || req.body.accepted == 1 || req.body.accepted == 2){
+  if(req.body.status == 1 || req.body.status == 2){
     teacherService
     .acceptApplication(
-      req.body.accepted,
+      req.body.status,
       req.params.id_professor,
       req.params.id_application
     )

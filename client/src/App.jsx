@@ -15,7 +15,7 @@ function App() {
       setProposals(res[1]);
       setPage(res[0]);
     });
-   proposals.map(e=>console.log(e));
+   //proposals.map(e=>console.log(e));
   }, [user]);
 
     return (

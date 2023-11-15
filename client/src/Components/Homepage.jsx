@@ -28,7 +28,7 @@ function Homepage(props) {
 
 
     for (let number = 1; number <= props.pages; number++) {
-        console.log(props.pages);
+        //console.log(props.pages);
             items.push(
                 <Pagination.Item key={number} active={number === active} onClick={()=>{setActive(number);setFilters({...filters, page: number});}}>
                     {number}
@@ -61,7 +61,7 @@ function Homepage(props) {
 
     useEffect(() => {
         items.map(e=>{if(e.key===active){e.props.active=true}});
-        console.log(filters);
+        //console.log(filters);
         API.advancedSearchThesis(filters);
       }, [active]);
 

@@ -39,7 +39,7 @@ app.get("/professor/:id_professor/applications", (req, res) =>
 
 app.post("/thesis", (req, res) => thesisController.addThesis(req, res));
 
-app.post("/professor/:id_professor/applications/:id_application", (req, res) =>
+app.put("/professor/:id_professor/applications/:id_application", (req, res) =>
   teacherController.acceptApplication(req, res)
 );
 
