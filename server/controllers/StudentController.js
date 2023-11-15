@@ -21,7 +21,7 @@ const applicationsService = require("../services/ApplicationService");
  *     }
  *   }
  */
-exports.applyForProposal = async function (req, res, next) {
+exports.applyForProposal = function (req, res, next) {
   if (!req.body) {
     return res.status(400).json({ error: "Body is missing" });
   }
@@ -29,21 +29,23 @@ exports.applyForProposal = async function (req, res, next) {
     //Initializes an object that is used to handle the input file in the multipart/form-data format 
     const form = new formidable.IncomingForm();
     //Translate the file into a js object and call it files
-    await form.parse(req, function (err, fields, files) {
+    form.parse(req, function (err, fields, files) {
       if(err)
         return res.status(500).json({error:"Internal Error"});
-      if(files.length>1)
-        return res.status(400).json({ error: "Multiple Files" });
       if(!files.cv || !files.cv[0])
         return res.status(400).json({ error: "Missing file" });
-      const file = files.cv[0];    
+      if(files.cv.length>1){
+          return res.status(400).json({ error: "Multiple Files" });
+        }
+      const file = files.cv[0];
       applicationsService.addProposal(1, req.params.id_thesis, file)
       .then(function (response) {
         return res.status(201).json(response);
       })
       .catch(function (response) {
-        if(response.error != "Not found")
+        if(response.error != "Not found"){
           return res.status(500).json({error:"Internal Error"});
+        }
         else
           return res.status(404).json(response);
       });
