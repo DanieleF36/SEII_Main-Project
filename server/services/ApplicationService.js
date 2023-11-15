@@ -7,7 +7,7 @@ const applicationRepository = require("../repositories/ApplicationRepository");
  *
  * @param {*} studentId Integer
  * @param {*} thesisId Integer
- * @param {*} cv codified file in an js object  
+ * @param {*} cv codified file in an js object wich has at least originalFilename and filepath as propreties
  * @returns 
  * in case of succes
  *  object{ applicationID: "integer",
@@ -24,6 +24,7 @@ exports.addProposal = function (studentId, thesisId, cv) {
       //At the begginning the file is saved in tmp 
       let oldPath = cv.filepath;
       let newPath = 'C:\\Users\\danie\\Desktop\\provs\\'+ cv.originalFilename;
+
       //move the file from the old path to the new 
       fs.rename(oldPath, newPath, async (err) => {
         if (err) {
@@ -34,7 +35,8 @@ exports.addProposal = function (studentId, thesisId, cv) {
             let res = await applicationRepository.addProposal(studentId, thesisId, newPath);
             resolve(res);
           } catch (error) {
-            reject({ error: error.message });
+            console.log(error);
+            reject(error);
           }
         }
       });
