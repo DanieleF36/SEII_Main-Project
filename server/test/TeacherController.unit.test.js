@@ -168,7 +168,7 @@ describe("ACCEPT APPLICATION UNIT TEST", () => {
     test("U2: Invalid new status", async () => {
         const mockReq = {
             body: {
-                accepted : 500
+                status : 500
             }
         };
         const mockRes = {
@@ -182,7 +182,7 @@ describe("ACCEPT APPLICATION UNIT TEST", () => {
       test("U3: Invalid teacherId or ApplicationId", async () => {
         const mockReq = {
             body: {
-                accepted : 1
+                status : 1
             },
             params:{
                 id_professor : 100,
@@ -198,13 +198,14 @@ describe("ACCEPT APPLICATION UNIT TEST", () => {
         }
         jest.spyOn(teacherService, "acceptApplication").mockRejectedValue(mockError);          
         await controller.acceptApplication(mockReq, mockRes)
+        await Promise.resolve()
         expect(mockRes.status).toHaveBeenCalledWith(500);
-        expect(mockRes.json).toBeDefined()
+        expect(mockRes.json).toHaveBeenCalledWith({error: "No rows updated. Teacher ID or Application Id not found."})
       });
       test("U4: Application accepted or rejected correctly", async () => {
         const mockReq = {
             body: {
-                accepted : 1
+                status : 1
             },
             params:{
                 id_professor : 1,
