@@ -2,40 +2,83 @@ import { alignPropType } from "react-bootstrap/esm/types";
 
 const URL = 'http://localhost:3001';
 
-async function listApplication(id_professor) { 
-    const response = await fetch(URL+ `/professor/${id_professor}/applications`);
-    const application = await response.json();
-    if (response.ok) {
-       return application.map((a) => ({
-                id_application: a.id_application,
-                id_student: a.id_student,
-                id_thesis: a.id_thesis,
-                data: a.data,
-                path_cv: a.path_cv,
-                status: a.status,
-            }));
-    } else {
-      throw services;  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
-    }
+async function listApplication(id_professor) {
+  const response = await fetch(URL + `/professor/${id_professor}/applications`);
+  const application = await response.json();
+  if (response.ok) {
+    console.log(application)
+    return application.map((a) => ({
+      id_application: a.id_application,
+      id_student: a.id_student,
+      id_thesis: a.id_thesis,
+      data: a.data,
+      path_cv: a.path_cv,
+      status: a.status,
+    }));
+  } else {
+    throw services;  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
   }
+}
 
-async function insertProposal(thesis) {
+function insertProposal(thesis) {
     thesis.status = 1;
     thesis.cosupervisor = thesis.cosupervisor === '' ? [''] : thesis.cosupervisor
-  let response = await fetch(URL + '/thesis', {
+  //   console.log(thesis)
+  // let response = await fetch(URL + '/thesis', {
+  //   method: "POST",
+  //   headers: {
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify(thesis)
+
+  // })
+  // let risposta = await response.json();
+  // if (risposta.status < 300 || risposta.status >= 200) {
+  //   return true;
+  // } else {
+  //   console.log('wrong')
+  //   throw response.error;
+  // }
+
+
+  return getJson(fetch(URL + '/thesis', {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(thesis)
-  
+
+  })).then(json => {
+    return json
   })
-  let risposta = await response.json();
-  if (response.ok) {
-    return true;
-  } else {
-    throw response.error;
-  }
+
+}
+
+function getJson(httpResponsePromise) {
+  // server API always return JSON, in case of error the format is the following { error: <message> } 
+  return new Promise((resolve, reject) => {
+    httpResponsePromise
+      .then((response) => {
+        if (response.ok) {
+
+          // the server always returns a JSON, even empty {}. Never null or non json, otherwise the method will fail
+          response.json()
+            .then(json => resolve(json))
+            .catch(err => reject({ error: "Cannot parse server response" }))
+
+        } else {
+          // analyzing the cause of error
+          response.json()
+            .then(obj =>
+              reject(obj)
+            ) // error msg in the response body
+            .catch(err => reject({ error: "Cannot parse server response" })) // something else
+        }
+      })
+      .catch(err =>
+        reject({ error: "Cannot communicate" })
+      ) // connection error
+  });
 }
 
 async function advancedSearchThesis(params){
@@ -102,7 +145,7 @@ async function advancedSearchThesis(params){
       nPage:e.nPage
     }))]
   }
-  else{
+  else {
     throw res;
   }
 }
@@ -135,6 +178,7 @@ async function acceptApplication(status,id_professor,id_application) {
   }
 }
 
+
 async function applyForProposal(application) { 
     const formData = new FormData();
     formData.append('cv', application.cv);
@@ -154,6 +198,6 @@ async function applyForProposal(application) {
     }
 }
 
-const API = {listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal};
+const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal };
 
 export default API;
