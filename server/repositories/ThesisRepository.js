@@ -274,9 +274,9 @@ function transformOrder(order) {
     case "co-supervisorA":
       return "co-supervisor ASC ";
     case "keywordD":
-      return "keyword DESC ";
+      return "keywords DESC ";
     case "keywordA":
-      return "keyword ASC ";
+      return "keywords ASC ";
     case "typeD":
       return "type DESC ";
     case "typeA":

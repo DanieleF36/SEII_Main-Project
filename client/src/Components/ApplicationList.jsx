@@ -55,7 +55,7 @@ function ApplicationList() {
 
     //adding API from backend to post accept application
     const acceptPropByProf = (status,id_professor,id_app) => {
-        console.log(status,id_professor,id_app);
+        //console.log(status,id_professor,id_app);
         
         API.acceptApplication(status,id_professor,id_app)
         .then(() => {setDirty(true);

@@ -40,43 +40,45 @@ async function insertProposal(thesis) {
 
 async function advancedSearchThesis(params){
   let ur="/thesis?";
-  if(params.page)
+  if(params.page && params.page !== "")
     ur+="page="+params.page;
   else
   ur+="page=1";
-  if(params.title)
+  if(params.title && params.title !== ""){
+    //console.log("API title "+params.title);
     ur+="&title="+params.title;
-  if(params.supervisor)
+  }
+  if(params.supervisor && params.supervisor != "")
     ur+="&supervisor="+params.supervisor;
-  if(params.cosupervisor)
+  if(params.cosupervisor && params.cosupervisor != "")
     params.cosupervisor.forEach((e, i, a)=>{
       ur+="&coSupervisor="+a[i];
   });
-  if(params.expDate)
+  if(params.expDate && params.expDate != "")
     ur+="&expiration_date="+params.expDate;
-  if(params.keywords)
+  if(params.keywords && params.keywords != "")
     params.keywords.forEach((e, i, a)=>{
       ur+="&keyword="+a[i];
   });
-  if(params.type)
-    if(params.type)
+  if(params.type && params.type != "")
     params.type.forEach((e, i, a)=>{
       ur+="&type="+a[i];
   });
-  if(params.groups)
+  if(params.groups && params.groups != "")
     ur+="&groups="+params.groups;
-  if(params.know)
+  if(params.know && params.know != "")
     ur+="&knowledge="+params.know;
-  if(params.cds)
+  if(params.cds && params.cds != "")
     ur+="&cds="+params.cds;
-  if(params.creatDate)
+  if(params.creatDate && params.creatDate != "")
     ur+="&creation_date="+params.creatDate;
-  if(params.ordeBy)
-    switch(ordeBy){
+  if(params.orderby && params.orderby != ""){
+    switch(params.orderby){
       case "expDate": ur+="&order=expiration_date"+params.order;break;
       case "title": ur+="&order=title"+params.order;break;
       case "supervisor": ur+="&order=supervisor"+params.order;break;
     }
+  }
   const response = await fetch(URL+ur);
   if(response.status==200){
     const res = await response.json();
@@ -111,8 +113,8 @@ async function acceptApplication(status,id_professor,id_application) {
                         body: status});              
   const application = await response.json();
   if (response.ok) {
-    console.log("ciao");
-    console.log(application);
+    //console.log("ciao");
+    //console.log(application);
     return application;/*application.map((a) => ({
               id_student: a.id_student,
               id_thesis: a.id_thesis,
@@ -133,8 +135,10 @@ async function applyForProposal(application) {
         method: "POST",
         body: formData
     });
+    console.log("Prima")
     console.log(response);
     const app = await response.json();
+    console.log("dopo")
     if (response.status==201) {
         return true;
     }

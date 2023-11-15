@@ -61,7 +61,7 @@ function Homepage(props) {
 
     useEffect(() => {
         items.map(e=>{if(e.key===active){e.props.active=true}});
-        console.log(filters);
+        //console.log(filters);
         API.advancedSearchThesis(filters).then(res=>{
             props.setProposals(res[1]);
             props.setPages(res[0]);
@@ -91,7 +91,7 @@ function Homepage(props) {
 
     const handleApplyProp = () => {
         if(application.cv!==''){
-           console.log(application);
+           //console.log(application);
            API.applyForProposal(application).then((res)=>{ toast.success('Application successfully sended');setApplication({ ...application, cv: '' })})
            .catch((res)=>console.log(res));
            
@@ -124,7 +124,7 @@ function Homepage(props) {
     };
 
     const handleApplyFilters = () => {
-        console.log(filters);
+        //console.log(filters);
         API.advancedSearchThesis(filters).then(res=>{
             props.setProposals(res[1]);
             props.setPages(res[0]);

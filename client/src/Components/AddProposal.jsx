@@ -55,7 +55,7 @@ function AddProposalForm() {
     };
 
     const handleAddProposal = () => {
-        console.log(proposalData);
+        //console.log(proposalData);
         if (proposalData.title === '') {
             toast.error('Title field cannot be empty')
             
