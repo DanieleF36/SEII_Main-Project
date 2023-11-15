@@ -15,7 +15,7 @@ async function listApplication(id_professor) {
                 status: a.status,
             }));
     } else {
-      throw services;  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
+      throw application;  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
     }
   }
 
@@ -118,14 +118,7 @@ async function acceptApplication(status,id_professor,id_application) {
     });
     //const responsedata = await response.json();
     if (response.ok) {
-      return true;/*application.map((a) => ({
-                id_student: a.id_student,
-                id_thesis: a.id_thesis,
-                data: a.data,
-                path_cv: a.path_cv,
-                status: a.status,
-                id_teacher: a.id_teacher
-            ,}));*/
+      return response.json();
     } else {
       const message = await response.text();
       throw new Error(message);

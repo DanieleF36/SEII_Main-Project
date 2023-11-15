@@ -8,6 +8,12 @@ function ApplicationList() {
     const [errorMsg, setErrorMsg] = useState(undefined);
     const [dirty, setDirty] = useState(true);
     const [id_professor, setId_professor]=useState(1);
+    const [student, setStudent]=useState([{id_stud: 0,
+                                            name: 'Marco',
+                                            surname: 'Rossi'},
+                                          {id_stud:1,
+                                                name: 'Giovanni',
+                                                surname: 'Rossi'}]);                                           
     const [applications, setApplications] = useState([]/*[{id_application:0, 
                                                         id_thesis: '1',
                                                         title: 'AI system research',
@@ -46,9 +52,10 @@ function ApplicationList() {
       API.listApplication(id_professor)
         .then((applications) => {
         setApplications(applications);
+        setDirty(false);
       })
-      .catch((err) => {toast.error(errorMsg);});
-      setDirty(false);
+      .catch((err) => {toast.error(err.error);});
+      
     }, [dirty]);
 
     //applications.map((e)=>{console.log(e.id_application)});
@@ -58,11 +65,14 @@ function ApplicationList() {
         //console.log(status,id_professor,id_app);
         
         API.acceptApplication(status,id_professor,id_app)
-        .then(() => {setDirty(true);
-                    toast.success('Application successfully accepted')})
+        .then((res) => {setDirty(true);
+                    if(res==1){
+                        toast.success('Application successfully accepted')
+                    }else if(res==2){
+                        toast.error('Application successfully rejected')
+                    }})
         .catch((err) => {toast.error(err.error);});
     };
-
 
     
 
@@ -79,10 +89,10 @@ function ApplicationList() {
                                 <Container fluid>
                                 <Row className="d-md-flex justify-content-center align-items-center">
                                     <Col md='3' sm='3' xs='12'>
-                                        <strong>Title:</strong> {application.id_thesis}
+                                        <strong>IdThesis:</strong> {application.id_thesis}
                                     </Col>
                                     <Col md='3' sm='3' xs='12'>
-                                        <strong>Student:</strong> {application.id_student}
+                                        <strong>Student:</strong> {student[application.id_student].surname+' '+student[application.id_student].name}
                                     </Col>
                                     <Col md='5' sm='5' xs='12'>
                                         <strong>Status:</strong>{' '}
@@ -107,6 +117,10 @@ function ApplicationList() {
                             </Accordion.Header>
                             <Accordion.Body>
                                 <strong>IdStudent:</strong> {application.id_student}
+                                <br />
+                                <strong>Name:</strong> {student[application.id_student].name}
+                                <br />
+                                <strong>Surname:</strong> {student[application.id_student].surname}
                                 <br />
                                 <strong>Application Date:</strong> {application.data}
                                 <br />
