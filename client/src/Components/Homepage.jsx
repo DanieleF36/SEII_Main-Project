@@ -15,7 +15,7 @@ import API from '../API';
 
 function Homepage(props) {
 
-    const [add, setAdd] = useState(false);
+    const [add, setAdd] = useState(true);
     const [listA, setListA] = useState(false);
     const [active, setActive] = useState(1);
 
