@@ -22,6 +22,23 @@ exports.findById = (id)=>{
         });
     });
 }
+exports.findByEmail = (email)=>{
+    const sqlCoSupervisor = "SELECT id, name, surname, email, company FROM CoSupervisor WHERE email = ?";
+
+    return new Promise((resolve, reject)=>{
+        db.get(sqlCoSupervisor, [email], (err, row)=>{
+            if (err) {
+                reject(err);
+                return;
+            }
+            if(!row) 
+                resolve({})
+            else 
+                resolve({id:row.id, name:row.name, surname:row.surname, email:row.surname, company:row.company});
+
+        });
+    });
+}
 /**
  * Perfoms a search according to the following possible combinations:
  * 1. surname and name are defined, okay

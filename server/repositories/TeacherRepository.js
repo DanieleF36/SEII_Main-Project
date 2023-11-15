@@ -26,6 +26,22 @@ exports.findById = (id)=>{
     });
 }
 
+exports.findByEmail = (email)=>{
+    const sqlTeacher = "SELECT * FROM Teacher WHERE email = ?";
+    return new Promise((resolve, reject)=>{
+        db.get(sqlTeacher, [email], (err, row)=>{
+            if (err) {
+                reject(err);
+                return;
+            }
+            if(row==undefined)
+                return resolve({});
+            resolve({id: row.id, name: row.name, surname:row.surname, email:row.email, codGroup:row.cod_group, codDep:row.cod_dep});
+        });
+    });
+}
+
+
 
 /**
  * Perfoms a search according to the following possible combinations:
