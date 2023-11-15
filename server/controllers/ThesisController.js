@@ -26,11 +26,11 @@ function isConvertible(str) {
 function checkQuery(req) {
   const orderType = ["titleD", "titleA", "supervisorD", "supervisorA", "co-supervisorD", "co-supervisorA", "keywordD", "keywordA", "typeD", "typeA", "groupsD", "groupsA", "knowledgeD", "knowledgeA", "expiration_dateD", "expiration_dateA", "cdsD", "cdsA", "creation_dateD", "creation_dateA"];
 
-  if (!(req.query.page && parseInt(req.query.page) > 0)) {
+  if (!(req.query.page && (req.query.page=="undefined" || parseInt(req.query.page) > 0))) {
     return "Wronged Value of page " + req.query.page;
   }
   
-  if (req.query.order && orderType.indexOf(req.query.order) < 0) {
+  if (req.query.order && (req.query.order=="undefined" || orderType.indexOf(req.query.order) < 0)) {
     return "Wronged Value of order"+req.query.order
   }
   
