@@ -163,12 +163,12 @@ exports.addThesis = async function (thesis) {
     // }
 
     // look for each co-supervisor id into COSUPERVISOR
-    if (thesis.cosupervisor) {
+    if (Array.isArray(thesis.cosupervisor)) {
       for (let id of thesis.cosupervisor) {
         if (Object.keys(await coSupervisorRepository.findById(parseInt(id))).length === 0) {
           throw {
             status: 400,
-            error: "supervisor not found in COSUPERVISOR, should return 400",
+            error: `supervisor ${id} not found in COSUPERVISOR`,
           };
         }
       }

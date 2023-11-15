@@ -226,6 +226,7 @@ exports.addThesis = async function addThesis(req, res) {
   //   });
   const response = await thesisService.addThesis(req.body)
   if(response.error) {
+    console.log(response.error)
     return res.status(response.status).json(response.error)
   }
   else {
