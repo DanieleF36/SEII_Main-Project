@@ -23,8 +23,7 @@ exports.addProposal = function (studentId, thesisId, cv) {
     return new Promise((resolve, reject) => {
       //At the begginning the file is saved in tmp 
       let oldPath = cv.filepath;
-      let newPath = 'C:\\Users\\danie\\Desktop\\provs\\'+ cv.originalFilename;
-
+      let newPath = 'C:\\Users\\angel\\Desktop\\SEII_Main-Project\\server\\files\\'+ cv.originalFilename;
       //move the file from the old path to the new 
       fs.rename(oldPath, newPath, async (err) => {
         if (err) {

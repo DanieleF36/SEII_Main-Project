@@ -164,15 +164,6 @@ exports.addApplication = function addApplication(req, res, next) {
  */
 exports.addThesis = async function addThesis(req, res) {
   
-  req.body.supervisor = 1; //TOBE Changed
-  if( req.body.level === 'Master'){
-    req.body.level = 1;
-  }
-  else{
-    req.body.level = 0;
-  }
-
-  
   if (req.body === undefined) {
     return res.status(400).json({ error: "body is missing" });
   }
@@ -180,25 +171,33 @@ exports.addThesis = async function addThesis(req, res) {
   if (req.body.supervisor === undefined) {
     return res.status(400).json({ error: "supervisor is missing" });
   }
-  
-  if (!Array.isArray(req.body.cosupervisor)) {
-    return res.status(400).json({ error: "cosupervisor is not an array" });
-  }
+
   if (req.body.expiration_date === undefined | (req.body.expiration_date == "")) {
     return res
       .status(400)
       .json({ error: "expiration date is missing or not valid" });
     }
-    
-  if (req.body.level === undefined || (req.body.level !== 0 && req.body.level !== 1)) {
-    return res.status(400).json({ error: "level value not recognized" });
+
+    if (req.body.level === undefined || (req.body.level !== 0 && req.body.level !== 1)) {
+      return res.status(400).json({ error: "level value not recognized" });
+    }
+  
+    if (req.body.status === undefined || req.body.status != 1) {
+      return res
+      .status(400)
+      .json({ error: "status value not recognized or allowed" });
+    }
+
+  //req.body.supervisor = 1; //TOBE Changed
+  if( req.body.level === 'Master'){
+    req.body.level = 1;
+  }
+  else{
+    req.body.level = 0;
   }
   
-  
-  if (req.body.status === undefined || req.body.status != 1) {
-    return res
-    .status(400)
-    .json({ error: "status value not recognized or allowed" });
+  if (!Array.isArray(req.body.cosupervisor)) {
+    return res.status(400).json({ error: "cosupervisor is not an array" });
   }
   
   // forcing the format
@@ -227,6 +226,7 @@ exports.addThesis = async function addThesis(req, res) {
   //   });
   const response = await thesisService.addThesis(req.body)
   if(response.error) {
+    console.log(response.error)
     return res.status(response.status).json(response.error)
   }
   else {
