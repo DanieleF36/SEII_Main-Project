@@ -82,21 +82,22 @@ async function advancedSearchThesis(params){
   const response = await fetch(URL+ur);
   if(response.status==200){
     const res = await response.json();
+    console.log(res.thesis);
     return [res.nPage, res.thesis.map((e)=>({
       id:e.id,
       title:e.title,
       supervisor:e.supervisor,
-      co_supervisor:e.co_supervisor,
-      keyword:e.keyword ,
+      cosupervisor:e.co_supervisor,
+      keywords: e.keywords ,
       type:e.type ,
       groups:e.groups ,
       description:e.description ,
-      knowledge:e.knowledge ,
+      know:e.knowledge ,
       note:e.note ,
-      expiration_date:e.expiration_date ,
+      expDate:e.expiration_date ,
       level:e.level ,
       cds:e.cds ,
-      creation_date:e.creation_date ,
+      creatDate:e.creation_date ,
       status:e.status, 
       nPage:e.nPage
     }))]
