@@ -125,7 +125,7 @@ function Homepage(props) {
     const handleApplyFilters = () => {
         //console.log(filters);
     if(filters.order==='' && filters.orderby==='' || filters.order!=='' && filters.orderby!==''){
-        API.advancedSearchThesis(filters).then(res=>{
+        API.advancedSearchThesis({...filters, page:1}).then(res=>{
             props.setProposals(res[1]);
             props.setPages(res[0]);
         });

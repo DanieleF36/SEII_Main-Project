@@ -36,8 +36,8 @@ function TitleBar(props) {
             <Container fluid className="nav-tabs">
                 <Row>
                     <Col>
-                        <Nav variant="tabs" defaultActiveKey="/">
-                            <Nav.Item>
+                        <Nav defaultActiveKey="/">
+                            <Nav.Item className='act-link'>
                                 <Nav.Link href="/" className="thesis-link">
                                     Thesis
                                 </Nav.Link>
@@ -45,7 +45,9 @@ function TitleBar(props) {
                         </Nav>
                     </Col>
                     <Col xs="auto" className="ml-auto d-flex align-items-center">
-                        <BootstrapSwitchButton onChange={()=>handleSwitch()} checked={props.user===0} size="sm" onlabel='student' offlabel='professor' width={100} onstyle="success" offstyle="danger" style="border" />
+                               <BootstrapSwitchButton onChange={()=>handleSwitch()} checked={props.user===0} size="sm" onlabel='student' offlabel='professor' width={100} onstyle="success" offstyle="danger" style="border" />
+                    
+                        
                     </Col>
                 </Row>
             </Container>

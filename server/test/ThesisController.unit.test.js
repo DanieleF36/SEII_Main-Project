@@ -15,7 +15,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     };
     await controller.addThesis(mockReq, mockRes);
     expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toBeDefined();
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "body is missing" });
   });
 
   test("U2: Supervisor is missing", async () => {
@@ -28,7 +28,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     };
     await controller.addThesis(mockReq, mockRes);
     expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toBeDefined();
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "supervisor is missing" });
   });
 
   test("U3: Expiration date is missing", async () => {
@@ -43,7 +43,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     };
     await controller.addThesis(mockReq, mockRes);
     expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toBeDefined();
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "expiration date is missing or not valid" });
   });
 
   test("U4: Level value is not recognized", async () => {
@@ -59,7 +59,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     };
     await controller.addThesis(mockReq, mockRes);
     expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toBeDefined();
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "level value not recognized" });
   });
 
   test("U5: Status value is not recognized or allowed", async () => {
@@ -76,46 +76,88 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     };
     await controller.addThesis(mockReq, mockRes);
     expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toBeDefined();
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "status value not recognized or allowed" });
   });
 
-  test.skip("U5: New thesis proposal is inserted correctly", async () => {
-    const test_thesis = [
-      {
-        title: "prova",
-        supervisor: "Pippo",
-        keywords: "prima prova",
-        type: "sperimentale",
-        groups: "back-end",
-        description: "test tesi",
-        knowledge: "test knowledge",
-        note: "test note",
-        expiration_date: "2053-1-1",
-        level: 1,
-        cds: "test cds",
-        creation_date: "2050-1-1",
-        status: 0,
-      },
-    ];
-
+  test("U6: Cosupervisor is not an array", async () => {
     const mockReq = {
       body: {
         supervisor: "Pippo",
         expiration_date: "2015-01-01",
+        status : 1,
         level: 1,
-        status: 1,
+        cosupervisor: "Paperino"
       },
     };
-
     const mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-
-    // Use await here to wait for the asynchronous operation to complete
     await controller.addThesis(mockReq, mockRes);
     expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toBeDefined();
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "cosupervisor is not an array" });
+  });
+
+  test("U7: Keywords is not an array", async () => {
+    const mockReq = {
+      body: {
+        supervisor: "Pippo",
+        expiration_date: "2015-01-01",
+        status : 1,
+        level: 1,
+        cosupervisor: ["Paperino","Pluto"],
+        keywords: "not good"
+      },
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.addThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "keywords value not recognized" });
+  });
+
+  test("U8: Type value not recognized", async () => {
+    const mockReq = {
+      body: {
+        supervisor: "Pippo",
+        expiration_date: "2015-01-01",
+        status : 1,
+        level: 1,
+        cosupervisor: ["Paperino","Pluto"],
+        keywords: ["good","now"]
+      },
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.addThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "type value not recognized" });
+  });
+
+  test("U9: New thesis proposal is inserted correctly", async () => {
+      const mockReq = {
+        body: {
+          supervisor: "Pippo",
+          expiration_date: "2015-01-01",
+          status : 1,
+          level: 1,
+          cosupervisor: ["Paperino","Pluto"],
+          keywords: ["good","now"],
+          type : ["Master"]
+        },
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    jest.spyOn(thesisService, "addThesis").mockResolvedValue(true);          
+      await controller.addThesis(mockReq, mockRes)
+      expect(mockRes.status).toHaveBeenCalledWith(200);
+      expect(mockRes.json).toBeDefined()
   });
 });
 
