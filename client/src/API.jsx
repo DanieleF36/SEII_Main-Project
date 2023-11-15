@@ -108,7 +108,7 @@ async function advancedSearchThesis(params){
 
 async function acceptApplication(status,id_professor,id_application) { 
   const response = await fetch(URL+ `/professor/${id_professor}/applications/${id_application}`,{
-                        method: "POST",
+                        method: "PUT",
 
                         body: status});              
   const application = await response.json();
