@@ -85,10 +85,10 @@ function ApplicationList() {
 
     return (
         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
+             <Toaster position="top-center" reverseOrder={false} />
             <div>
                 {applications.map((application) => (
                     <Card key={application.id_application} style={{ marginBottom: '10px' }}>
-                        <Toaster position="top-center" reverseOrder={false} />
                         <Accordion>
                             <Accordion.Item eventKey={application.id_application}>
                                 <Accordion.Header>
