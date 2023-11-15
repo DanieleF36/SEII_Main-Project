@@ -6,7 +6,6 @@ async function listApplication(id_professor) {
     const response = await fetch(URL+ `/professor/${id_professor}/applications`);
     const application = await response.json();
     if (response.ok) {
-        console.log(application)
        return application.map((a) => ({
                 id_application: a.id_application,
                 id_student: a.id_student,
@@ -23,7 +22,6 @@ async function listApplication(id_professor) {
 async function insertProposal(thesis) {
     thesis.status = 1;
     thesis.cosupervisor = thesis.cosupervisor === '' ? [''] : thesis.cosupervisor
-    console.log(thesis)
   let response = await fetch(URL + '/thesis', {
     method: "POST",
     headers: {
@@ -135,16 +133,10 @@ async function applyForProposal(application) {
         method: "POST",
         body: formData
     });
+    console.log(response);
     const app = await response.json();
     if (response.status==201) {
-        return app.map((a) => ({
-                id_student: a.id_student,
-                id_thesis: a.id_thesis,
-                data: a.data,
-                path_cv: a.path_cv,
-                status: a.status,
-                id_teacher: a.id_teacher
-            ,}));
+        return true;
     }
     else if(response.status==400 || response.status==404){
         return{error: app.error}

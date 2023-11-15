@@ -28,7 +28,7 @@ function Homepage(props) {
 
 
     for (let number = 1; number <= props.pages; number++) {
-        console.log(props.pages);
+        //console.log(props.pages);
             items.push(
                 <Pagination.Item key={number} active={number === active} onClick={()=>{setActive(number);setFilters({...filters, page: number});}}>
                     {number}
@@ -62,7 +62,11 @@ function Homepage(props) {
     useEffect(() => {
         items.map(e=>{if(e.key===active){e.props.active=true}});
         console.log(filters);
-        API.advancedSearchThesis(filters);
+        API.advancedSearchThesis(filters).then(res=>{
+            props.setProposals(res[1]);
+            props.setPages(res[0]);
+            handleResetChange();
+        });
       }, [active]);
 
 
@@ -89,7 +93,7 @@ function Homepage(props) {
         if(application.cv!==''){
            console.log(application);
            API.applyForProposal(application).then((res)=>{ toast.success('Application successfully sended');setApplication({ ...application, cv: '' })})
-           .catch((msg)=>toast.error(msg));
+           .catch((res)=>console.log(res));
            
         }
         else(
