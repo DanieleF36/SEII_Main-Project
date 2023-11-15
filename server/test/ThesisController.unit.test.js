@@ -79,27 +79,82 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     expect(mockRes.json).toHaveBeenCalledWith({ error: "status value not recognized or allowed" });
   });
 
-  test.skip("U5: New thesis proposal is inserted correctly", async () => {
+  test("U6: Cosupervisor is not an array", async () => {
+    const mockReq = {
+      body: {
+        supervisor: "Pippo",
+        expiration_date: "2015-01-01",
+        status : 1,
+        level: 1,
+        cosupervisor: "Paperino"
+      },
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.addThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "cosupervisor is not an array" });
+  });
+
+  test("U7: Keywords is not an array", async () => {
+    const mockReq = {
+      body: {
+        supervisor: "Pippo",
+        expiration_date: "2015-01-01",
+        status : 1,
+        level: 1,
+        cosupervisor: ["Paperino","Pluto"],
+        keywords: "not good"
+      },
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.addThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "keywords value not recognized" });
+  });
+
+  test("U8: Type value not recognized", async () => {
+    const mockReq = {
+      body: {
+        supervisor: "Pippo",
+        expiration_date: "2015-01-01",
+        status : 1,
+        level: 1,
+        cosupervisor: ["Paperino","Pluto"],
+        keywords: ["good","now"]
+      },
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.addThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "type value not recognized" });
+  });
+
+  test("U9: New thesis proposal is inserted correctly", async () => {
       const mockReq = {
         body: {
           supervisor: "Pippo",
           expiration_date: "2015-01-01",
+          status : 1,
           level: 1,
+          cosupervisor: ["Paperino","Pluto"],
+          keywords: ["good","now"],
+          type : ["Master"]
         },
     };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
-    jest.spyOn(thesisService, "addThesis").mockImplementationOnce(() => {
-        return {
-          then: function(callback) {
-            callback();
-            return this; // Return the same object to allow chaining
-          },
-          catch: function(err) {}
-        };
-      });          
+    jest.spyOn(thesisService, "addThesis").mockResolvedValue(true);          
       await controller.addThesis(mockReq, mockRes)
       expect(mockRes.status).toHaveBeenCalledWith(200);
       expect(mockRes.json).toBeDefined()
