@@ -163,7 +163,8 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
         expiration_date: e.expiration_date,
         cds: e.cds,
         creation_date: e.creation_date,
-        status: e.status
+        status: e.status,
+        description: e.description
       }));
       resolve(res);
     });
