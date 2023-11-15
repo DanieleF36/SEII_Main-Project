@@ -94,14 +94,14 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
       );
     res[i].coSupervisor = [];
     for (let j = 0; j < idList.length; j++) {
-      if (id.idTeacher != null) {
-        const t = await teacherRepository.findById(id.idTeacher);
+      if (idList[j].idTeacher != null) {
+        const t = await teacherRepository.findById(idList[j].idTeacher);
         res[i].coSupervisors.push(
           teacherRepository.fromTeacherToCoSupervisor(t)
         );
       } else {
         res[i].coSupervisors.push(
-          await coSupervisorRepository.findById(id.idCoSupervisor)
+          await coSupervisorRepository.findById(idList[j].idCoSupervisor)
         );
       }
     }

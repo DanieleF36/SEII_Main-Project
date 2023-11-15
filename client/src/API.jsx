@@ -21,6 +21,7 @@ async function listApplication(id_professor) {
 
 function insertProposal(thesis) {
     thesis.status = 1;
+    thesis.supervisor = 1;
     thesis.cosupervisor = thesis.cosupervisor === '' ? [''] : thesis.cosupervisor
   //   console.log(thesis)
   // let response = await fetch(URL + '/thesis', {

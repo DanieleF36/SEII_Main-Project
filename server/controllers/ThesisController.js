@@ -163,6 +163,14 @@ exports.addApplication = function addApplication(req, res, next) {
  * @returns thesis object
  */
 exports.addThesis = async function addThesis(req, res) {
+
+   //req.body.supervisor = 1; //TOBE Changed
+   if( req.body.level === 'Master'){
+    req.body.level = 1;
+  }
+  else{
+    req.body.level = 0;
+  }
   
   if (req.body === undefined) {
     return res.status(400).json({ error: "body is missing" });
@@ -188,13 +196,7 @@ exports.addThesis = async function addThesis(req, res) {
       .json({ error: "status value not recognized or allowed" });
     }
 
-  //req.body.supervisor = 1; //TOBE Changed
-  if( req.body.level === 'Master'){
-    req.body.level = 1;
-  }
-  else{
-    req.body.level = 0;
-  }
+ 
   
   if (!Array.isArray(req.body.cosupervisor)) {
     return res.status(400).json({ error: "cosupervisor is not an array" });

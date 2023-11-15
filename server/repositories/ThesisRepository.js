@@ -153,7 +153,7 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
         id: e.id,
         title: e.title,
         supervisor: e.supervisor,
-        coSupervisors: null,
+        coSupervisors: [],
         keywords: e.keywords,
         type: e.type,
         note: e.note,

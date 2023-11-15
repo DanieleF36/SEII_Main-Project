@@ -88,7 +88,7 @@ function AddProposalForm() {
             // Implement the logic to add the proposal using the proposalData state- API
             API.insertProposal(proposalData)
             .then(()=>{toast.success('Thesis Proposal successfully added'); handleResetChange()})
-            .catch((msg)=>console.log(msg));
+            .catch((error)=>toast.error(error));
         }
     };
 
