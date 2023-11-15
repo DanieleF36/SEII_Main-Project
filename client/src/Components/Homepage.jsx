@@ -124,10 +124,15 @@ function Homepage(props) {
 
     const handleApplyFilters = () => {
         //console.log(filters);
+    if(filters.order==='' && filters.orderby==='' || filters.order!=='' && filters.orderby!==''){
         API.advancedSearchThesis(filters).then(res=>{
             props.setProposals(res[1]);
             props.setPages(res[0]);
         });
+    }
+    else{
+        toast.error('Some Order fields are not filled');
+    }
     };
 
 
