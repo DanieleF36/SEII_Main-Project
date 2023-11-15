@@ -21,7 +21,7 @@ function Login(props) {
         navigate(`/`);
       })
       .catch(err => {
-        console.log(user);
+        //console.log(user);
         setErrorMessage('Wrong username or password');
       })
   }

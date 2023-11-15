@@ -145,7 +145,7 @@ exports.acceptApplication = (status, teacherID, applicationID,) => {
           reject({ error : "No rows updated. Teacher ID or Application Id not found."});
           return
         }
-        resolve(status);
+        resolve(true);
       }
     });
   });

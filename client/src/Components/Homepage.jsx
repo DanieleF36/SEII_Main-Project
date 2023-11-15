@@ -28,7 +28,7 @@ function Homepage(props) {
 
 
     for (let number = 1; number <= props.pages; number++) {
-        console.log(props.pages);
+        //console.log(props.pages);
             items.push(
                 <Pagination.Item key={number} active={number === active} onClick={()=>{setActive(number);setFilters({...filters, page: number});}}>
                     {number}
@@ -61,8 +61,11 @@ function Homepage(props) {
 
     useEffect(() => {
         items.map(e=>{if(e.key===active){e.props.active=true}});
-        console.log(filters);
-        API.advancedSearchThesis(filters);
+        //console.log(filters);
+        API.advancedSearchThesis(filters).then(res=>{
+            props.setProposals(res[1]);
+            props.setPages(res[0]);
+        });
       }, [active]);
 
 
@@ -87,9 +90,9 @@ function Homepage(props) {
 
     const handleApplyProp = () => {
         if(application.cv!==''){
-           console.log(application);
+           //console.log(application);
            API.applyForProposal(application).then((res)=>{ toast.success('Application successfully sended');setApplication({ ...application, cv: '' })})
-           .catch((msg)=>toast.error(msg));
+           .catch((res)=>console.log(res));
            
         }
         else(
@@ -120,11 +123,16 @@ function Homepage(props) {
     };
 
     const handleApplyFilters = () => {
-        console.log(filters);
+        //console.log(filters);
+    if(filters.order==='' && filters.orderby==='' || filters.order!=='' && filters.orderby!==''){
         API.advancedSearchThesis(filters).then(res=>{
             props.setProposals(res[1]);
             props.setPages(res[0]);
         });
+    }
+    else{
+        toast.error('Some Order fields are not filled');
+    }
     };
 
 

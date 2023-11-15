@@ -7,7 +7,7 @@ function ApplicationList() {
     
     const [errorMsg, setErrorMsg] = useState(undefined);
     const [dirty, setDirty] = useState(true);
-    const [id_professor, setId_professor]=useState('1');
+    const [id_professor, setId_professor]=useState(1);
     const [applications, setApplications] = useState([]/*[{id_application:0, 
                                                         id_thesis: '1',
                                                         title: 'AI system research',
@@ -51,16 +51,16 @@ function ApplicationList() {
       setDirty(false);
     }, [dirty]);
 
-    applications.map((e)=>{console.log(e.id_application)});
+    //applications.map((e)=>{console.log(e.id_application)});
 
     //adding API from backend to post accept application
     const acceptPropByProf = (status,id_professor,id_app) => {
+        //console.log(status,id_professor,id_app);
         
         API.acceptApplication(status,id_professor,id_app)
         .then(() => {setDirty(true);
                     toast.success('Application successfully accepted')})
-        .catch((err) => {toast.error(errorMsg);});
-
+        .catch((err) => {toast.error(err.error);});
     };
 
 

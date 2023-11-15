@@ -55,7 +55,7 @@ function AddProposalForm() {
     };
 
     const handleAddProposal = () => {
-        console.log(proposalData);
+        //console.log(proposalData);
         if (proposalData.title === '') {
             toast.error('Title field cannot be empty')
             
@@ -88,7 +88,7 @@ function AddProposalForm() {
             // Implement the logic to add the proposal using the proposalData state- API
             API.insertProposal(proposalData)
             .then(()=>{toast.success('Thesis Proposal successfully added'); handleResetChange()})
-            .catch((msg)=>toast.error(msg));
+            .catch((msg)=>console.log(msg));
         }
     };
 

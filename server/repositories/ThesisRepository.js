@@ -101,8 +101,8 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   }
   if (expiration_date != null) {
     sql += "AND expiration_date ";
-    sql += specific ? "< ?" : "= ? ";
-    params.push(specific ? `%${expiration_date}%` : expiration_date);
+    sql += specific ? "<= ? " : "= ? ";
+    params.push(expiration_date);
   }
   if (cds != null) {
     sql += "AND cds ";
@@ -111,8 +111,8 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   }
   if (creation_date != null) {
     sql += "AND creation_date ";
-    sql += specific ? "> ? " : "= ? ";
-    params.push(specific ? `%${creation_date}%` : creation_date);
+    sql += specific ? ">= ? " : "= ? ";
+    params.push(creation_date);
   }
   sql += "ORDER BY " + transformOrder(order);
   if (to != undefined && from != undefined) sql += " LIMIT " + (to - from) + " OFFSET " + from;
@@ -156,6 +156,8 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
         coSupervisors: null,
         keywords: e.keywords,
         type: e.type,
+        note: e.note,
+        level:e.level,
         groups: e.groups,
         knowledge: e.knowledge,
         expiration_date: e.expiration_date,
@@ -274,9 +276,9 @@ function transformOrder(order) {
     case "co-supervisorA":
       return "co-supervisor ASC ";
     case "keywordD":
-      return "keyword DESC ";
+      return "keywords DESC ";
     case "keywordA":
-      return "keyword ASC ";
+      return "keywords ASC ";
     case "typeD":
       return "type DESC ";
     case "typeA":

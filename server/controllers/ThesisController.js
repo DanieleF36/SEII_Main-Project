@@ -3,6 +3,8 @@
 const thesisService = require("../services/ThesisService");
 
 function isConvertible(str) {
+  if(str=="undefined")
+    return true;
   try {
     JSON.parse(str);
     return true;
@@ -11,16 +13,7 @@ function isConvertible(str) {
     JSON.parse(`{${str}}`);
     return true;
   } catch (error) {}
-  const sqlKeywords = [
-    "SELECT",
-    "INSERT",
-    "UPDATE",
-    "DELETE",
-    "FROM",
-    "WHERE",
-    "AND",
-    "OR",
-  ];
+  const sqlKeywords = ["SELECT", "INSERT", "UPDATE", "DELETE", "FROM", "WHERE", "AND", "OR"];
   if (sqlKeywords.some((keyword) => str.includes(keyword))) {
     return true;
   }
@@ -31,34 +24,13 @@ function isConvertible(str) {
 }
 
 function checkQuery(req) {
-  const orderType = [
-    "titleD",
-    "titleA",
-    "supervisorD",
-    "supervisorA",
-    "co-supervisorD",
-    "co-supervisorA",
-    "keywordD",
-    "keywordA",
-    "typeD",
-    "typeA",
-    "groupsD",
-    "groupsA",
-    "knowledgeD",
-    "knowledgeA",
-    "expiration_dateD",
-    "expiration_dateA",
-    "cdsD",
-    "cdsA",
-    "creation_dateD",
-    "creation_dateA",
-  ];
+  const orderType = ["titleD", "titleA", "supervisorD", "supervisorA", "co-supervisorD", "co-supervisorA", "keywordD", "keywordA", "typeD", "typeA", "groupsD", "groupsA", "knowledgeD", "knowledgeA", "expiration_dateD", "expiration_dateA", "cdsD", "cdsA", "creation_dateD", "creation_dateA"];
 
-  if (!(req.query.page && parseInt(req.query.page) > 0)) {
+  if (!(req.query.page && (req.query.page=="undefined" || parseInt(req.query.page) > 0))) {
     return "Wronged Value of page " + req.query.page;
   }
   
-  if (req.query.order && orderType.indexOf(req.query.order) < 0) {
+  if (req.query.order && (req.query.order=="undefined" || orderType.indexOf(req.query.order) < 0)) {
     return "Wronged Value of order"+req.query.order
   }
   
@@ -149,11 +121,7 @@ function checkQuery(req) {
  * }
  * @returns ERROR: common error handling object
  */
-exports.advancedResearchThesis = function advancedResearchThesis(
-  req,
-  res,
-  next
-) {
+exports.advancedResearchThesis = function advancedResearchThesis(req, res, next) {
   const error = checkQuery(req);
   if (error) {
     res.status(400).json({ error: error });
@@ -196,17 +164,15 @@ exports.addApplication = function addApplication(req, res, next) {
  */
 exports.addThesis = async function addThesis(req, res) {
   
-  req.body.supervisor = 1; //TOBE Changed
+  if (req.body === undefined) {
+    return res.status(400).json({ error: "body is missing" });
+  }
+  //req.body.supervisor = 1; //TOBE Changed
   if( req.body.level === 'Master'){
     req.body.level = 1;
   }
   else{
     req.body.level = 0;
-  }
-
-  
-  if (req.body === undefined) {
-    return res.status(400).json({ error: "body is missing" });
   }
 
   if (req.body.supervisor === undefined) {

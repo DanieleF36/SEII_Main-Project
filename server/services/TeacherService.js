@@ -20,19 +20,7 @@ exports.listApplication = async function (id_professor) {
  * id_application Integer
  * no response value expected for this operation
  **/
-exports.acceptApplication = async function (
-  accepted,
-  teacherID,
-  applicationID
-) {
-  if ((accepted != null, teacherID != null, applicationID != null)) {
-    let res = await applicationRepository.acceptApplication(
-      accepted,
-      teacherID,
-      applicationID
-    );
+exports.acceptApplication = async function (status,teacherID,applicationID) {
+    let res = await applicationRepository.acceptApplication(status,teacherID,applicationID)
     return res;
-  } else {
-    return res.error;
-  }
 };
