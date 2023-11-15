@@ -164,17 +164,15 @@ exports.addApplication = function addApplication(req, res, next) {
  */
 exports.addThesis = async function addThesis(req, res) {
   
-  req.body.supervisor = 1; //TOBE Changed
+  if (req.body === undefined) {
+    return res.status(400).json({ error: "body is missing" });
+  }
+  //req.body.supervisor = 1; //TOBE Changed
   if( req.body.level === 'Master'){
     req.body.level = 1;
   }
   else{
     req.body.level = 0;
-  }
-
-  
-  if (req.body === undefined) {
-    return res.status(400).json({ error: "body is missing" });
   }
 
   if (req.body.supervisor === undefined) {
