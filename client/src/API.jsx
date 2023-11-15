@@ -139,16 +139,10 @@ async function applyForProposal(application) {
         method: "POST",
         body: formData
     });
+    console.log(response);
     const app = await response.json();
     if (response.status==201) {
-        return app.map((a) => ({
-                id_student: a.id_student,
-                id_thesis: a.id_thesis,
-                data: a.data,
-                path_cv: a.path_cv,
-                status: a.status,
-                id_teacher: a.id_teacher
-            ,}));
+        return true;
     }
     else if(response.status==400 || response.status==404){
         return{error: app.error}

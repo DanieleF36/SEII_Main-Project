@@ -50,7 +50,7 @@ describe('Apply for proposal', () => {
       expect(mockRes.status).toHaveBeenCalledWith(500);
       expect(mockRes.json).toHaveBeenCalledWith({ error: 'Internal Error' });
     });
-  
+
     test('Case4: file is missing in the request', async() => {
       const mockReq = { body: {}, params: { id_thesis: 1 } };
       const mockRes = {
@@ -65,16 +65,33 @@ describe('Apply for proposal', () => {
       jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
   
       await studentController.applyForProposal(mockReq, mockRes);
-      console.log("4 "+JSON.stringify(mockRes));
       expect(mockRes.status).toHaveBeenCalledWith(400);
       expect(mockRes.json).toHaveBeenCalledWith({ error: 'Missing file' });
+    });
+    
+    test('Case5: Multiple Files', async () => {
+      const mockReq = { body: {}, params: { id_thesis: 1 } };
+      const mockRes = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+    
+      const mockForm = {
+        parse: jest.fn((req, callback) => callback(null, {}, {cv:[{},{}]})),
+      };
+      jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
+    
+      await studentController.applyForProposal(mockReq, mockRes);
+    
+      expect(mockRes.status).toHaveBeenCalledWith(400);
+      expect(mockRes.json).toHaveBeenCalledWith({ error: 'Multiple Files' });
     });
 
     const applicationsService = {
         addProposal: jest.fn(),  // Creazione di un mock per la funzione addProposal
     };
   
-    it('Case5: success', async () => {
+    test('Case6: success', async () => {
         // Mocking the Express request and response objects
         const req = {
             body: {  },
@@ -87,23 +104,22 @@ describe('Apply for proposal', () => {
           };
         // Mocking the form object and its parse method
         const mockForm = {
-          parse: jest.fn((req, callback) => {callback(null,  {}, { cv: [{ /* mock file details */ }]  });
+          parse: jest.fn((req, callback) => {callback(null,  {}, { cv: [{  }]  });
           }),
         };
         
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
     
         // Mocking the addProposal method in applicationsService
-        applicationsService.addProposal.mockResolvedValue({ /* mock success response */ });
+        jest.spyOn(require("../services/ApplicationService"), "addProposal").mockResolvedValue({succes:"success"})
     
-        studentController.applyForProposal(req, res);
-        console.log("res "+JSON.stringify(res));
+        await studentController.applyForProposal(req, res);
         // Verifying that the response is as expected
         expect(res.status).toHaveBeenCalledWith(201);
-        //expect(res.json).toHaveBeenCalledWith(/* expected success response */);
+        expect(res.json).toHaveBeenCalledWith({succes:"success"});
       });
   
-    test('Case6: idThesis not found', async () => {
+    test('Case7: idThesis not found', async () => {
       const mockReq = { body: {}, params: { id_thesis: 1 } };
       const mockRes = {
         status: jest.fn().mockReturnThis(),
@@ -111,32 +127,38 @@ describe('Apply for proposal', () => {
       };
   
       // Simulate a not found
-      applicationsService.addProposal.mockRejectedValue({ error: 'Not found' });
+      jest.spyOn(require("../services/ApplicationService"), "addProposal").mockRejectedValue({ error: 'Not found' })
+      
       const mockForm = {
         parse: jest.fn((req, callback) => callback(null, {}, { cv: [{}] })),
       };
       jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
       // Simula che il file sia presente nella richiesta
       await studentController.applyForProposal(mockReq, mockRes);
-
+      await Promise.resolve();
+      expect(mockRes.status).toHaveBeenCalledWith(404);
+      expect(mockRes.json).toHaveBeenCalledWith({error:"Not found"});
     });
 
-    test('Case7: Multiple Files', async () => {
-        const mockReq = { body: {}, params: { id_thesis: 1 } };
-        const mockRes = {
-          status: jest.fn().mockReturnThis(),
-          json: jest.fn(),
-        };
+    test('Case8: internal error inside addProposal', async () => {
+      const mockReq = { body: {}, params: { id_thesis: 1 } };
+      const mockRes = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+  
+      // Simulate any error
+      jest.spyOn(require("../services/ApplicationService"), "addProposal").mockRejectedValue({ error: 'bho' })
       
-        const mockForm = {
-          parse: jest.fn((req, callback) => callback(null, {}, { cv: [{}, {}] })),
-        };
-        jest.spyOn(formidable, 'IncomingForm').mockImplementation(() => mockForm);
-      
-        await studentController.applyForProposal(mockReq, mockRes);
-      
-        expect(mockRes.status).toHaveBeenCalledWith(400);
-        expect(mockRes.json).toHaveBeenCalledWith({ error: 'Multiple files not allowed' });
-      });
+      const mockForm = {
+        parse: jest.fn((req, callback) => callback(null, {}, { cv: [{}] })),
+      };
+      jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
+      // Simula che il file sia presente nella richiesta
+      await studentController.applyForProposal(mockReq, mockRes);
+      await Promise.resolve();
+      expect(mockRes.status).toHaveBeenCalledWith(500);
+      expect(mockRes.json).toHaveBeenCalledWith({error:"Internal Error"});
+    });
 })
       
