@@ -34,9 +34,11 @@
 - company string
 
 ### *CoSupervisorThesis*
+    one between id_cosupervisor and id_teacher have to be null 
 - id integer ***primary key***
-- id_teacher integer ***not null*** ***foreign key***
 - id_thesis integer ***not null*** ***foreign key***
+- id_cosupervisor integer ***foreign key***
+- id_teacher integer ***foreign key***
 
 ### *Degree*
 - cod integer ***primary key***
