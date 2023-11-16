@@ -55,18 +55,19 @@ OQM RETROSPECTIVE (Team 14)
 
 ## ASSESSMENT
 
-- What caused your errors in estimation (if any)? Due to over understim
+- What caused your errors in estimation (if any)? For this sprint we have understimate the spent hours for each tasks because we focused on a better tasks     division that made more difficult the tasks estimation. We also forgot to compute the total amount of hour after the tasks estimation to compare it to the total amount team's hours. 
 
-- What lessons did you learn (both positive and negative) in this sprint? Better knowledge about team members, bad team organization and enviroment use (Github branch management issue)
+- What lessons did you learn (both positive and negative) in this sprint? In this sprint we understood how to divide the tasks and how to manage the branches of the repository. The negative lesson we learnt is that the team division was too strict and we have noticed lack in communication 
 
-- Which improvement goals set in the previous retrospective were you able to achieve? n/a 
+- Which improvement goals set in the previous retrospective were you able to achieve? The improvement goals that we were able to achieve from previous
+retrospective were better tasks division and organization (has to be improved) and better branches management. 
   
-- Which ones you were not able to achieve? Why? n/a
+- Which ones you were not able to achieve? Why? We were not able to learn how to automate end-to-end test because we focused more on achieving the definition of done of user stories
 
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.) :
 
-  > branch management : doing internet research, discussing with team members during planning
-  
-  > integration test : searching documentation, diving deep in the framework
+  > better estimation of time for each tasks and better planning of assegnation tasks
+  > working on team communication through more Scrum Meeting
+  > complete learning of the SAML authentication and virtual clock
 
-- One thing you are proud of as a Team: responsability of each team member and comunication
+- One thing you are proud of as a Team: we are proud about tasks division and how everyone was responsible for their tasks
