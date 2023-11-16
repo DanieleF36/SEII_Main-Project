@@ -33,7 +33,7 @@ OQM RETROSPECTIVE (Team 14)
 | _#5_   |    4    |   3    |    7h      |    10h 30m   |
 
 
-- Hours per task average, standard deviation (estimate and actual) : estimate task average: 3.06 , actual task average: 3.56 , standard deviation : 1.66
+- Hours per task average, standard deviation (estimate and actual) : estimate task average: 3.06 , actual task average: 3.56 , standard deviation : 1.29
 - Total task estimation error ratio: sum of total hours estimation / (sum of total hours spent - 1) : 0.86
 
   
