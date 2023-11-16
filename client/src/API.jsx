@@ -13,6 +13,9 @@ async function listApplication(id_professor) {
                 data: a.data,
                 path_cv: a.path_cv,
                 status: a.status,
+                title: a.title,
+                name: a.name,
+                surname: a.surname
             }));
     } else {
       throw application;  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
