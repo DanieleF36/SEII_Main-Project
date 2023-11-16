@@ -165,15 +165,21 @@ exports.addApplication = function addApplication(req, res, next) {
 exports.addThesis = async function addThesis(req, res) {
 
    //req.body.supervisor = 1; //TOBE Changed
-   if( req.body.level === 'Master'){
+  
+  if (req.body === undefined) {
+    return res.status(400).json({ error: "body is missing" });
+  }
+
+  if (req.body.level === undefined || (req.body.level !== "Master" && req.body.level !== "Bachelor")) {
+    return res.status(400).json({ error: "level value not recognized" });
+  }
+
+
+  if( req.body.level === 'Master'){
     req.body.level = 1;
   }
   else{
     req.body.level = 0;
-  }
-  
-  if (req.body === undefined) {
-    return res.status(400).json({ error: "body is missing" });
   }
 
   if (req.body.supervisor === undefined) {
@@ -186,10 +192,6 @@ exports.addThesis = async function addThesis(req, res) {
       .json({ error: "expiration date is missing or not valid" });
     }
 
-    if (req.body.level === undefined || (req.body.level !== 0 && req.body.level !== 1)) {
-      return res.status(400).json({ error: "level value not recognized" });
-    }
-  
     if (req.body.status === undefined || req.body.status != 1) {
       return res
       .status(400)

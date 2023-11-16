@@ -20,7 +20,9 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
 
   test("U2: Supervisor is missing", async () => {
     const mockReq = {
-      body: {},
+      body: {
+        level : "Master"
+      },
     };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
@@ -35,6 +37,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     const mockReq = {
       body: {
         supervisor: "Pippo",
+        level : "Master"
       },
     };
     const mockRes = {
@@ -67,7 +70,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
       body: {
         supervisor: "Pippo",
         expiration_date: "2015-01-01",
-        level: 1,
+        level: "Master",
       },
     };
     const mockRes = {
@@ -85,7 +88,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
         supervisor: "Pippo",
         expiration_date: "2015-01-01",
         status : 1,
-        level: 1,
+        level: "Master",
         cosupervisor: "Paperino"
       },
     };
@@ -104,7 +107,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
         supervisor: "Pippo",
         expiration_date: "2015-01-01",
         status : 1,
-        level: 1,
+        level: "Master",
         cosupervisor: ["Paperino","Pluto"],
         keywords: "not good"
       },
@@ -124,7 +127,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
         supervisor: "Pippo",
         expiration_date: "2015-01-01",
         status : 1,
-        level: 1,
+        level: "Master",
         cosupervisor: ["Paperino","Pluto"],
         keywords: ["good","now"]
       },
@@ -144,10 +147,10 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
           supervisor: "Pippo",
           expiration_date: "2015-01-01",
           status : 1,
-          level: 1,
+          level: "Master",
           cosupervisor: ["Paperino","Pluto"],
           keywords: ["good","now"],
-          type : ["Master"]
+          type : ["Abroad"]
         },
     };
     const mockRes = {

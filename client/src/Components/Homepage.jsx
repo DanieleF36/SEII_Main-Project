@@ -140,11 +140,11 @@ function Homepage(props) {
     return (
         props.user === 0 ? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
             <TitleBar user={props.user} setUser={props.setUser} />
-            <Container fluid style={{ marginTop: '20px' }}>
             <Toaster
                 position="top-center"
                 reverseOrder={false}
             />
+            <Container fluid style={{ marginTop: '20px' }}>
                 <Row>
                     <Col xs={3}>
 
@@ -204,7 +204,7 @@ function Homepage(props) {
                                                 <br />
                                                 <strong>Note:</strong> {proposal.note}
                                                 <br />
-                                                <strong>Level:</strong> {proposal.level}
+                                                <strong>Level:</strong> {proposal.level === 1? 'Master' : 'Bachelor'}
                                                 <br />
                                                 <strong>CdS:</strong> {proposal.cds}
                                                 <br />

@@ -111,7 +111,7 @@ function AddProposalForm() {
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
-                        <Form.Label><strong>CoSupervisors</strong>&nbsp;(separated by ',')</Form.Label>
+                        <Form.Label><strong>CoSupervisors emails list</strong>&nbsp;(separated by ',')</Form.Label>
                         <Form.Control
                             type="text"
                             name="cosupervisor"

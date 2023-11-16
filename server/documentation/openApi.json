@@ -216,7 +216,7 @@
         "operationId": "listApplication",
         "responses": {
           "200": {
-            "description": "ok",
+            "description": "Application list returned correctly",
             "content": {
               "application/json": {
                 "schema": {
@@ -227,6 +227,16 @@
                 }
               }
             }
+          },
+            "400": {
+              "description": "Given supervisor's id is not valid",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/error"
+                  }
+                }
+              }
           },
           "404": {
             "description": "Not found"
@@ -264,7 +274,7 @@
             "application/json": {
               "schema": {
                 "properties": {
-                  "accepted": { "type": "integer" }
+                  "status": { "type": "integer" }
                 }
               }
             }
@@ -395,7 +405,9 @@
           "id": { "type": "integer", "minimum": 0 },
           "id_student": { "type": "integer", "minimum": 0 },
           "id_thesis": { "type": "integer", "minimum": 0 },
-          "date": { "type": "string" }
+          "date": { "type": "string" },
+          "path_cv" : {"type" : "string"},
+          "status" : { "type": "integer"}
         }
       },
       "error": {

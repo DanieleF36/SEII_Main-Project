@@ -20,7 +20,7 @@ exports.addCoSupervisorThesis = (id_thesis, id_theacher, id_cosupervisor) => {
         db.run(sql, [id_thesis, id_theacher, id_cosupervisor], (err) => {
             if(err)
                 reject(err)
-            resolve((id_thesis, id_theacher, id_cosupervisor))
+            resolve(true)
         })
     })
 }

@@ -1,6 +1,7 @@
 "use strict";
 
 const sqlite = require("sqlite3");
+const dayjs = require('dayjs')
 
 const db = new sqlite.Database("db.sqlite", (err) => {
   if (err) throw err;
@@ -16,7 +17,7 @@ const db = new sqlite.Database("db.sqlite", (err) => {
  */
 exports.listApplication = (id_teacher) => {
   const sqlApplication =
-    "SELECT id,id_student,path_cv,status,id_thesis,data FROM Application WHERE id_teacher=?";
+    "SELECT innerTable.id_thesis, innerTable.id, innerTable.id_student, title, S.name, S.surname, innerTable.data, innerTable.path_cv, innerTable.status FROM (SELECT id,id_student,path_cv,status,id_thesis,data FROM Application WHERE id_teacher=?) AS innerTable, Thesis AS T, Student AS S WHERE T.id = innerTable.id AND S.id = innerTable.id_student";
   const sqlStudent = "SELECT surname,name,cod_degree FROM Student WHERE id=?";
   const sqlThesis = "SELECT title,cds FROM Thesis WHERE id=?";
   let student;
@@ -33,15 +34,27 @@ exports.listApplication = (id_teacher) => {
          reject({ error: "Application not found." });
          return
       } else {
+        // const application = rows.map((a) => ({
+        //   id_application: a.id,
+        //   id_student: a.id_student,
+        //   id_thesis: a.id_thesis,
+        //   data: a.data,
+        //   path_cv: a.path_cv,
+        //   status: a.status,
+        // }));
         const application = rows.map((a) => ({
-          id_application: a.id,
           id_student: a.id_student,
+          id_application: a.id,
           id_thesis: a.id_thesis,
+          title: a.title,
+          name: a.name,
+          surname: a.surname,
           data: a.data,
           path_cv: a.path_cv,
-          status: a.status,
-        }));
+          status: a.status
+        }))
 
+        console.log(application)
         resolve(application);
         /*
         // for each application found student's information are requested
@@ -111,7 +124,7 @@ exports.addProposal = (studentId, thesisId, cvPath) => {
 
       const supervisorId = result.supervisor;
       //Create a current date to add at the new application 
-      const currentDate = new Date().toISOString();
+      const currentDate = dayjs().format('YYYY-MM-DD').toString()
       const sql = 'INSERT INTO Application (id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?)';
       db.run(sql, [studentId, thesisId, currentDate, cvPath, 0, supervisorId], function (err) {
         if (err) {
