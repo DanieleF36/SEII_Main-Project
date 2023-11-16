@@ -204,7 +204,7 @@ function Homepage(props) {
                                                 <br />
                                                 <strong>Note:</strong> {proposal.note}
                                                 <br />
-                                                <strong>Level:</strong> {proposal.level}
+                                                <strong>Level:</strong> {proposal.level === 1? 'Master' : 'Bachelor'}
                                                 <br />
                                                 <strong>CdS:</strong> {proposal.cds}
                                                 <br />
