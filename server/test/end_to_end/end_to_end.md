@@ -29,41 +29,23 @@
 ### Story 3, Apply for proposal
 
 ###### Front-end
-![Frontend](./img/)
-###### Request
-![Request](./img/)
+![Frontend](./img/applyForProposal_front.png)
+![Button](./img/applyForProposal_uselessButton.png)
 ###### Response
-![Response](./img/)
+![Response](./img/applyForProposal_response.png)
 ###### Status code 200
-![Success](./img/)
-![Dbview](./img/)
-###### Status code 400
-![Error](./img/)
+![Success](./img/applyForProposal_200Success.png)
 
 ### Story 4, Browse Applications
 
 ###### Front-end
-![Frontend](./img/)
-###### Request
-![Request](./img/)
+![Frontend](./img/browseApplication_front.png)
 ###### Response
-![Response](./img/)
-###### Status code 200
-![Success](./img/)
-![Dbview](./img/)
-###### Status code 400
-![Error](./img/)
+![Response](./img/browseApplication_response.png)
 
 ### Story 5, Accept Application
 
 ###### Front-end
-![Frontend](./img/)
-###### Request
-![Request](./img/)
-###### Response
-![Response](./img/)
+![Frontend](./img/applyForProposal_front.png)
 ###### Status code 200
-![Success](./img/)
-![Dbview](./img/)
-###### Status code 400
-![Error](./img/)
+![Success](./img/applyForProposal_200Success.png)
