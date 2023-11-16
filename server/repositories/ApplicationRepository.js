@@ -1,6 +1,7 @@
 "use strict";
 
 const sqlite = require("sqlite3");
+const dayjs = require('dayjs')
 
 const db = new sqlite.Database("db.sqlite", (err) => {
   if (err) throw err;
@@ -111,7 +112,7 @@ exports.addProposal = (studentId, thesisId, cvPath) => {
 
       const supervisorId = result.supervisor;
       //Create a current date to add at the new application 
-      const currentDate = new Date().toISOString();
+      const currentDate = dayjs().format('YYYY-MM-DD').toString()
       const sql = 'INSERT INTO Application (id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?)';
       db.run(sql, [studentId, thesisId, currentDate, cvPath, 0, supervisorId], function (err) {
         if (err) {

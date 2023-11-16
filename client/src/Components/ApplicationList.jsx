@@ -74,7 +74,7 @@ function ApplicationList() {
                 if (res == 1) {
                     toast.success('Application successfully accepted')
                 } else if (res == 2) {
-                    toast.error('Application successfully rejected')
+                    toast.success('Application successfully rejected')
                 }
             })
             .catch((err) => { toast.error(err.error); });
@@ -130,7 +130,7 @@ function ApplicationList() {
                                     <br />
                                     <strong>Application Date:</strong> {application.data}
                                     <br />
-                                    <strong>Path Cv: </strong>  <a href={application.path_cv}>Cv.pdf</a>
+                                    <strong>Path Cv: </strong>  <a>CV.pdf</a>
                                     <br />
                                     <br />
                                     <br />
