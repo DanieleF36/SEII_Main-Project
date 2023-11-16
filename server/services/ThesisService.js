@@ -166,7 +166,8 @@ exports.addThesis = async function (thesis) {
     let cosupervisor_ids = []
     let supervisor_ids = []
     // look for each co-supervisor id into COSUPERVISOR
-    if (Array.isArray(thesis.cosupervisor)) {
+    console.log(thesis.cosupervisor);
+    if (Array.isArray(thesis.cosupervisor) && thesis.cosupervisor[0].length!==0) {
       for (let email of thesis.cosupervisor) {
         let tmp = await coSupervisorRepository.findByEmail(email);
         if (Object.keys(tmp).length === 0) {
