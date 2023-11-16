@@ -89,66 +89,6 @@ describe("BROWSE APPLICATION UNIT TEST", () => {
         expect(jsonResponse.application).toEqual(successfulApplicationRow)
     })
 
-    test.skip("TODO: managing async calls to sqlite database ", async () => {
-        const mockReq = {
-            params: {
-                id_professor: "t123456"
-            }
-        };
-        const mockRes = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn(),
-        };
-
-        const successfulApplicationRow = [
-            {
-                id: 1,
-                id_student: 101,
-                id_thesis: 201,
-                data: 'Some data',
-                path_cv: '/path/to/cv',
-                status: 'Pending'
-            }
-        ];
-
-        const successfulStudentRow = [
-            {
-                id: 101,
-                surname: 'Doe',
-                name: 'John'
-            }
-        ];
-
-        const successfulThesisRow = [
-            {
-                id: 201,
-                title: 'Thesis Title',
-                cds: 'Computer Science'
-            }
-        ];
-
-        console.log(sqlite.Database)
-        jest.spyOn(sqlite, "all").mockResolvedValueOnce(() => {
-            return successfulThesisRow
-        })
-
-        jest.spyOn(sqlite, "all").mockResolvedValueOnce(() => {
-            return successfulStudentRow
-        })
-
-        jest.spyOn(sqlite, "all").mockResolvedValueOnce(() => {
-            return successfulApplicationRow
-        })
-
-
-
-        await controller.listApplication(mockReq, mockRes)
-
-        const jsonResponse = mockRes.json.mock.calls[0][0];
-        console.log(jsonResponse)        
-        expect(mockRes.status).toHaveBeenCalledWith(400)
-        expect(jsonResponse.error).toBeDefined()
-    })
 
 })
 
