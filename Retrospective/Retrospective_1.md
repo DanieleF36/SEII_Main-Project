@@ -1,4 +1,4 @@
-OQM RETROSPECTIVE (Team 14)
+SEII_Main-Project RETROSPECTIVE (Demo 1)
 =====================================
 
 - [process measures](#process-measures)
@@ -55,7 +55,7 @@ OQM RETROSPECTIVE (Team 14)
 
 ## ASSESSMENT
 
-- What caused your errors in estimation (if any)? For this sprint we have understimate the spent hours for each tasks because we focused on a better tasks     division that made more difficult the tasks estimation. We also forgot to compute the total amount of hour after the tasks estimation to compare it to the total amount team's hours. 
+- What caused your errors in estimation (if any)? For this sprint we have understimate the spent hours for each tasks because we focused on a better tasks division that made more difficult the tasks estimation. We also forgot to compute the total amount of hour after the tasks estimation to compare it to the total amount team's hours. 
 
 - What lessons did you learn (both positive and negative) in this sprint? In this sprint we understood how to divide the tasks and how to manage the branches of the repository. The negative lesson we learnt is that the team division was too strict and we have noticed lack in communication 
 
