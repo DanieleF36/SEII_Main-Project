@@ -29,10 +29,10 @@ function Homepage(props) {
 
     for (let number = 1; number <= props.pages; number++) {
         //console.log(props.pages);
-            items.push(
-                <Pagination.Item key={number} active={number === active} onClick={()=>{setActive(number);setFilters({...filters, page: number});}}>
-                    {number}
-                </Pagination.Item>
+        items.push(
+            <Pagination.Item key={number} active={number === active} onClick={() => { setActive(number); setFilters({ ...filters, page: number }); }}>
+                {number}
+            </Pagination.Item>
         );
     }
 
@@ -60,13 +60,13 @@ function Homepage(props) {
     });
 
     useEffect(() => {
-        items.map(e=>{if(e.key===active){e.props.active=true}});
+        items.map(e => { if (e.key === active) { e.props.active = true } });
         //console.log(filters);
-        API.advancedSearchThesis(filters).then(res=>{
+        API.advancedSearchThesis(filters).then(res => {
             props.setProposals(res[1]);
             props.setPages(res[0]);
         });
-      }, [active]);
+    }, [active]);
 
 
     const handleFilterChange = (e) => {
@@ -89,16 +89,16 @@ function Homepage(props) {
     };
 
     const handleApplyProp = () => {
-        if(application.cv!==''){
-           //console.log(application);
-           API.applyForProposal(application).then((res)=>{ toast.success('Application successfully sended');setApplication({ ...application, cv: '' })})
-           .catch((res)=>console.log(res));
-           
+        if (application.cv !== '') {
+            //console.log(application);
+            API.applyForProposal(application).then((res) => { toast.success('Application successfully sended'); setApplication({ ...application, cv: '' }) })
+                .catch((res) => console.log(res));
+
         }
-        else(
+        else (
             toast.error('CV upload missing')
         )
-        
+
     };
 
 
@@ -124,15 +124,15 @@ function Homepage(props) {
 
     const handleApplyFilters = () => {
         //console.log(filters);
-    if(filters.order==='' && filters.orderby==='' || filters.order!=='' && filters.orderby!==''){
-        API.advancedSearchThesis({...filters, page:1}).then(res=>{
-            props.setProposals(res[1]);
-            props.setPages(res[0]);
-        });
-    }
-    else{
-        toast.error('Some Order fields are not filled');
-    }
+        if (filters.order === '' && filters.orderby === '' || filters.order !== '' && filters.orderby !== '') {
+            API.advancedSearchThesis({ ...filters, page: 1 }).then(res => {
+                props.setProposals(res[1]);
+                props.setPages(res[0]);
+            });
+        }
+        else {
+            toast.error('Some Order fields are not filled');
+        }
     };
 
 
@@ -204,7 +204,7 @@ function Homepage(props) {
                                                 <br />
                                                 <strong>Note:</strong> {proposal.note}
                                                 <br />
-                                                <strong>Level:</strong> {proposal.level === 1? 'Master' : 'Bachelor'}
+                                                <strong>Level:</strong> {proposal.level === 1 ? 'Master' : 'Bachelor'}
                                                 <br />
                                                 <strong>CdS:</strong> {proposal.cds}
                                                 <br />
@@ -212,27 +212,29 @@ function Homepage(props) {
                                                 <br />
                                                 <br />
                                                 {proposal.status === 1 ? <>
-                                                    <Button variant="primary" onClick={()=>{handleShow();setApplication({ ...application, id_thesis: proposal.id });}}>
+                                                    <Button variant="primary" onClick={() => { handleShow(); setApplication({ ...application, id_thesis: proposal.id }); }}>
                                                         Apply
                                                     </Button>
 
-                                                    <Modal show={show} onHide={handleClose}>
+                                                    <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
                                                         <Modal.Header closeButton>
                                                             <Modal.Title>Apply for proposal</Modal.Title>
                                                         </Modal.Header>
-                                                        <Modal.Body> <Form.Group controlId="formFile" className="mb-3">
-                                                            <Form.Label><strong>Upload your CV</strong></Form.Label>
-                                                            <Form.Control
-                                                                type="file"
-                                                                name="cv"
-                                                                onChange={handleApplyChange} 
-                                                            />
-                                                        </Form.Group></Modal.Body>
+                                                        <Modal.Body>
+                                                            <Form.Group controlId="formFile" className="mb-3">
+                                                                <Form.Label><strong>Upload your CV</strong></Form.Label>
+                                                                <Form.Control
+                                                                    type="file"
+                                                                    name="cv"
+                                                                    onChange={handleApplyChange}
+                                                                />
+                                                            </Form.Group>
+                                                        </Modal.Body>
                                                         <Modal.Footer>
                                                             <Button variant="secondary" onClick={handleClose}>
                                                                 Close
                                                             </Button>
-                                                            <Button variant="primary" onClick={()=>{handleClose();handleApplyProp()}}>
+                                                            <Button variant="primary" onClick={() => { handleClose(); handleApplyProp(); }}>
                                                                 Apply
                                                             </Button>
                                                         </Modal.Footer>
@@ -251,12 +253,12 @@ function Homepage(props) {
                 </Row>
 
                 <Row className="d-md-flex justify-content-center align-items-center">
-                 <Col xs='3'>
-                 </Col>
-                 <Col xs='9'className="d-md-flex justify-content-center align-items-center">
-                 <Pagination>{items}</Pagination>
-                 </Col>
-                    
+                    <Col xs='3'>
+                    </Col>
+                    <Col xs='9' className="d-md-flex justify-content-center align-items-center">
+                        <Pagination>{items}</Pagination>
+                    </Col>
+
                 </Row>
 
 

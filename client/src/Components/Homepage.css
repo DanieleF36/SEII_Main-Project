@@ -20,3 +20,7 @@
     border-color: #d6d3d3;
     color: #FF7C11;
   }
+
+  .modal-backdrop {
+    opacity: 0.2 !important;
+}

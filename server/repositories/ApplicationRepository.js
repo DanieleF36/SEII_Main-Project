@@ -17,7 +17,7 @@ const db = new sqlite.Database("db.sqlite", (err) => {
  */
 exports.listApplication = (id_teacher) => {
   const sqlApplication =
-    "SELECT innerTable.id_thesis, innerTable.id, innerTable.id_student, title, S.name, S.surname, innerTable.data, innerTable.path_cv, innerTable.status FROM (SELECT id,id_student,path_cv,status,id_thesis,data FROM Application WHERE id_teacher=?) AS innerTable, Thesis AS T, Student AS S WHERE T.id = innerTable.id AND S.id = innerTable.id_student";
+    "SELECT innerTable.id_thesis, innerTable.id, innerTable.id_student, title, S.name, S.surname, innerTable.data, innerTable.path_cv, innerTable.status FROM (SELECT id,id_student,path_cv,status,id_thesis,data FROM Application WHERE id_teacher=?) AS innerTable, Thesis AS T, Student AS S WHERE T.id = innerTable.id_thesis AND S.id = innerTable.id_student";
   const sqlStudent = "SELECT surname,name,cod_degree FROM Student WHERE id=?";
   const sqlThesis = "SELECT title,cds FROM Thesis WHERE id=?";
   let student;
