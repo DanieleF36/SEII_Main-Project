@@ -42,21 +42,21 @@ function FilterContainer(props) {
                   placeholder="CoSuperv Surnames"
                 />
               </Form.Group>
-              <p><strong>Expiration Date</strong></p>
-              <Form.Group className="mb-3">
-                <Form.Control
-                  type="date"
-                  name="expDate"
-                  value={props.filters.expDate}
-                  onChange={props.handleFilterChange}
-                />
-              </Form.Group>
-              <p><strong>Creation Date</strong></p>
+              <p><strong>From Creation Date</strong></p>
               <Form.Group className="mb-3">
                 <Form.Control
                   type="date"
                   name="creatDate"
                   value={props.filters.creatDate}
+                  onChange={props.handleFilterChange}
+                />
+              </Form.Group>
+              <p><strong>To Expiration Date</strong></p>
+              <Form.Group className="mb-3">
+                <Form.Control
+                  type="date"
+                  name="expDate"
+                  value={props.filters.expDate}
                   onChange={props.handleFilterChange}
                 />
               </Form.Group>
