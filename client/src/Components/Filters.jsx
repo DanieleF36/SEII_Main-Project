@@ -97,15 +97,6 @@ function FilterContainer(props) {
                 />
               </Form.Group>
               <Form.Group className="mb-3">
-                <Form.Control
-                  type="text"
-                  name="cds"
-                  value={props.filters.cds}
-                  onChange={props.handleFilterChange}
-                  placeholder="CdS"
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
                 <p><strong>Ordering</strong></p>
                 <Form.Control
                   as="select"
