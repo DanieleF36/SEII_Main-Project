@@ -216,7 +216,7 @@ function Homepage(props) {
                                                         Apply
                                                     </Button>
 
-                                                    <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
+                                                    <Modal show={show} onHide={handleClose}>
                                                         <Modal.Header closeButton>
                                                             <Modal.Title>Apply for proposal</Modal.Title>
                                                         </Modal.Header>
