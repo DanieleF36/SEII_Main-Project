@@ -1,0 +1,422 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "Thesis Management API",
+    "version": "0.1"
+  },
+  "paths": {
+    "/thesis": {
+      "post": {
+        "tags": ["thesis"],
+        "description": "Add a thesis",
+        "operationId": "addThesis",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/thesis"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/thesis"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["thesis"],
+        "description": "Return a list of thesis that respect all the parameters",
+        "operationId": "advancedResearchThesis",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "description": "Order of results. D: discendent, A: ascendent",
+            "schema": {
+              "default": "titleD",
+              "enum": [
+                "titleD",
+                "titleA",
+                "supervisorD",
+                "supervisorA",
+                "co-supervisorD",
+                "co-supervisorA",
+                "keywordD",
+                "keywordA",
+                "typeD",
+                "typeA",
+                "groupsD",
+                "groupsA",
+                "knowledgeD",
+                "knowledgeA",
+                "expiration_dateD",
+                "expiration_dateA",
+                "cdsD",
+                "cdsA",
+                "creation_dateD",
+                "creation_dateA"
+              ]
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "title",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "supervisor",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "co-supervisor",
+            "schema": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "keyword",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "groups",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "knowledge",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "expiration_date",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "cds",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "creation_date",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type":"object",
+                  "properties": {
+                    "nPage":{"type": "integer", "minimum": 0},
+                    "thesis":{"type":"object", "$ref": "#/components/schemas/thesis"}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/professor/{id_professor}/applications": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id_professor",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": ["professor"],
+        "description": "Get all the application for the professor",
+        "operationId": "listApplication",
+        "responses": {
+          "200": {
+            "description": "Application list returned correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/application"
+                  }
+                }
+              }
+            }
+          },
+            "400": {
+              "description": "Given supervisor's id is not valid",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/error"
+                  }
+                }
+              }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/professor/{id_professor}/applications/{id_application}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id_professor",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "id_application",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
+      "put": {
+        "tags": ["professor"],
+        "description": "Theacher accept or reject an application",
+        "operationId": "accRefApplication",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "status": { "type": "integer" }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/thesis/{id}/applications": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
+      "post": {
+        "tags": ["thesis"],
+        "description": "A student send his/her application for thesis {id} and attach his cv as json",
+        "operationId": "addApplication",
+        "requestBody": {
+          "content": {
+            "multipart/form-data":{}
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/application"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500":{
+            "description": "Internel error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "thesis": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "minimum": 0 },
+          "title": { "type": "string", "minLength": 1 },
+          "supervisor": { "type": "string", "minLength": 1 },
+          "co_supervisor": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "keyword": { "type": "string" },
+          "type": { "type": "string" },
+          "groups": { "type": "string" },
+          "description": { "type": "string" },
+          "knowledge": { "type": "string" },
+          "note": { "type": "string" },
+          "expiration_date": { "type": "string" },
+          "level": { "type": "integer" },
+          "cds": { "type": "string" },
+          "creation_date": { "type": "string" },
+          "status": { "type": "integer" },
+          "nPage":{"type": "integer"}
+        },
+        "required": ["title", "supervisor", "expiration_date", "level", "cds"]
+      },
+      "teacher": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "minimum": 0 },
+          "name": { "type": "string" },
+          "surname": { "type": "string" },
+          "email": { "type": "string" },
+          "cod_group": { "type": "integer", "minimum": 0 },
+          "cod_department": { "type": "integer", "minimum": 0 }
+        },
+        "required": ["id"]
+      },
+      "co_supervisor": {
+        "type": "object",
+        "properties": {
+          "email": { "type": "string" },
+          "name": { "type": "string" },
+          "surname": { "type": "string" },
+          "company": { "type": "string" }
+        }
+      },
+      "application": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "minimum": 0 },
+          "id_student": { "type": "integer", "minimum": 0 },
+          "id_thesis": { "type": "integer", "minimum": 0 },
+          "date": { "type": "string" },
+          "path_cv" : {"type" : "string"},
+          "status" : { "type": "integer"}
+        }
+      },
+      "error": {
+        "type": "object",
+        "properties": {
+          "error": { "type": "string" }
+        },
+        "required": ["error"]
+      }
+    }
+  }
+}

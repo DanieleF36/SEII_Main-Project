@@ -1,0 +1,11 @@
+@APIURL = http://localhost:3001
+//GET THE LIST OF APPLICATION
+GET {{APIURL}}/professor/1/applications
+###  
+//UPDATE THE APPLICATION STATUS (PROFESSOR TASK)
+POST {{APIURL}}/professor/2/applications/1
+content-type: application/json
+
+{
+    "accepted" : 1
+}
