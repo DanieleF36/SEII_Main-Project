@@ -18,7 +18,7 @@ function Homepage(props) {
     const [add, setAdd] = useState(true);
     const [listA, setListA] = useState(false);
     const [active, setActive] = useState(1);
-    const [dirty, setDirty] = useState(false);
+
 
     let items = [];
 
@@ -61,26 +61,12 @@ function Homepage(props) {
     });
 
     useEffect(() => {
-    if(dirty){
-        items.map(e => { if (e.key === 1) { e.props.active = true } });
-        //console.log(filters);
-        API.advancedSearchThesis({...filters, page:1}).then(res => {
-            props.setProposals(res[1]);
-            props.setPages(res[0]);
-            setDirty(false);
-            setActive(1);
-        });
-
-
-    }
-    else{
         items.map(e => { if (e.key === active) { e.props.active = true } });
         //console.log(filters);
-        API.advancedSearchThesis(filters).then(res => {
+        API.advancedSearchThesis({...filters, page: active}).then(res => {
             props.setProposals(res[1]);
             props.setPages(res[0]);
         });
-    }
     }, [active]);
 
 
@@ -140,11 +126,9 @@ function Homepage(props) {
     const handleApplyFilters = () => {
         //console.log(filters);
         if (filters.order === '' && filters.orderby === '' || filters.order !== '' && filters.orderby !== '') {
-            API.advancedSearchThesis({ ...filters, page: 1 }).then(res => {
+            API.advancedSearchThesis({ ...filters, page: active}).then(res => {
                 props.setProposals(res[1]);
                 props.setPages(res[0]);
-                setDirty(true);
-                setActive(1);
             });
         }
         else {
