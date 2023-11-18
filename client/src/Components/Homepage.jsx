@@ -7,6 +7,8 @@ import './Homepage.css';
 import { FilterContainer } from './Filters';
 import AddProposalForm from './AddProposal';
 import ApplicationList from './ApplicationList';
+import StudentList from './StudentList';
+import MyProposal from './MyProposal';
 import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
 
@@ -15,10 +17,12 @@ import API from '../API';
 
 function Homepage(props) {
 
-    const [add, setAdd] = useState(true);
+    const [add, setAdd] = useState(false);
     const [listA, setListA] = useState(false);
-    
-
+    const [propList, setPropList] = useState(true);
+    const [listApplicationStud, setListApplicationStud] = useState(false);
+    const [myProp, setMyProp] = useState(true);
+    const [active, setActive] = useState(1);
 
     let items = [];
 
@@ -143,8 +147,9 @@ function Homepage(props) {
 
 
     return (
-        props.user === 0 ? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
-            <TitleBar user={props.user} setUser={props.setUser} handleResetChange={handleResetChange}/>
+        props.user === 0 ? 
+        propList === true? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
+            <TitleBar user={props.user} setUser={props.setUser} />
             <Toaster
                 position="top-center"
                 reverseOrder={false}
@@ -155,7 +160,8 @@ function Homepage(props) {
 
                         <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                             <Nav className="flex-column">
-                                <Nav.Link active={true}> Proposals List</Nav.Link>
+                                <Nav.Link active={propList} onClick={()=> {setPropList(true); setListApplicationStud(false)}}> Proposals List</Nav.Link>
+                                <Nav.Link active={listApplicationStud} onClick={()=> {setPropList(false); setListApplicationStud(true)}}> List Application</Nav.Link>
                             </Nav>
                         </Navbar>
 
@@ -268,7 +274,34 @@ function Homepage(props) {
 
 
             </Container>
-        </div> : add === true ? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
+        </div> 
+        : <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
+            <TitleBar user={props.user} setUser={props.setUser} />
+            <Container fluid style={{ marginTop: '20px' }}>
+                <Row>
+                    <Col xs={3}>
+
+                    <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
+                            <Nav className="flex-column">
+                                <Nav.Link active={propList} onClick={()=> {setPropList(true); setListApplicationStud(false)}}> Proposals List</Nav.Link>
+                                <Nav.Link active={listApplicationStud} onClick={()=> {setPropList(false); setListApplicationStud(true)}}> List Application</Nav.Link>
+                            </Nav>
+                        </Navbar>
+
+                    </Col>
+                    <Col xs={9}>
+                        <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
+                            <StudentList />
+                        </div>
+
+                    </Col>
+
+
+                </Row>
+
+            </Container>
+        </div>
+        : add === true && listA === false && myProp === false? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
             <TitleBar user={props.user} setUser={props.setUser} />
             <Container fluid style={{ marginTop: '20px' }}>
                 <Row>
@@ -276,8 +309,9 @@ function Homepage(props) {
 
                         <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                             <Nav className="flex-column">
-                                <Nav.Link active={add} onClick={() => { setAdd(true); setListA(false); }}> Add Proposal</Nav.Link>
-                                <Nav.Link active={listA} onClick={() => { setAdd(false); setListA(true); }}>Applications List</Nav.Link>
+                                <Nav.Link active={myProp} onClick={() => { setAdd(false); setListA(false); setMyProp(true) }}> My Proposal</Nav.Link>
+                                <Nav.Link active={add} onClick={() => { setAdd(true); setListA(false); setMyProp(false) }}> Add Proposal</Nav.Link>
+                                <Nav.Link active={listA} onClick={() => { setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
                             </Nav>
                         </Navbar>
 
@@ -293,7 +327,8 @@ function Homepage(props) {
                 </Row>
 
             </Container>
-        </div> : <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
+        </div> 
+        : listA === true && myProp === false ? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
             <TitleBar user={props.user} setUser={props.setUser} />
             <Container fluid style={{ marginTop: '20px' }}>
                 <Row>
@@ -301,8 +336,9 @@ function Homepage(props) {
 
                         <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                             <Nav className="flex-column">
-                                <Nav.Link active={add} onClick={() => { setAdd(true); setListA(false); }}> Add Proposal</Nav.Link>
-                                <Nav.Link active={listA} onClick={() => { setAdd(false); setListA(true); }}>Applications List</Nav.Link>
+                                <Nav.Link active={myProp} onClick={() => { setAdd(false); setListA(false); setMyProp(true) }}> My Proposal</Nav.Link>
+                                <Nav.Link active={add} onClick={() => { setAdd(true); setListA(false); setMyProp(false) }}> Add Proposal</Nav.Link>
+                                <Nav.Link active={listA} onClick={() => { setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
                             </Nav>
                         </Navbar>
 
@@ -320,6 +356,35 @@ function Homepage(props) {
 
             </Container>
         </div>
+        : <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
+        <TitleBar user={props.user} setUser={props.setUser} />
+        <Container fluid style={{ marginTop: '20px' }}>
+            <Row>
+                <Col xs={3}>
+
+                    <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
+                        <Nav className="flex-column">
+                            <Nav.Link active={myProp} onClick={() => { setAdd(false); setListA(false); setMyProp(true) }}> My Proposal</Nav.Link>
+                            <Nav.Link active={add} onClick={() => { setAdd(true); setListA(false); setMyProp(false) }}> Add Proposal</Nav.Link>
+                            <Nav.Link active={listA} onClick={() => { setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
+                        </Nav>
+                    </Navbar>
+
+                </Col>
+                <Col xs={9}>
+
+                    <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
+                        <MyProposal />
+                    </div>
+
+                </Col>
+
+
+            </Row>
+
+        </Container>
+
+    </div>
 
 
     )
