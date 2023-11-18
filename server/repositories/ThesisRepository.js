@@ -1,11 +1,7 @@
 "use strict";
 
 const { resolve } = require("path");
-const sqlite = require("sqlite3");
-
-const db = new sqlite.Database("db.sqlite", (err) => {
-  if (err) throw err;
-});
+const db = require("./db");
 
 /**
  * Composes the query and performs an advanced search
@@ -144,6 +140,7 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
   const params = sql[1];
   sql = sql[0];
   return new Promise((resolve, reject) => {
+    
     db.all(sql, params, (err, rows) => {
       if (err) {
         reject(err);

@@ -2,9 +2,7 @@
 
 const sqlite = require('sqlite3');
 
-const db = new sqlite.Database('db.sqlite', (err) => {
-    if(err) throw err;
-});
+const db = require("./db");
 
 /**
  * Insert an entry into COSUPERVISORTHESIS table without performing any checks over parameters exis
