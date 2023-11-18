@@ -69,6 +69,10 @@ function Homepage(props) {
         });
     }, [props.active]);
 
+    useEffect(() => {
+        handleResetChange();
+    }, [props.user]);
+
 
     const handleFilterChange = (e) => {
         const { name, value } = e.target;
