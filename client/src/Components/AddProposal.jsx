@@ -21,7 +21,7 @@ function AddProposalForm() {
         cds: 'LM-32',
     });
 
-    const [cosup_email, setCoSup_email] = useState(['mario.polli@polito.it', 'marco.colli@mail.com', 'marco.collo@mail.com', 'luca.azzurro@polito.it']);
+    const [cosup_email, setCoSup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);
     const [filt_cosup, setFilt_cosup] = useState([]);
 
     const [searchTerm, setSearchTerm] = useState('');
