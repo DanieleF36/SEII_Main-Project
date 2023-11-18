@@ -160,7 +160,7 @@ function AddProposalForm() {
                                 <Col sm='12'md='12'lg='3'>
                                     <Dropdown style={{ marginTop: '5px' }}>
                                         <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                                            {searchTerm === '' ? 'Select a mail' : searchTerm}
+                                            {searchTerm === '' ? 'Select mail' : searchTerm}
                                         </Dropdown.Toggle>
 
                                         <Dropdown.Menu show={searchTerm !== ''}>
