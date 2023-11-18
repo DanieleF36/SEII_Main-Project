@@ -1,10 +1,7 @@
 'use strict';
 
-const sqlite = require('sqlite3');
+const db = require("./db");
 
-const db = new sqlite.Database('db.sqlite', (err) => {
-    if(err) throw err;
-});
 exports.findById = (id)=>{
     const sqlCoSupervisor = "SELECT name, surname, email, company FROM CoSupervisor WHERE id = ?";
 
