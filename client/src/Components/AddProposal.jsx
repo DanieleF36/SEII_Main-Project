@@ -7,16 +7,16 @@ import API from '../API';
 
 function AddProposalForm() {
     const [proposalData, setProposalData] = useState({
-        title: 'Demo1',
+        title: 'Demo2',
         supervisor: '',
         cosupervisor: '',
         expiration_date: '',
-        keywords: ['D1', 'M1'],
+        keywords: ['D2', 'M2'],
         type: ['Demo'],
         groups: 'Group14',
         description: 'Demo Presentation',
         knowledge: 'Team Organization',
-        note: 'DEMO1',
+        note: 'DEMO2',
         level: 'Master',
         cds: 'LM-32',
     });
