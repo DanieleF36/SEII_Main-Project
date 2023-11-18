@@ -215,10 +215,10 @@ exports.addThesis = async function (thesis) {
 
     console.log(supervisor_ids.length)
     console.log(cosupervisor_ids.length)
-    let result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, thesis.supervisor, null)
-    if (result != true) {
-      throw { status: 500, error: result.err };
-    }
+    //let result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, thesis.supervisor, null)
+    //if (result != true) {
+    //  throw { status: 500, error: result.err };
+    //}
     if(cosupervisor_ids.length > 0) {
       for(let id of cosupervisor_ids) {
         result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, null, id)

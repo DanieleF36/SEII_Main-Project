@@ -2,47 +2,11 @@
   "openapi": "3.0.2",
   "info": {
     "title": "Thesis Management API",
-    "version": "0.1"
+    "version": "0.2"
   },
+  "security":[{"samlAuth":[]}],
   "paths": {
     "/thesis": {
-      "post": {
-        "tags": ["thesis"],
-        "description": "Add a thesis",
-        "operationId": "addThesis",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/thesis"
-              }
-            }
-          },
-          "required": true
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/thesis"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/error"
-                }
-              }
-            }
-          }
-        }
-      },
       "get": {
         "tags": ["thesis"],
         "description": "Return a list of thesis that respect all the parameters",
@@ -196,92 +160,32 @@
             }
           }
         }
-      }
-    },
-    "/professor/{id_professor}/applications": {
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id_professor",
-          "schema": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "required": true
-        }
-      ],
-      "get": {
-        "tags": ["professor"],
-        "description": "Get all the application for the professor",
-        "operationId": "listApplication",
-        "responses": {
-          "200": {
-            "description": "Application list returned correctly",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/application"
-                  }
-                }
-              }
-            }
-          },
-            "400": {
-              "description": "Given supervisor's id is not valid",
-              "content": {
-                "application/json": {
-                  "schema": {
-                    "$ref": "#/components/schemas/error"
-                  }
-                }
-              }
-          },
-          "404": {
-            "description": "Not found"
-          }
-        }
-      }
-    },
-    "/professor/{id_professor}/applications/{id_application}": {
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id_professor",
-          "schema": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "required": true
-        },
-        {
-          "in": "path",
-          "name": "id_application",
-          "schema": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "required": true
-        }
-      ],
-      "put": {
-        "tags": ["professor"],
-        "description": "Theacher accept or reject an application",
-        "operationId": "accRefApplication",
+      },
+      "post": {
+        "tags": ["thesis"],
+        "description": "Add a thesis",
+        "operationId": "addThesis",
         "requestBody": {
           "content": {
             "application/json": {
               "schema": {
-                "properties": {
-                  "status": { "type": "integer" }
-                }
+                "$ref": "#/components/schemas/thesis"
               }
             }
           },
           "required": true
         },
         "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/thesis"
+                }
+              }
+            }
+          },
           "400": {
             "description": "Bad request",
             "content": {
@@ -291,9 +195,52 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/thesis/{id}":{
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
           },
-          "404": {
-            "description": "Not found"
+          "required": true
+        }
+      ],
+      "put":{
+        "tags":["thesis"],
+        "description": "Update thesis with id_thesis",
+        "operationId": "updateThesis",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref":"#/components/schemas/thesis"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204":{
+            "description": "Updated"
+          },
+          "404":{
+            "description": "id professor not found"
+          },
+          "401":{
+            "description": "not authorized"
+          },
+          "400":{
+            "description": "bad request"
+          },
+          "500":{
+            "description": "internal error"
           }
         }
       }
@@ -346,6 +293,328 @@
           },
           "500":{
             "description": "Internel error"
+          }
+        }
+      }
+    },
+    "/professors/{id_professor}/applications": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id_professor",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": ["professor"],
+        "description": "Get all the application for the professor",
+        "operationId": "listApplication",
+        "responses": {
+          "200": {
+            "description": "Application list returned correctly",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/application"
+                  }
+                }
+              }
+            }
+          },
+            "400": {
+              "description": "Given supervisor's id is not valid",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/error"
+                  }
+                }
+              }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/professors/{id_professor}/applications/{id_application}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id_professor",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        },
+        {
+          "in": "path",
+          "name": "id_application",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
+      "put": {
+        "tags": ["professor"],
+        "description": "Theacher accept or reject an application",
+        "operationId": "accRefApplication",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "status": { "type": "integer" }
+                }
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204":{
+            "description": "Updated"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/professors/{id_professor}/thesis":{
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id_professor",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
+      "get":{
+        "tags":["professor"],
+        "description": "Get all the active thesis for professor id",
+        "operationId": "browseProfessorProposal",
+        "responses": {
+          "200":{
+            "description": "list of all application",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "$ref": "#/components/schemas/thesis"
+                }
+              }
+            }
+          },
+          "404":{
+            "description": "id professor not found"
+          },
+          "401":{
+            "description": "not authorized"
+          },
+          "500":{
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/students/{id}/applications":{
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
+      "get":{
+        "tags":["student"],
+        "description": "get all the applications of student id",
+        "operationId": "browseStudentApplication",
+        "responses": {
+          "200":{
+            "description": "list of all application",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "id":{"type": "integer"},
+                    "title":{"type": "string"},
+                    "supervisorName":{"type": "string"},
+                    "supervisorSurname":{"type": "string"},
+                    "path_cv":{"type": "string"},
+                    "date_application":{"type": "string", "format": "date"},
+                    "status":{"enum": [0,1,2]}
+                  }
+                }
+              }
+            }
+          },
+          "404":{
+            "description": "id student not found"
+          },
+          "401":{
+            "description": "not authorized"
+          },
+          "500":{
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/students/{id}/notifications":{
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
+      "get":{
+        "tags":["student"],
+        "description": "get all the notifications of student id",
+        "operationId": "browseStudentNotifications",
+        "responses": {
+          "200":{
+            "description": "list of all notifications",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "id":{"type": "integer", "minimum": 0},
+                    "id_thesis":{"type": "integer", "minimum": 0},
+                    "description":{"type": "string"},
+                    "seen":{"enum": [0, 1]}
+                  }
+                }
+              }
+            }
+          },
+          "404":{
+            "description": "id student not found"
+          },
+          "401":{
+            "description": "not authorized"
+          },
+          "500":{
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/students/{id_student}/notifications/{id_notification}":{
+      "parameters": [
+        {
+          "name":"id_student",
+          "in": "path",
+          "schema":{
+            "type": "integer",
+            "maximum": 0
+          },
+          "required": true
+        },
+        {
+          "name":"id_notification",
+          "in": "path",
+          "schema":{
+            "type": "integer",
+            "maximum": 0
+          },
+          "required": true
+        }
+      ],
+      "put":{
+        "description": "Set if a notification was seen or not",
+        "tags": ["student"],
+        "operationId": "setNotificationSeen",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "$ref":"#/components/schemas/notification"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204":{
+            "description": "Updated"
+          },
+          "404":{
+            "description": "Not found"
+          },
+          "401":{
+            "description": "Not authorized"
+          },
+          "400":{
+            "description": "Bad request"
+          },
+          "500":{
+            "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/clock":{
+      "put":{
+        "tags": ["Virtual clock"],
+        "description": "change date of Virtual clock",
+        "operationId": "changeVirtualClock",
+        "requestBody":{
+          "content": {
+            "application/json":{
+              "schema":{
+                "type": "string",
+                "format": "date"
+              }
+            }
+          }
+        },
+        "responses": {
+          "204":{
+            "description": "UpdateD"
+          },
+          "400":{
+            "description": "Bad request"
+          },
+          "401":{
+            "description": "Not authorized"
+          },
+          "500":{
+            "description": "Internal error"
           }
         }
       }
@@ -408,6 +677,15 @@
           "date": { "type": "string" },
           "path_cv" : {"type" : "string"},
           "status" : { "type": "integer"}
+        }
+      },
+      "notification":{
+        "type": "object",
+        "properties": {
+          "id":{"type": "integer", "minimum": 0},
+          "id_thesis":{"type": "integer", "minimum": 0},
+          "description":{"type": "string"},
+          "seen":{"enum": [0,1]}
         }
       },
       "error": {

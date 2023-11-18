@@ -17,7 +17,8 @@ function Homepage(props) {
 
     const [add, setAdd] = useState(true);
     const [listA, setListA] = useState(false);
-    const [active, setActive] = useState(1);
+    
+
 
     let items = [];
 
@@ -30,7 +31,7 @@ function Homepage(props) {
     for (let number = 1; number <= props.pages; number++) {
         //console.log(props.pages);
         items.push(
-            <Pagination.Item key={number} active={number === active} onClick={() => { setActive(number); setFilters({ ...filters, page: number }); }}>
+            <Pagination.Item key={number} active={number === props.active} onClick={() => { props.setActive(number); setFilters({ ...filters, page: number }); }}>
                 {number}
             </Pagination.Item>
         );
@@ -60,13 +61,17 @@ function Homepage(props) {
     });
 
     useEffect(() => {
-        items.map(e => { if (e.key === active) { e.props.active = true } });
+        items.map(e => { if (e.key === props.active) { e.props.active = true } });
         //console.log(filters);
-        API.advancedSearchThesis(filters).then(res => {
+        API.advancedSearchThesis({...filters, page: props.active}).then(res => {
             props.setProposals(res[1]);
             props.setPages(res[0]);
         });
-    }, [active]);
+    }, [props.active]);
+
+    useEffect(() => {
+        handleResetChange();
+    }, [props.user]);
 
 
     const handleFilterChange = (e) => {
@@ -125,7 +130,7 @@ function Homepage(props) {
     const handleApplyFilters = () => {
         //console.log(filters);
         if (filters.order === '' && filters.orderby === '' || filters.order !== '' && filters.orderby !== '') {
-            API.advancedSearchThesis({ ...filters, page: 1 }).then(res => {
+            API.advancedSearchThesis({ ...filters, page: props.active}).then(res => {
                 props.setProposals(res[1]);
                 props.setPages(res[0]);
             });
@@ -139,7 +144,7 @@ function Homepage(props) {
 
     return (
         props.user === 0 ? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
-            <TitleBar user={props.user} setUser={props.setUser} />
+            <TitleBar user={props.user} setUser={props.setUser} handleResetChange={handleResetChange}/>
             <Toaster
                 position="top-center"
                 reverseOrder={false}
