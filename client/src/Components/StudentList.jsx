@@ -7,16 +7,17 @@ function StudentList() {
 
     const [dirty, setDirty] = useState(true);
     const [id_student, setId_student] = useState(1);
+    const [prof, setProf] = useState([{"id": 1, "name": "Luca", "surname": "Azzurro"}]);
 
-    const [applications, setApplications] = useState([]);
+    const [list, setList] = useState([]);
 
     //adding API from backend to set list of applications
 
     useEffect(() => {
 
         API.listApplication(id_student)
-            .then((applications) => {
-                setApplications(applications);
+            .then((list) => {
+                setList(list);
                 setDirty(false);
             })
             .catch((err) => { toast.error(err.error); });
@@ -42,23 +43,23 @@ function StudentList() {
         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
             <Toaster position="top-center" reverseOrder={false} />
             <div>
-                {applications.map((application) => (
+                {list.map((application) => (
                     <Card key={application.id_application} style={{ marginBottom: '10px' }}>
                         <Accordion>
                             <Accordion.Item eventKey={application.id_application}>
                                 <Accordion.Header>
                                     <Container fluid>
                                         <Row className="d-md-flex justify-content-center align-items-center">
-                                            <Col md='2' sm='2' xs='12'>
+                                            <Col md='3' sm='3' xs='12'>
                                                 <strong>Title:</strong> {application.title}
                                             </Col>
-                                            <Col md='2' sm='2' xs='12'>
-                                                <strong>Professor:</strong> {application.name + ' ' + application.surname}
+                                            <Col md='3' sm='3' xs='12'>
+                                                <strong>Supervisor:</strong> {prof[0].name + ' ' + prof[0].surname}
                                             </Col>
-                                            <Col md='2' sm='2' xs='12'>
+                                            <Col md='3' sm='3' xs='12'>
                                                 <strong>Expiration Date:</strong> {application.data}
                                             </Col>                                          
-                                            <Col md='5' sm='5' xs='12'>
+                                            <Col md='2' sm='2' xs='12'>
                                                 <strong>Status:</strong>{' '}
                                                 {application.status == '0' ? (
                                                     <Badge pill bg="warning">P</Badge>
