@@ -2,7 +2,7 @@
   "openapi": "3.0.2",
   "info": {
     "title": "Thesis Management API",
-    "version": "0.2"
+    "version": "0.2.1"
   },
   "security":[{"samlAuth":[]}],
   "paths": {
@@ -488,7 +488,7 @@
         }
       }
     },
-    "/students/{id}/notifications":{
+    "/notifications":{
       "parameters": [
         {
           "in": "path",
@@ -501,7 +501,7 @@
         }
       ],
       "get":{
-        "tags":["student"],
+        "tags":["notifications"],
         "description": "get all the notifications of student id",
         "operationId": "browseStudentNotifications",
         "responses": {
@@ -533,7 +533,7 @@
         }
       }
     },
-    "/students/{id_student}/notifications/{id_notification}":{
+    "/notifications/{id_notification}":{
       "parameters": [
         {
           "name":"id_student",
@@ -556,7 +556,7 @@
       ],
       "put":{
         "description": "Set if a notification was seen or not",
-        "tags": ["student"],
+        "tags": ["notifications"],
         "operationId": "setNotificationSeen",
         "requestBody": {
           "content": {
