@@ -336,7 +336,7 @@ function Homepage(props) {
 
                         <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                             <Nav className="flex-column">
-                                <Nav.Link active={myProp} onClick={() => { setAdd(false); setListA(false); setMyProp(true) }}> My Proposal</Nav.Link>
+                                <Nav.Link active={myProp} onClick={() => { setAdd(false); setListA(false); setMyProp(true) }}> My Proposals</Nav.Link>
                                 <Nav.Link active={add} onClick={() => { setAdd(true); setListA(false); setMyProp(false) }}> Add Proposal</Nav.Link>
                                 <Nav.Link active={listA} onClick={() => { setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
                             </Nav>
@@ -364,7 +364,7 @@ function Homepage(props) {
 
                     <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                         <Nav className="flex-column">
-                            <Nav.Link active={myProp} onClick={() => { setAdd(false); setListA(false); setMyProp(true) }}> My Proposal</Nav.Link>
+                            <Nav.Link active={myProp} onClick={() => { setAdd(false); setListA(false); setMyProp(true) }}> My Proposals</Nav.Link>
                             <Nav.Link active={add} onClick={() => { setAdd(true); setListA(false); setMyProp(false) }}> Add Proposal</Nav.Link>
                             <Nav.Link active={listA} onClick={() => { setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
                         </Nav>
