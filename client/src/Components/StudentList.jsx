@@ -50,16 +50,13 @@ function StudentList() {
                                 <Accordion.Header>
                                     <Container fluid>
                                         <Row className="d-md-flex justify-content-center align-items-center">
-                                            <Col md='3' sm='3' xs='12'>
+                                            <Col md='4' sm='4' xs='12'>
                                                 <strong>Title:</strong> {application.title}
                                             </Col>
-                                            <Col md='3' sm='3' xs='12'>
+                                            <Col md='4' sm='4' xs='12'>
                                                 <strong>Supervisor:</strong> {prof[0].name + ' ' + prof[0].surname}
-                                            </Col>
+                                            </Col>                                  
                                             <Col md='3' sm='3' xs='12'>
-                                                <strong>Expiration Date:</strong> {application.data}
-                                            </Col>                                          
-                                            <Col md='2' sm='2' xs='12'>
                                                 <strong>Status:</strong>{' '}
                                                 {application.status == '0' ? (
                                                     <Badge pill bg="warning">P</Badge>
@@ -81,6 +78,8 @@ function StudentList() {
                                     </Container>
                                 </Accordion.Header>
                                 <Accordion.Body>
+                                    <strong className="p-3 mb-2 text-danger">Thesis Info:</strong> 
+                                    <br />
                                     <strong>Keywords:</strong> 
                                     <br />
                                     <strong>Type:</strong> 
@@ -95,7 +94,12 @@ function StudentList() {
                                     <br />
                                     <strong>Level:</strong> 
                                     <br />
+                                    <strong>Expiration Date:</strong> {application.data}                                    
+                                    <br />
                                     <strong>CdS:</strong> 
+                                    <br />
+                                    <br />
+                                    <strong className="p-3 mb-2 text-danger">Application Info:</strong> 
                                     <br />
                                     <strong>Application Date:</strong> {application.data}
                                     <br />

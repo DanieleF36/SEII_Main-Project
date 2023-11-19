@@ -85,13 +85,13 @@ function ApplicationList() {
                                 <Accordion.Header>
                                     <Container fluid>
                                         <Row className="d-md-flex justify-content-center align-items-center">
-                                            <Col md='3' sm='3' xs='12'>
+                                            <Col md='4' sm='4' xs='12'>
                                                 <strong>Title:</strong> {application.title}
                                             </Col>
-                                            <Col md='3' sm='3' xs='12'>
+                                            <Col md='4' sm='4' xs='12'>
                                                 <strong>Student:</strong> {application.name+ ' ' + application.surname}
                                             </Col>
-                                            <Col md='5' sm='5' xs='12'>
+                                            <Col md='3' sm='3' xs='12'>
                                                 <strong>Status:</strong>{' '}
                                                 {application.status == '0' ? (
                                                     <Badge pill bg="warning">P</Badge>
