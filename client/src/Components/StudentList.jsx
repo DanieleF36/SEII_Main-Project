@@ -121,9 +121,7 @@ function StudentList() {
                                     <br />
                                     <br />
                                     <br />
-                                    {application.status == '0' ? <Button onClick={() => modifyApp(id_student,application.id_application)} variant='warning'>Modify</Button> : ''}
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    {application.status == '0' ? <Button onClick={() => modifyApp(id_student,application.id_application)} variant='danger'>Cancel</Button> : ''}
+                                    
                                 </Accordion.Body>
                             </Accordion.Item>
                         </Accordion>
@@ -135,3 +133,10 @@ function StudentList() {
 }
 
 export default StudentList;
+
+//
+/*
+{application.status == '0' ? <Button onClick={() => modifyApp(id_student,application.id_application)} variant='warning'>Modify</Button> : ''}
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{application.status == '0' ? <Button onClick={() => modifyApp(id_student,application.id_application)} variant='danger'>Cancel</Button> : ''}
+*/
