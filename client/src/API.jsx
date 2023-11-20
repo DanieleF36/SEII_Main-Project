@@ -194,6 +194,37 @@ async function applyForProposal(application) {
     }
 }
 
-const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal };
+async function browserApplicationStudent(id_student) {
+  try {
+    const response = await fetch(URL + `/student/${id_student}/applications`);
+    const application = await response.json();
+    if (response.ok) {
+      return application.map((a) => ({
+        title: a.title,
+        supervisor_name: a.supervisor_name,
+        supervisor_surname: a.supervisor_surname,
+        status: a.status,
+        type: a.type,
+        groups: a.groups,
+        description: a.description,
+        knowledge: a.knowledge,
+        note: a.note,
+        level: a.level,
+        keywords: a.keywords,
+        expiration_date: a.expiration_date,
+        cds: a.cds,
+        path_cv: a.path_cv,
+        application_data: a.application_data,
+      }));
+    } else {
+      const message = await response.text();
+      throw new Error(message);
+    }
+  } catch (error) {
+    throw new Error(error.message, { cause: error });
+  }
+}
+
+const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal, browserApplicationStudent};
 
 export default API;

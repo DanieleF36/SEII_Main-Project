@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const applicationsService = require("../services/ApplicationService");
-
+const studentsService = require("../services/StudentService");
 
 /**
  * wrapper function for apply to a thesis proposal with id = id_thesis 
@@ -55,3 +55,15 @@ exports.applyForProposal = function (req, res, next) {
   }
  
 };
+
+exports.browserApplicationStudent = function (req, res) {
+  //!TO BE ADDED THE LOGGED IN TEST
+  console.log(req.params.id_student)
+  studentsService.browserApplicationStudent(req.params.id_student)
+  .then(function (response) {
+    return res.status(200).json(response);
+  })
+  .catch(function (response) {
+    return res.status(500).json(response);
+  })
+}

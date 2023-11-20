@@ -45,6 +45,10 @@ app.put("/professor/:id_professor/applications/:id_application", (req, res) =>
 
 app.post("/thesis/:id_thesis/applications", (req, res) => studentController.applyForProposal(req, res));
 
+app.get("/student/:id_student/applications", (req, res) =>
+  studentController.browserApplicationStudent(req, res)
+);
+
 const PORT = 3001;
 app.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`)

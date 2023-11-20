@@ -9,3 +9,6 @@ content-type: application/json
 {
     "accepted" : 1
 }
+###
+//GET THE LIST OF APPLICATION OF A STUDENT
+GET {{APIURL}}/student/1/applications
