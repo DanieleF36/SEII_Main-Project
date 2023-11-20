@@ -7,25 +7,40 @@ function StudentList() {
 
     const [dirty, setDirty] = useState(true);
     const [id_student, setId_student] = useState(1);
-    const [prof, setProf] = useState([{"id": 1, "name": "Luca", "surname": "Azzurro"}]);
+   
+    const [list, setList] = useState([{id_application:1, 
+                                        groups: 'Smart Cities',
+                                        title: 'AI develop',
+                                        type: 'Development',
+                                        supervisor_name: 'Luca',
+                                        supervisor_surname: 'Azzurro',
+                                        description: "Designing adn implementing smart city solution",
+                                        knowledge: "Iot, Urban Design",
+                                        expiration_date: "2024-08-15",
+                                        cds: 'CDS005',
+                                        note: 'Addressing urban',
+                                        level: 1,
+                                        keywords: 'IoT, Urban Planning',
+                                        application_data: '2023-11-16',
+                                        path_cv: 'cv.pdf', 
+                                        status: '0'}]);
 
-    const [list, setList] = useState([]);
-
-    //adding API from backend to set list of applications
-
+    //adding API from backend to set list of applications of the student
+    /*
     useEffect(() => {
 
-        API.listApplication(id_student)
+        API.browserApplicationStudent(id_student)
             .then((list) => {
                 setList(list);
                 setDirty(false);
             })
             .catch((err) => { toast.error(err.error); });
 
-    }, [dirty]);
+    }, [dirty]);*/
 
+    /* in futuro se uno studente può modificare la sua canditatura
     function modifyApp(id_student,id_application){
-        /*API.modifyApplication(id_student, id_application)
+        API.modifyApplication(id_student, id_application)
             .then((res) => {
                 setDirty(true);
                 if (res == 1) {
@@ -34,9 +49,8 @@ function StudentList() {
                     toast.success('Application successfully rejected')
                 }
             })
-            .catch((err) => { toast.error(err.error); });*/
-
-    }
+            .catch((err) => { toast.error(err.error); });
+    }*/
 
 
     return (
@@ -54,7 +68,7 @@ function StudentList() {
                                                 <strong>Title:</strong> {application.title}
                                             </Col>
                                             <Col md='4' sm='4' xs='12'>
-                                                <strong>Supervisor:</strong> {prof[0].name + ' ' + prof[0].surname}
+                                                <strong>Supervisor:</strong> {application.supervisor_name + ' ' + application.supervisor_surname}
                                             </Col>                                  
                                             <Col md='3' sm='3' xs='12'>
                                                 <strong>Status:</strong>{' '}
@@ -80,30 +94,30 @@ function StudentList() {
                                 <Accordion.Body>
                                     <strong className="p-3 mb-2 text-danger">Thesis Info:</strong> 
                                     <br />
-                                    <strong>Keywords:</strong> 
+                                    <strong>Keywords:</strong> {application.keywords}
                                     <br />
-                                    <strong>Type:</strong> 
+                                    <strong>Type:</strong> {application.type}
                                     <br />
-                                    <strong>Groups:</strong> 
+                                    <strong>Groups:</strong> {application.groups}
                                     <br />
-                                    <strong>Description:</strong> 
+                                    <strong>Description:</strong> {application.description}
                                     <br />
-                                    <strong>Knowledge:</strong> 
+                                    <strong>Knowledge:</strong> {application.knowledge}
                                     <br />
-                                    <strong>Note:</strong> 
+                                    <strong>Note:</strong> {application.note}
                                     <br />
-                                    <strong>Level:</strong> 
+                                    <strong>Level:</strong> {application.level}
                                     <br />
-                                    <strong>Expiration Date:</strong> {application.data}                                    
+                                    <strong>Expiration Date:</strong> {application.expiration_date}                                    
                                     <br />
-                                    <strong>CdS:</strong> 
+                                    <strong>CdS:</strong> {application.cds}
                                     <br />
                                     <br />
                                     <strong className="p-3 mb-2 text-danger">Application Info:</strong> 
                                     <br />
-                                    <strong>Application Date:</strong> {application.data}
+                                    <strong>Application Date:</strong> {application.application_data}
                                     <br />
-                                    <strong>Path Cv: </strong>  <a>CV.pdf</a>
+                                    <strong>Path Cv: </strong>  {application.path_cv}
                                     <br />
                                     <br />
                                     <br />
