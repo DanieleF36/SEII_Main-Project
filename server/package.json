@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "npx nodemon server.js",
+    "start": "npx nodemon index.js",
     "test": "jest",
     "test:coverage": "jest --runInBand --coverage --colors",
     "test:unit": "npx jest --runInBand --coverage --coverageDirectory=coverage/coverage_unit --colors auth.unit.test.js controller.unit.test.js users.unit.test.js utils.unit.test.js",
