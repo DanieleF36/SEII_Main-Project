@@ -55,54 +55,34 @@ function TitleBar(props) {
                         </Nav>
                     </Col>
                     {props.isAuth === 0 ? <Col xs="auto" className="ml-auto d-flex align-items-center">
-                        <Button onClick={() => navigate('/login')} style={{
-                            backgroundColor: '#003674', // Colore normale
-                            borderColor: '#003674', // Colore del bordo
-                            transition: 'background-color 0.3s, color 0.3s', // Transizione per effetti hover
+                        <Button className='btn-col' onClick={() => navigate('/login')}><img src="./person-circle.svg"
+                            alt="Logo"
+                            className="img-responsive"
+                            style={{ marginRight: '2px' }}
 
-                        }} onMouseOver={(e) => {
-                            e.target.style.backgroundColor = '#0054A6'; // Colore più chiaro durante l'hover
-                            e.target.style.borderColor = '#0054A6'
-                        }}
-                            onMouseOut={(e) => {
-                                e.target.style.backgroundColor = '#003674'; // Ripristina il colore originale al termine dell'hover
-                            }}><img src="./person-circle.svg"
-                                alt="Logo"
-                                className="img-responsive"
-                                style={{ marginRight: '2px' }}
-
-                            /><strong>Login</strong></Button>
+                        /><strong>Login</strong></Button>
 
 
                     </Col> : <Col xs="auto" className="ml-auto d-flex align-items-center">
-                        <Button onClick={() => handleShow()} style={{
-                            backgroundColor: '#003674', // Colore normale
-                            borderColor: '#003674', // Colore del bordo
-                            transition: 'background-color 0.3s, color 0.3s', // Transizione per effetti hover
+                        <Button className='btn-col' onClick={() => handleShow()}><img src="./person-circle.svg"
+                            alt="Logo"
+                            className="img-responsive"
+                            style={{ marginRight: '2px' }}
 
-                        }} onMouseOver={(e) => {
-                            e.target.style.backgroundColor = '#0054A6'; // Colore più chiaro durante l'hover
-                            e.target.style.borderColor = '#0054A6'
-                        }}
-                            onMouseOut={(e) => {
-                                e.target.style.backgroundColor = '#003674'; // Ripristina il colore originale al termine dell'hover
-                            }}><img src="./person-circle.svg"
-                                alt="Logo"
-                                className="img-responsive"
-                                style={{ marginRight: '2px' }}
-
-                            />{props.user === 0 ? <><strong>role:</strong> student <strong>ID:</strong> 12345</> : <><strong>role:</strong> professor <strong>ID:</strong> 12345</>}</Button>
+                        />{props.user === 0 ? <><strong>role:</strong> student <strong>ID:</strong> 12345</> : <><strong>role:</strong> professor <strong>ID:</strong> 12345</>}</Button>
 
                         <Modal show={show} onHide={handleClose}>
                             <Modal.Header closeButton>
-                                <Modal.Title>Logout</Modal.Title>
+                                <Modal.Title><img src="./box-arrow-left.svg"
+                                    alt="Logo"
+                                    className="img-responsive"></img></Modal.Title>
                             </Modal.Header>
-                            <Modal.Body>Click the button below to perform the logout</Modal.Body>
+                            <Modal.Body>Click the button below to perform the <strong>logout</strong></Modal.Body>
                             <Modal.Footer>
                                 <Button variant="secondary" onClick={handleClose}>
                                     Close
                                 </Button>
-                                <Button variant="danger" onClick={()=>{handleClose();handleLogOut();}}>
+                                <Button variant="danger" onClick={() => { handleClose(); handleLogOut(); }}>
                                     Logout
                                 </Button>
                             </Modal.Footer>
