@@ -161,7 +161,7 @@ function Homepage(props) {
                         <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                             <Nav className="flex-column">
                                 <Nav.Link active={propList} onClick={()=> {setPropList(true); setListApplicationStud(false)}}> Proposals List</Nav.Link>
-                                <Nav.Link active={listApplicationStud} onClick={()=> {setPropList(false); setListApplicationStud(true)}}> Applications List</Nav.Link>
+                                <Nav.Link active={listApplicationStud} onClick={()=> {setPropList(false); setListApplicationStud(true)}}> My Applications</Nav.Link>
                             </Nav>
                         </Navbar>
 
@@ -284,7 +284,7 @@ function Homepage(props) {
                     <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                             <Nav className="flex-column">
                                 <Nav.Link active={propList} onClick={()=> {setPropList(true); setListApplicationStud(false)}}> Proposals List</Nav.Link>
-                                <Nav.Link active={listApplicationStud} onClick={()=> {setPropList(false); setListApplicationStud(true)}}> Applications List</Nav.Link>
+                                <Nav.Link active={listApplicationStud} onClick={()=> {setPropList(false); setListApplicationStud(true)}}> My Applications</Nav.Link>
                             </Nav>
                         </Navbar>
 
