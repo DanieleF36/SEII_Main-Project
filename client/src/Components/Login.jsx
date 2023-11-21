@@ -29,12 +29,14 @@ function Login(props) {
       
       props.setUser(0);
       props.setIsAuth(1);
+      toast.dismiss();
       navigate('/');
     }
        
     else{
       props.setUser(1);
       props.setIsAuth(1);
+      toast.dismiss();
       navigate('/');
 
     }
