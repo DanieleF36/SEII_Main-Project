@@ -213,20 +213,21 @@ exports.addThesis = async function (thesis) {
       throw { status: 500, error: thesis_res.err };
     }
 
-    console.log(supervisor_ids.length)
-    console.log(cosupervisor_ids.length)
+    // console.log(supervisor_ids.length)
+    // console.log(cosupervisor_ids.length)
     //let result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, thesis.supervisor, null)
     //if (result != true) {
-    //  throw { status: 500, error: result.err };
-    //}
-    if(cosupervisor_ids.length > 0) {
-      for(let id of cosupervisor_ids) {
-        result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, null, id)
-        if (result != true) {
-          throw { status: 500, error: result.err };
+      //  throw { status: 500, error: result.err };
+      //}
+      let result
+      if(cosupervisor_ids.length > 0) {
+        for(let id of cosupervisor_ids) {
+          result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, null, id)
+          if (result != true) {
+            throw { status: 500, error: result.err };
+          }
         }
       }
-    }
     if(supervisor_ids.length > 0) {
       for(let id of supervisor_ids) {
         result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, id, null)
@@ -235,7 +236,8 @@ exports.addThesis = async function (thesis) {
         }
       }
     }
-
+    
+    console.log(thesis)
     return thesis;
   }
   catch (error) {
