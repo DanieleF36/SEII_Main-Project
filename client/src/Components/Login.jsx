@@ -1,34 +1,47 @@
-import { Form, Button, Alert, Container, Row, Col } from 'react-bootstrap';
+import { Form, Button, Alert, Container, Row, Col, Navbar, Card } from 'react-bootstrap';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
-import CustomNavbar from './CustomNavbar'
-import './Login.css';
+import toast, { Toaster } from 'react-hot-toast';
+import './TitleBar.css';
+import './Homepage.css';
+import './Login.css'
 import API from '../API';
 
 function Login(props) {
-  const [username, setUsername] = useState('administrator@email.com');
-  const [password, setPassword] = useState('Polito23');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+
+  const titleBarStyle = {
+    backgroundColor: '#003576',
+  };
+
+  const logoStyle = {
+    marginLeft: 0, // Remove left margin
+  };
 
   const navigate = useNavigate();
 
   const doLogIn = (credentials) => {
-    API.logIn(credentials)
-      .then(user => {
-        setErrorMessage('');
-        props.loginSuccessful(user);
-        navigate(`/`);
-      })
-      .catch(err => {
-        //console.log(user);
-        setErrorMessage('Wrong username or password');
-      })
+    //API.logIn(credentials).then().catch();
+    console.log(credentials);
+    if(credentials.username === 's@polito.it'){
+      
+      props.setUser(0);
+      props.setIsAuth(1);
+      navigate('/');
+    }
+       
+    else{
+      props.setUser(1);
+      props.setIsAuth(1);
+      navigate('/');
+
+    }
   }
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    setErrorMessage('');
     const credentials = { username, password };
     let valid = true;
     if (username === '' || password === '' || !validator.isEmail(username))
@@ -39,38 +52,94 @@ function Login(props) {
       doLogIn(credentials);
     } else {
       if (username === '' || password === '')
-        setErrorMessage('Email/Password must be filled');
+        toast.error('Credential fields cannot be empty')
       else
-        setErrorMessage('Email must be in a valid format');
+        toast.error('Email is not in a valid format')
     }
   };
 
   return (
-    <div className='background-image-container'>
-      <CustomNavbar ticket={props.ticket} selservice={props.selservice} loggedIn={props.loggedIn} user={props.user}/>
-      <Container>
-        <Row>
-          <Col xs={3}></Col>
-          <Col xs={6}>
-            <h2 style={{ color: 'black' , marginTop: '20px'}}>Login</h2>
-            <Form onSubmit={handleSubmit}>
-              {errorMessage ? <Alert variant='danger' dismissible onClick={() => setErrorMessage('')}>{errorMessage}</Alert> : ''}
-              <Form.Group controlId='username'>
-                <Form.Label>Email</Form.Label>
-                <Form.Control type='text' value={username} onChange={ev => setUsername(ev.target.value)} />
-              </Form.Group>
-              <Form.Group controlId='password'>
-                <Form.Label>Password</Form.Label>
-                <Form.Control type='password' value={password} onChange={ev => setPassword(ev.target.value)} />
-              </Form.Group>
-              <Button className='my-2' type='submit'>Login</Button>
-              <Button className='my-2 mx-2' variant='danger' onClick={() => navigate('/')}>Cancel</Button>
-            </Form>
+    <>
+      <Navbar style={titleBarStyle}>
+        <Container fluid>
+          <Navbar.Brand href="http://www.polito.it" style={logoStyle}>
+            <img
+              src="./logo_poli_bianco_260.png"
+              alt="Logo"
+              className="img-responsive"
+            />
+          </Navbar.Brand>
+        </Container>
+      </Navbar>
+      <Container fluid style={{backgroundColor:'#FF7C11'}}>
+        <div
+      style={{
+        height: '45px', // Altezza desiderata
+        width: '100%', // Larghezza del 100%
+        backgroundColor: '#FF7C11', // Colore di sfondo (puoi cambiarlo)
+        // Aggiungi altri stili desiderati
+      }}
+    >
+    </div>
+      </Container>
+      <Toaster
+                position="top-center"
+                reverseOrder={false}
+            />
+      <Container fluid>
+        <Row className="justify-content-center mt-4">
+          <Col xs={12} sm={8} md={6} lg={3}>
+            <img
+              src="./logo_polito.jpg"
+              alt="Logo"
+              className="img-responsive"
+            />
+            <Card style={{ backgroundColor: '#FAFAFA', maxWidth: '350px', minHeight: '350px', marginBottom:'50px' }}>
+              <Card.Body style={{marginTop: '60px'}}>
+                <Form onSubmit={handleSubmit}>
+                  <Form.Group controlId="username" className="myForm">
+                    <Form.Control type="text" value={username} onChange={(ev) => setUsername(ev.target.value)} placeholder="Username"/>
+                  </Form.Group>
+                  <Form.Group controlId="password" className="myForm" style={{ marginBottom: '20px' }}>
+                    <Form.Control type="password" value={password} onChange={(ev) => setPassword(ev.target.value)} placeholder="Password"/>
+                  </Form.Group>
+                  <Form.Group className="text-center">
+                    <Button className="my-2" type="submit" style={{
+                      backgroundColor: '#003674', // Colore normale
+                      borderColor: '#003674', // Colore del bordo
+                      transition: 'background-color 0.3s, color 0.3s', // Transizione per effetti hover
+                      
+                    }}onMouseOver={(e) => {
+                      e.target.style.backgroundColor = '#0054A6'; // Colore più chiaro durante l'hover
+                      e.target.style.borderColor = '#0054A6'
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.backgroundColor = '#003674'; // Ripristina il colore originale al termine dell'hover
+                    }}>
+                      Login con username e password
+                    </Button>
+                    <Button variant="danger" onClick={() => navigate('/')} style={{
+                      backgroundColor: '#FF7C11', // Colore normale
+                      borderColor: '#FF7C11', // Colore del bordo
+                      transition: 'background-color 0.3s, color 0.3s', // Transizione per effetti hover
+                      
+                    }}onMouseOver={(e) => {
+                      e.target.style.backgroundColor = '#FFA54E'; // Colore più chiaro durante l'hover
+                      e.target.style.borderColor = '#FFA54E'
+                    }}
+                    onMouseOut={(e) => {
+                      e.target.style.backgroundColor = '#FF7C11'; // Ripristina il colore originale al termine dell'hover
+                    }}>
+                      Cancel
+                    </Button>
+                  </Form.Group>
+                </Form>
+              </Card.Body>
+            </Card>
           </Col>
-          <Col xs={3}></Col>
         </Row>
       </Container>
-    </div>
+    </>
   )
 }
 

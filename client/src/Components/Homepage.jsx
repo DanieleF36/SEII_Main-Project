@@ -149,7 +149,7 @@ function Homepage(props) {
     return (
         props.user === 0 ? 
         propList === true? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
-            <TitleBar user={props.user} setUser={props.setUser} />
+            <TitleBar setIsAuth={props.setIsAuth} user={props.user} setUser={props.setUser} isAuth={props.isAuth}/>
             <Toaster
                 position="top-center"
                 reverseOrder={false}
@@ -276,7 +276,7 @@ function Homepage(props) {
             </Container>
         </div> 
         : <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
-            <TitleBar user={props.user} setUser={props.setUser} />
+            <TitleBar setIsAuth={props.setIsAuth} user={props.user} setUser={props.setUser} isAuth={props.isAuth}/>
             <Container fluid style={{ marginTop: '20px' }}>
                 <Row>
                     <Col xs={3}>
@@ -302,7 +302,7 @@ function Homepage(props) {
             </Container>
         </div>
         : add === true && listA === false && myProp === false? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
-            <TitleBar user={props.user} setUser={props.setUser} />
+            <TitleBar setIsAuth={props.setIsAuth} user={props.user} setUser={props.setUser} isAuth={props.isAuth} />
             <Container fluid style={{ marginTop: '20px' }}>
                 <Row>
                     <Col xs={3}>
@@ -329,7 +329,7 @@ function Homepage(props) {
             </Container>
         </div> 
         : listA === true && myProp === false ? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
-            <TitleBar user={props.user} setUser={props.setUser} />
+            <TitleBar setIsAuth={props.setIsAuth} user={props.user} setUser={props.setUser} isAuth={props.isAuth} />
             <Container fluid style={{ marginTop: '20px' }}>
                 <Row>
                     <Col xs={3}>
@@ -357,7 +357,7 @@ function Homepage(props) {
             </Container>
         </div>
         : <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
-        <TitleBar user={props.user} setUser={props.setUser} />
+        <TitleBar setIsAuth={props.setIsAuth} user={props.user} setUser={props.setUser} isAuth={props.isAuth} />
         <Container fluid style={{ marginTop: '20px' }}>
             <Row>
                 <Col xs={3}>
