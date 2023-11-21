@@ -26,6 +26,8 @@ function Homepage(props) {
 
     let items = [];
 
+    const navigate = useNavigate();
+
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -65,6 +67,9 @@ function Homepage(props) {
     });
 
     useEffect(() => {
+        if(props.isAuth===0){
+            navigate('/login')
+        }
         items.map(e => { if (e.key === props.active) { e.props.active = true } });
         //console.log(filters);
         API.advancedSearchThesis({...filters, page: props.active}).then(res => {
