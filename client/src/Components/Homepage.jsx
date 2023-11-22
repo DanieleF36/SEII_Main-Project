@@ -378,9 +378,8 @@ function Homepage(props) {
                 </Col>
                 <Col xs={9}>
 
-                    <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
+                   
                         <MyProposal />
-                    </div>
 
                 </Col>
 
