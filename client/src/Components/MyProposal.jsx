@@ -94,7 +94,9 @@ function MyProposal() {
                                     <strong>Creation Date:</strong> {proposal.creatDate}
                                     <br />
                                     <br />
-                                    <Button variant="warning"> Modify</Button>
+                                    <Button variant="warning"> <img src="./pencil-fill.svg"
+                                                alt="info"
+                                                className="img-responsive"/></Button>
                                 </Accordion.Body>
                             </Accordion.Item>
                         </Accordion>
@@ -160,7 +162,9 @@ function MyProposal() {
                                 <strong>Creation Date:</strong> {proposal.creatDate}
                                 <br />
                                 <br />
-                                <Button variant="warning"> Modify</Button>
+                                <Button variant="warning"> <img src="./pencil-fill.svg"
+                                                alt="info"
+                                                className="img-responsive"/></Button>
                             </Accordion.Body>
                         </Accordion.Item>
                     </Accordion>
