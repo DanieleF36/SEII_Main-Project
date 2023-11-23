@@ -13,7 +13,7 @@ function App() {
   const [page, setPage] = useState(-1);
   const [isAuth, setIsAuth] = useState(0);
   const [active, setActive] = useState(1);
-  
+  const [currentTime, setCurrentTime] = useState(new Date());  
 
 
   useEffect(() => {
@@ -29,7 +29,8 @@ function App() {
         <BrowserRouter>
           <Routes>
           <Route path='/' element={<><Homepage setIsAuth={setIsAuth} isAuth={isAuth} pages={page} user={user} setUser={setUser}
-          proposals={proposals} setProposals={setProposals} setPages={setPage} active={active} setActive={setActive}/></>} />
+          proposals={proposals} setProposals={setProposals} setPages={setPage} active={active} setActive={setActive} currentTime={currentTime}
+          setCurrentTime={setCurrentTime}/></>} />
           <Route path='/login'element={<Login user={user} setUser={setUser} setIsAuth={setIsAuth}></Login>}/>
           </Routes>
         </BrowserRouter>

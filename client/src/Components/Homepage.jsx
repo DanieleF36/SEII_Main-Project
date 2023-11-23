@@ -10,6 +10,7 @@ import ApplicationList from './ApplicationList';
 import StudentList from './StudentList';
 import MyProposal from './MyProposal';
 import toast, { Toaster } from 'react-hot-toast';
+import Clock from './Clock';
 import API from '../API';
 
 
@@ -170,6 +171,10 @@ function Homepage(props) {
                             </Nav>
                         </Navbar>
 
+                        <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
+
+
+
                     </Col>
                     <Col xs={9}>
                         <FilterContainer handleApplyFilters={handleApplyFilters} filters={filters} handleFilterChange={handleFilterChange} handleFilterCoSupChange={handleFilterCoSupChange} handleResetChange={handleResetChange}></FilterContainer>
@@ -292,6 +297,7 @@ function Homepage(props) {
                                 <Nav.Link active={listApplicationStud} onClick={()=> {setPropList(false); setListApplicationStud(true)}}> My Applications</Nav.Link>
                             </Nav>
                         </Navbar>
+                        <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
 
                     </Col>
                     <Col xs={9}>
@@ -319,6 +325,7 @@ function Homepage(props) {
                                 <Nav.Link active={listA} onClick={() => { setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
                             </Nav>
                         </Navbar>
+                        <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
 
                     </Col>
                     <Col xs={9}>
@@ -346,6 +353,7 @@ function Homepage(props) {
                                 <Nav.Link active={listA} onClick={() => { setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
                             </Nav>
                         </Navbar>
+                        <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
 
                     </Col>
                     <Col xs={9}>
@@ -366,6 +374,7 @@ function Homepage(props) {
         <Container fluid style={{ marginTop: '20px' }}>
             <Row>
                 <Col xs={3}>
+                
 
                     <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                         <Nav className="flex-column">
@@ -374,6 +383,8 @@ function Homepage(props) {
                             <Nav.Link active={listA} onClick={() => { setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
                         </Nav>
                     </Navbar>
+
+                    <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
 
                 </Col>
                 <Col xs={9}>
