@@ -225,6 +225,41 @@ async function browserApplicationStudent(id_student) {
   }
 }
 
-const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal, browserApplicationStudent};
+// =================== Virtual clock API ===================
+
+function vc_set(date) {
+  return getJson(fetch(URL + '/testing/vc/set', {
+    method: "POST",
+    body: {
+      value: data
+    }
+  }))
+  .then(res => {
+    return res
+  })
+}
+
+function vc_get(date) {
+  return getJson(fetch(URL + '/testing/vc/get', {
+    method: "GET"
+  }))
+  .then(res => {
+    return res
+  })
+}
+
+
+function vc_restore(choice) {
+  return getJson(fetch(URL + '/testing/vc/restore', {
+    method: "POST",
+    body: {
+      value: choice
+    }
+  }))
+  .then(res => {
+    return res
+  })
+}
+const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal, vc_set, vc_restore, vc_get };
 
 export default API;
