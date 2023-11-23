@@ -92,7 +92,7 @@ function StudentList() {
                                     </Container>
                                 </Accordion.Header>
                                 <Accordion.Body>
-                                    <strong className="p-3 mb-2 text-danger">Thesis Info:</strong> 
+                                    <strong className="mb-2 text-danger">Thesis Info:</strong> 
                                     <br />
                                     <strong>Keywords:</strong> {application.keywords}
                                     <br />
@@ -113,7 +113,7 @@ function StudentList() {
                                     <strong>CdS:</strong> {application.cds}
                                     <br />
                                     <br />
-                                    <strong className="p-3 mb-2 text-danger">Application Info:</strong> 
+                                    <strong className="mb-2 text-danger">Application Info:</strong> 
                                     <br />
                                     <strong>Application Date:</strong> {application.application_data}
                                     <br />
