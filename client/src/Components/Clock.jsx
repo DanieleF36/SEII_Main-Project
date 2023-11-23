@@ -75,14 +75,14 @@ const Clock = (props) => {
 
                         <ButtonGroup aria-label="Basic example">
 
-                            <Button onClick={() => addTime('day', 1)} className="my-2 btn-col">
-                                + DD
+                            <Button onClick={() => addTime('year', 1)} className="my-2 btn-col">
+                                + YYYY
                             </Button>
                             <Button onClick={() => addTime('month', 1)} className="my-2 btn-col">
                                 + MM
                             </Button>
-                            <Button onClick={() => addTime('year', 1)} className="my-2 btn-col">
-                                + YYYY
+                            <Button onClick={() => addTime('day', 1)} className="my-2 btn-col">
+                                + DD
                             </Button>
 
                         </ButtonGroup>
@@ -90,11 +90,11 @@ const Clock = (props) => {
                         <br />
 
                         <ButtonGroup aria-label="Basic example">
-                            <Button onClick={() => addTime('minute', 1)} className="my-2 btn-col">
-                                + mm
-                            </Button>
                             <Button onClick={() => addTime('hour', 1)} className="my-2 btn-col">
                                 + hh
+                            </Button>
+                            <Button onClick={() => addTime('minute', 1)} className="my-2 btn-col">
+                                + mm
                             </Button>
 
                         </ButtonGroup>
