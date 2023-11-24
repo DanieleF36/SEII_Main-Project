@@ -23,7 +23,7 @@ function StudentList() {
                                         keywords: 'IoT, Urban Planning',
                                         application_data: '2023-11-16',
                                         path_cv: 'cv.pdf', 
-                                        status: '0'}]);
+                                        status: '3'}]);
 
     //adding API from backend to set list of applications of the student
     /*
@@ -78,9 +78,13 @@ function StudentList() {
                                                     application.status == '1' ? (
                                                         <Badge pill bg="success">A</Badge>
                                                     ) : (
-                                                        <Badge pill bg="danger">R</Badge>
+                                                        application.status == '2' ? (
+                                                            <Badge pill bg="danger">R</Badge>
+                                                        ) : 
+                                                        <Badge pill bg="secondary">C</Badge>
                                                     )
-                                                )}
+                                                    )
+                                                }
                                             </Col>
                                             <Col md='1' sm='1' xs='12'>
                                                 <img src="./info-circle.svg"
