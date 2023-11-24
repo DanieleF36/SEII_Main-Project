@@ -122,6 +122,10 @@ function checkQuery(req) {
  * @returns ERROR: common error handling object
  */
 exports.advancedResearchThesis = function advancedResearchThesis(req, res, next) {
+  if(req.user.role!=='student'){
+    res.status(401).send({error:"You can not access to this route"})
+    return;
+  }
   const error = checkQuery(req);
   if (error) {
     res.status(400).json({ error: error });

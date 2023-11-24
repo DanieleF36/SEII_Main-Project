@@ -85,3 +85,21 @@ exports.browserApplicationStudent = (id_student) => {
     });
   });
 };
+
+exports.findByEmail = (email) => {
+  const sqlCoSupervisor = "SELECT * FROM Student WHERE email = ?";
+
+  return new Promise((resolve, reject)=>{
+      db.get(sqlCoSupervisor, [email], (err, row)=>{
+          if (err) {
+              reject(err);
+              return;
+          }
+          if(!row) 
+              resolve({})
+          else 
+              resolve({id:row.id, name:row.name, surname:row.surname, email:row.email, gender:row.gender, nationality:row.nationality, cod_degree:row.cod_degree, enrol_year:enrol_year});
+
+      });
+  });
+}
