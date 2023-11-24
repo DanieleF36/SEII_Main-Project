@@ -35,15 +35,15 @@ function Login(props) {
       
       props.setUser(0);
       props.setIsAuth(1);
-      toast.dismiss();
-      navigate('/');
+      toast.remove();
+      navigate('/home');
     }
        
     else{
       props.setUser(1);
       props.setIsAuth(1);
-      toast.dismiss();
-      navigate('/');
+      toast.remove();
+      navigate('/home');
 
     }
   }
@@ -126,7 +126,7 @@ function Login(props) {
                     }}>
                       Login con username e password
                     </Button>
-                    <Button variant="danger" onClick={() => handleReset()} style={{
+                    <Button variant="danger" onClick={() => navigate('/')} style={{
                       backgroundColor: '#FF7C11', // Colore normale
                       borderColor: '#FF7C11', // Colore del bordo
                       transition: 'background-color 0.3s, color 0.3s', // Transizione per effetti hover

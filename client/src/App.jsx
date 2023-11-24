@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { TitleBar } from './Components/TitleBar';
 import { Homepage } from './Components/Homepage';
 import { Login } from './Components/Login';
+import InitialPage from './Components/InitialPage';
 import API from './API';
 import { useState, useEffect } from 'react';
 
@@ -28,7 +29,8 @@ function App() {
         <>
         <BrowserRouter>
           <Routes>
-          <Route path='/' element={<><Homepage setIsAuth={setIsAuth} isAuth={isAuth} pages={page} user={user} setUser={setUser}
+          <Route path='/'element={<InitialPage setIsAuth={setIsAuth} isAuth={isAuth} user={user} setUser={setUser}/>}/>
+          <Route path='/home' element={<><Homepage setIsAuth={setIsAuth} isAuth={isAuth} pages={page} user={user} setUser={setUser}
           proposals={proposals} setProposals={setProposals} setPages={setPage} active={active} setActive={setActive} currentTime={currentTime}
           setCurrentTime={setCurrentTime}/></>} />
           <Route path='/login'element={<Login user={user} setUser={setUser} setIsAuth={setIsAuth}></Login>}/>

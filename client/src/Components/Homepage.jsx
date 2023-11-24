@@ -69,7 +69,7 @@ function Homepage(props) {
 
     useEffect(() => {
         if(props.isAuth===0){
-            navigate('/login')
+            navigate('/');
         }
         items.map(e => { if (e.key === props.active) { e.props.active = true } });
         //console.log(filters);
@@ -166,8 +166,8 @@ function Homepage(props) {
 
                         <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                             <Nav className="flex-column">
-                                <Nav.Link active={propList} onClick={()=> {setPropList(true); setListApplicationStud(false)}}> Proposals List</Nav.Link>
-                                <Nav.Link active={listApplicationStud} onClick={()=> {setPropList(false); setListApplicationStud(true)}}> My Applications</Nav.Link>
+                                <Nav.Link active={propList} onClick={()=> {toast.remove(); setPropList(true); setListApplicationStud(false)}}> Proposals List</Nav.Link>
+                                <Nav.Link active={listApplicationStud} onClick={()=> {toast.remove(); setPropList(false); setListApplicationStud(true)}}> My Applications</Nav.Link>
                             </Nav>
                         </Navbar>
 
@@ -293,8 +293,8 @@ function Homepage(props) {
 
                     <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                             <Nav className="flex-column">
-                                <Nav.Link active={propList} onClick={()=> {setPropList(true); setListApplicationStud(false)}}> Proposals List</Nav.Link>
-                                <Nav.Link active={listApplicationStud} onClick={()=> {setPropList(false); setListApplicationStud(true)}}> My Applications</Nav.Link>
+                                <Nav.Link active={propList} onClick={()=> {toast.remove(); setPropList(true); setListApplicationStud(false)}}> Proposals List</Nav.Link>
+                                <Nav.Link active={listApplicationStud} onClick={()=> {toast.remove(); setPropList(false); setListApplicationStud(true)}}> My Applications</Nav.Link>
                             </Nav>
                         </Navbar>
                         <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
@@ -320,9 +320,9 @@ function Homepage(props) {
 
                         <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                             <Nav className="flex-column">
-                                <Nav.Link active={myProp} onClick={() => { setAdd(false); setListA(false); setMyProp(true) }}> My Proposals</Nav.Link>
-                                <Nav.Link active={add} onClick={() => { setAdd(true); setListA(false); setMyProp(false) }}> Add Proposal</Nav.Link>
-                                <Nav.Link active={listA} onClick={() => { setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
+                                <Nav.Link active={myProp} onClick={() => { toast.remove(); setAdd(false); setListA(false); setMyProp(true) }}> My Proposals</Nav.Link>
+                                <Nav.Link active={add} onClick={() => {toast.remove(); setAdd(true); setListA(false); setMyProp(false) }}> Add Proposal</Nav.Link>
+                                <Nav.Link active={listA} onClick={() => {toast.remove(); setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
                             </Nav>
                         </Navbar>
                         <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
@@ -348,9 +348,9 @@ function Homepage(props) {
 
                         <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                             <Nav className="flex-column">
-                                <Nav.Link active={myProp} onClick={() => { setAdd(false); setListA(false); setMyProp(true) }}> My Proposals</Nav.Link>
-                                <Nav.Link active={add} onClick={() => { setAdd(true); setListA(false); setMyProp(false) }}> Add Proposal</Nav.Link>
-                                <Nav.Link active={listA} onClick={() => { setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
+                                <Nav.Link active={myProp} onClick={() => {toast.remove(); setAdd(false); setListA(false); setMyProp(true) }}> My Proposals</Nav.Link>
+                                <Nav.Link active={add} onClick={() => {toast.remove(); setAdd(true); setListA(false); setMyProp(false) }}> Add Proposal</Nav.Link>
+                                <Nav.Link active={listA} onClick={() => {toast.remove(); setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
                             </Nav>
                         </Navbar>
                         <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
@@ -378,9 +378,9 @@ function Homepage(props) {
 
                     <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                         <Nav className="flex-column">
-                            <Nav.Link active={myProp} onClick={() => { setAdd(false); setListA(false); setMyProp(true) }}> My Proposals</Nav.Link>
-                            <Nav.Link active={add} onClick={() => { setAdd(true); setListA(false); setMyProp(false) }}> Add Proposal</Nav.Link>
-                            <Nav.Link active={listA} onClick={() => { setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
+                            <Nav.Link active={myProp} onClick={() => {toast.remove(); setAdd(false); setListA(false); setMyProp(true) }}> My Proposals</Nav.Link>
+                            <Nav.Link active={add} onClick={() => {toast.remove(); setAdd(true); setListA(false); setMyProp(false) }}> Add Proposal</Nav.Link>
+                            <Nav.Link active={listA} onClick={() => {toast.remove(); setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
                         </Nav>
                     </Navbar>
 
