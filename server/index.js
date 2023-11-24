@@ -29,6 +29,7 @@ app.use(
 const thesisController = require("./controllers/ThesisController");
 const teacherController = require("./controllers/TeacherController");
 const studentController = require("./controllers/StudentController");
+const vc = require('./dayjsvc/index.dayjsvc')
 
 app.get("/thesis", (req, res) =>
   thesisController.advancedResearchThesis(req, res)
@@ -49,6 +50,11 @@ app.get("/student/:id_student/applications", (req, res) =>
   studentController.browserApplicationStudent(req, res)
 );
 
+app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
+
+app.post("/testing/vc/restore", (req, res) => vc.vc_restore(req, res))
+
+app.get("/testing/vc/get", (req, res) => vc.vc_current(req, res))
 const PORT = 3001;
 app.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`)
