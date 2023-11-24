@@ -50,6 +50,8 @@ app.get("/student/:id_student/applications", (req, res) =>
   studentController.browserApplicationStudent(req, res)
 );
 
+app.get('/professor/thesis', (req, res) => teacherController.browseProposals(req, res))
+
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
 
 app.post("/testing/vc/restore", (req, res) => vc.vc_restore(req, res))

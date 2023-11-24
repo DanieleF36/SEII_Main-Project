@@ -1,6 +1,5 @@
 "use strict";
 
-const { resolve } = require("path");
 const db = require("./db");
 
 /**
@@ -304,4 +303,23 @@ function transformOrder(order) {
     default:
       return `Azione non valida per ${order}`;
   }
+}
+
+exports.getActiveThesis = (supervisor, date) => {
+  const sql = `SELECT title, supervisor, keywords, type, groups, description,
+                knowledge, note, expiration_date, level, cds, creation_date 
+               FROM thesis 
+               WHERE status = 1 AND expiration_date > ? AND supervisor = ?`
+  
+  return new Promise( (resolve, reject) => {
+    db.all(sql, [date, supervisor], (err, rows) => {
+      if(err) {
+        reject(err)
+      }
+      else if(rows.length === 0) {
+        resolve([])
+      }
+      else resolve(rows)
+    })
+  })
 }

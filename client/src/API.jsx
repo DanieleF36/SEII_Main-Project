@@ -225,6 +225,15 @@ async function browserApplicationStudent(id_student) {
   }
 }
 
+function browseProposal() {
+  return getJson(fetch(URL + '/professor/thesis', {
+    method: "GET"
+  }))
+  .then(res => {
+    return res
+  })
+}
+
 // =================== Virtual clock API ===================
 
 function vc_set(date) {
@@ -260,6 +269,6 @@ function vc_restore(choice) {
     return res
   })
 }
-const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal, vc_set, vc_restore, vc_get };
+const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal, browseProposal, vc_set, vc_restore, vc_get };
 
 export default API;
