@@ -49,7 +49,7 @@ function TitleBar(props) {
                         <Nav>
                             <Nav.Item>
                                 <Nav.Link disabled style={{color:'#ffff'}}>
-                                   Thesis
+                                   |
                                 </Nav.Link>
                             </Nav.Item>
                         </Nav>
