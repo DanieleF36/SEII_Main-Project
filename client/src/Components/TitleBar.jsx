@@ -25,7 +25,7 @@ function TitleBar(props) {
 
         props.setIsAuth(0);
         props.setUser(0);
-        navigate('/login');
+        navigate('/');
 
     };
 
@@ -43,17 +43,25 @@ function TitleBar(props) {
                     </Navbar.Brand>
                 </Container>
             </Navbar>
-            <Container fluid className="nav-tabs">
+            <Container fluid className="nav-tabs"  style={props.isAuth === 0?{backgroundColor:'#fff'}:{backgroundColor:'#FF7C11'}}>
                 <Row>
-                    <Col>
-                        <Nav defaultActiveKey="/">
+                    {props.isAuth===0 ?<Col>
+                        <Nav>
+                            <Nav.Item>
+                                <Nav.Link disabled style={{color:'#ffff'}}>
+                                   Thesis
+                                </Nav.Link>
+                            </Nav.Item>
+                        </Nav>
+                    </Col>:<Col>
+                        <Nav defaultActiveKey="/home">
                             <Nav.Item className='act-link'>
-                                <Nav.Link href="/" className="thesis-link">
+                                <Nav.Link href="/home" className="thesis-link">
                                     Thesis
                                 </Nav.Link>
                             </Nav.Item>
                         </Nav>
-                    </Col>
+                    </Col>}
                     {props.isAuth === 0 ? <Col xs="auto" className="ml-auto d-flex align-items-center">
                         <Button className='btn-col' onClick={() => navigate('/login')}><img src="./person-circle.svg"
                             alt="Logo"

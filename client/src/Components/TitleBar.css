@@ -21,6 +21,10 @@
   border-color: #003576; /*set the color you want here*/
 }
 
+.nav-tabs {
+  --bs-nav-tabs-border-color: #ffff;
+}
+
 
 
 
