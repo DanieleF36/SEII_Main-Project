@@ -1,7 +1,7 @@
 "use strict";
 const fs=require('fs');
 const applicationRepository = require("../repositories/ApplicationRepository");
-
+const coSupervisorRepository = require("../repositories/CoSupervisorRepository");
 /**
  * Add a new proposal
  *
@@ -69,3 +69,13 @@ exports.addProposal = function (studentId, thesisId, cv) {
           application_status: a.application_status,
         }
  */
+
+exports.getAllCoSupervisorsEmailsService = async function () {
+  try {
+    const coSupervisorEmails = await coSupervisorRepository.getAllCoSupervisorsEmails();
+    return { status: 200, data: coSupervisorEmails };
+  } catch (error) {
+    console.error("Error in getAllCoSupervisorsEmailsService:", error.message);
+    return { status: 500, error: 'Internal server error' };
+  }
+};

@@ -43,6 +43,8 @@ const vc = require('./dayjsvc/index.dayjsvc')
 
 app.get("/thesis", isLoggedIn, thesisController.advancedResearchThesis);
 
+app.get("/thesis/supervisor/emails", isLoggedIn, thesisController.getAllCoSupervisorsEmails);
+
 app.get("/professor/:id_professor/applications", (req, res) =>
   teacherController.listApplication(req, res)
 );
