@@ -161,4 +161,3 @@ describe('Apply for proposal', () => {
       expect(mockRes.json).toHaveBeenCalledWith({error:"Internal Error"});
     });
 })
-      

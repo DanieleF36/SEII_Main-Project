@@ -1,6 +1,7 @@
 "use strict";
 
 const thesisService = require("../services/ThesisService");
+const applicationService = require("../services/ApplicationService");
 
 function isConvertible(str) {
   if(str=="undefined")
@@ -240,5 +241,58 @@ exports.addThesis = async function addThesis(req, res) {
   }
   else {
     return res.status(200).json(response)
+  }
+};
+
+exports.getAllCoSupervisorsEmails = async function (req, res) {
+  try {
+    const result = await applicationService.getAllCoSupervisorsEmailsService();
+    res.status(result.status).json(result.data || result.error);
+  } catch (error) {
+    console.error("Error in someControllerMethod:", error.message);
+    res.status(500).json('Internal server error');
+  }
+};
+
+exports.updateThesis = async function updateThesis(req, res) {
+  if (req.body === undefined) {
+    return res.status(400).json({ error: "body is missing" });
+  }
+
+  if (!req.params.id) {
+    res.status(400).json({error: "Thesis id is not valid"})
+    return
+  }
+
+  if (req.body.level === undefined || (req.body.level !== "Master" && req.body.level !== "Bachelor")) {
+    return res.status(400).json({ error: "level value not recognized" });
+  }
+
+  if (req.body.supervisor === undefined) {
+    return res.status(400).json({ error: "supervisor is missing" });
+  }
+
+  if (req.body.expiration_date === undefined || req.body.expiration_date === "") {
+    return res.status(400).json({ error: "expiration date is missing or not valid" });
+  }
+
+  if (req.body.status === undefined || req.body.status !== 1) {
+    return res.status(400).json({ error: "status value not recognized or allowed" });
+  }
+
+  if (!Array.isArray(req.body.cosupervisor)) {
+    return res.status(400).json({ error: "cosupervisor is not an array" });
+  }
+
+  // Additional validation checks for the updateThesis method if needed
+
+  // Call the updateThesis method from the thesisService
+  const response = await thesisService.updateThesis(req.body, req.params.id);
+
+  if (response.error) {
+    console.error(response.error);
+    return res.status(response.status).json(response.error);
+  } else {
+    return res.status(200).json(response);
   }
 };

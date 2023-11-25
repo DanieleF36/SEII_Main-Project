@@ -333,3 +333,75 @@ exports.getActiveThesis = (supervisor, date) => {
     })
   })
 }
+
+exports.updateThesis = (
+  id,
+  title,
+  supervisor,
+  keywords,
+  type,
+  groups,
+  description,
+  knowledge,
+  note,
+  expiration_date,
+  level,
+  cds,
+  creation_date,
+  status
+) => {
+  const sql = `UPDATE Thesis 
+               SET title = ?, supervisor = ?, keywords = ?, type = ?, groups = ?, description = ?, 
+                   knowledge = ?, note = ?, expiration_date = ?, level = ?, cds = ?, creation_date = ?, status = ?
+               WHERE id = ?`;
+
+  return new Promise((resolve, reject) => {
+    db.run(
+      sql,
+      [
+        title,
+        supervisor,
+        keywords,
+        type,
+        groups,
+        description,
+        knowledge,
+        note,
+        expiration_date,
+        level,
+        cds,
+        creation_date,
+        status,
+        id,
+      ],
+      function (err) {
+        if (err) {
+          console.error("SQLite Error:", err.message);
+          reject(err);
+          return;
+        }
+        if (this.changes === 0) {
+          reject({ error: "No rows updated. Thesis ID not found." });
+          return;
+        }
+        const updatedThesis = {
+          id: id,
+          title: title,
+          supervisor: supervisor,
+          keywords: keywords,
+          type: type,
+          groups: groups,
+          description: description,
+          knowledge: knowledge,
+          note: note,
+          expiration_date: expiration_date,
+          level: level,
+          cds: cds,
+          creation_date: creation_date,
+          status: status,
+        };
+        resolve(updatedThesis);
+      }
+    );
+  });
+};
