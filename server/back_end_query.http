@@ -27,3 +27,6 @@ Content-Type: application/json
 ### 
 GET  {{APIURL}}/testing/vc/get
 Content-Type: application/json
+### 
+GET  {{APIURL}}/professor/thesis
+Content-Type: application/json

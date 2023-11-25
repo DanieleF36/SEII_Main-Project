@@ -70,3 +70,25 @@ exports.acceptApplication = function acceptApplication(req, res) {
     return res.status(400).json({error : "Invalid new status entered"})
   }
 };
+
+/**
+ * Wrapper function for recovering the whole set of ACTIVE thesis for the current logged in 
+ * supervisor so that the expired ones as well as the ones which are in the archive are not
+ * returned. This function could be affected by the fast forwarding in time by virtual clock
+ * usage and that's managed at service level.
+ * 
+ * @param {*} req none
+ * @param {*} res [thesis1, thesis2, ...]
+ */
+exports.browseProposals = async function (req, res) {
+  // checks after login, we're assuming supervisor 1 now
+  const supervisor = 1
+
+  const response = await teacherService.browseApplication(supervisor)
+  if(response.error) {
+    return res.status(response.status).json(response.error)
+  }
+  else {
+    return res.status(200).json(response)
+  }
+}

@@ -1,21 +1,34 @@
 'use strict'
 
 const dayjs = require('dayjs')
-const fs = require('fs');
 
 
 let offset = 0
 /**
- * Return current time according to the OFFSET_TIME stored into the environment
- * @returns a dayjs object
-*/
+ * Called by API for retriving the current date according to the state of the server
+ * @param {*} req none
+ * @param {*} res date (even shifted one)
+ */
 exports.vc_current = async function (req, res) {
 
     let result
     if (offset >= 0)
         result = dayjs().add(offset, 'second')
     else result = dayjs().subtract(offset, 'second')
-    return res.status(200).json(result.toString)
+    return res.status(200).json(result.format('YYYY-MM-DDThh:mm').toString())
+}
+
+/**
+ * To be called in backend functions instead of dayjs()
+ * Return current time according to the OFFSET_TIME stored into the environment
+ * @returns a dayjs object
+*/
+exports.vc = function () {
+    let result
+    if (offset >= 0)
+        result = dayjs().add(offset, 'second')
+    else result = dayjs().subtract(offset, 'second')
+    return result
 }
 
 /**
