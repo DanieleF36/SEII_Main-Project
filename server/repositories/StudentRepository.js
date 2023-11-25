@@ -103,3 +103,23 @@ exports.findByEmail = (email) => {
       });
   });
 }
+
+exports.getStudentAndCDSByEmail= (email) => {
+  const sqlCoSupervisor = "SELECT S.id, S.name, S.surname, S.email, S.gender, S.nationality, D.title, S.enrol_year  FROM Student S, Degree D WHERE S.cod_degree=D.cod AND S.email = ?";
+
+  return new Promise((resolve, reject)=>{
+      db.get(sqlCoSupervisor, [email], (err, row)=>{
+          if (err) {
+              reject(err);
+              return;
+          }
+          if(!row) 
+            resolve({})
+          else {
+            console.log(row)
+            resolve({id:row.id, name:row.name, surname:row.surname, email:row.email, gender:row.gender, nationality:row.nationality, cds:row.title, enrol_year:enrol_year});
+          }
+
+      });
+  })
+}

@@ -13,12 +13,12 @@ const db = require("./db");
  * @param {*} title string
  * @param {*} idSupervisors list of ids
  * @param {*} idCoSupervisorsThesis list of ids
- * @param {*} keyword TOBE defined
+ * @param {*} keyword Array of string
  * @param {*} type string
- * @param {*} groups string
+ * @param {*} groups Array of  string
  * @param {*} knowledge string
  * @param {*} expiration_date TOBE defined
- * @param {*} cds string
+ * @param {*} cds Array of string
  * @param {*} creation_date TOBE defined
  * @param {*} level 0 (bachelor) | 1 (master)
  * @returns list of thesis objects
@@ -87,8 +87,13 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   }
   if (groups != null) {
     sql += "AND groups ";
-    sql += specific ? "LIKE ?" : "= ?";
-    params.push(specific ? `%${groups}%` : groups);
+    sql += specific ? "LIKE ? " : "= ? ";
+    let t = Array.isArray(groups) ? "" : groups;
+    if (Array.isArray(groups))
+      type.forEach((e) => {
+        t += e + ", ";
+      });
+    params.push(specific ? `%${t}%` : e);
   }
   if (knowledge != null) {
     sql += "AND knowledge ";
@@ -102,8 +107,13 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   }
   if (cds != null) {
     sql += "AND cds ";
-    sql += specific ? "LIKE ?" : "= ?";
-    params.push(specific ? `%${cds}%` : cds);
+    sql += specific ? "LIKE ? " : "= ? ";
+    let t = Array.isArray(cds) ? "" : cds;
+    if (Array.isArray(cds))
+      type.forEach((e) => {
+        t += e + ", ";
+      });
+    params.push(specific ? `%${t}%` : e);
   }
   if (creation_date != null) {
     sql += "AND creation_date ";
@@ -125,13 +135,13 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
  * @param {*} title string
  * @param {*} idSupervisors list of ids
  * @param {*} idCoSupervisorsThesis list of ids
- * @param {*} keyword TOBE defined
+ * @param {*} keyword Array of String
  * @param {*} type string
- * @param {*} groups string
- * @param {*} knowledge string
- * @param {*} expiration_date TOBE defined
- * @param {*} cds string
- * @param {*} creation_date TOBE defined
+ * @param {*} groups Array of String
+ * @param {*} knowledge Array of String
+ * @param {*} expiration_date string
+ * @param {*} cds Array of String
+ * @param {*} creation_date string
  * @param {*} level 0 (bachelor) | 1 (master)
  * @returns list of thesis objects
  */

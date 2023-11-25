@@ -14,13 +14,13 @@ const nItem = 10; //number of item per page
  * @param order string with A(SC) or D(ESC) (ie titleD will became ORDER BY title DESC)
  * @param title String  (optional)
  * @param supervisor String, name defined as: name, surname (optional)
- * @param coSupervisor Listn, ame defined as: name, surname  (optional)
- * @param keyword String  (optional)
+ * @param coSupervisor List, name defined as: name, surname  (optional)
+ * @param keyword Array of String  (optional)
  * @param type String  (optional)
- * @param groups String  (optional)
- * @param knowledge String  (optional)
+ * @param groups Array of String  (optional)
+ * @param knowledge Array of String  (optional)
  * @param expiration_date String  (optional)
- * @param cds String  (optional)
+ * @param cds Array of String  (optional)
  * @param creation_date String  (optional)
  * @returns thesis
  **/

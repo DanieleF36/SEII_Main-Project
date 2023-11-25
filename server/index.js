@@ -4,6 +4,7 @@ const morgan = require("morgan"); // logging middleware
 const session = require("express-session"); // enable sessions
 const cors = require("cors");
 const passport = require('./config/passport').passport;
+const metadata = require('./config/passport').metadata;
 const app = express();
 
 app.use(morgan("dev"));
@@ -26,11 +27,11 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(express.urlencoded({ extended: false })); // Replaces Body Parser
 
-const isLoggedIn = (req, res)=>{
+const isLoggedIn = (req, res, next)=>{
   if (!req.isAuthenticated()) {
-    logging.info('User not authenticated');
     return res.status(401).json({error: 'Unauthorized'});
   } 
+  return next();
 }
 
 /******************************************************************Route*********************************************************************************************/
@@ -40,9 +41,8 @@ const teacherController = require("./controllers/TeacherController");
 const studentController = require("./controllers/StudentController");
 const vc = require('./dayjsvc/index.dayjsvc')
 
-app.get("/thesis", isLoggedIn, (req, res) =>
-  thesisController.advancedResearchThesis(req, res)
-);
+app.get("/thesis", isLoggedIn, thesisController.advancedResearchThesis);
+
 app.get("/professor/:id_professor/applications", (req, res) =>
   teacherController.listApplication(req, res)
 );
@@ -74,11 +74,13 @@ app.post('/login/callback', passport.authenticate('samlStrategy'), (req, res)=>r
 app.get("/metadata", (req, res)=>{
   res.type("application/xml")
     .status(200)
-    .send(
-      samlStrategy.generateServiceProviderMetadata(
-          fs.readFileSync("./SP-cert/cert.pem", "utf8")
-      ));
+    .send(metadata());
+      
 })
+
+app.get('/logout', passport.logoutSaml);
+
+app.post('/logout/callback', passport.logoutSamlCallback);
 
 const PORT = 3001;
 app.listen(PORT, () =>
