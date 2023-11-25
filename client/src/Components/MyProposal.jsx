@@ -90,30 +90,49 @@ function MyProposal() {
     };
 
     const handleSaveChanges = () => {
-        if (proposalData.title === '') {
-            toast.error('Title field cannot be empty');
-        } else if (proposalData.keywords === '') {
-            toast.error('Keywords field cannot be empty');
-        } else if (proposalData.type === '') {
-            toast.error('Type field cannot be empty');
-        } else if (proposalData.groups === '') {
-            toast.error('Group field cannot be empty');
-        } else if (proposalData.description === '') {
-            toast.error('Description field cannot be empty');
-        } else if (proposalData.knowledge === '') {
-            toast.error('Knowledge field cannot be empty');
-        } else if (proposalData.expiration_date === '') {
-            toast.error('Expiration Date field cannot be empty');
-        } else if (proposalData.level === '') {
-            toast.error('Level field cannot be unset');
-        } else if (proposalData.cds === '') {
-            toast.error('CdS field cannot be empty');
-        } else {
-            // Implement the logic to update the proposal using the proposalData state- API
-            console.log(proposalData);
-            API.updateProposal(proposalData)
-                .then(() => { toast.success('Thesis Proposal successfully updated'); handleResetChange() })
-                .catch((error) => toast.error(error));
+        if (selectedProposal) {
+            // Validate form fields
+            if (proposalChanges.title === '') {
+                toast.error('Title field cannot be empty');
+            } else if (proposalChanges.keywords === '') {
+                toast.error('Keywords field cannot be empty');
+            } else if (proposalChanges.type === '') {
+                toast.error('Type field cannot be empty');
+            } else if (proposalChanges.groups === '') {
+                toast.error('Group field cannot be empty');
+            } else if (proposalChanges.description === '') {
+                toast.error('Description field cannot be empty');
+            } else if (proposalChanges.knowledge === '') {
+                toast.error('Knowledge field cannot be empty');
+            } else if (proposalChanges.expiration_date === '') {
+                toast.error('Expiration Date field cannot be empty');
+            } else if (proposalChanges.level === '') {
+                toast.error('Level field cannot be unset');
+            } else if (proposalChanges.cds === '') {
+                toast.error('CdS field cannot be empty');
+            } else {
+                // If all fields are valid, proceed to update the proposal
+                const updatedProposals = proposals.map((proposal) =>
+                    proposal.id === selectedProposal.id ? { ...proposal, ...proposalChanges } : proposal
+                );
+    
+                // Update the state with the modified proposals
+                setProposals(updatedProposals);
+    
+                // Close the modal
+                setShowModal(false);
+    
+                // Use the API to update the proposal
+                API.updateProposal(selectedProposal.id, proposalChanges)
+                    .then(() => {
+                        // Display success message
+                        toast.success('Thesis Proposal successfully updated');
+                    })
+                    .catch((error) => {
+                        // Handle API error
+                        toast.error(error);
+                    });
+            }
         }
     };
     
