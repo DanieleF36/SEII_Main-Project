@@ -54,11 +54,7 @@ exports.acceptApplication = function acceptApplication(req, res) {
   }
   if(req.body.status == 1 || req.body.status == 2){
     teacherService
-    .acceptApplication(
-      req.body.status,
-      req.params.id_professor,
-      req.params.id_application
-    )
+    .acceptApplication(req.body.status, req.params.id_professor, req.params.id_application)
     .then(function (response) {
       return res.status(200).json(response);
     })

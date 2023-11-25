@@ -109,8 +109,8 @@ function checkQuery(req) {
  * - cosupervisor, array of as above  
  * - keywords array of string
  * - type array of string
- * - groups
- * - knowledge
+ * - groups array of string
+ * - knowledge array of string
  * - expiration_date
  * - cds array of string
  * - creation_date
@@ -120,6 +120,7 @@ function checkQuery(req) {
  *  "thesis": [ thesis1, ... ]
  * }
  * @returns ERROR: common error handling object
+ * @returns ERROR: not authorized, only student can call this
  */
 exports.advancedResearchThesis = function advancedResearchThesis(req, res, next) {
   if(req.user.role!=='student'){

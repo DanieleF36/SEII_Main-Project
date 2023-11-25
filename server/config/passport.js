@@ -13,8 +13,8 @@ const samlConfig = {
     issuer: 'http://localhost:3001', // Nome del tuo SP
     callbackUrl: "/login/callback",
     protocol: 'http://',
-    cert: fs.readFileSync('./IDP.pem', 'utf-8'),
-    privateKey: fs.readFileSync('./SP_private.pem', 'utf-8'),
+    cert: fs.readFileSync('./config/certs/IDP/IDP.pem', 'utf-8'),
+    privateKey: fs.readFileSync('./config/certs/SP/SP_private.pem', 'utf-8'),
     signatureAlgorithm: 'sha256',
     options:{ failureRedirect: '/login', failureFlash: true }
 };
