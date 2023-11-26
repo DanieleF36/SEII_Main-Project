@@ -56,10 +56,32 @@ exports.applyForProposal = function (req, res, next) {
  
 };
 
+/**
+ * wrapper function to retrive all the application of student that is logged in
+ * @returns the returned array is filled by objects is defined as follow:
+ * {
+ *  title: string,
+ *  supervisor_name: string,
+ *  supervisor_surname: string,
+ *  status: integer,(this is application status) 
+ *  type: string,
+ *  groups: string,
+ *  description: string,
+ *  knowledge: string,
+ *  note: string,
+ *  level: integer,
+ *  keywords: string,
+ *  expiration_date: string,
+ *  cds: string,
+ *  path_cv: string,
+ *  application_data: string,
+ * }
+ */
 exports.browserApplicationStudent = function (req, res) {
-  //!TO BE ADDED THE LOGGED IN TEST
-  console.log(req.params.id_student)
-  studentsService.browserApplicationStudent(req.params.id_student)
+  if(req.user.role!=='student')
+    return res.status(401);
+  
+  studentsService.browserApplicationStudent(req.user.id)
   .then(function (response) {
     return res.status(200).json(response);
   })

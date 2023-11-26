@@ -481,15 +481,10 @@
             "content": {
               "application/json":{
                 "schema":{
-                  "type": "object",
-                  "properties": {
-                    "id":{"type": "integer"},
-                    "title":{"type": "string"},
-                    "supervisorName":{"type": "string"},
-                    "supervisorSurname":{"type": "string"},
-                    "path_cv":{"type": "string"},
-                    "date_application":{"type": "string", "format": "date"},
-                    "status":{"enum": [0,1,2]}
+                  "type": "array",
+                  "items":{
+                    "type": "object",
+                    "$ref": "#/components/schemas/application"
                   }
                 }
               }
@@ -497,9 +492,6 @@
           },
           "401":{
             "description": "not authorized"
-          },
-          "404":{
-            "description": "id student not found"
           },
           "500":{
             "description": "internal error"
@@ -672,6 +664,36 @@
         "responses": {
           "304":{
             "description": "ok"
+          }
+        }
+      }
+    },
+    "/session/current":{
+      "get":{
+        "tags": ["authentication"],
+        "security": [],
+        "description": "get user information",
+        "responses": {
+          "200":{
+            "description": "ok",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "id":{"type": "integer", "minimum": 0},
+                    "name":{"type": "string"},
+                    "surname":{"type": "string"},
+                    "role":{"enum": ["student", "teacher", "supervisor"]},
+                    "email":{"type": "string"},
+                    "cds":{"type": "string"}
+                  }
+                }
+              }
+            }
+          },
+          "401":{
+            "description": "Not authenticated"
           }
         }
       }

@@ -1,6 +1,6 @@
 const request = require("supertest");
-const controller = require("../controllers/ThesisController");
-const thesisService = require('../services/ThesisService.js')
+const controller = require("../../controllers/ThesisController.js");
+const thesisService = require('../../services/ThesisService.js')
 
 beforeEach(() => {
   jest.clearAllMocks();

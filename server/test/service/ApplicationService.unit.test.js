@@ -1,5 +1,5 @@
 const request = require("supertest");
-const applicationsService = require("../services/ApplicationService");
+const applicationsService = require("../../services/ApplicationService");
 
 beforeEach(() => {
     jest.clearAllMocks();
@@ -22,7 +22,7 @@ describe("add proposal", ()=>{
         const mockCv = {filepath:"path"};
 
         const spyRename = jest.spyOn(require("fs"), 'rename').mockImplementation((oldPath, newPath, cb)=> cb(false));
-        const spyAddProposal = jest.spyOn(require("../repositories/ApplicationRepository"), "addProposal").mockRejectedValue({error: "bho1"})
+        const spyAddProposal = jest.spyOn(require("../../repositories/ApplicationRepository"), "addProposal").mockRejectedValue({error: "bho1"})
 
         await expect(applicationsService.addProposal(mockStudentId, mockThesisId, mockCv)).rejects.toEqual({error: "bho1"});
         expect(spyRename).toHaveBeenCalledWith(mockCv.filepath, expect.any(String), expect.any(Function));     
@@ -34,7 +34,7 @@ describe("add proposal", ()=>{
         const mockCv = {filepath:"path"};
 
         const spyRename = jest.spyOn(require("fs"), 'rename').mockImplementation((oldPath, newPath, cb)=> cb(false));
-        const spyAddProposal = jest.spyOn(require("../repositories/ApplicationRepository"), "addProposal").mockResolvedValue({success:"Success"})
+        const spyAddProposal = jest.spyOn(require("../../repositories/ApplicationRepository"), "addProposal").mockResolvedValue({success:"Success"})
         const mockRes = await applicationsService.addProposal(mockStudentId, mockThesisId, mockCv);
         expect(mockRes).toEqual({success:"Success"});
         expect(spyRename).toHaveBeenCalledWith(mockCv.filepath, expect.any(String), expect.any(Function));     
