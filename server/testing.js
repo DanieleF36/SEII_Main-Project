@@ -52,7 +52,7 @@ if (args.length === 0) {
             console.log('Switching state for environment');
 
             if(process.env.INUSE_DATABASE === "dbtest.sqlite"){
-                data = `INUSE_DATABASE="db.sqlite"`
+                data = `INUSE_DATABASE="db.sqlite";NODE_ENV="nottest"`
                 fs.writeFile('variable.env', data, (err) => {
                     if (err) {
                       console.error(err);
@@ -62,7 +62,7 @@ if (args.length === 0) {
                   });
             }
             else if(process.env.INUSE_DATABASE === "db.sqlite"){
-                data = `INUSE_DATABASE="dbtest.sqlite"`
+                data = `INUSE_DATABASE="dbtest.sqlite";NODE_ENV="test"`
                 fs.writeFile('variable.env', data, (err) => {
                     if (err) {
                     console.error(err);
@@ -78,26 +78,6 @@ if (args.length === 0) {
             console.log(`Actual state is ${process.env.INUSE_DATABASE}`);
             break;
 
-        case '-i':
-            data = `INUSE_DATABASE="dbtest.sqlite"`
-            fs.writeFile('variable.env', data, (err) => {
-                if (err) {
-                console.error(err);
-                return;
-                }
-                console.log('.env file written successfully');
-            });
-            break
-        case '-u':
-            data = `INUSE_DATABASE="db.sqlite"`
-            fs.writeFile('variable.env', data, (err) => {
-                if (err) {
-                console.error(err);
-                return;
-                }
-                console.log('.env file written successfully');
-            });
-            break
         default:
             console.log('Unknown flag or no action specified.');
             break;
