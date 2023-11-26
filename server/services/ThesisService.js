@@ -117,10 +117,11 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
 exports.addApplication = function (id) { };
 
 /**
+ * ~ UPDATED 26 nov
  * Behaviour:
  * - if even ONLY 1 co-supervisor is not found (so no entry in COSUPERVISOR), 400 error is returned
- * - if the teacher is not found (so no entry in TEACHER), 400 is returned
- * - if level and/or status are unexpected values, 400 is returned
+ * - if the teacher is not found (so no entry in TEACHER), 400 is returned (teacher is taken from
+ *    cosupervisors list and it's not the one who is creating the thesis)
  *
  * Add a thesis to the table defining each field as follow:
  *
@@ -130,43 +131,30 @@ exports.addApplication = function (id) { };
  * - supervisor: teacher's ID defined into "TEACHER" table
  * - co_supervisor: array of co_supervisors' ID, it could be also empty and added after the thesis creation
  *                  for each co_supervisors, there should be a new entry into "COSUPERVISOR"
- * - keywords: string (with format: "%s,%s,%s,...")
- * - type: string
- * - group: string
+ * - keywords: array of string (with format: "%s,%s,%s,...")
+ * - type: array of string
+ * - group: array of string
  * - description: string
- * - knowledge: string
+ * - knowledge: array of string
  * - note: string
- * - expiration_date: string (TOBE parsed according to our choiced data format)
+ * - expiration_date: string
  * - level: 0 (bachelor) | 1 (master)
  * - cds: string
  * - creation_date: current date query is performed here
- * - status: MUST BE 1 ~scrum meeting 8 Nov
+ * - status: MUST BE 1
  *
  * Moreover a CoSupervisor-Teacher-Thesis entry is added into "COSUPERVISORTHESIS" table for each CoSupervisor
  *
  * @returns thesis obj
  *
- * TODO: errors mgmt
  **/
 exports.addThesis = async function (thesis) {
 
   try {
-
-    // // an ID in TEACHER must be defined
-    // if(!thesis.supervisor) {
-    //     console.log('supervisor not found in TEACHER, should return 400')
-    // }
-
-    // // look for the supervisor into TEACHER
-    // if(!teacherRepository.findById(thesis.supervisor)) {
-    //     console.log('supervisor not found in TEACHER, should return 400')
-    // }
-
-    
     let cosupervisor_ids = []
     let supervisor_ids = []
+
     // look for each co-supervisor id into COSUPERVISOR
-    console.log(thesis.cosupervisor);
     if (Array.isArray(thesis.cosupervisor) && thesis.cosupervisor[0].length!==0) {
       for (let email of thesis.cosupervisor) {
         let tmp = await coSupervisorRepository.findByEmail(email);
@@ -184,7 +172,10 @@ exports.addThesis = async function (thesis) {
       }
     }
 
+
     // parse expiration date and creation date
+
+    // ________________________________________________________________________TOBE checked the format with @frontend
     const exp_date = dayjs(thesis.expiration_date, "MM-DD-YYYY")
       .format("YYYY-MM-DD")
       .toString();
@@ -213,12 +204,7 @@ exports.addThesis = async function (thesis) {
       throw { status: 500, error: thesis_res.err };
     }
 
-    console.log(supervisor_ids.length)
-    console.log(cosupervisor_ids.length)
-    //let result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, thesis.supervisor, null)
-    //if (result != true) {
-    //  throw { status: 500, error: result.err };
-    //}
+    let result
     if(cosupervisor_ids.length > 0) {
       for(let id of cosupervisor_ids) {
         result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, null, id)
