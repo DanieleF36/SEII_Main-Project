@@ -126,6 +126,7 @@ function AddProposalForm() {
                 .catch((error) => toast.error(error));
         }
     };
+    
 
     return (
         <Card>
