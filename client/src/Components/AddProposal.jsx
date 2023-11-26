@@ -204,6 +204,15 @@ function AddProposalForm() {
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
+                        <Form.Label><strong>Keywords</strong>&nbsp;(separated by ',')</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="keywords"
+                            value={proposalData.keywords}
+                            onChange={handleList}
+                        />
+                    </Form.Group>
+                    <Form.Group style={{ marginBottom: '10px' }}>
                         <Form.Label><strong>Groups</strong></Form.Label>
                         <Form.Control
                             type="text"
