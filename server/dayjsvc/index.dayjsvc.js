@@ -1,7 +1,7 @@
 'use strict'
 
 const dayjs = require('dayjs')
-
+const thesisRepository = require('../repositories/ThesisRepository.js')
 
 let offset = 0
 /**
@@ -23,7 +23,7 @@ exports.vc_current = async function (req, res) {
  * Return current time according to the OFFSET_TIME stored into the environment
  * @returns a dayjs object
 */
-exports.vc = function () {
+function vc () {
     let result
     if (offset >= 0)
         result = dayjs().add(offset, 'second')
@@ -54,7 +54,21 @@ exports.vc_set = async function (req, res) {
     console.log(duration)
 
     offset = duration;
-    return res.status(200).json({ value: req.body.value })
+
+    let result = await thesisRepository.selectExpiredAccordingToDate(act.format('YYYY-MM-DD').toString()) 
+    if(!Array.isArray(result)) {
+        offset=0
+        return res.status(500).json({error: 'server error'})
+    }
+    console.log(result)
+    result = await thesisRepository.setExpiredAccordingToIds(result)
+    if(result != true) {
+        offset=0
+        return res.status(500).json({error: 'server error'})
+    }
+    else return res.status(200).json({value: req.body.value})
+    
+        
 }
 
 /**
@@ -71,6 +85,21 @@ exports.vc_restore = async function (req, res) {
         return res.status(400).json({ error: "wrong parameter" })
 
     offset = 0
-    return res.status(200).json({ value: req.body.value })
+    const act = vc().format('YYYY-MM-DD').toString()
+    console.log(act)
+    let result = await thesisRepository.selectRestoredExpiredAccordingToDate(act)
+    if(!Array.isArray(result)) {
+        offset=0
+        return res.status(500).json({error: 'server error'})
+    }
+    console.log(result)
+    result = await thesisRepository.restoreExpiredAccordingToIds(result)
+    if(result != true) {
+        offset=0
+        return res.status(500).json({error: 'server error'})
+    }
+    else return res.status(200).json({value: req.body.value})
 
 }
+
+exports.vc = vc;

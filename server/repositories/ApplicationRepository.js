@@ -210,3 +210,37 @@ exports.acceptApplication = (status, teacherID, applicationID) => {
     });
   });
 };
+
+/**
+ * Designed for Virtual clock
+ * @param {*} ids of updated thesis  
+ */
+exports.setCancelledAccordingToThesis = (ids) => {
+  const placeholders = ids.map(() => '?').join(',');
+  const sql = `UPDATE Application SET status = 3 WHERE id_thesis IN (${placeholders}) AND status = 0`
+
+  return new Promise( (resolve, reject) => {
+    db.run(sql, ids, (err) => {
+      if(err)
+        reject(err)
+      resolve(true)
+    })
+  })
+}
+
+/**
+ * Designed for Virtual clock
+ * @param {*} ids of updated thesis  
+ */
+exports.setPendingAccordingToThesis = (ids) => {
+  const placeholders = ids.map(() => '?').join(',');
+  const sql = `UPDATE Application SET status = 0 WHERE id_thesis IN (${placeholders}) AND status = 3`
+
+  return new Promise( (resolve, reject) => {
+    db.run(sql, ids, (err) => {
+      if(err)
+        reject(err)
+      resolve(true)
+    })
+  })
+}

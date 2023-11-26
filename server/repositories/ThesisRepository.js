@@ -1,6 +1,7 @@
 "use strict";
 
 const db = require("./db");
+const applicationRepository = require('./ApplicationRepository.js')
 
 /**
  * Composes the query and performs an advanced search
@@ -405,3 +406,81 @@ exports.updateThesis = (
     );
   });
 };
+
+/**
+ * Designed for Virtual clock
+ * @param {*} date 
+ */
+exports.selectExpiredAccordingToDate = (date) => {
+  const sql = 'SELECT id FROM Thesis WHERE expiration_date <= ? AND status = 1'
+
+  return new Promise( (resolve, reject) => {
+    db.all(sql, [date], (err, rows) => {
+      if(err)
+        reject(err)
+      else if(rows.length == 0)
+        resolve([])
+      resolve(rows.map(a => a.id))
+    })
+  })
+}
+
+/**
+ * Designed for Virtual clock
+ * @param {*} date 
+ */
+exports.selectRestoredExpiredAccordingToDate = (date) => {
+  const sql = 'SELECT id FROM Thesis WHERE expiration_date > ? AND expiration_date != 0 AND status = 0'
+
+  return new Promise( (resolve, reject) => {
+    db.all(sql, [date], (err, rows) => {
+      if(err)
+        reject(err)
+      else if(rows.length == 0)
+        resolve([])
+      resolve(rows.map(a => a.id))
+    })
+  })
+}
+
+/**
+ * Designed for Virtual clock
+ * @param {*} ids of updatable thesis 
+ */
+exports.setExpiredAccordingToIds = (ids) => {
+  const placeholders = ids.map(() => '?').join(',');
+  const sql = `UPDATE Thesis SET status = 0 WHERE id IN (${placeholders})`
+
+  return new Promise( (resolve, reject) => {
+    db.run(sql, ids, (err) => {
+      if(err)
+        reject(err)
+      else {
+        applicationRepository.setCancelledAccordingToThesis(ids)
+          .then( resolve(true) )
+          .catch( err => reject(err) )
+      }
+    })
+  })
+}
+
+/**
+ * Designed for Virtual clock
+ * @param {*} ids of updatable thesis  
+ */
+exports.restoreExpiredAccordingToIds = (ids) => {
+  const placeholders = ids.map(() => '?').join(',');
+  const sql = `UPDATE Thesis SET status = 1 WHERE id IN (${placeholders})`
+
+  return new Promise( (resolve, reject) => {
+    db.run(sql, ids, (err) => {
+      if(err)
+        reject(err)
+      else {
+        applicationRepository.setPendingAccordingToThesis(ids)
+          .then( resolve(true) )
+          .catch( err => reject(err) )
+      }
+    })
+  })
+}
