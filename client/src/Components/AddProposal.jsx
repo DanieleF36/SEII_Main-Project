@@ -122,7 +122,7 @@ function AddProposalForm() {
             // Implement the logic to add the proposal using the proposalData state- API
             console.log(proposalData);
             API.insertProposal(proposalData)
-                .then(() => { toast.success('Thesis Proposal successfully added'); handleResetChange() })
+               .then(() => { toast.success('Thesis Proposal successfully added'); handleResetChange() })
                 .catch((error) => toast.error(error));
         }
     };
@@ -231,12 +231,12 @@ function AddProposalForm() {
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
-                        <Form.Label><strong>Knowledge</strong></Form.Label>
+                        <Form.Label><strong>Knowledge</strong>&nbsp;(separated by ',')</Form.Label>
                         <Form.Control
                             type="text"
                             name="knowledge"
                             value={proposalData.knowledge}
-                            onChange={handleInputChange}
+                            onChange={handleList}
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>

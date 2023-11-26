@@ -83,7 +83,7 @@ function FilterContainer(props) {
                   type="text"
                   name="groups"
                   value={props.filters.groups}
-                  onChange={props.handleFilterChange}
+                  onChange={props.handleFilterCoSupChange}
                   placeholder="Groups"
                 />
               </Form.Group>
@@ -92,7 +92,7 @@ function FilterContainer(props) {
                   type="text"
                   name="know"
                   value={props.filters.know}
-                  onChange={props.handleFilterChange}
+                  onChange={props.handleFilterCoSupChange}
                   placeholder="Knowledge"
                 />
               </Form.Group>
