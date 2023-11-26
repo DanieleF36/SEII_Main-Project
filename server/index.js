@@ -6,6 +6,7 @@ const cors = require("cors");
 const passport = require('./config/passport').passport;
 const metadata = require('./config/passport').metadata;
 const app = express();
+require('dotenv').config({path: './variable.env'})
 
 app.use(morgan("dev"));
 app.use(express.json());
@@ -27,8 +28,20 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(express.urlencoded({ extended: false })); // Replaces Body Parser
 
+// login_as TOBE discussed
+let login_as = {role: undefined}
 const isLoggedIn = (req, res, next)=>{
-  if (!req.isAuthenticated()) {
+  if(process.env.NODE_ENV === 'test') {
+    req.user = {
+      id: 1,
+      name: "Gianni",
+      lastname: "Altobelli",
+      role: login_as.role,
+      nameID: "gianni.altobelli@email.it"
+    }
+
+  }
+  else if (!req.isAuthenticated()) {
     return res.status(401).json({error: 'Unauthorized'});
   } 
   return next();
@@ -92,4 +105,4 @@ const PORT = 3001;
 app.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`)
 );
-module.exports = app;
+module.exports = {app, login_as};

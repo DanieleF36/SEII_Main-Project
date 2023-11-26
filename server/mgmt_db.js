@@ -410,3 +410,29 @@ exports.insertIntoCoSupervisor = (id, email, name, surname, company) => {
     });
 }
 
+/**
+ * Insert into THESIS table
+ * @param {*} id 
+ * @param {*} email 
+ * @param {*} name 
+ * @param {*} surname 
+ * @param {*} company 
+ * @returns 
+ */
+exports.insertIntoThesis = (id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration, level, cds, creation_date, status) => {
+    const query = `INSERT INTO Thesis ("id", "title", "supervisor", "keywords", "type", 
+                    "groups", "description", "knowledge", "note", "expiration_date", "level", 
+                    "cds", "creation_date", "status") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `
+
+    return new Promise((resolve, reject) => {
+        db.run(query, [id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration, level, cds, creation_date, status], (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+}
+

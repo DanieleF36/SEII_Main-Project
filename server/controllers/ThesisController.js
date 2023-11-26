@@ -169,7 +169,6 @@ exports.addApplication = function addApplication(req, res, next) {
  * @returns thesis object
  */
 exports.addThesis = async function addThesis(req, res) {
-
   //checks role NEW
   if(req.user.role !== 'teacher'){
     return res.status(401).send({error:"You can not access to this route"})
