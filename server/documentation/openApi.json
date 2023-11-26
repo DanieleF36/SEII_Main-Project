@@ -430,25 +430,14 @@
         }
       }
     },
-    "/professors/{id_professor}/thesis":{
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id_professor",
-          "schema": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "required": true
-        }
-      ],
+    "/professors/thesis":{
       "get":{
         "tags":["professor"],
         "description": "Get all the active thesis for professor id",
-        "operationId": "browseProfessorProposal",
+        "operationId": "browseProposals",
         "responses": {
           "200":{
-            "description": "list of all application",
+            "description": "list of all proposal for the current logged in professor",
             "content": {
               "application/json":{
                 "schema":{
@@ -756,7 +745,10 @@
             "description":"0 bachelor, 1 master",
             "enum": [0,1]
           },
-          "cds": { "type": "string" },
+          "cds": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
           "creation_date": { "type": "string" },
           "status": { "type": "integer" }
         },

@@ -30,7 +30,7 @@ const samlStrategy = new saml(samlConfig, (profile, done) => {
     }
     else if(profile.nameID.includes('supervisor') || profile.nameID.includes('supervisor')){
         user = coSupervisorRepository.findByEmail(profile.nameID);
-        role = "supervisor";
+        role = "cosupervisor";
     }
     if(role==='student')
         user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, cds:user.cds }

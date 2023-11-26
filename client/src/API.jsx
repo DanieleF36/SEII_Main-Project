@@ -23,26 +23,8 @@ async function listApplication(id_professor) {
   }
 
 function insertProposal(thesis) {
-    thesis.status = 1;
-    thesis.supervisor = 1;
-    thesis.cosupervisor = thesis.cosupervisor === '' ? [''] : thesis.cosupervisor
-  //   console.log(thesis)
-  // let response = await fetch(URL + '/thesis', {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify(thesis)
-
-  // })
-  // let risposta = await response.json();
-  // if (risposta.status < 300 || risposta.status >= 200) {
-  //   return true;
-  // } else {
-  //   console.log('wrong')
-  //   throw response.error;
-  // }
-
+  thesis.status = 1;
+  thesis.cosupervisor = thesis.cosupervisor === '' ? [''] : thesis.cosupervisor
 
   return getJson(fetch(URL + '/thesis', {
     method: "POST",
