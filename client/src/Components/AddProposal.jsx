@@ -122,7 +122,7 @@ function AddProposalForm() {
             // Implement the logic to add the proposal using the proposalData state- API
             console.log(proposalData);
             API.insertProposal(proposalData)
-                .then(() => { toast.success('Thesis Proposal successfully added'); handleResetChange() })
+               .then(() => { toast.success('Thesis Proposal successfully added'); handleResetChange() })
                 .catch((error) => toast.error(error));
         }
     };
@@ -205,12 +205,21 @@ function AddProposalForm() {
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
-                        <Form.Label><strong>Groups</strong></Form.Label>
+                        <Form.Label><strong>Keywords</strong>&nbsp;(separated by ',')</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="keywords"
+                            value={proposalData.keywords}
+                            onChange={handleList}
+                        />
+                    </Form.Group>
+                    <Form.Group style={{ marginBottom: '10px' }}>
+                        <Form.Label><strong>Groups</strong>&nbsp;(separated by ',')</Form.Label>
                         <Form.Control
                             type="text"
                             name="groups"
                             value={proposalData.groups}
-                            onChange={handleInputChange}
+                            onChange={handleList}
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
@@ -223,12 +232,12 @@ function AddProposalForm() {
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
-                        <Form.Label><strong>Knowledge</strong></Form.Label>
+                        <Form.Label><strong>Knowledge</strong>&nbsp;(separated by ',')</Form.Label>
                         <Form.Control
                             type="text"
                             name="knowledge"
                             value={proposalData.knowledge}
-                            onChange={handleInputChange}
+                            onChange={handleList}
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
@@ -262,12 +271,12 @@ function AddProposalForm() {
                         </div>
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
-                        <Form.Label><strong>CdS</strong></Form.Label>
+                        <Form.Label><strong>CdS</strong>&nbsp;(separated by ',')</Form.Label>
                         <Form.Control
                             type="text"
                             name="cds"
                             value={proposalData.cds}
-                            onChange={handleInputChange}
+                            onChange={handleList}
                         />
                     </Form.Group>
                     <Button style={{ marginTop: '5px' }} variant="primary" onClick={handleAddProposal}>
