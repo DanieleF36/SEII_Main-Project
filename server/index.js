@@ -49,7 +49,7 @@ app.get("/professor/:id_professor/applications", (req, res) =>
   teacherController.listApplication(req, res)
 );
 
-app.post("/thesis", (req, res) => thesisController.addThesis(req, res));
+app.post("/thesis", isLoggedIn, (req, res) => thesisController.addThesis(req, res));
 
 app.put("/thesis/:id", (req, res) => thesisController.updateThesis(req, res));
 
@@ -63,7 +63,7 @@ app.get("/student/:id_student/applications", (req, res) =>
   studentController.browserApplicationStudent(req, res)
 );
 
-app.get('/professor/thesis', (req, res) => teacherController.browseProposals(req, res))
+app.get('/professor/thesis', isLoggedIn, (req, res) => teacherController.browseProposals(req, res))
 
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
 

@@ -68,6 +68,7 @@ exports.acceptApplication = function acceptApplication(req, res) {
 };
 
 /**
+ * FOR TEACHER ONLY
  * Wrapper function for recovering the whole set of ACTIVE thesis for the current logged in 
  * supervisor so that the expired ones as well as the ones which are in the archive are not
  * returned. This function could be affected by the fast forwarding in time by virtual clock
@@ -77,8 +78,11 @@ exports.acceptApplication = function acceptApplication(req, res) {
  * @param {*} res [thesis1, thesis2, ...]
  */
 exports.browseProposals = async function (req, res) {
-  // checks after login, we're assuming supervisor 1 now
-  const supervisor = 1
+  if(req.user.role !== 'teacher'){
+    return res.status(401).send({error:"You can not access to this route"})
+  }
+
+  const supervisor = req.user.id;
 
   const response = await teacherService.browseApplication(supervisor)
   if(response.error) {
