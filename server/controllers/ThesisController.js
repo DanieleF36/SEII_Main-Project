@@ -170,6 +170,7 @@ exports.addApplication = function addApplication(req, res, next) {
  */
 exports.addThesis = async function addThesis(req, res) {
 
+  //checks role NEW
   if(req.user.role !== 'teacher'){
     return res.status(401).send({error:"You can not access to this route"})
   }
@@ -237,8 +238,12 @@ exports.addThesis = async function addThesis(req, res) {
   }
 
   //checks cds NEW
-  if (req.body.cds === undefined)
-    return res.status(400).json({ error: "cds is missing" });
+  if (req.body.cds === undefined || !Array.isArray(req.body.cds)) {
+    return res.status(400).json({ error: "cds value not recognized" });
+  }
+  else {
+    req.body.cds = req.body.cds.join();
+  }
 
   //checks knowledge NEW
   if (!Array.isArray(req.body.knowledge)) {
