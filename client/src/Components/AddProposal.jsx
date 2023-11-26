@@ -213,12 +213,12 @@ function AddProposalForm() {
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
-                        <Form.Label><strong>Groups</strong></Form.Label>
+                        <Form.Label><strong>Groups</strong>&nbsp;(separated by ',')</Form.Label>
                         <Form.Control
                             type="text"
                             name="groups"
                             value={proposalData.groups}
-                            onChange={handleInputChange}
+                            onChange={handleList}
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
@@ -270,12 +270,12 @@ function AddProposalForm() {
                         </div>
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
-                        <Form.Label><strong>CdS</strong></Form.Label>
+                        <Form.Label><strong>CdS</strong>&nbsp;(separated by ',')</Form.Label>
                         <Form.Control
                             type="text"
                             name="cds"
                             value={proposalData.cds}
-                            onChange={handleInputChange}
+                            onChange={handleList}
                         />
                     </Form.Group>
                     <Button style={{ marginTop: '5px' }} variant="primary" onClick={handleAddProposal}>
