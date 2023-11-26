@@ -9,28 +9,16 @@ function MyProposal() {
   //const [dirty, setDirty] = useState(true);
   // const [id_professor, setId_professor] = useState(1);
   const [archived, setArchived] = useState(1);
-  const [selectedProposal, setSelectedProposal] = useState(null);
-  const [proposals, setProposals] = useState([{ id: 0, title: 'AI system research', supervisor: 'Mario Rossi', cosupervisor: ['123456@polito.it', '654321@polito.it'], expDate: '10/1/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creatDate: '10/1/2023', status: '1' }]);
-  const [proposalsArchiv, setProposalsArchiv] = useState([{ id: 1, title: 'Prova', supervisor: 'Luca Neri', cosupervisor: ['123456@polito.it', '654321@polito.it'], expDate: '10/1/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creatDate: '10/1/2023', status: '0' }]);
+  const [selectedProposal, setSelectedProposal] = useState('');
+  const [proposals, setProposals] = useState([{ id: 0, title: 'AI system research', supervisor: 'Mario Rossi', cosupervisor: ['123456@polito.it', '654321@polito.it'], expDate: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creatDate: '10/1/2023', status: '1' }]);
+  const [proposalsArchiv, setProposalsArchiv] = useState([{ id: 1, title: 'Prova', supervisor: 'Luca Neri', cosupervisor: ['123456@polito.it', '654321@polito.it'], expDate: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creatDate: '10/1/2023', status: '0' }]);
   const [showModal, setShowModal] = useState(false);
-  const [proposalData, setProposalData] = useState({
-    title: '',
-    supervisor: '',
-    cosupervisor: '',
-    expiration_date: '',
-    keywords: '',
-    type: '',
-    groups: '',
-    description: '',
-    knowledge: '',
-    note: '',
-    level: '',
-    cds: '',
-  });
+
 
   const handleModify = (proposal) => {
-    setSelectedProposal(proposal);
+    setSelectedProposal({ ...proposal });
     setShowModal(true);
+  
 
   };
 
@@ -44,10 +32,10 @@ function MyProposal() {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    handleResetChange(); // Reset the form fields
+    setSelectedProposal('');
   };
   
-  const [cosup_email, setCoSup_email] = useState(['marco.colli@mail.com', 'francine.ombala@mail.com']);
+  const [cosup_email, setCoSup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);
   const [filt_cosup, setFilt_cosup] = useState([]);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -59,72 +47,55 @@ function MyProposal() {
     //proposals.map(e=>console.log(e));
   }, [searchTerm]);
 
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setProposalData((prevProposalData) => ({
-      ...prevProposalData,
+    setSelectedProposal((prevselectedProposal) => ({
+      ...prevselectedProposal,
       [name]: value,
     }));
   };
 
 
   const handleResetChange = () => {
-    setProposalData({
-      title: '',
-      supervisor: '',
-      cosupervisor: '',
-      expiration_date: '',
-      keywords: '',
-      type: '',
-      groups: '',
-      description: '',
-      knowledge: '',
-      note: '',
-      level: '',
-      cds: '',
-    });
+    setSelectedProposal('');
   };
 
   const handleCheckboxChange = (selectedLevel) => {
-    setProposalData({ ...proposalData, level: selectedLevel });
+    setSelectedProposal({ ...selectedProposal, level: selectedLevel });
   };
 
   const handleList = (e) => {
     let name = e.target.name;
     let cosup_arr = e.target.value.split(",");
     let co = cosup_arr.map(e => e.trim());
-    setProposalData({ ...proposalData, [name]: co });
+    setSelectedProposal({ ...selectedProposal, [name]: co });
   };
 
   const handleCoSup = (e) => {
-    if (proposalData.cosupervisor === '') {
+    if (selectedProposal.cosupervisor === '') {
       let co = [];
       co.push(e);
-      setProposalData({ ...proposalData, cosupervisor: co });
+      setSelectedProposal({ ...selectedProposal, cosupervisor: co });
       setSearchTerm('');
-    }
-    else {
-      let co = proposalData.cosupervisor;
+    } else {
+      let co = [...selectedProposal.cosupervisor]; // Crea una copia dell'array
       if (co.includes(e)) {
         toast.error('CoSupervisor already inserted');
         setSearchTerm('');
-      }
-      else {
+      } else {
         co.push(e);
-        setProposalData({ ...proposalData, cosupervisor: co });
+        setSelectedProposal({ ...selectedProposal, cosupervisor: co });
         setSearchTerm('');
       }
     }
-
   };
-
+  
   const handleDeleteCoSup = () => {
-    const updatedCoSupervisors = [...proposalData.cosupervisor];
-
+    const updatedCoSupervisors = [...selectedProposal.cosupervisor];
     if (updatedCoSupervisors.length > 0) {
-      // Remove the last co-supervisor
       updatedCoSupervisors.pop();
-      setProposalData({ ...proposalData, cosupervisor: updatedCoSupervisors });
+      setSelectedProposal({ ...selectedProposal, cosupervisor: updatedCoSupervisors });
     } else {
       toast.error('No co-supervisors to delete');
     }
@@ -132,52 +103,49 @@ function MyProposal() {
 
   const handleSaveChanges = () => {
     if (selectedProposal) {
-      if (proposalData.title === '') {
+      if (selectedProposal.title === '') {
         toast.error('Title field cannot be empty');
-      } else if (proposalData.keywords === '') {
+      } else if (selectedProposal.keywords === '') {
         toast.error('Keywords field cannot be empty');
-      } else if (proposalData.type === '') {
+      } else if (selectedProposal.type === '') {
         toast.error('Type field cannot be empty');
-      } else if (proposalData.groups === '') {
+      } else if (selectedProposal.groups === '') {
         toast.error('Group field cannot be empty');
-      } else if (proposalData.description === '') {
+      } else if (selectedProposal.description === '') {
         toast.error('Description field cannot be empty');
-      } else if (proposalData.knowledge === '') {
+      } else if (selectedProposal.know === '') {
         toast.error('Knowledge field cannot be empty');
-      } else if (proposalData.expiration_date === '') {
+      } else if (selectedProposal.expDate === '') {
         toast.error('Expiration Date field cannot be empty');
-      } else if (proposalData.level === '') {
+      } else if (selectedProposal.level === '') {
         toast.error('Level field cannot be unset');
-      } else if (proposalData.cds === '') {
+      } else if (selectedProposal.cds === '') {
         toast.error('CdS field cannot be empty');
       } else {
         setShowModal(false);
-        const updatedProposals = proposals.map((proposal) =>
-          proposal.id === selectedProposal.id ? { ...proposal, ...proposalData } : proposal
-        );
-
-        // Aggiornamento dello stato con le proposte aggiornate
-    setProposals(updatedProposals);
-
-       
-        API.updateProposal(selectedProposal.id, proposalData)
-          .then(() => {
-            toast.success('Thesis Proposal successfully updated');
-          })
-          .catch((error) => {
-            toast.error(error.message || 'An error occurred while updating the proposal');
-          });
+        console.log(selectedProposal);
+        let updatedProp = [...proposals];
+        updatedProp[selectedProposal.id] = selectedProposal;
+        setProposals(updatedProp);
+        toast.success('Thesis Proposal successfully updated');
+       // API.updateProposal(selectedProposal.id, selectedProposal)
+        //  .then(() => {
+        //    toast.success('Thesis Proposal successfully updated');
+         // })
+        //  .catch((error) => {
+         //   toast.error(error.message || 'An error occurred while updating the proposal');
+         // });
       }
     }
   };
 
   return (
     archived === 1 ? <>
-      <Toaster position="top-right" reverseOrder={false} />
       <BootstrapSwitchButton onChange={() => handleSwitch()} checked={archived === 1} size="sm" onlabel='published' offlabel='archived' width={100} onstyle="success" offstyle="warning" style="border" />
       <div style={{ marginTop: '10px' }}>
         {proposals.map((proposal) => (
           <Card key={proposal.id} style={{ marginBottom: '10px' }}>
+            <Toaster position="top-center" reverseOrder={false} />
             <Accordion>
               <Accordion.Item eventKey={proposal.id}>
                 <Accordion.Header>
@@ -228,7 +196,10 @@ function MyProposal() {
                   <strong>Creation Date:</strong> {proposal.creatDate}
                   <br />
                   <br />
-                  <Button variant="warning" onClick={() => handleModify(proposal)}>Modify</Button>
+                  <Button variant="warning" onClick={() => handleModify(proposal)}><img src="./pencil-fill.svg"
+                            alt="Logo"
+                           /></Button>
+                  
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
@@ -236,29 +207,31 @@ function MyProposal() {
         ))}
       </div>
 
-      <Modal show={showModal} onHide={handleCloseModal}>
+      <Modal show={showModal} onHide={handleCloseModal}  backdrop="static"
+        keyboard={false}>
+        <Toaster position="top-center" reverseOrder={false} />
         <Modal.Header closeButton>
           <Modal.Title>Edit Proposal</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           {selectedProposal && (
             <Form>
-              <Form.Group className="mb-3" controlId="formTitle">
+              <Form.Group className="mb-3">
                 <Form.Label><strong>Title</strong></Form.Label>
                 <Form.Control
                   type="text"
                   name="title"
-                  value={proposalData.title}
+                  value={selectedProposal.title}
                   onChange={handleInputChange}
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formCosupervisor">
+              <Form.Group className="mb-3">
                 <Form.Label><strong>Cosupervisors mails</strong></Form.Label>
                 <Form.Control
                   type="text"
                   readOnly
-                  value={proposalData.cosupervisor !== '' ? proposalData.cosupervisor.map(element => {
+                  value={selectedProposal.cosupervisor !== '' ? selectedProposal.cosupervisor.map(element => {
                     return ` ${element}`;
 
                   }) : ''}
@@ -266,9 +239,6 @@ function MyProposal() {
                 <Container>
                   <Row className="mt-3">
                     <Col sm="12" md="12" lg="6" className="d-flex align-items-center">
-                      <Button onClick={() => { handleCoSup(searchTerm); }} variant="primary" style={{ width: '40px', height: '38px', marginTop: '5px', marginRight: '5px' }}>
-                        +
-                      </Button>
                       <Dropdown style={{ marginTop: '5px' }}>
                         <Dropdown.Toggle variant="primary" id="dropdown-basic">
                           {searchTerm === '' ? 'Select mail' : searchTerm}
@@ -286,7 +256,10 @@ function MyProposal() {
                           )).slice(0, 3)}
                         </Dropdown.Menu>
                       </Dropdown>
-                      <Button onClick={handleDeleteCoSup} variant="danger" style={{ width: '40px', height: '38px', marginTop: '5px', marginLeft: '5px' }}>
+                      <Button onClick={() => { handleCoSup(searchTerm); }} variant="primary" style={{ width: '40px', height: '38px', marginTop: '5px', marginRight: '3px', marginLeft: '10px'  }}>
+                        +
+                      </Button>
+                      <Button onClick={handleDeleteCoSup} variant="danger" style={{ width: '40px', height: '38px', marginTop: '5px'}}>
                         -
                       </Button>
                     </Col>
@@ -294,77 +267,77 @@ function MyProposal() {
                 </Container>
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formExpDate">
+              <Form.Group className="mb-3">
                 <Form.Label><strong>Expiration Date</strong></Form.Label>
                 <Form.Control
                   type="date"
-                  name="expiration_date"
-                  value={proposalData.expiration_date}
+                  name="expDate"
+                  value={selectedProposal.expDate.split('/').reverse().join('-')}
                   onChange={handleInputChange}
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formKeywords">
-                <Form.Label><strong>keywords</strong></Form.Label>
+              <Form.Group className="mb-3">
+                <Form.Label><strong>Keywords</strong>&nbsp;(separated by ',')</Form.Label>
                 <Form.Control
                   type="text"
                   name="keywords"
-                  value={proposalData.keywords}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formType">
-                <Form.Label><strong>Type</strong>&nbsp;(separated by ',')</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="type"
-                  value={proposalData.type}
+                  value={selectedProposal.keywords}
                   onChange={handleList}
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formGroups">
-                <Form.Label><strong>Groups</strong></Form.Label>
+              <Form.Group className="mb-3">
+                <Form.Label><strong>Type</strong>&nbsp;(separated by ',')</Form.Label>
                 <Form.Control
                   type="text"
-                  name="groups"
-                  value={proposalData.groups}
-                  onChange={handleInputChange}
+                  name="type"
+                  value={selectedProposal.type}
+                  onChange={handleList}
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formDescription">
+              <Form.Group className="mb-3">
+                <Form.Label><strong>Groups</strong>&nbsp;(separated by ',')</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="groups"
+                  value={selectedProposal.groups}
+                  onChange={handleList}
+                />
+              </Form.Group>
+
+              <Form.Group className="mb-3">
                 <Form.Label><strong>Description</strong></Form.Label>
                 <Form.Control
                   as="textarea"
                   name="description"
-                  value={proposalData.description}
+                  value={selectedProposal.description}
                   onChange={handleInputChange}
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formKnowledge">
-                <Form.Label><strong>Knowledge</strong></Form.Label>
+              <Form.Group className="mb-3">
+                <Form.Label><strong>Knowledge</strong>&nbsp;(separated by ',')</Form.Label>
                 <Form.Control
                   type="text"
-                  name="knowledge"
-                  value={proposalData.knowledge}
-                  onChange={handleInputChange}
+                  name="know"
+                  value={selectedProposal.know}
+                  onChange={handleList}
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formNote">
+              <Form.Group className="mb-3">
                 <Form.Label><strong>Note</strong></Form.Label>
                 <Form.Control
                   type="text"
                   name="note"
-                  value={proposalData.note}
+                  value={selectedProposal.note}
                   onChange={handleInputChange}
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formLevel">
+              <Form.Group className="mb-3">
                 <Form.Label><strong>Level</strong></Form.Label>
                 <div>
                   <Form.Check
@@ -372,7 +345,7 @@ function MyProposal() {
                     label="Bachelor"
                     name="level"
                     id="levelBachelor"
-                    checked={proposalData.level === 'Bachelor'}
+                    checked={selectedProposal.level === 'Bachelor'}
                     onChange={() => handleCheckboxChange('Bachelor')}
                   />
                   <Form.Check
@@ -380,19 +353,19 @@ function MyProposal() {
                     label="Master"
                     name="level"
                     id="levelMaster"
-                    checked={proposalData.level === 'Master'}
+                    checked={selectedProposal.level === 'Master'}
                     onChange={() => handleCheckboxChange('Master')}
                   />
                 </div>
               </Form.Group>
 
-              <Form.Group className="mb-3" controlId="formCds">
-                <Form.Label><strong>CdS</strong></Form.Label>
+              <Form.Group className="mb-3">
+                <Form.Label><strong>CdS</strong>&nbsp;(separated by ',')</Form.Label>
                 <Form.Control
                   type="text"
                   name="cds"
-                  value={proposalData.cds}
-                  onChange={handleInputChange}
+                  value={selectedProposal.cds}
+                  onChange={handleList}
                 />
               </Form.Group>
 
@@ -411,10 +384,7 @@ function MyProposal() {
       </Modal>
 
     </> : <>
-
-      <Toaster position="top-right" reverseOrder={false} />
       <BootstrapSwitchButton onChange={() => handleSwitch()} checked={archived === 1} size="sm" onlabel='published' offlabel='archived' width={100} onstyle="success" offstyle="warning" style="border" />
-
       <div style={{ marginTop: '10px' }}>
         {proposalsArchiv.map((proposal) => (
           <Card key={proposal.id} style={{ marginBottom: '10px' }}>
@@ -423,10 +393,10 @@ function MyProposal() {
                 <Accordion.Header>
                   <Container fluid>
                     <Row className="d-md-flex justify-content-center align-items-center">
-                      <Col md='4' sm='4' xs='12' className="text-center">
+                      <Col md='4' sm='4' xs='12'>
                         <strong>Title:</strong> {proposal.title}
                       </Col>
-                      <Col md='4' sm='4' xs='12' className="text-center">
+                      <Col md='4' sm='4' xs='12'>
                         <strong>Expiration date:</strong> {proposal.expDate}
                       </Col>
                       <Col md='3' sm='3' xs='12'>
@@ -468,188 +438,12 @@ function MyProposal() {
                   <strong>Creation Date:</strong> {proposal.creatDate}
                   <br />
                   <br />
-                  <Button variant="primary" onClick={() => handleModify(proposal)}>Modify</Button>
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
           </Card>
         ))}
-
       </div>
-
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Proposal</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {selectedProposal && (
-
-            <Form>
-              <Form.Group className="mb-3" controlId="formTitle">
-                <Form.Label><strong>Title</strong></Form.Label>
-                <Form.Control
-                  type="text"
-                  name="title"
-                  value={proposalData.title}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formCosupervisor">
-                <Form.Label><strong>Cosupervisors mails</strong></Form.Label>
-                <Form.Control
-                  type="text"
-                  readOnly
-                  value={proposalData.cosupervisor !== '' ? proposalData.cosupervisor.map(element => {
-                    return ` ${element}`;
-
-                  }) : ''}
-                />
-                <Container>
-                  <Row className="mt-3">
-                    <Col sm="12" md="12" lg="6" className="d-flex align-items-center">
-                      <Button onClick={() => { handleCoSup(searchTerm); }} variant="primary" style={{ width: '40px', height: '38px', marginTop: '5px', marginRight: '5px' }}>
-                        +
-                      </Button>
-                      <Dropdown style={{ marginTop: '5px' }}>
-                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                          {searchTerm === '' ? 'Select mail' : searchTerm}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu show={searchTerm !== ''}>
-                          <Form.Control
-                            type="text"
-                            placeholder="Search..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            style={{ borderBlockWidth: '2px' }}
-                          />
-                          {filt_cosup.map((item, id) => (
-                            <Dropdown.Item onClick={() => setSearchTerm(item)} key={id}>{item}</Dropdown.Item>
-                          )).slice(0, 3)}
-                        </Dropdown.Menu>
-                      </Dropdown>
-                      <Button onClick={handleDeleteCoSup} variant="danger" style={{ width: '40px', height: '38px', marginTop: '5px', marginLeft: '5px' }}>
-                        -
-                      </Button>
-                    </Col>
-                  </Row>
-                </Container>
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formExpDate">
-                <Form.Label><strong>Expiration Date</strong></Form.Label>
-                <Form.Control
-                  type="date"
-                  name="expiration_date"
-                  value={proposalData.expiration_date}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formKeywords">
-                <Form.Label><strong>keywords</strong></Form.Label>
-                <Form.Control
-                  type="text"
-                  name="keywords"
-                  value={proposalData.keywords}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formType">
-                <Form.Label><strong>Type</strong>&nbsp;(separated by ',')</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="type"
-                  value={proposalData.type}
-                  onChange={handleList}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formGroups">
-                <Form.Label><strong>Groups</strong></Form.Label>
-                <Form.Control
-                  type="text"
-                  name="groups"
-                  value={proposalData.groups}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formDescription">
-                <Form.Label><strong>Description</strong></Form.Label>
-                <Form.Control
-                  as="textarea"
-                  name="description"
-                  value={proposalData.description}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formKnowledge">
-                <Form.Label><strong>Knowledge</strong></Form.Label>
-                <Form.Control
-                  type="text"
-                  name="knowledge"
-                  value={proposalData.knowledge}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formNote">
-                <Form.Label><strong>Note</strong></Form.Label>
-                <Form.Control
-                  type="text"
-                  name="note"
-                  value={proposalData.note}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formLevel">
-                <Form.Label><strong>Level</strong></Form.Label>
-                <div>
-                  <Form.Check
-                    type="checkbox"
-                    label="Bachelor"
-                    name="level"
-                    id="levelBachelor"
-                    checked={proposalData.level === 'Bachelor'}
-                    onChange={() => handleCheckboxChange('Bachelor')}
-                  />
-                  <Form.Check
-                    type="checkbox"
-                    label="Master"
-                    name="level"
-                    id="levelMaster"
-                    checked={proposalData.level === 'Master'}
-                    onChange={() => handleCheckboxChange('Master')}
-                  />
-                </div>
-              </Form.Group>
-
-              <Form.Group className="mb-3" controlId="formCds">
-                <Form.Label><strong>CdS</strong></Form.Label>
-                <Form.Control
-                  type="text"
-                  name="cds"
-                  value={proposalData.cds}
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-              {/* Add other form fields for editing */}
-            </Form>
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
-          <Button variant="primary" onClick={handleSaveChanges}>
-            Save Changes
-          </Button>
-        </Modal.Footer>
-      </Modal>
     </>
   );
 }

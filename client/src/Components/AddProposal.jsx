@@ -158,7 +158,7 @@ function AddProposalForm() {
                         />
                         <Container>
                             <Row className="mt-3">
-                                <Col sm='12'md='12'lg='3'>
+                                <Col sm="12" md="12" lg="6" className="d-flex align-items-center">
                                     <Dropdown style={{ marginTop: '5px' }}>
                                         <Dropdown.Toggle variant="primary" id="dropdown-basic">
                                             {searchTerm === '' ? 'Select mail' : searchTerm}
@@ -177,12 +177,11 @@ function AddProposalForm() {
                                             )).slice(0, 3)}
                                         </Dropdown.Menu>
                                     </Dropdown>
-                                </Col>
-                                <Col sm='12'md='12'lg='3'>
-                                    <Button onClick={() => { handleCoSup(searchTerm); }} variant="primary" style={{ width: '40px', height: '38px', marginTop: '5px' }}>
+                              
+                                    <Button onClick={() => { handleCoSup(searchTerm); }} variant="primary" style={{ width: '40px', height: '38px', marginTop: '5px', marginLeft:'10px' }}>
                                         +
                                     </Button>
-                                </Col>
+                               </Col>
                             </Row>
                         </Container>
                     </Form.Group>
