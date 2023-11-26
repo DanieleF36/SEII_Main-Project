@@ -1,7 +1,7 @@
 "use strict";
 
-const { resolve } = require("path");
 const db = require("./db");
+const applicationRepository = require('./ApplicationRepository.js')
 
 /**
  * Composes the query and performs an advanced search
@@ -13,12 +13,12 @@ const db = require("./db");
  * @param {*} title string
  * @param {*} idSupervisors list of ids
  * @param {*} idCoSupervisorsThesis list of ids
- * @param {*} keyword TOBE defined
+ * @param {*} keyword Array of string
  * @param {*} type string
- * @param {*} groups string
+ * @param {*} groups Array of  string
  * @param {*} knowledge string
  * @param {*} expiration_date TOBE defined
- * @param {*} cds string
+ * @param {*} cds Array of string
  * @param {*} creation_date TOBE defined
  * @param {*} level 0 (bachelor) | 1 (master)
  * @returns list of thesis objects
@@ -87,8 +87,13 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   }
   if (groups != null) {
     sql += "AND groups ";
-    sql += specific ? "LIKE ?" : "= ?";
-    params.push(specific ? `%${groups}%` : groups);
+    sql += specific ? "LIKE ? " : "= ? ";
+    let t = Array.isArray(groups) ? "" : groups;
+    if (Array.isArray(groups))
+      type.forEach((e) => {
+        t += e + ", ";
+      });
+    params.push(specific ? `%${t}%` : e);
   }
   if (knowledge != null) {
     sql += "AND knowledge ";
@@ -102,8 +107,13 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   }
   if (cds != null) {
     sql += "AND cds ";
-    sql += specific ? "LIKE ?" : "= ?";
-    params.push(specific ? `%${cds}%` : cds);
+    sql += specific ? "LIKE ? " : "= ? ";
+    let t = Array.isArray(cds) ? "" : cds;
+    if (Array.isArray(cds))
+      type.forEach((e) => {
+        t += e + ", ";
+      });
+    params.push(specific ? `%${t}%` : e);
   }
   if (creation_date != null) {
     sql += "AND creation_date ";
@@ -125,13 +135,13 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
  * @param {*} title string
  * @param {*} idSupervisors list of ids
  * @param {*} idCoSupervisorsThesis list of ids
- * @param {*} keyword TOBE defined
+ * @param {*} keyword Array of String
  * @param {*} type string
- * @param {*} groups string
- * @param {*} knowledge string
- * @param {*} expiration_date TOBE defined
- * @param {*} cds string
- * @param {*} creation_date TOBE defined
+ * @param {*} groups Array of String
+ * @param {*} knowledge Array of String
+ * @param {*} expiration_date string
+ * @param {*} cds Array of String
+ * @param {*} creation_date string
  * @param {*} level 0 (bachelor) | 1 (master)
  * @returns list of thesis objects
  */
@@ -304,4 +314,173 @@ function transformOrder(order) {
     default:
       return `Azione non valida per ${order}`;
   }
+}
+
+exports.getActiveThesis = (supervisor, date) => {
+  const sql = `SELECT title, supervisor, keywords, type, groups, description,
+                knowledge, note, expiration_date, level, cds, creation_date 
+               FROM thesis 
+               WHERE status = 1 AND expiration_date > ? AND supervisor = ?`
+  
+  return new Promise( (resolve, reject) => {
+    db.all(sql, [date, supervisor], (err, rows) => {
+      if(err) {
+        reject(err)
+      }
+      else if(rows.length === 0) {
+        resolve([])
+      }
+      else resolve(rows)
+    })
+  })
+}
+
+exports.updateThesis = (
+  id,
+  title,
+  supervisor,
+  keywords,
+  type,
+  groups,
+  description,
+  knowledge,
+  note,
+  expiration_date,
+  level,
+  cds,
+  creation_date,
+  status
+) => {
+  const sql = `UPDATE Thesis 
+               SET title = ?, supervisor = ?, keywords = ?, type = ?, groups = ?, description = ?, 
+                   knowledge = ?, note = ?, expiration_date = ?, level = ?, cds = ?, creation_date = ?, status = ?
+               WHERE id = ?`;
+
+  return new Promise((resolve, reject) => {
+    db.run(
+      sql,
+      [
+        title,
+        supervisor,
+        keywords,
+        type,
+        groups,
+        description,
+        knowledge,
+        note,
+        expiration_date,
+        level,
+        cds,
+        creation_date,
+        status,
+        id,
+      ],
+      function (err) {
+        if (err) {
+          console.error("SQLite Error:", err.message);
+          reject(err);
+          return;
+        }
+        if (this.changes === 0) {
+          reject({ error: "No rows updated. Thesis ID not found." });
+          return;
+        }
+        const updatedThesis = {
+          id: id,
+          title: title,
+          supervisor: supervisor,
+          keywords: keywords,
+          type: type,
+          groups: groups,
+          description: description,
+          knowledge: knowledge,
+          note: note,
+          expiration_date: expiration_date,
+          level: level,
+          cds: cds,
+          creation_date: creation_date,
+          status: status,
+        };
+        resolve(updatedThesis);
+      }
+    );
+  });
+};
+
+/**
+ * Designed for Virtual clock
+ * @param {*} date 
+ */
+exports.selectExpiredAccordingToDate = (date) => {
+  const sql = 'SELECT id FROM Thesis WHERE expiration_date <= ? AND status = 1'
+
+  return new Promise( (resolve, reject) => {
+    db.all(sql, [date], (err, rows) => {
+      if(err)
+        reject(err)
+      else if(rows.length == 0)
+        resolve([])
+      resolve(rows.map(a => a.id))
+    })
+  })
+}
+
+/**
+ * Designed for Virtual clock
+ * @param {*} date 
+ */
+exports.selectRestoredExpiredAccordingToDate = (date) => {
+  const sql = 'SELECT id FROM Thesis WHERE expiration_date > ? AND expiration_date != 0 AND status = 0'
+
+  return new Promise( (resolve, reject) => {
+    db.all(sql, [date], (err, rows) => {
+      if(err)
+        reject(err)
+      else if(rows.length == 0)
+        resolve([])
+      resolve(rows.map(a => a.id))
+    })
+  })
+}
+
+/**
+ * Designed for Virtual clock
+ * @param {*} ids of updatable thesis 
+ */
+exports.setExpiredAccordingToIds = (ids) => {
+  const placeholders = ids.map(() => '?').join(',');
+  const sql = `UPDATE Thesis SET status = 0 WHERE id IN (${placeholders})`
+
+  return new Promise( (resolve, reject) => {
+    db.run(sql, ids, (err) => {
+      if(err)
+        reject(err)
+      else {
+        applicationRepository.setCancelledAccordingToThesis(ids)
+          .then( resolve(true) )
+          .catch( err => reject(err) )
+      }
+    })
+  })
+}
+
+/**
+ * Designed for Virtual clock
+ * @param {*} ids of updatable thesis  
+ */
+exports.restoreExpiredAccordingToIds = (ids) => {
+  const placeholders = ids.map(() => '?').join(',');
+  const sql = `UPDATE Thesis SET status = 1 WHERE id IN (${placeholders})`
+
+  return new Promise( (resolve, reject) => {
+    db.run(sql, ids, (err) => {
+      if(err)
+        reject(err)
+      else {
+        applicationRepository.setPendingAccordingToThesis(ids)
+          .then( resolve(true) )
+          .catch( err => reject(err) )
+      }
+    })
+  })
 }

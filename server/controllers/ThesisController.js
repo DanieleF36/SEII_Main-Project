@@ -1,6 +1,7 @@
 "use strict";
 
 const thesisService = require("../services/ThesisService");
+const applicationService = require("../services/ApplicationService");
 
 function isConvertible(str) {
   if(str=="undefined")
@@ -109,10 +110,10 @@ function checkQuery(req) {
  * - cosupervisor, array of as above  
  * - keywords array of string
  * - type array of string
- * - groups
- * - knowledge
+ * - groups array of string
+ * - knowledge array of string
  * - expiration_date
- * - cds
+ * - cds array of string
  * - creation_date
  *
  * @returns SUCCESS: a json object as follow: {
@@ -120,8 +121,13 @@ function checkQuery(req) {
  *  "thesis": [ thesis1, ... ]
  * }
  * @returns ERROR: common error handling object
+ * @returns ERROR: not authorized, only student can call this
  */
 exports.advancedResearchThesis = function advancedResearchThesis(req, res, next) {
+  if(req.user.role!=='student'){
+    res.status(401).send({error:"You can not access to this route"})
+    return;
+  }
   const error = checkQuery(req);
   if (error) {
     res.status(400).json({ error: error });
@@ -130,7 +136,7 @@ exports.advancedResearchThesis = function advancedResearchThesis(req, res, next)
   //checks if order is defined or not, otherwise titleD is setted as defaul value
   const order = req.query.order ? req.query.order : "titleD";
 
-  thesisService.advancedResearchThesis(req.query.page, order, req.query.title, req.query.supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, req.query.cds, req.query.creation_date)
+  thesisService.advancedResearchThesis(req.query.page, order, req.query.title, req.query.supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, req.user.cds, req.query.creation_date)
     .then(function (response) {
       let nPage = response[1];
       response = response[0];
@@ -164,16 +170,22 @@ exports.addApplication = function addApplication(req, res, next) {
  */
 exports.addThesis = async function addThesis(req, res) {
 
-   //req.body.supervisor = 1; //TOBE Changed
-  
+  //checks role NEW
+  if(req.user.role !== 'teacher'){
+    return res.status(401).send({error:"You can not access to this route"})
+  }
+
+  //checks body
   if (req.body === undefined) {
     return res.status(400).json({ error: "body is missing" });
   }
+  
+  req.body.supervisor = req.user.id
 
+  //checks level
   if (req.body.level === undefined || (req.body.level !== "Master" && req.body.level !== "Bachelor")) {
     return res.status(400).json({ error: "level value not recognized" });
   }
-
 
   if( req.body.level === 'Master'){
     req.body.level = 1;
@@ -182,35 +194,34 @@ exports.addThesis = async function addThesis(req, res) {
     req.body.level = 0;
   }
 
-  if (req.body.supervisor === undefined) {
-    return res.status(400).json({ error: "supervisor is missing" });
-  }
-
+  //checks exp_date
   if (req.body.expiration_date === undefined | (req.body.expiration_date == "")) {
     return res
       .status(400)
       .json({ error: "expiration date is missing or not valid" });
-    }
+  }
 
-    if (req.body.status === undefined || req.body.status != 1) {
-      return res
-      .status(400)
-      .json({ error: "status value not recognized or allowed" });
-    }
+  //checks status
+  if (req.body.status === undefined || req.body.status != 1) {
+    return res
+    .status(400)
+    .json({ error: "status value not recognized or allowed" });
+  }
 
- 
-  
+  //checks cosup  
   if (!Array.isArray(req.body.cosupervisor)) {
     return res.status(400).json({ error: "cosupervisor is not an array" });
   }
   
-  // forcing the format
+  //checks keywords
   if (!Array.isArray(req.body.keywords)) {
     return res.status(400).json({ error: "keywords value not recognized" });
   }
   else {
     req.body.keywords = req.body.keywords.join();
   }
+
+  //checks type
   if (req.body.type === undefined || !Array.isArray(req.body.type)) {
     return res.status(400).json({ error: "type value not recognized" });
   }
@@ -218,16 +229,30 @@ exports.addThesis = async function addThesis(req, res) {
     req.body.type = req.body.type.join();
   }
 
-  // console.log(req.body)
-  // thesisService
-  //   .addThesis(req.body)
-  //   .then(function (response) {
-  //     return res.status(201).json(response);
-  //   })
-  //   .catch(function (err) {
-  //     console.log(err)
-  //     return res.status(500).json(err.error);
-  //   });
+  //checks groups NEW
+  if (req.body.groups === undefined || !Array.isArray(req.body.groups)) {
+    return res.status(400).json({ error: "groups value not recognized" });
+  }
+  else {
+    req.body.groups = req.body.groups.join();
+  }
+
+  //checks cds NEW
+  if (req.body.cds === undefined || !Array.isArray(req.body.cds)) {
+    return res.status(400).json({ error: "cds value not recognized" });
+  }
+  else {
+    req.body.cds = req.body.cds.join();
+  }
+
+  //checks knowledge NEW
+  if (!Array.isArray(req.body.knowledge)) {
+    return res.status(400).json({ error: "knowledge value not recognized" });
+  }
+  else {
+    req.body.knowledge = req.body.knowledge.join();
+  }
+  
   const response = await thesisService.addThesis(req.body)
   if(response.error) {
     console.log(response.error)
@@ -235,5 +260,58 @@ exports.addThesis = async function addThesis(req, res) {
   }
   else {
     return res.status(200).json(response)
+  }
+};
+
+exports.getAllCoSupervisorsEmails = async function (req, res) {
+  try {
+    const result = await applicationService.getAllCoSupervisorsEmailsService();
+    res.status(result.status).json(result.data || result.error);
+  } catch (error) {
+    console.error("Error in someControllerMethod:", error.message);
+    res.status(500).json('Internal server error');
+  }
+};
+
+exports.updateThesis = async function updateThesis(req, res) {
+  if (req.body === undefined) {
+    return res.status(400).json({ error: "body is missing" });
+  }
+
+  if (!req.params.id) {
+    res.status(400).json({error: "Thesis id is not valid"})
+    return
+  }
+
+  if (req.body.level === undefined || (req.body.level !== "Master" && req.body.level !== "Bachelor")) {
+    return res.status(400).json({ error: "level value not recognized" });
+  }
+
+  if (req.body.supervisor === undefined) {
+    return res.status(400).json({ error: "supervisor is missing" });
+  }
+
+  if (req.body.expiration_date === undefined || req.body.expiration_date === "") {
+    return res.status(400).json({ error: "expiration date is missing or not valid" });
+  }
+
+  if (req.body.status === undefined || req.body.status !== 1) {
+    return res.status(400).json({ error: "status value not recognized or allowed" });
+  }
+
+  if (!Array.isArray(req.body.cosupervisor)) {
+    return res.status(400).json({ error: "cosupervisor is not an array" });
+  }
+
+  // Additional validation checks for the updateThesis method if needed
+
+  // Call the updateThesis method from the thesisService
+  const response = await thesisService.updateThesis(req.body, req.params.id);
+
+  if (response.error) {
+    console.error(response.error);
+    return res.status(response.status).json(response.error);
+  } else {
+    return res.status(200).json(response);
   }
 };

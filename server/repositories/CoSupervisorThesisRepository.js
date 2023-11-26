@@ -62,3 +62,20 @@ exports.findCoSupervisorIdsByThesisId = (id)=>{
         }); 
     });
 }
+
+
+exports.removeCoSupervisorsByThesisId = (thesisId) => {
+  const sql = 'DELETE FROM CoSupervisorThesis WHERE id_thesis = ?';
+
+  return new Promise((resolve, reject) => {
+    db.run(sql, [thesisId], function (err) {
+      if (err) {
+        console.error("SQLite Error:", err.message);
+        reject({ error: 'Failed to remove co-supervisors for the thesis.' });
+        return;
+      }
+
+      resolve(true);
+    });
+  });
+};

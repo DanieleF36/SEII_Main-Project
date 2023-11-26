@@ -142,21 +142,105 @@ exports.addProposal = (studentId, thesisId, cvPath) => {
   });
 };
 
-exports.acceptApplication = (status, teacherID, applicationID,) => {
+exports.acceptApplication = (status, teacherID, applicationID) => {
   return new Promise((resolve, reject) => {
-    const sql = 'UPDATE Application SET status = ? WHERE id_teacher = ? AND id = ?';
-    db.run(sql, [status, teacherID, applicationID], function (err) {
+    // 1
+    const fetchThesisStudentSQL = 'SELECT id_thesis, id_student FROM Application WHERE id_teacher = ? AND id = ?';
+    db.get(fetchThesisStudentSQL, [teacherID, applicationID], (err, row) => {
       if (err) {
         console.error("Error in SQLDatabase:", err.message);
         reject(err);
-        return
-      } else {
-        if (this.changes === 0) {
-          reject({ error : "No rows updated. Teacher ID or Application Id not found."});
-          return
-        }
-        resolve(status);
+        return;
       }
+
+      if (!row) {
+        reject({ error: "No rows found. Teacher ID or Application ID not found." });
+        return;
+      }
+
+      const id_thesis = row.id_thesis;
+      const id_student = row.id_student;
+
+      // 2
+      const updateApplicationSQL = 'UPDATE Application SET status = ? WHERE id_teacher = ? AND id = ?';
+      db.run(updateApplicationSQL, [status, teacherID, applicationID], function (err) {
+        if (err) {
+          console.error("Error in SQLDatabase:", err.message);
+          reject(err);
+          return;
+        }
+
+        if (this.changes === 0) {
+          reject({ error: "No rows updated. Teacher ID or Application ID not found." });
+          return;
+        }
+
+        if (status === 2) {
+          // 3
+          const updateOtherApplicationsSQL = 'UPDATE Application SET status = 1 WHERE id_thesis = ? AND id_student != ?';
+          db.run(updateOtherApplicationsSQL, [id_thesis, id_student], function (err) {
+            if (err) {
+              console.error("Error in SQLDatabase:", err.message);
+              reject(err);
+              return;
+            }
+
+            // 4
+            const updateThesisSQL = 'UPDATE Thesis SET status = 0 WHERE id = ?';
+            db.run(updateThesisSQL, [id_thesis], function (err) {
+              if (err) {
+                console.error("Error in SQLDatabase:", err.message);
+                reject(err);
+                return;
+              }
+
+              if (this.changes === 0) {
+                reject({ error: "No rows updated. Thesis ID not found." });
+                return;
+              }
+
+              resolve({ message: "Application and Thesis updated successfully." });
+            });
+          });
+        } else {
+          // If the status is 1 -> rejected, then resolve directly
+          resolve({ message: "Application updated successfully." });
+        }
+      });
     });
   });
 };
+
+/**
+ * Designed for Virtual clock
+ * @param {*} ids of updated thesis  
+ */
+exports.setCancelledAccordingToThesis = (ids) => {
+  const placeholders = ids.map(() => '?').join(',');
+  const sql = `UPDATE Application SET status = 3 WHERE id_thesis IN (${placeholders}) AND status = 0`
+
+  return new Promise( (resolve, reject) => {
+    db.run(sql, ids, (err) => {
+      if(err)
+        reject(err)
+      resolve(true)
+    })
+  })
+}
+
+/**
+ * Designed for Virtual clock
+ * @param {*} ids of updated thesis  
+ */
+exports.setPendingAccordingToThesis = (ids) => {
+  const placeholders = ids.map(() => '?').join(',');
+  const sql = `UPDATE Application SET status = 0 WHERE id_thesis IN (${placeholders}) AND status = 3`
+
+  return new Promise( (resolve, reject) => {
+    db.run(sql, ids, (err) => {
+      if(err)
+        reject(err)
+      resolve(true)
+    })
+  })
+}

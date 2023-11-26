@@ -23,26 +23,8 @@ async function listApplication(id_professor) {
   }
 
 function insertProposal(thesis) {
-    thesis.status = 1;
-    thesis.supervisor = 1;
-    thesis.cosupervisor = thesis.cosupervisor === '' ? [''] : thesis.cosupervisor
-  //   console.log(thesis)
-  // let response = await fetch(URL + '/thesis', {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify(thesis)
-
-  // })
-  // let risposta = await response.json();
-  // if (risposta.status < 300 || risposta.status >= 200) {
-  //   return true;
-  // } else {
-  //   console.log('wrong')
-  //   throw response.error;
-  // }
-
+  thesis.status = 1;
+  thesis.cosupervisor = thesis.cosupervisor === '' ? [''] : thesis.cosupervisor
 
   return getJson(fetch(URL + '/thesis', {
     method: "POST",
@@ -225,6 +207,50 @@ async function browserApplicationStudent(id_student) {
   }
 }
 
-const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal, browserApplicationStudent};
+function browseProposal() {
+  return getJson(fetch(URL + '/professor/thesis', {
+    method: "GET"
+  }))
+  .then(res => {
+    return res
+  })
+}
+
+// =================== Virtual clock API ===================
+
+function vc_set(date) {
+  return getJson(fetch(URL + '/testing/vc/set', {
+    method: "POST",
+    body: {
+      value: data
+    }
+  }))
+  .then(res => {
+    return res
+  })
+}
+
+function vc_get(date) {
+  return getJson(fetch(URL + '/testing/vc/get', {
+    method: "GET"
+  }))
+  .then(res => {
+    return res
+  })
+}
+
+
+function vc_restore(choice) {
+  return getJson(fetch(URL + '/testing/vc/restore', {
+    method: "POST",
+    body: {
+      value: choice
+    }
+  }))
+  .then(res => {
+    return res
+  })
+}
+const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal, browseProposal, vc_set, vc_restore, vc_get };
 
 export default API;

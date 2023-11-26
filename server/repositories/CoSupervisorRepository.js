@@ -71,3 +71,19 @@ exports.findByNSorS = (surname, name)=>{
         });
     });
 }
+
+exports.getAllCoSupervisorsEmails = () => {
+  return new Promise((resolve, reject) => {
+    const coSupervisorSql = 'SELECT email FROM CoSupervisor';
+    db.all(coSupervisorSql, [], (coSupervisorErr, coSupervisors) => {
+      if (coSupervisorErr) {
+        console.error("Error retrieving all co-supervisors:", coSupervisorErr.message);
+        reject(coSupervisorErr);
+        return;
+      }
+
+      const coSupervisorEmails = coSupervisors.map((coSupervisor) => coSupervisor.email);
+      resolve(coSupervisorEmails);
+    });
+  });
+};

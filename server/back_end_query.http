@@ -10,5 +10,23 @@ content-type: application/json
     "accepted" : 1
 }
 ###
-//GET THE LIST OF APPLICATION OF A STUDENT
-GET {{APIURL}}/student/1/applications
+POST {{APIURL}}/testing/vc/set
+Content-Type: application/json
+
+{
+    "value": "2024-12-24T23:59"
+}
+###
+POST {{APIURL}}/testing/vc/restore
+Content-Type: application/json
+
+{
+    "value": 1
+}
+
+### 
+GET  {{APIURL}}/testing/vc/get
+Content-Type: application/json
+### 
+GET  {{APIURL}}/professor/thesis
+Content-Type: application/json
