@@ -42,21 +42,21 @@ function FilterContainer(props) {
                   placeholder="CoSuperv Surnames"
                 />
               </Form.Group>
-              <p><strong>Expiration Date</strong></p>
-              <Form.Group className="mb-3">
-                <Form.Control
-                  type="date"
-                  name="expDate"
-                  value={props.filters.expDate}
-                  onChange={props.handleFilterChange}
-                />
-              </Form.Group>
-              <p><strong>Creation Date</strong></p>
+              <p><strong>From Creation Date</strong></p>
               <Form.Group className="mb-3">
                 <Form.Control
                   type="date"
                   name="creatDate"
                   value={props.filters.creatDate}
+                  onChange={props.handleFilterChange}
+                />
+              </Form.Group>
+              <p><strong>To Expiration Date</strong></p>
+              <Form.Group className="mb-3">
+                <Form.Control
+                  type="date"
+                  name="expDate"
+                  value={props.filters.expDate}
                   onChange={props.handleFilterChange}
                 />
               </Form.Group>
@@ -83,7 +83,7 @@ function FilterContainer(props) {
                   type="text"
                   name="groups"
                   value={props.filters.groups}
-                  onChange={props.handleFilterChange}
+                  onChange={props.handleFilterCoSupChange}
                   placeholder="Groups"
                 />
               </Form.Group>
@@ -92,17 +92,8 @@ function FilterContainer(props) {
                   type="text"
                   name="know"
                   value={props.filters.know}
-                  onChange={props.handleFilterChange}
+                  onChange={props.handleFilterCoSupChange}
                   placeholder="Knowledge"
-                />
-              </Form.Group>
-              <Form.Group className="mb-3">
-                <Form.Control
-                  type="text"
-                  name="cds"
-                  value={props.filters.cds}
-                  onChange={props.handleFilterChange}
-                  placeholder="CdS"
                 />
               </Form.Group>
               <Form.Group className="mb-3">

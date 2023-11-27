@@ -9,7 +9,7 @@ function ApplicationList() {
     const [dirty, setDirty] = useState(true);
     const [id_professor, setId_professor] = useState(1);
 
-    const [applications, setApplications] = useState([]/*[{id_application:0, 
+    const [applications, setApplications] = useState([]/*{id_application:1, 
                                                         id_thesis: '1',
                                                         title: 'AI system research',
                                                         id_student: 's12345',
@@ -18,7 +18,7 @@ function ApplicationList() {
                                                         cds: 'A2891',
                                                         data: '12/10/2024',
                                                         path_cv: 'cv.pdf', 
-                                                        status: '1'},
+                                                        status: '3'},
                                                     {id_application:1,
                                                         id_thesis: '1', 
                                                         title: 'AI system research',
@@ -38,7 +38,7 @@ function ApplicationList() {
                                                         cds: 'A2891',
                                                         data: '11/10/2024',
                                                         path_cv: 'cv.pdf', 
-                                                        status: '0'}]*/);
+                                                    status: '0'}]*/);
 
     //adding API from backend to set list of applications
 
@@ -85,13 +85,13 @@ function ApplicationList() {
                                 <Accordion.Header>
                                     <Container fluid>
                                         <Row className="d-md-flex justify-content-center align-items-center">
-                                            <Col md='3' sm='3' xs='12'>
+                                            <Col md='4' sm='4' xs='12'>
                                                 <strong>Title:</strong> {application.title}
                                             </Col>
-                                            <Col md='3' sm='3' xs='12'>
+                                            <Col md='4' sm='4' xs='12'>
                                                 <strong>Student:</strong> {application.name+ ' ' + application.surname}
                                             </Col>
-                                            <Col md='5' sm='5' xs='12'>
+                                            <Col md='3' sm='3' xs='12'>
                                                 <strong>Status:</strong>{' '}
                                                 {application.status == '0' ? (
                                                     <Badge pill bg="warning">P</Badge>
@@ -99,7 +99,10 @@ function ApplicationList() {
                                                     application.status == '1' ? (
                                                         <Badge pill bg="success">A</Badge>
                                                     ) : (
-                                                        <Badge pill bg="danger">R</Badge>
+                                                        application.status == '2' ? (
+                                                            <Badge pill bg="danger">R</Badge>
+                                                        ) : 
+                                                        <Badge pill bg="secondary">C</Badge>
                                                     )
                                                 )}
                                             </Col>

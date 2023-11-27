@@ -1,8 +1,20 @@
-import { Navbar, Container, Row, Col, Nav, Button, Tab } from 'react-bootstrap';
+import { Navbar, Container, Row, Col, Nav, Button, Tab, Modal } from 'react-bootstrap'
+import { useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import './TitleBar.css'
 
 function TitleBar(props) {
+
+    const navigate = useNavigate();
+
+    const logIn = () => {
+        //props.setUser({role: 'teacher', name: 'Luca', surname: 'Azzurri', id: '12345'})
+        props.setIsAuth(1);
+        navigate('/home');
+        props.setUser({role: 'student', name: 'Giovanni', surname: 'Rossi', id: '12345'})
+        //API.login(...)
+      };
 
     const titleBarStyle = {
         backgroundColor: '#003576',
@@ -12,13 +24,19 @@ function TitleBar(props) {
         marginLeft: 0, // Remove left margin
     };
 
-    const handleSwitch = () => {
-        if(props.user===0)
-           props.setUser(1);
-        else
-         props.setUser(0);
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    const handleLogOut = () => {
+
+        props.setIsAuth(0);
+        props.setUser('');
+        navigate('/');
 
     };
+
 
     return (
         <>
@@ -33,22 +51,62 @@ function TitleBar(props) {
                     </Navbar.Brand>
                 </Container>
             </Navbar>
-            <Container fluid className="nav-tabs">
+            <Container fluid className="nav-tabs"  style={props.isAuth === 0?{backgroundColor:'#fff'}:{backgroundColor:'#FF7C11'}}>
                 <Row>
-                    <Col>
-                        <Nav defaultActiveKey="/">
+                    {props.isAuth===0 ?<Col>
+                        <Nav>
+                            <Nav.Item>
+                                <Nav.Link disabled style={{color:'#ffff'}}>
+                                   |
+                                </Nav.Link>
+                            </Nav.Item>
+                        </Nav>
+                    </Col>:<Col>
+                        <Nav defaultActiveKey="/home">
                             <Nav.Item className='act-link'>
-                                <Nav.Link href="/" className="thesis-link">
+                                <Nav.Link href="/home" className="thesis-link">
                                     Thesis
                                 </Nav.Link>
                             </Nav.Item>
                         </Nav>
+                    </Col>}
+                    {props.isAuth === 0 ? <Col xs="auto" className="ml-auto d-flex align-items-center">
+                        <Button className='btn-col' onClick={() => logIn()}><img src="./person-circle.svg"
+                            alt="Logo"
+                            className="img-responsive"
+                            style={{ marginRight: '2px' }}
+
+                        /><strong>Login</strong></Button>
+
+
+                    </Col> : <Col xs="auto" className="ml-auto d-flex align-items-center">
+                        <Button className='btn-col' onClick={() => handleShow()}><img src="./person-circle.svg"
+                            alt="Logo"
+                            className="img-responsive"
+                            style={{ marginRight: '2px' }}
+
+                        />{<><strong>role:</strong> {props.user.role} <strong>ID:</strong> {props.user.id}</>}</Button>
+
+                        <Modal show={show} onHide={handleClose}>
+                            <Modal.Header closeButton>
+                                <Modal.Title><img src="./box-arrow-left.svg"
+                                    alt="Logo"
+                                    className="img-responsive"></img></Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>Click the button below to perform the <strong>logout</strong></Modal.Body>
+                            <Modal.Footer>
+                                <Button variant="secondary" onClick={handleClose}>
+                                    Close
+                                </Button>
+                                <Button variant="danger" onClick={() => { handleClose(); handleLogOut(); }}>
+                                    Logout
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
+
+
                     </Col>
-                    <Col xs="auto" className="ml-auto d-flex align-items-center">
-                               <BootstrapSwitchButton onChange={()=>handleSwitch()} checked={props.user===0} size="sm" onlabel='student' offlabel='professor' width={100} onstyle="success" offstyle="danger" style="border" />
-                    
-                        
-                    </Col>
+                    }
                 </Row>
             </Container>
         </>
