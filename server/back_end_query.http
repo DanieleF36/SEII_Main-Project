@@ -10,6 +10,28 @@ content-type: application/json
     "accepted" : 1
 }
 ###
+//UPDATE THESIS (Professor TASK) 
+PUT {{APIURL}}/thesis/1
+content-type: application/json
+
+{
+    "id" : 1,
+    "title" : "Nuovo titolo",
+    "supervisor" : 1,
+    "keywords" : "AI,Robotics",
+    "type" : "Research",
+    "groups" : "Robotics",
+    "description" : "Exploring the integration of AI in robotics for autonomous decision-making",
+    "knowledge" : "Machine Learning,Robotics",
+    "note" : "This is a cutting-edge topic in the field",
+    "expiration_date" : "2024-05-01",
+    "level" : "Master",
+    "cds" : "CDS001",
+    "creation_date" : "2022-12-01",
+    "status" : 1,
+    "cosupervisor" : ["marco.colli@mail.com"]
+}
+###
 POST {{APIURL}}/testing/vc/set
 Content-Type: application/json
 
