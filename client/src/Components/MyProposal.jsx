@@ -272,7 +272,7 @@ function MyProposal() {
                 <Form.Control
                   type="date"
                   name="expDate"
-                  value={selectedProposal.expDate.split('/').reverse().join('-')}
+                  value={selectedProposal.expDate.split('/').reverse().join('-')} // cambiare con proposal dinamica
                   onChange={handleInputChange}
                 />
               </Form.Group>

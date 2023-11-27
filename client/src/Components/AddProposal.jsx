@@ -75,18 +75,28 @@ function AddProposalForm() {
         }
         else {
             let co = proposalData.cosupervisor;
-            if(co.includes(e)){
+            if (co.includes(e)) {
                 toast.error('CoSupervisor already inserted');
                 setSearchTerm('');
             }
             else {
-            co.push(e);
-            setProposalData({ ...proposalData, cosupervisor: co });
-            setSearchTerm('');
+                co.push(e);
+                setProposalData({ ...proposalData, cosupervisor: co });
+                setSearchTerm('');
             }
         }
 
     };
+
+    const handleDeleteCoSup = () => {
+        const updatedCoSupervisors = [...proposalData.cosupervisor];
+        if (updatedCoSupervisors.length > 0) {
+          updatedCoSupervisors.pop();
+          setProposalData({ ...proposalData, cosupervisor: updatedCoSupervisors });
+        } else {
+          toast.error('No co-supervisors to delete');
+        }
+      };
 
     const handleAddProposal = () => {
         //console.log(proposalData);
@@ -122,11 +132,11 @@ function AddProposalForm() {
             // Implement the logic to add the proposal using the proposalData state- API
             console.log(proposalData);
             API.insertProposal(proposalData)
-               .then(() => { toast.success('Thesis Proposal successfully added'); handleResetChange() })
+                .then(() => { toast.success('Thesis Proposal successfully added'); handleResetChange() })
                 .catch((error) => toast.error(error));
         }
     };
-    
+
 
     return (
         <Card>
@@ -147,13 +157,13 @@ function AddProposalForm() {
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
-                    <Form.Label><strong>Cosupervisors mails</strong></Form.Label>
+                        <Form.Label><strong>Cosupervisors mails</strong></Form.Label>
                         <Form.Control
                             type="text"
                             readOnly
                             value={proposalData.cosupervisor !== '' ? proposalData.cosupervisor.map(element => {
                                 return ` ${element}`;
-    
+
                             }) : ''}
                         />
                         <Container>
@@ -170,18 +180,20 @@ function AddProposalForm() {
                                                 placeholder="Search..."
                                                 value={searchTerm}
                                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                                style={{borderBlockWidth:'2px'}}
+                                                style={{ borderBlockWidth: '2px' }}
                                             />
                                             {filt_cosup.map((item, id) => (
                                                 <Dropdown.Item onClick={() => setSearchTerm(item)} key={id}>{item}</Dropdown.Item>
                                             )).slice(0, 3)}
                                         </Dropdown.Menu>
                                     </Dropdown>
-                              
-                                    <Button onClick={() => { handleCoSup(searchTerm); }} variant="primary" style={{ width: '40px', height: '38px', marginTop: '5px', marginLeft:'10px' }}>
+                                    <Button onClick={() => { handleCoSup(searchTerm); }} variant="primary" style={{ width: '40px', height: '38px', marginTop: '5px', marginRight: '3px', marginLeft: '10px' }}>
                                         +
                                     </Button>
-                               </Col>
+                                    <Button onClick={handleDeleteCoSup} variant="danger" style={{ width: '40px', height: '38px', marginTop: '5px' }}>
+                                        -
+                                    </Button>
+                                </Col>
                             </Row>
                         </Container>
                     </Form.Group>
