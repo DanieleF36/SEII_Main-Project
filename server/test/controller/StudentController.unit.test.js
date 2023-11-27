@@ -1,5 +1,5 @@
 const request = require("supertest");
-const studentController = require("../controllers/StudentController");
+const studentController = require("../../controllers/StudentController");
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -111,7 +111,7 @@ describe('Apply for proposal', () => {
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
     
         // Mocking the addProposal method in applicationsService
-        jest.spyOn(require("../services/ApplicationService"), "addProposal").mockResolvedValue({succes:"success"})
+        jest.spyOn(require("../../services/ApplicationService"), "addProposal").mockResolvedValue({succes:"success"})
     
         await studentController.applyForProposal(req, res);
         // Verifying that the response is as expected
@@ -127,7 +127,7 @@ describe('Apply for proposal', () => {
       };
   
       // Simulate a not found
-      jest.spyOn(require("../services/ApplicationService"), "addProposal").mockRejectedValue({ error: 'Not found' })
+      jest.spyOn(require("../../services/ApplicationService"), "addProposal").mockRejectedValue({ error: 'Not found' })
       
       const mockForm = {
         parse: jest.fn((req, callback) => callback(null, {}, { cv: [{}] })),
@@ -148,7 +148,7 @@ describe('Apply for proposal', () => {
       };
   
       // Simulate any error
-      jest.spyOn(require("../services/ApplicationService"), "addProposal").mockRejectedValue({ error: 'bho' })
+      jest.spyOn(require("../../services/ApplicationService"), "addProposal").mockRejectedValue({ error: 'bho' })
       
       const mockForm = {
         parse: jest.fn((req, callback) => callback(null, {}, { cv: [{}] })),
@@ -160,4 +160,46 @@ describe('Apply for proposal', () => {
       expect(mockRes.status).toHaveBeenCalledWith(500);
       expect(mockRes.json).toHaveBeenCalledWith({error:"Internal Error"});
     });
-})
+});
+
+describe('Browse application', ()=> {
+  test('case1: user differt from student', async ()=>{
+    const mockReq = {user:{role:'professor'}};
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    await studentController.browserApplicationStudent(mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(401);
+  }),
+  test('case2: ok', async ()=>{
+    const mockReq = {user:{role:'student'}};
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    jest.spyOn(require("../../services/StudentService"), "browserApplicationStudent").mockResolvedValue({succes:"success"})
+
+    await studentController.browserApplicationStudent(mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(200);
+    expect(mockRes.json).toHaveBeenCalledWith({ succes:"success" });
+  }),
+  test('case3: internal error', async ()=>{
+    const mockReq = {user:{role:'student'}};
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    jest.spyOn(require("../../services/StudentService"), "browserApplicationStudent").mockRejectedValue({error:"error"})
+
+    await studentController.browserApplicationStudent(mockReq, mockRes);
+    await Promise.resolve();
+    expect(mockRes.status).toHaveBeenCalledWith(500);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: 'error' });
+  })
+});
