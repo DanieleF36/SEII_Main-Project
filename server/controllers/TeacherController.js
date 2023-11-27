@@ -34,6 +34,10 @@ const teacherService = require("../services/TeacherService");
  * @param {*} next 
  */
 exports.listApplication = function listApplication(req, res) {
+  if(req.user.role!=='teacher'){
+    res.status(401).send({error:"You can not access to this route"})
+    return;
+  }
   if (!req.params.id_professor) {
     res.status(400).json({error: "given supervisor's id is not valid"})
     return
@@ -49,6 +53,10 @@ exports.listApplication = function listApplication(req, res) {
 };
 
 exports.acceptApplication = function acceptApplication(req, res) {
+  if(req.user.role!=='teacher'){
+    res.status(401).send({error:"You can not access to this route"})
+    return;
+  }
   if (req.body.status == undefined) {
     return res.status(400).json({ error: "Missing new status acceptApplication" });
   }

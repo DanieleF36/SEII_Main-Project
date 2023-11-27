@@ -22,6 +22,10 @@ const studentsService = require("../services/StudentService");
  *   }
  */
 exports.applyForProposal = function (req, res, next) {
+  if(req.user.role!=='student'){
+    res.status(401).send({error:"You can not access to this route"})
+    return;
+  }
   if (!req.body) {
     return res.status(400).json({ error: "Body is missing" });
   }
@@ -57,7 +61,10 @@ exports.applyForProposal = function (req, res, next) {
 };
 
 exports.browserApplicationStudent = function (req, res) {
-  //!TO BE ADDED THE LOGGED IN TEST
+  if(req.user.role!=='student'){
+    res.status(401).send({error:"You can not access to this route"})
+    return;
+  }
   console.log(req.params.id_student)
   studentsService.browserApplicationStudent(req.params.id_student)
   .then(function (response) {

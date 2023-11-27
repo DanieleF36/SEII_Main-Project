@@ -274,6 +274,10 @@ exports.getAllCoSupervisorsEmails = async function (req, res) {
 };
 
 exports.updateThesis = async function updateThesis(req, res) {
+  if(req.user.role!=='teacher'){
+    res.status(401).send({error:"You can not access to this route"})
+    return;
+  }
   if (req.body === undefined) {
     return res.status(400).json({ error: "body is missing" });
   }
