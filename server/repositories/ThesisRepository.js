@@ -125,6 +125,55 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   return [sql, params];
 }
 
+//Only for advancedSearch
+//Trasform order and make it suitable for an SQL query
+function transformOrder(order) {
+  switch (order) {
+    case "titleD":
+      return "title DESC ";
+    case "titleA":
+      return "title ASC ";
+    case "supervisorD":
+      return "supervisor DESC ";
+    case "supervisorA":
+      return "supervisor ASC ";
+    case "co-supervisorD":
+      return "co-supervisor DESC ";
+    case "co-supervisorA":
+      return "co-supervisor ASC ";
+    case "keywordD":
+      return "keywords DESC ";
+    case "keywordA":
+      return "keywords ASC ";
+    case "typeD":
+      return "type DESC ";
+    case "typeA":
+      return "type ASC ";
+    case "groupsD":
+      return "groups DESC ";
+    case "groupsA":
+      return "groups ASC ";
+    case "knowledgeD":
+      return "knowledge DESC ";
+    case "knowledgeA":
+      return "knowledge ASC ";
+    case "expiration_dateD":
+      return "expiration_date DESC ";
+    case "expiration_dateA":
+      return "expiration_date ASC ";
+    case "cdsD":
+      return "cds DESC ";
+    case "cdsA":
+      return "cds ASC ";
+    case "creation_dateD":
+      return "creation_date DESC ";
+    case "creation_dateA":
+      return "creation_date ASC ";
+    default:
+      return `Azione non valida per ${order}`;
+  }
+}
+
 /**
  * Composes the query and performs an advanced search
  *
@@ -203,21 +252,7 @@ exports.numberOfPage = (specific, title, idSupervisors, idCoSupervisorsThesis, k
  * @returns SUCCESS: the new entry ID is returned
  * @returns ERROR: sqlite error is returned
  */
-exports.addThesis = (
-  title,
-  supervisor,
-  keywords,
-  type,
-  groups,
-  description,
-  knowledge,
-  note,
-  expiration_date,
-  level,
-  cds,
-  creation_date,
-  status
-) => {
+exports.addThesis = (title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) => {
   const sql = `INSERT INTO Thesis(title, supervisor, keywords, type, groups, description, 
                                         knowledge, note, expiration_date, level, cds, creation_date, status)
                  VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
@@ -268,54 +303,6 @@ exports.addThesis = (
   });
 };
 
-//Trasform order and make it suitable for an SQL query
-function transformOrder(order) {
-  switch (order) {
-    case "titleD":
-      return "title DESC ";
-    case "titleA":
-      return "title ASC ";
-    case "supervisorD":
-      return "supervisor DESC ";
-    case "supervisorA":
-      return "supervisor ASC ";
-    case "co-supervisorD":
-      return "co-supervisor DESC ";
-    case "co-supervisorA":
-      return "co-supervisor ASC ";
-    case "keywordD":
-      return "keywords DESC ";
-    case "keywordA":
-      return "keywords ASC ";
-    case "typeD":
-      return "type DESC ";
-    case "typeA":
-      return "type ASC ";
-    case "groupsD":
-      return "groups DESC ";
-    case "groupsA":
-      return "groups ASC ";
-    case "knowledgeD":
-      return "knowledge DESC ";
-    case "knowledgeA":
-      return "knowledge ASC ";
-    case "expiration_dateD":
-      return "expiration_date DESC ";
-    case "expiration_dateA":
-      return "expiration_date ASC ";
-    case "cdsD":
-      return "cds DESC ";
-    case "cdsA":
-      return "cds ASC ";
-    case "creation_dateD":
-      return "creation_date DESC ";
-    case "creation_dateA":
-      return "creation_date ASC ";
-    default:
-      return `Azione non valida per ${order}`;
-  }
-}
-
 exports.getActiveThesis = (supervisor, date) => {
   const sql = `SELECT title, supervisor, keywords, type, groups, description,
                 knowledge, note, expiration_date, level, cds, creation_date 
@@ -335,47 +322,14 @@ exports.getActiveThesis = (supervisor, date) => {
   })
 }
 
-exports.updateThesis = (
-  id,
-  title,
-  supervisor,
-  keywords,
-  type,
-  groups,
-  description,
-  knowledge,
-  note,
-  expiration_date,
-  level,
-  cds,
-  creation_date,
-  status
-) => {
+exports.updateThesis = (id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status)=> {
   const sql = `UPDATE Thesis 
                SET title = ?, supervisor = ?, keywords = ?, type = ?, groups = ?, description = ?, 
                    knowledge = ?, note = ?, expiration_date = ?, level = ?, cds = ?, creation_date = ?, status = ?
                WHERE id = ?`;
 
   return new Promise((resolve, reject) => {
-    db.run(
-      sql,
-      [
-        title,
-        supervisor,
-        keywords,
-        type,
-        groups,
-        description,
-        knowledge,
-        note,
-        expiration_date,
-        level,
-        cds,
-        creation_date,
-        status,
-        id,
-      ],
-      function (err) {
+    db.run(sql,[title,supervisor,keywords,type,groups,description,knowledge,note,expiration_date,level,cds,creation_date,status,id,], function (err) {
         if (err) {
           console.error("SQLite Error:", err.message);
           reject(err);
@@ -482,5 +436,37 @@ exports.restoreExpiredAccordingToIds = (ids) => {
           .catch( err => reject(err) )
       }
     })
+  })
+}
+
+exports.getThesisTitle = ( id_thesis) => {
+  const thesisTitlesSQL = 'SELECT title FROM Thesis WHERE id = ?'
+  return new Promise((resolve, reject) => {
+    db.get(thesisTitlesSQL, [id_thesis], function (err, result) {
+      if (err) {
+        console.error("Error in SQLDatabase:", err.message);
+        reject(err);
+        return;
+      }
+      resolve(result.title);
+    })
+  });
+}
+
+exports.setStatus = (id, status) => {
+  const updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ?';
+  return new Promise((resolve, reject)=>{
+    db.run(updateThesisSQL, [status, id], function (err) {
+      if (err) {
+        console.error("Error in SQLDatabase:", err.message);
+        reject(err);
+        return;
+      }
+      if (this.changes === 0) {
+        reject({ error: "No rows updated. Thesis ID not found." });
+        return;
+      }
+      resolve(this.lastID);
+    });
   })
 }
