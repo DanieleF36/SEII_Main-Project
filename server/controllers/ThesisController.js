@@ -168,7 +168,7 @@ exports.addThesis = async function addThesis(req, res) {
 
   //checks role NEW
   if(req.user.role !== 'teacher'){
-    return res.status(401).send({error:"You can not access to this route"})
+    return res.status(401).json({error:"You can not access to this route"})
   }
 
   //checks body
@@ -271,7 +271,7 @@ exports.getAllCoSupervisorsEmails = async function (req, res) {
 
 exports.updateThesis = async function updateThesis(req, res) {
   if(req.user.role!=='teacher'){
-    res.status(401).send({error:"You can not access to this route"})
+    res.status(401).json({error:"You can not access to this route"})
     return;
   }
   if (req.body === undefined) {
