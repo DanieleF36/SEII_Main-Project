@@ -42,7 +42,7 @@ exports.applyForProposal = function (req, res, next) {
           return res.status(400).json({ error: "Multiple Files" });
         }
       const file = files.cv[0];
-      applicationsService.addProposal(1, req.params.id_thesis, file)
+      applicationsService.addProposal(req.user.id, req.params.id_thesis, file)
       .then(function (response) {
         return res.status(201).json(response);
       })
@@ -65,7 +65,10 @@ exports.browserApplicationStudent = function (req, res) {
     res.status(401).send({error:"You can not access to this route"})
     return;
   }
-  console.log(req.params.id_student)
+  if(req.user.id !== req.params.id_student) {
+    res.status(401).send({error:"Unauthorized"})
+    return;
+  }
   studentsService.browserApplicationStudent(req.params.id_student)
   .then(function (response) {
     return res.status(200).json(response);

@@ -295,6 +295,8 @@ exports.updateThesis = async function updateThesis(req, res) {
     return res.status(400).json({ error: "supervisor is missing" });
   }
 
+  req.body.supervisor = req.user.id
+  
   if (req.body.expiration_date === undefined || req.body.expiration_date === "") {
     return res.status(400).json({ error: "expiration date is missing or not valid" });
   }
