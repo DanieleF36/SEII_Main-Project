@@ -8,6 +8,14 @@ function TitleBar(props) {
 
     const navigate = useNavigate();
 
+    const logIn = () => {
+        //props.setUser({role: 'teacher', name: 'Luca', surname: 'Azzurri', id: '12345'})
+        props.setIsAuth(1);
+        navigate('/home');
+        props.setUser({role: 'student', name: 'Giovanni', surname: 'Rossi', id: '12345'})
+        //API.login(...)
+      };
+
     const titleBarStyle = {
         backgroundColor: '#003576',
     };
@@ -24,7 +32,7 @@ function TitleBar(props) {
     const handleLogOut = () => {
 
         props.setIsAuth(0);
-        props.setUser(0);
+        props.setUser('');
         navigate('/');
 
     };
@@ -63,7 +71,7 @@ function TitleBar(props) {
                         </Nav>
                     </Col>}
                     {props.isAuth === 0 ? <Col xs="auto" className="ml-auto d-flex align-items-center">
-                        <Button className='btn-col' onClick={() => navigate('/login')}><img src="./person-circle.svg"
+                        <Button className='btn-col' onClick={() => logIn()}><img src="./person-circle.svg"
                             alt="Logo"
                             className="img-responsive"
                             style={{ marginRight: '2px' }}
@@ -77,7 +85,7 @@ function TitleBar(props) {
                             className="img-responsive"
                             style={{ marginRight: '2px' }}
 
-                        />{props.user === 0 ? <><strong>role:</strong> student <strong>ID:</strong> 12345</> : <><strong>role:</strong> professor <strong>ID:</strong> 12345</>}</Button>
+                        />{<><strong>role:</strong> {props.user.role} <strong>ID:</strong> {props.user.id}</>}</Button>
 
                         <Modal show={show} onHide={handleClose}>
                             <Modal.Header closeButton>
