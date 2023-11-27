@@ -234,6 +234,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
         const mockReq = {
             query: {
                 page: undefined
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -250,6 +258,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
         const mockReq = {
             query: {
                 page: undefined
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -268,6 +284,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 page: 1,
                 order: "titleD",
                 title: ["title1", "title2"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -286,6 +310,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 page: 1,
                 order: "titleD",
                 title: "SELECT * FROM Thesis"
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -304,6 +336,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 page: 1,
                 order: "titleD",
                 title: "Caffeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -323,6 +363,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 order: "titleD",
                 title: "thesis title",
                 supervisor: ["Cool supervisor", "Another one"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -344,6 +392,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 supervisor: "Cool supervisor",
                 keywords: ["Sw", "hw"],
                 groups: ["DEP1", "DEP2"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -366,6 +422,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 keywords: ["Sw", "hw"],
                 groups: "DEP1",
                 knowledge: ["1st", "2nd", "3rd"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -388,6 +452,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 keywords: ["Sw", "hw"],
                 groups: "DEP1",
                 knowledge: ["1st", "2nd", "3rd"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -411,6 +483,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 groups: "DEP1",
                 knowledge: "C programming",
                 expiration_date: ["01", "01", "2030"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -435,6 +515,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 knowledge: "C programming",
                 expiration_date: "2030-01-01",
                 cds: ["LM32", "LM31"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -460,6 +548,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 expiration_date: "2030-01-01",
                 cds: "LM32",
                 creation_date: ["01", "01", "2030"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
