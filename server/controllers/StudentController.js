@@ -22,6 +22,10 @@ const studentsService = require("../services/StudentService");
  *   }
  */
 exports.applyForProposal = function (req, res, next) {
+  if(req.user.role!=='student'){
+    res.status(401).send({error:"You can not access to this route"})
+    return;
+  }
   if (!req.body) {
     return res.status(400).json({ error: "Body is missing" });
   }
@@ -38,7 +42,7 @@ exports.applyForProposal = function (req, res, next) {
           return res.status(400).json({ error: "Multiple Files" });
         }
       const file = files.cv[0];
-      applicationsService.addProposal(1, req.params.id_thesis, file)
+      applicationsService.addProposal(req.user.id, req.params.id_thesis, file)
       .then(function (response) {
         return res.status(201).json(response);
       })
@@ -78,10 +82,15 @@ exports.applyForProposal = function (req, res, next) {
  * }
  */
 exports.browserApplicationStudent = function (req, res) {
-  if(req.user.role!=='student')
-    return res.status(401);
-  
-  studentsService.browserApplicationStudent(req.user.id)
+  if(req.user.role!=='student'){
+    res.status(401).send({error:"You can not access to this route"})
+    return;
+  }
+  if(req.user.id !== req.params.id_student) {
+    res.status(401).send({error:"Unauthorized"})
+    return;
+  }
+  studentsService.browserApplicationStudent(req.params.id_student)
   .then(function (response) {
     return res.status(200).json(response);
   })

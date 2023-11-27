@@ -270,6 +270,10 @@ exports.getAllCoSupervisorsEmails = async function (req, res) {
 };
 
 exports.updateThesis = async function updateThesis(req, res) {
+  if(req.user.role!=='teacher'){
+    res.status(401).send({error:"You can not access to this route"})
+    return;
+  }
   if (req.body === undefined) {
     return res.status(400).json({ error: "body is missing" });
   }
@@ -287,6 +291,8 @@ exports.updateThesis = async function updateThesis(req, res) {
     return res.status(400).json({ error: "supervisor is missing" });
   }
 
+  req.body.supervisor = req.user.id
+  
   if (req.body.expiration_date === undefined || req.body.expiration_date === "") {
     return res.status(400).json({ error: "expiration date is missing or not valid" });
   }

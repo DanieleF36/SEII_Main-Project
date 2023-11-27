@@ -45,19 +45,19 @@ app.get("/thesis", isLoggedIn, thesisController.advancedResearchThesis);
 
 app.get("/thesis/supervisor/emails", isLoggedIn, thesisController.getAllCoSupervisorsEmails);
 
-app.get("/professor/:id_professor/applications", (req, res) =>
+app.get("/professor/:id_professor/applications", isLoggedIn, (req, res) =>
   teacherController.listApplication(req, res)
 );
 
 app.post("/thesis", isLoggedIn, (req, res) => thesisController.addThesis(req, res));
 
-app.put("/thesis/:id", (req, res) => thesisController.updateThesis(req, res));
+app.put("/thesis/:id", isLoggedIn, (req, res) => thesisController.updateThesis(req, res));
 
-app.put("/professor/:id_professor/applications/:id_application", (req, res) =>
+app.put("/professor/:id_professor/applications/:id_application", isLoggedIn, (req, res) =>
   teacherController.acceptApplication(req, res)
 );
 
-app.post("/thesis/:id_thesis/applications", (req, res) => studentController.applyForProposal(req, res));
+app.post("/thesis/:id_thesis/applications", isLoggedIn, (req, res) => studentController.applyForProposal(req, res));
 
 app.get("/student/:id_student/applications", isLoggedIn, studentController.browserApplicationStudent);
 
