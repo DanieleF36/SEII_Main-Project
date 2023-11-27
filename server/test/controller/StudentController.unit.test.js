@@ -7,7 +7,17 @@ beforeEach(() => {
 
 describe('Apply for proposal', () => {
     test('Case1: body is missing', async() => {
-      const mockReq = { body: null };
+      const mockReq = { 
+        body: undefined,
+        user: {
+          id: 1,
+          name: "Gianna",
+          lastname: "Altobella",
+          nameID: "gianni.altobelli@email.it",
+          role: "student",
+          cds: "ingInf"
+        }  
+      };
       const mockRes = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
@@ -20,7 +30,17 @@ describe('Apply for proposal', () => {
     });
   
     test('Case2: missing required parameters', async() => {
-      const mockReq = { body: {}, params: { id_thesis: null } };
+      const mockReq = { 
+        body: {}, 
+        params: { id_thesis: null },
+        user: {
+          id: 1,
+          name: "Gianna",
+          lastname: "Altobella",
+          nameID: "gianni.altobelli@email.it",
+          role: "student",
+          cds: "ingInf"
+        }   };
       const mockRes = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
@@ -33,7 +53,18 @@ describe('Apply for proposal', () => {
     });
   
     test('Case3: error during file parsing', async() => {
-      const mockReq = { body: {}, params: { id_thesis: 1 } };
+      const mockReq = { 
+        body: {}, 
+        params: { id_thesis: 1 },
+        user: {
+          id: 1,
+          name: "Gianna",
+          lastname: "Altobella",
+          nameID: "gianni.altobelli@email.it",
+          role: "student",
+          cds: "ingInf"
+        }
+      };
       const mockRes = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
@@ -52,7 +83,18 @@ describe('Apply for proposal', () => {
     });
 
     test('Case4: file is missing in the request', async() => {
-      const mockReq = { body: {}, params: { id_thesis: 1 } };
+      const mockReq = { 
+        body: {}, 
+        params: { id_thesis: 1 },
+        user: {
+          id: 1,
+          name: "Gianna",
+          lastname: "Altobella",
+          nameID: "gianni.altobelli@email.it",
+          role: "student",
+          cds: "ingInf"
+        }  
+      };
       const mockRes = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
@@ -70,7 +112,18 @@ describe('Apply for proposal', () => {
     });
     
     test('Case5: Multiple Files', async () => {
-      const mockReq = { body: {}, params: { id_thesis: 1 } };
+      const mockReq = { 
+        body: {}, 
+        params: { id_thesis: 1 },
+        user: {
+          id: 1,
+          name: "Gianna",
+          lastname: "Altobella",
+          nameID: "gianni.altobelli@email.it",
+          role: "student",
+          cds: "ingInf"
+        }  
+      };
       const mockRes = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
@@ -96,6 +149,14 @@ describe('Apply for proposal', () => {
         const req = {
             body: {  },
             params: { id_thesis: 123 },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
+            }  
           };
       
           const res = {
@@ -120,7 +181,18 @@ describe('Apply for proposal', () => {
       });
   
     test('Case7: idThesis not found', async () => {
-      const mockReq = { body: {}, params: { id_thesis: 1 } };
+      const mockReq = { 
+        body: {}, 
+        params: { id_thesis: 1 },
+        user: {
+          id: 1,
+          name: "Gianna",
+          lastname: "Altobella",
+          nameID: "gianni.altobelli@email.it",
+          role: "student",
+          cds: "ingInf"
+        }  
+      };
       const mockRes = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
@@ -141,7 +213,18 @@ describe('Apply for proposal', () => {
     });
 
     test('Case8: internal error inside addProposal', async () => {
-      const mockReq = { body: {}, params: { id_thesis: 1 } };
+      const mockReq = { 
+        body: {}, 
+        params: { id_thesis: 1 },
+        user: {
+          id: 1,
+          name: "Gianna",
+          lastname: "Altobella",
+          nameID: "gianni.altobelli@email.it",
+          role: "student",
+          cds: "ingInf"
+        }  
+      };
       const mockRes = {
         status: jest.fn().mockReturnThis(),
         json: jest.fn(),
@@ -164,7 +247,9 @@ describe('Apply for proposal', () => {
 
 describe('Browse application', ()=> {
   test('case1: user differt from student', async ()=>{
-    const mockReq = {user:{role:'professor'}};
+    const mockReq = {
+      user:{role:'professor'}
+    };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
@@ -175,7 +260,19 @@ describe('Browse application', ()=> {
     expect(mockRes.status).toHaveBeenCalledWith(401);
   }),
   test('case2: ok', async ()=>{
-    const mockReq = {user:{role:'student'}};
+    const mockReq = {
+      user: {
+        id: 1,
+        name: "Gianna",
+        lastname: "Altobella",
+        nameID: "gianni.altobelli@email.it",
+        role: "student",
+        cds: "ingInf"
+      },
+      params: {
+        id_student: 1
+      }
+    };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
@@ -189,7 +286,19 @@ describe('Browse application', ()=> {
     expect(mockRes.json).toHaveBeenCalledWith({ succes:"success" });
   }),
   test('case3: internal error', async ()=>{
-    const mockReq = {user:{role:'student'}};
+    const mockReq = {
+      user: {
+        id: 1,
+        name: "Gianna",
+        lastname: "Altobella",
+        nameID: "gianni.altobelli@email.it",
+        role: "student",
+        cds: "ingInf"
+      },
+      params: {
+        id_student: 1
+      }
+    };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),

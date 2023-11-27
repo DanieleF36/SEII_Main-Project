@@ -23,7 +23,7 @@ const studentsService = require("../services/StudentService");
  */
 exports.applyForProposal = function (req, res, next) {
   if(req.user.role!=='student'){
-    res.status(401).send({error:"You can not access to this route"})
+    res.status(401).json({error:"You can not access to this route"})
     return;
   }
   if (!req.body) {
@@ -83,11 +83,11 @@ exports.applyForProposal = function (req, res, next) {
  */
 exports.browserApplicationStudent = function (req, res) {
   if(req.user.role!=='student'){
-    res.status(401).send({error:"You can not access to this route"})
+    res.status(401).json({error:"You can not access to this route"})
     return;
   }
   if(req.user.id !== req.params.id_student) {
-    res.status(401).send({error:"Unauthorized"})
+    res.status(401).json({error:"Unauthorized"})
     return;
   }
   studentsService.browserApplicationStudent(req.params.id_student)
