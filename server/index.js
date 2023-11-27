@@ -72,7 +72,7 @@ app.put("/professor/:id_professor/applications/:id_application", (req, res) =>
 
 app.post("/thesis/:id_thesis/applications", (req, res) => studentController.applyForProposal(req, res));
 
-app.get("/student/:id_student/applications", isLoggedIn, studentController.browserApplicationStudent(req, res));
+app.get("/student/:id_student/applications", isLoggedIn, studentController.browserApplicationStudent);
 
 app.get('/professor/thesis', isLoggedIn, (req, res) => teacherController.browseProposals(req, res))
 
@@ -84,9 +84,9 @@ app.get("/testing/vc/get", (req, res) => vc.vc_current(req, res))
 
 /******************************************************************Login*********************************************************************************************/
 
-app.get('/login', passport.authenticate('samlStrategy'),(req, res)=>res.redirect('http://localhost:5173/homepage'));
+app.get('/login', passport.authenticate('samlStrategy'),(req, res)=>res.redirect('http://localhost:5173/home'));
 
-app.post('/login/callback', passport.authenticate('samlStrategy'), (req, res)=>res.redirect('http://localhost:5173/homepage'));
+app.post('/login/callback', passport.authenticate('samlStrategy'), (req, res)=>res.redirect('http://localhost:5173/home'));
 
 app.get('/logout', passport.logoutSaml);
 

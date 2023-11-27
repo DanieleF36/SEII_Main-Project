@@ -3,17 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import './TitleBar.css'
+import API from '../API';
+import { redirect } from "react-router-dom";
 
 function TitleBar(props) {
 
     const navigate = useNavigate();
 
     const logIn = () => {
-        //props.setUser({role: 'teacher', name: 'Luca', surname: 'Azzurri', id: '12345'})
-        props.setIsAuth(1);
-        navigate('/home');
-        props.setUser({role: 'student', name: 'Giovanni', surname: 'Rossi', id: '12345'})
-        //API.login(...)
+        API.login();
       };
 
     const titleBarStyle = {
@@ -30,11 +28,10 @@ function TitleBar(props) {
     const handleShow = () => setShow(true);
 
     const handleLogOut = () => {
-
-        props.setIsAuth(0);
-        props.setUser('');
-        navigate('/');
-
+        API.logout().then(()=>{
+            props.setIsAuth(0);
+            props.setUser('');
+        })
     };
 
 

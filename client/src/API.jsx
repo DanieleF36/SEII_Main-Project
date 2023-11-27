@@ -2,6 +2,27 @@ import { alignPropType } from "react-bootstrap/esm/types";
 
 const URL = 'http://localhost:3001';
 
+async function login(){
+  window.location.assign(URL+"/login");
+}
+
+async function userAuthenticated(){
+  const user = await fetch(URL+ `/session/current`,
+  {
+    credentials:true
+  });
+  if(user.ok){
+    return user;
+  }
+  else{
+    return {error: "error"}
+  }
+}
+
+async function logout(){
+  window.location.assign(URL+"/logout");
+}
+
 async function listApplication(id_professor) { 
     const response = await fetch(URL+ `/professor/${id_professor}/applications`);
     const application = await response.json();
@@ -107,7 +128,9 @@ async function advancedSearchThesis(params){
       case "supervisor": ur+="&order=supervisor"+params.order;break;
     }
   }
-  const response = await fetch(URL+ur);
+  const response = await fetch(URL+ur, {
+    credentials:true
+  });
   if(response.status==200){
     const res = await response.json();
     console.log(res.thesis);
@@ -251,6 +274,6 @@ function vc_restore(choice) {
     return res
   })
 }
-const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal, browseProposal, vc_set, vc_restore, vc_get };
+const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal, browseProposal, vc_set, vc_restore, vc_get, userAuthenticated, login, logout };
 
 export default API;
