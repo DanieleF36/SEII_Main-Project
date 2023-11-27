@@ -112,9 +112,9 @@ function checkQuery(req) {
  * - type array of string
  * - groups array of string
  * - knowledge array of string
- * - expiration_date
+ * - expiration_date string
  * - cds array of string
- * - creation_date
+ * - creation_date string
  *
  * @returns SUCCESS: a json object as follow: {
  *  "nPage": nPage,
@@ -124,10 +124,6 @@ function checkQuery(req) {
  * @returns ERROR: not authorized, only student can call this
  */
 exports.advancedResearchThesis = function advancedResearchThesis(req, res, next) {
-  if(req.user.role!=='student'){
-    res.status(401).send({error:"You can not access to this route"})
-    return;
-  }
   const error = checkQuery(req);
   if (error) {
     res.status(400).json({ error: error });

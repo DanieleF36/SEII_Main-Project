@@ -72,9 +72,7 @@ app.put("/professor/:id_professor/applications/:id_application", (req, res) =>
 
 app.post("/thesis/:id_thesis/applications", (req, res) => studentController.applyForProposal(req, res));
 
-app.get("/student/:id_student/applications", (req, res) =>
-  studentController.browserApplicationStudent(req, res)
-);
+app.get("/student/:id_student/applications", isLoggedIn, studentController.browserApplicationStudent(req, res));
 
 app.get('/professor/thesis', isLoggedIn, (req, res) => teacherController.browseProposals(req, res))
 
@@ -90,16 +88,13 @@ app.get('/login', passport.authenticate('samlStrategy'),(req, res)=>res.redirect
 
 app.post('/login/callback', passport.authenticate('samlStrategy'), (req, res)=>res.redirect('http://localhost:5173/homepage'));
 
-app.get("/metadata", (req, res)=>{
-  res.type("application/xml")
-    .status(200)
-    .send(metadata());
-      
-})
-
 app.get('/logout', passport.logoutSaml);
 
 app.post('/logout/callback', passport.logoutSamlCallback);
+
+app.get("/metadata", (req, res)=>res.type("application/xml").status(200).send(metadata()));
+
+app.get("/session/current", isLoggedIn, (req, res)=>{req.user.email = req.user.nameID; delete req.user.nameID; res.status(200).send(req.user)})
 
 const PORT = 3001;
 app.listen(PORT, () =>
