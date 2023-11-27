@@ -35,11 +35,11 @@ const teacherService = require("../services/TeacherService");
  */
 exports.listApplication = function listApplication(req, res) {
   if(req.user.role!=='teacher'){
-    res.status(401).send({error:"You can not access to this route"})
+    res.status(401).json({error:"You can not access to this route"})
     return;
   }
   if(req.user.id !== req.params.id_professor) {
-    res.status(401).send({error:"Unauthorized"})
+    res.status(401).json({error:"Unauthorized"})
     return;
   }
   if (!req.params.id_professor) {
@@ -58,12 +58,15 @@ exports.listApplication = function listApplication(req, res) {
 
 exports.acceptApplication = function acceptApplication(req, res) {
   if(req.user.role!=='teacher'){
-    res.status(401).send({error:"You can not access to this route"})
+    res.status(401).json({error:"You can not access to this route"})
     return;
   }
   if(req.user.id !== req.params.id_professor) {
-    res.status(401).send({error:"Unauthorized"})
+    res.status(401).json({error:"Unauthorized"})
     return;
+  }
+  if(req.body === undefined) {
+    return res.status(400).json({ error: "Body is missing" });
   }
   if (req.body.status == undefined) {
     return res.status(400).json({ error: "Missing new status acceptApplication" });
@@ -95,7 +98,7 @@ exports.acceptApplication = function acceptApplication(req, res) {
  */
 exports.browseProposals = async function (req, res) {
   if(req.user.role !== 'teacher'){
-    return res.status(401).send({error:"You can not access to this route"})
+    return res.status(401).json({error:"You can not access to this route"})
   }
 
   const supervisor = req.user.id;

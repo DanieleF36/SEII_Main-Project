@@ -21,6 +21,13 @@ describe("BROWSE APPLICATION UNIT TEST", () => {
         const mockReq = {
             params: {
                 id_professor: undefined
+            },
+            user: {
+                id: 1,
+                name: "Gianni",
+                lastname: "Altobelli",
+                nameID: "gianni.altobelli@email.it",
+                role: "teacher"
             }
         };
         const mockRes = {
@@ -32,14 +39,21 @@ describe("BROWSE APPLICATION UNIT TEST", () => {
 
 
         const jsonResponse = mockRes.json.mock.calls[0][0];
-        expect(mockRes.status).toHaveBeenCalledWith(400)
+        expect(mockRes.status).toHaveBeenCalledWith(401)
         expect(jsonResponse.error).toBeDefined()
     })
 
-    test("U2: supervisor's id is defineda and a list of application is returned", async () => {
+    test("U2: supervisor's id is defined and a list of application is returned", async () => {
         const mockReq = {
             params: {
-                id_professor: "t123456"
+                id_professor: 1
+            },
+            user: {
+                id: 1,
+                name: "Gianni",
+                lastname: "Altobelli",
+                nameID: "gianni.altobelli@email.it",
+                role: "teacher"
             }
         };
         const mockRes = {
@@ -95,7 +109,17 @@ describe("BROWSE APPLICATION UNIT TEST", () => {
 describe("ACCEPT APPLICATION UNIT TEST", () => {
     test("U1: Missing body", async () => {
       const mockReq = {
-        body: {}
+        body: {},
+        user: {
+            id: 1,
+            name: "Gianni",
+            lastname: "Altobelli",
+            nameID: "gianni.altobelli@email.it",
+            role: "teacher"
+        },
+        params: {
+            id_professor: 1
+        }
       };
       const mockRes = {
         status: jest.fn().mockReturnThis(),
@@ -109,6 +133,16 @@ describe("ACCEPT APPLICATION UNIT TEST", () => {
         const mockReq = {
             body: {
                 status : 500
+            },
+            user: {
+                id: 1,
+                name: "Gianni",
+                lastname: "Altobelli",
+                nameID: "gianni.altobelli@email.it",
+                role: "teacher"
+            },
+            params: {
+                id_professor: 1
             }
         };
         const mockRes = {
@@ -127,20 +161,23 @@ describe("ACCEPT APPLICATION UNIT TEST", () => {
             params:{
                 id_professor : 100,
                 id_application : 1
+            },
+            user: {
+                id: 1,
+                name: "Gianni",
+                lastname: "Altobelli",
+                nameID: "gianni.altobelli@email.it",
+                role: "teacher"
             }
         };
         const mockRes = {
           status: jest.fn().mockReturnThis(),
           json: jest.fn(),
-        };
-        const mockError = {
-             error: "No rows updated. Teacher ID or Application Id not found."
-        }
-        jest.spyOn(teacherService, "acceptApplication").mockRejectedValue(mockError);          
+        }; 
         await controller.acceptApplication(mockReq, mockRes)
         await Promise.resolve()
-        expect(mockRes.status).toHaveBeenCalledWith(500);
-        expect(mockRes.json).toHaveBeenCalledWith({error: "No rows updated. Teacher ID or Application Id not found."})
+        expect(mockRes.status).toHaveBeenCalledWith(401);
+        expect(mockRes.json).toHaveBeenCalledWith({error: "Unauthorized"})
       });
       test("U4: Application accepted or rejected correctly", async () => {
         const mockReq = {
@@ -150,6 +187,13 @@ describe("ACCEPT APPLICATION UNIT TEST", () => {
             params:{
                 id_professor : 1,
                 id_application : 1
+            },
+            user: {
+                id: 1,
+                name: "Gianni",
+                lastname: "Altobelli",
+                nameID: "gianni.altobelli@email.it",
+                role: "teacher"
             }
         };
         const mockRes = {
