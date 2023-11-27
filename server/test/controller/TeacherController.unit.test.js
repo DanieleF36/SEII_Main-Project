@@ -1,8 +1,8 @@
 const request = require("supertest");
 
-const controller = require("../controllers/TeacherController.js");
-const applicationRepository = require("../repositories/ApplicationRepository.js")
-const teacherService = require("../services/TeacherService.js")
+const controller = require("../../controllers/TeacherController.js");
+const applicationRepository = require("../../repositories/ApplicationRepository.js")
+const teacherService = require("../../services/TeacherService.js")
 
 // jest.mock('sqlite3', () => {
 //     const originalDb = jest.requireActual('sqlite3');

@@ -60,6 +60,27 @@ exports.applyForProposal = function (req, res, next) {
  
 };
 
+/**
+ * wrapper function to retrive all the application of student that is logged in
+ * @returns the returned array is filled by objects is defined as follow:
+ * {
+ *  title: string,
+ *  supervisor_name: string,
+ *  supervisor_surname: string,
+ *  status: integer,(this is application status) 
+ *  type: string,
+ *  groups: string,
+ *  description: string,
+ *  knowledge: string,
+ *  note: string,
+ *  level: integer,
+ *  keywords: string,
+ *  expiration_date: string,
+ *  cds: string,
+ *  path_cv: string,
+ *  application_data: string,
+ * }
+ */
 exports.browserApplicationStudent = function (req, res) {
   if(req.user.role!=='student'){
     res.status(401).send({error:"You can not access to this route"})
