@@ -59,7 +59,7 @@ app.put("/professor/:id_professor/applications/:id_application", isLoggedIn, (re
 
 app.post("/thesis/:id_thesis/applications", isLoggedIn, (req, res) => studentController.applyForProposal(req, res));
 
-app.get("/student/:id_student/applications", isLoggedIn, studentController.browserApplicationStudent);
+app.get("/student/:id_student/applications", isLoggedIn, (req,res) => studentController.browserApplicationStudent(req, res));
 
 app.get('/professor/thesis', isLoggedIn, (req, res) => teacherController.browseProposals(req, res))
 
