@@ -72,7 +72,7 @@ function Homepage(props) {
         //console.log(filters);
         API.advancedSearchThesis({...filters, page: props.active}).then(res => {
             props.setProposals(res[1]);
-            props.setPages(res[0]);
+            props.setPage(res[0]);
         });
     }, [props.active]);
 
@@ -83,8 +83,8 @@ function Homepage(props) {
             props.setUser(user);
             props.setIsAuth(1);
             API.advancedSearchThesis({page: active}).then(res=>{
-                setProposals(res[1]);
-                setPage(res[0]);
+                props.setProposals(res[1]);
+                props.setPage(res[0]);
               });
         }).catch(console.log('errore'));
     }, []);

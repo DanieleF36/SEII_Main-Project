@@ -24,7 +24,7 @@ function App() {
           <Routes>
           <Route path='/'element={<InitialPage setIsAuth={setIsAuth} isAuth={isAuth} user={user} setUser={setUser}/>}/>
           <Route path='/home' element={<><Homepage setIsAuth={setIsAuth} isAuth={isAuth} pages={page} user={user} setUser={setUser}
-          proposals={proposals} setProposals={setProposals} setPages={setPage} active={active} setActive={setActive} currentTime={currentTime}
+          proposals={proposals} setProposals={setProposals} setPage={setPage} active={active} setActive={setActive} currentTime={currentTime}
           setCurrentTime={setCurrentTime}/></>} />
           </Routes>
         </BrowserRouter>
