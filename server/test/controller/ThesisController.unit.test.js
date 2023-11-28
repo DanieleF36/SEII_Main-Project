@@ -195,9 +195,41 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     expect(mockRes.json).toHaveBeenCalledWith({ error: "type value not recognized" });
   });
 
-  test("U9: New thesis proposal is inserted correctly", async () => {
+  test("U9: Title missing or empty string", async () => {
+    const mockReq = {
+      body: {
+        supervisor: "Pippo",
+        expiration_date: "2015-01-01",
+        status: 1,
+        level: "Master",
+        cosupervisor: ["Paperino", "Pluto"],
+        keywords: ["good", "now"],
+        type: ["New type"],
+        groups: ['group1'],
+        cds: ['cds1'],
+        knowledge: ['none']
+      },
+      user: {
+        id: 1,
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.addThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "Title missing or empty string" });
+  });
+
+  test("U10: New thesis proposal is inserted correctly", async () => {
       const mockReq = {
         body: {
+          title : "New Thesis Title",
           supervisor: "Pippo",
           cosupervisor: [''],
           expiration_date: "2015-01-01",
@@ -619,3 +651,318 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
 
     })
 })
+
+describe("UPDATE PROPOSAL UNIT TEST", () => {
+  test("U1: Missing thesis id", async () => {
+    const mockReq = {
+      params: {},
+      user: {
+        id: 1,
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.updateThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "Thesis id is not valid" });
+  });
+  test("U2: Missing body", async () => {
+    const mockReq = {
+      params: { id: 1 },
+      body: undefined,
+      user: {
+        id: 1,
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.updateThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "body is missing" });
+  });
+
+  test("U3: Supervisor is missing", async () => {
+    const mockReq = {
+      params: { id: 1 },
+      body: {
+        level: "Master"
+      },
+      user: {
+        role: undefined
+      }
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.updateThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(401);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "You can not access to this route" });
+  });
+
+  test("U4: Expiration date is missing", async () => {
+    const mockReq = {
+      params: { id: 1 },
+      body: {
+        supervisor: "Pippo",
+        level: "Master"
+      },
+      user: {
+        id: 1,
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.updateThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "expiration date is missing or not valid" });
+  });
+
+  test("U5: Level value is not recognized", async () => {
+    const mockReq = {
+      params: { id: 1 },
+      body: {
+        supervisor: "Pippo",
+        expiration_date: "2015-01-01",
+      },
+      user: {
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.updateThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "level value not recognized" });
+  });
+
+  test("U6: Status value is not recognized or allowed", async () => {
+    const mockReq = {
+      params: { id: 1 },
+      body: {
+        supervisor: "Pippo",
+        expiration_date: "2015-01-01",
+        level: "Master",
+      },
+      user: {
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.updateThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "status value not recognized or allowed" });
+  });
+
+  test("U7: Cosupervisor is not an array", async () => {
+    const mockReq = {
+      params: { id: 1 },
+      body: {
+        supervisor: "Pippo",
+        expiration_date: "2015-01-01",
+        status: 1,
+        level: "Master",
+        cosupervisor: "Paperino"
+      },
+      user: {
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.updateThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "cosupervisor is not an array" });
+  });
+
+  test("U8: Keywords is not an array", async () => {
+    const mockReq = {
+      params: { id: 1 },
+      body: {
+        supervisor: "Pippo",
+        expiration_date: "2015-01-01",
+        status: 1,
+        level: "Master",
+        cosupervisor: ["Paperino", "Pluto"],
+        keywords: "not good"
+      },
+      user: {
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.updateThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "keywords value not recognized" });
+  });
+
+  test("U9: Type value not recognized", async () => {
+    const mockReq = {
+      params: { id: 1 },
+      body: {
+        supervisor: "Pippo",
+        expiration_date: "2015-01-01",
+        status: 1,
+        level: "Master",
+        cosupervisor: ["Paperino", "Pluto"],
+        keywords: ["good", "now"]
+      },
+      user: {
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    await controller.updateThesis(mockReq, mockRes);
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "type value not recognized" });
+  });
+
+  test("U10: New thesis title missing or empty string", async () => {
+    const mockReq = {
+      params: { id: 1 },
+      body: {
+        supervisor: "Pippo",
+        cosupervisor: [''],
+        expiration_date: "2015-01-01",
+        status: 1,
+        level: "Master",
+        cosupervisor: ["Paperino", "Pluto"],
+        keywords: ["good", "now"],
+        type: ["Abroad"],
+        groups: ['group1'],
+        cds: ['cds1'],
+        knowledge: ['none']
+      },
+      user: {
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    jest.spyOn(thesisService, "updateThesis").mockResolvedValue(true);
+    await controller.updateThesis(mockReq, mockRes)
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "Title missing or empty string" });
+  });
+
+  test("U11: ThesisId not found", async () => {
+    const mockReq = {
+      params: { id: 1 },
+      body: {
+        title: "New thesis title",
+        supervisor: "Pippo",
+        cosupervisor: [''],
+        expiration_date: "2015-01-01",
+        status: 1,
+        level: "Master",
+        cosupervisor: ["Paperino", "Pluto"],
+        keywords: ["good", "now"],
+        type: ["Abroad"],
+        groups: ['group1'],
+        cds: ['cds1'],
+        knowledge: ['none']
+      },
+      user: {
+        id: 1,
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    jest.spyOn(thesisService, "updateThesis").mockImplementation(async () => {
+      return Promise.reject({ error: "No rows updated. Thesis ID not found." });
+    });
+    await expect(controller.updateThesis(mockReq)).rejects.toEqual({ error: "No rows updated. Thesis ID not found." });
+  });
+
+
+  test("U12: New thesis proposal is inserted correctly", async () => {
+    const mockReq = {
+      params: { id: 1 },
+      body: {
+        title: "New thesis title",
+        supervisor: "Pippo",
+        cosupervisor: [''],
+        expiration_date: "2015-01-01",
+        status: 1,
+        level: "Master",
+        cosupervisor: ["Paperino", "Pluto"],
+        keywords: ["good", "now"],
+        type: ["Abroad"],
+        groups: ['group1'],
+        cds: ['cds1'],
+        knowledge: ['none']
+      },
+      user: {
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
+    };
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+    jest.spyOn(thesisService, "updateThesis").mockResolvedValue(true);
+    await controller.updateThesis(mockReq, mockRes)
+    expect(mockRes.status).toHaveBeenCalledWith(200);
+    expect(mockRes.json).toBeDefined()
+  });
+});
