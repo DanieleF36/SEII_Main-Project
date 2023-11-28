@@ -4,7 +4,7 @@ let {app, login_as} = require('../index.js')
 const mgmt = require('../mgmt_db.js');
 const dayjs = require('dayjs')
 
-describe("INSERT PROPOSAL UNIT TEST", () => {
+describe("INSERT PROPOSAL INTEGRATION TEST", () => {
     beforeEach( async () => {
         await mgmt.cleanThesis()
         await mgmt.cleanCoSupervisor()
@@ -286,7 +286,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
 })
 
 
-describe("SEARCH PROPOSAL UNIT TEST", () => {
+describe("SEARCH PROPOSAL INTEGRATION TEST", () => {
     beforeEach( async () => {
         await mgmt.cleanThesis()
         await mgmt.cleanCoSupervisor()
@@ -545,3 +545,9 @@ describe("SEARCH PROPOSAL UNIT TEST", () => {
 
 
 })
+
+
+// describe("", () => {
+//     test('I1: get all cosupervisor emails but there are none')
+
+// })
