@@ -29,9 +29,9 @@ const db = require("./db");
 
 exports.browserApplicationStudent = (id_student) => {
   const sqlApplication = `
-      SELECT T.title, P.name AS supervisor_name, P.surname AS supervisor_surname, innerTable.status, T.type, T.groups, T.description, T.knowledge, T.note, T.level, T.expiration_date, T.cds, T.keywords, innerTable.path_cv, innerTable.data AS application_data
-      FROM (SELECT id_student, path_cv, status, id_thesis, data, id_teacher 
-            FROM Application 
+      SELECT innerTable.id_application, T.title, P.name AS supervisor_name, P.surname AS supervisor_surname, innerTable.status, T.type, T.groups, T.description, T.knowledge, T.note, T.level, T.expiration_date, T.cds, T.keywords, innerTable.path_cv, innerTable.data AS application_data
+      FROM (SELECT A.id AS id_application, id_student, path_cv, status, id_thesis, data, id_teacher 
+            FROM Application AS A
             WHERE id_student = ?) AS innerTable
       JOIN Thesis AS T ON T.id = innerTable.id_thesis
       JOIN Student AS S ON S.id = innerTable.id_student
@@ -44,6 +44,7 @@ exports.browserApplicationStudent = (id_student) => {
         return;
       } else {
         const applications = rows.map((a) => ({
+          id_application: a.id_application,
           title: a.title,
           supervisor_name: a.supervisor_name,
           supervisor_surname: a.supervisor_surname,

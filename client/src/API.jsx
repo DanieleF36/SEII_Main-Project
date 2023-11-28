@@ -39,6 +39,25 @@ function insertProposal(thesis) {
 
 }
 
+function updateProposal(id_thesis, thesis) {
+  thesis.status = 1;
+  //thesis.cosupervisor = thesis.cosupervisor === '' ? [''] : thesis.cosupervisor
+
+  console.log(thesis)
+
+  return getJson(fetch(URL + `/thesis/${id_thesis}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(thesis)
+
+  })).then(json => {
+    return json
+  })
+
+}
+
 function getJson(httpResponsePromise) {
   // server API always return JSON, in case of error the format is the following { error: <message> } 
   return new Promise((resolve, reject) => {
@@ -182,6 +201,7 @@ async function browserApplicationStudent(id_student) {
     const application = await response.json();
     if (response.ok) {
       return application.map((a) => ({
+        id_application: a.id_application,
         title: a.title,
         supervisor_name: a.supervisor_name,
         supervisor_surname: a.supervisor_surname,
@@ -251,6 +271,6 @@ function vc_restore(choice) {
     return res
   })
 }
-const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal, browseProposal, vc_set, vc_restore, vc_get };
+const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, browserApplicationStudent, applyForProposal, browseProposal, vc_set, vc_restore, vc_get };
 
 export default API;

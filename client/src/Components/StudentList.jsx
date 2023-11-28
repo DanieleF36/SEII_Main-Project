@@ -8,7 +8,7 @@ function StudentList() {
     const [dirty, setDirty] = useState(true);
     const [id_student, setId_student] = useState(1);
    
-    const [list, setList] = useState([{id_application:1, 
+    const [list, setList] = useState([/*{id_application:1, 
                                         groups: 'Smart Cities',
                                         title: 'AI develop',
                                         type: 'Development',
@@ -23,10 +23,9 @@ function StudentList() {
                                         keywords: 'IoT, Urban Planning',
                                         application_data: '2023-11-16',
                                         path_cv: 'cv.pdf', 
-                                        status: '3'}]);
+    status: '3'}*/]);
 
     //adding API from backend to set list of applications of the student
-    /*
     useEffect(() => {
 
         API.browserApplicationStudent(id_student)
@@ -36,7 +35,7 @@ function StudentList() {
             })
             .catch((err) => { toast.error(err.error); });
 
-    }, [dirty]);*/
+    }, [dirty]);
 
     /* in futuro se uno studente può modificare la sua canditatura
     function modifyApp(id_student,id_application){

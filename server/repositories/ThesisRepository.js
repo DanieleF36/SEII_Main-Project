@@ -317,7 +317,7 @@ function transformOrder(order) {
 }
 
 exports.getActiveThesis = (supervisor, date) => {
-  const sql = `SELECT title, supervisor, keywords, type, groups, description,
+  const sql = `SELECT id, title, supervisor, keywords, type, groups, description,
                 knowledge, note, expiration_date, level, cds, creation_date 
                FROM thesis 
                WHERE status = 1 AND expiration_date > ? AND supervisor = ?`
@@ -407,6 +407,19 @@ exports.updateThesis = (
   });
 };
 
+exports.getCosupervisorByThesis = (id) => {
+  const sql = 'SELECT email FROM CoSupervisor  WHERE id IN (SELECT id_cosupervisor AS List FROM CoSupervisorThesis WHERE id_thesis=?)'
+
+  return new Promise( (resolve, reject) => {
+    db.all(sql, [id], (err, rows) => {
+      if(err)
+        reject(err)
+      else if(rows.length == 0)
+        resolve([])
+      resolve(rows.map(a => a.email))
+    })
+  })
+}
 /**
  * Designed for Virtual clock
  * @param {*} date 
