@@ -10,7 +10,13 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
         await mgmt.cleanCoSupervisor()
         await mgmt.cleanTeacher()
         await mgmt.cleanCoSupervisorThesis()
-        login_as.role = 'teacher'
+        login_as.user = {
+            id: 1,
+            name: 'Gianni',
+            lastname: 'Altobelli',
+            nameID: 'gianni.altobelli@email.it',
+            role: 'teacher'
+        }
     })
 
     afterAll( async () => {
@@ -286,7 +292,14 @@ describe("SEARCH PROPOSAL UNIT TEST", () => {
         await mgmt.cleanCoSupervisor()
         await mgmt.cleanTeacher()
         await mgmt.cleanCoSupervisorThesis()
-        login_as.role = 'student'
+        login_as.user = {
+            id: 1,
+            name: 'Gianni',
+            lastname: 'Altobelli',
+            nameID: 'gianni.altobelli@email.it',
+            role: 'student',
+            cds: 'ingInf'
+        }
     })
     test("I1: get thesis from page 1", async () => {
         let i
@@ -308,7 +321,7 @@ describe("SEARCH PROPOSAL UNIT TEST", () => {
 
         for(i = 0; i < no_thesis; i++){
             let title = `title ${i}`
-            await mgmt.insertIntoThesis(i, title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, 
+            let result = await mgmt.insertIntoThesis(i, title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, 
                 thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)
         }
 
@@ -316,7 +329,6 @@ describe("SEARCH PROPOSAL UNIT TEST", () => {
                 .get('/thesis?page=1')
                 .expect(200)
                 .then( resp => {
-                    console.log(resp)
                     expect(resp.body.nPage).toEqual(1)
                     expect(resp.body.thesis.length).toEqual(no_thesis)
                 })
@@ -351,7 +363,6 @@ describe("SEARCH PROPOSAL UNIT TEST", () => {
                 .get('/thesis?page=2')
                 .expect(200)
                 .then( resp => {
-                    console.log(resp)
                     expect(resp.body.nPage).toEqual(2)
                     expect(resp.body.thesis.length).toEqual(1)
                 })
@@ -386,7 +397,6 @@ describe("SEARCH PROPOSAL UNIT TEST", () => {
                 .get('/thesis?page=1&title=my')
                 .expect(200)
                 .then( resp => {
-                    console.log(resp)
                     expect(resp.body.nPage).toEqual(1)
                     expect(resp.body.thesis.length).toEqual(1)
                     expect(resp.body.thesis[0].title).toEqual(thesis.title)
@@ -422,7 +432,6 @@ describe("SEARCH PROPOSAL UNIT TEST", () => {
                 .get('/thesis?page=1&keyword=soft')
                 .expect(200)
                 .then( resp => {
-                    console.log(resp)
                     expect(resp.body.nPage).toEqual(1)
                     expect(resp.body.thesis.length).toEqual(1)
                     expect(resp.body.thesis[0].keywords).toEqual(thesis.keywords)
@@ -458,7 +467,6 @@ describe("SEARCH PROPOSAL UNIT TEST", () => {
                 .get('/thesis?page=1&type=abroad')
                 .expect(200)
                 .then( resp => {
-                    console.log(resp)
                     expect(resp.body.nPage).toEqual(1)
                     expect(resp.body.thesis.length).toEqual(1)
                     expect(resp.body.thesis[0].type).toEqual(thesis.type)
@@ -494,7 +502,6 @@ describe("SEARCH PROPOSAL UNIT TEST", () => {
                 .get('/thesis?page=1&group=group')
                 .expect(200)
                 .then( resp => {
-                    console.log(resp)
                     expect(resp.body.nPage).toEqual(1)
                     expect(resp.body.thesis.length).toEqual(1)
                     expect(resp.body.thesis[0].group).toEqual(thesis.group)
@@ -530,7 +537,6 @@ describe("SEARCH PROPOSAL UNIT TEST", () => {
                 .get('/thesis?page=1&knowledge=progr')
                 .expect(200)
                 .then( resp => {
-                    console.log(resp)
                     expect(resp.body.nPage).toEqual(0)
                     expect(resp.body.thesis.length).toEqual(0)
                 })

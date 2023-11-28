@@ -29,16 +29,10 @@ app.use(passport.session())
 app.use(express.urlencoded({ extended: false })); // Replaces Body Parser
 
 // login_as TOBE discussed
-let login_as = {role: undefined}
+let login_as = {user: undefined}
 const isLoggedIn = (req, res, next)=>{
   if(process.env.NODE_ENV === 'test') {
-    req.user = {
-      id: 1,
-      name: "Gianni",
-      lastname: "Altobelli",
-      role: login_as.role,
-      nameID: "gianni.altobelli@email.it"
-    }
+    req.user = login_as.user
 
   }
   else if (!req.isAuthenticated()) {
@@ -72,7 +66,7 @@ app.put("/professor/:id_professor/applications/:id_application", (req, res) =>
 
 app.post("/thesis/:id_thesis/applications", (req, res) => studentController.applyForProposal(req, res));
 
-app.get("/student/:id_student/applications", isLoggedIn, studentController.browserApplicationStudent(req, res));
+app.get("/student/:id_student/applications", isLoggedIn, studentController.browserApplicationStudent);
 
 app.get('/professor/thesis', isLoggedIn, (req, res) => teacherController.browseProposals(req, res))
 
