@@ -15,7 +15,7 @@ exports.sendEmail = (from, to, subject, text) => {
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
             console.error("Error sending email cancelled:", error.message);
-            reject(error);
+            reject({error: err.message});
             return;
             }
             resolve(info);

@@ -94,7 +94,7 @@ exports.updateStatus = (id, status)=>{
     db.run(updateApplicationSQL, [status, id], function (err) {
       if (err) {
         console.error("Error in SQLDatabase:", err.message);
-        reject(err);
+        reject({error: err.message});
         return;
       }
       resolve(this.lastID)
@@ -108,89 +108,31 @@ exports.updateStatusToCancelledForOtherStudent = (id_thesis, id_student)=>{
     db.run(updateOtherApplicationsSQL, [id_thesis, id_student], function (err) {
       if (err) {
         console.error("Error in SQLDatabase:", err.message);
-        reject(err);
+        reject({error: err.message});
         return;
       }
       resolve(this.lastID)
     })
   })
 };
-// Send a notification to all the students with the new status cancelled
-const _sendCancelledEmails = (teacherID, id_thesis, id_student) => {
-  return Promise.all([teacherRepo.getTeacherEmail(teacherID), thesisRepo.getThesisTitle(id_thesis), studentRepo.getStudentEmailCancelled(id_student)])
-    .then(([teacherEmail, thesisTitle, studentEmailCancelledArray]) => {
-      const emailPromises = studentEmailCancelledArray.map((element) => {
-        transporter.sendEmail(teacherEmail, element, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to cancelled.`)
-            .catch(e=>reject(e));
-      });
-      // Wait for all email promises to resolve
-      return Promise.all(emailPromises);
-    });
-};
 
-// Send a notification to the student accepted
-const _sendAcceptedEmail = (teacherID, id_thesis, id_student) => {
-  return Promise.all([teacherRepo.getTeacherEmail(teacherID), studentRepo.getStudentEmail(id_student), thesisRepo.getThesisTitle(id_thesis),
-  ])
-    .then(([teacherEmail, studentEmail, thesisTitle]) => {
-      transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to accepted.`).catch(e=>reject(e));
-    });
-};
-
-// Send a notification to the rejected student 
-const _sendRejectedEmail = (teacherID, id_thesis, id_student) => {
-  return Promise.all([teacherRepo.getTeacherEmail(teacherID), studentRepo.getStudentEmail(id_student), thesisRepo.getThesisTitle(id_thesis),
-  ])
-    .then(([teacherEmail, studentEmail, thesisTitle]) => {
-      transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to rejected.`).catch(e=>reject(e));
-    });
-};
-
-exports.acceptApplication = (status, teacherID, applicationID) => {
+exports.getApplication = (id) => {
+  const fetchThesisStudentSQL = 'SELECT * FROM Application WHERE id = ?';
   return new Promise((resolve, reject) => {
-    const fetchThesisStudentSQL = 'SELECT id_thesis, id_student FROM Application WHERE id_teacher = ? AND id = ?';
-    db.get(fetchThesisStudentSQL, [teacherID, applicationID], (err, row) => {
+    db.get(fetchThesisStudentSQL, [id], (err, row) => {
       if (err) {
         console.error("Error in SQLDatabase:", err.message);
-        reject(err);
+        reject({error: err.message});
         return;
       }
       if (!row) {
         reject({ error: "No application was found, application is missing or is of another teacher" });
         return;
       }
-      const id_thesis = row.id_thesis;
-      const id_student = row.id_student;
-
-      this.updateStatus(applicationID, status).then(()=>{
-        if (status === 1) {
-          this.updateStatusToCancelledForOtherStudent(id_thesis, id_student)
-            .then(()=>{
-            thesisRepo.setStatus(id_thesis, 0).catch(e=>reject(e))
-            })
-            .catch(e=>reject(e));
-          // Execute the promises sequentially
-          _sendCancelledEmails(teacherID, id_thesis, id_student)
-            .then(() => _sendAcceptedEmail(teacherID, id_thesis, id_student))
-              .then(() => {
-                console.log("All emails sent successfully");
-                resolve("accepted");
-              }).catch(e=>reject(e))
-            .catch((error) => {
-              // Handle errors
-              console.error("Error:", error.message);
-              reject(error);
-            });
-
-          resolve({ message: "Application and Thesis updated successfully." });
-        } else {
-          // If the status is 2 -> rejected, then resolve directly
-          _sendRejectedEmail(teacherID, id_thesis, id_student).then(resolve({ message: "Application updated successfully." })).catch(e=>reject(e));
-        }
-      }).catch(e=>reject(e));
+      resolve(row);
     });
   });
-};
+}
 
 /**
  * Designed for Virtual clock

@@ -57,6 +57,7 @@ exports.listApplication = function listApplication(req, res) {
 };
 
 exports.acceptApplication = function acceptApplication(req, res) {
+  /*
   if(req.user.role!=='teacher'){
     res.status(401).json({error:"You can not access to this route"})
     return;
@@ -65,6 +66,7 @@ exports.acceptApplication = function acceptApplication(req, res) {
     res.status(401).json({error:"Unauthorized"})
     return;
   }
+  */
   if(req.body === undefined) {
     return res.status(400).json({ error: "Body is missing" });
   }
