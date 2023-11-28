@@ -52,9 +52,8 @@ passport.deserializeUser((user, done) => {
 
 passport.logoutSaml = function(req, res) {
     if (req.user == null) {
-        return res.redirect('/');
+        return res.redirect('http://localhost:5173/');
     }
-    req.user.nameID = 'gianni.altobelli@studenti.polito.it'
     return samlStrategy.logout(req, function(err, uri) {
         return res.redirect(uri);
     });
