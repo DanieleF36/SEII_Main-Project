@@ -2,8 +2,7 @@
 
 const sqlite = require('sqlite3');
 
-const db = require("./db");
-
+const db = require('./db')
 /**
  * Insert an entry into COSUPERVISORTHESIS table without performing any checks over parameters exis
  * @param {*} id_thesis must exists in THESIS 

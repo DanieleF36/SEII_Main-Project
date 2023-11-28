@@ -1,6 +1,7 @@
 'use strict';
 
 const sqlite = require('sqlite3');
+require('dotenv').config({path: './variable.env'})
 
 const db = require("./db");
 

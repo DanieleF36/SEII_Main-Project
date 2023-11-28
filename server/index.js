@@ -6,6 +6,7 @@ const cors = require("cors");
 const passport = require('./config/passport').passport;
 const metadata = require('./config/passport').metadata;
 const app = express();
+require('dotenv').config({path: './variable.env'})
 
 app.use(morgan("dev"));
 app.use(express.json());
@@ -27,8 +28,15 @@ app.use(passport.initialize())
 app.use(passport.session())
 app.use(express.urlencoded({ extended: false })); // Replaces Body Parser
 
+// login_as TOBE discussed
+let login_as = {user: undefined}
 const isLoggedIn = (req, res, next)=>{
-  if (!req.isAuthenticated()) {
+  
+  if(process.env.NODE_ENV === 'test') {
+    req.user = login_as.user
+
+  }
+  else if (!req.isAuthenticated()) {
     return res.status(401).json({error: 'Unauthorized'});
   } 
   return next();
@@ -59,6 +67,7 @@ app.put("/professor/:id_professor/applications/:id_application", (req, res) =>
 
 app.post("/thesis/:id_thesis/applications", isLoggedIn, (req, res) => studentController.applyForProposal(req, res));
 
+
 app.get("/student/:id_student/applications", isLoggedIn, (req,res) => studentController.browserApplicationStudent(req, res));
 
 app.get('/professor/thesis', isLoggedIn, (req, res) => teacherController.browseProposals(req, res))
@@ -71,9 +80,9 @@ app.get("/testing/vc/get", (req, res) => vc.vc_current(req, res))
 
 /******************************************************************Login*********************************************************************************************/
 
-app.get('/login', passport.authenticate('samlStrategy'),(req, res)=>res.redirect('http://localhost:5173/homepage'));
+app.get('/login', passport.authenticate('samlStrategy'),(req, res)=>res.redirect('http://localhost:5173/home'));
 
-app.post('/login/callback', passport.authenticate('samlStrategy'), (req, res)=>res.redirect('http://localhost:5173/homepage'));
+app.post('/login/callback', passport.authenticate('samlStrategy'), (req, res)=>res.redirect('http://localhost:5173/home'));
 
 app.get('/logout', passport.logoutSaml);
 
@@ -81,10 +90,10 @@ app.post('/logout/callback', passport.logoutSamlCallback);
 
 app.get("/metadata", (req, res)=>res.type("application/xml").status(200).send(metadata()));
 
-app.get("/session/current", isLoggedIn, (req, res)=>{req.user.email = req.user.nameID; delete req.user.nameID; res.status(200).send(req.user)})
+app.get("/session/current", isLoggedIn, (req, res)=>{let u = {name: req.user.name, surname: req.user.surname, id: req.user.id, email:req.user.nameID, cds: req.user.cds, role: req.user.role}; res.status(200).send(u)})
 
 const PORT = 3001;
 app.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`)
 );
-module.exports = app;
+module.exports = {app, login_as};

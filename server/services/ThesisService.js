@@ -221,7 +221,8 @@ exports.addThesis = async function (thesis) {
         }
       }
     }
-
+    
+    console.log(thesis)
     return thesis;
   }
   catch (error) {
