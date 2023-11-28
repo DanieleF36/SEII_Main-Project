@@ -8,7 +8,16 @@ beforeEach(() => {
 
 describe("INSERT PROPOSAL UNIT TEST", () => {
   test("U1: Missing body", async () => {
-    const mockReq = {};
+    const mockReq = {
+      body: undefined,
+      user: {
+            id: 1,
+            name: "Gianni",
+            lastname: "Altobelli",
+            nameID: "gianni.altobelli@email.it",
+            role: "teacher"
+        }
+    };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
@@ -23,14 +32,17 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
       body: {
         level : "Master"
       },
+      user: {
+        role: undefined
+      }
     };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
     await controller.addThesis(mockReq, mockRes);
-    expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toHaveBeenCalledWith({ error: "supervisor is missing" });
+    expect(mockRes.status).toHaveBeenCalledWith(401);
+    expect(mockRes.json).toHaveBeenCalledWith({ error: "You can not access to this route" });
   });
 
   test("U3: Expiration date is missing", async () => {
@@ -39,6 +51,13 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
         supervisor: "Pippo",
         level : "Master"
       },
+      user: {
+        id: 1,
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
     };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
@@ -55,6 +74,13 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
         supervisor: "Pippo",
         expiration_date: "2015-01-01",
       },
+      user: {
+        id: 1,
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
     };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
@@ -72,6 +98,13 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
         expiration_date: "2015-01-01",
         level: "Master",
       },
+      user: {
+        id: 1,
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
     };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
@@ -91,6 +124,13 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
         level: "Master",
         cosupervisor: "Paperino"
       },
+      user: {
+        id: 1,
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
     };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
@@ -111,6 +151,13 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
         cosupervisor: ["Paperino","Pluto"],
         keywords: "not good"
       },
+      user: {
+        id: 1,
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
     };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
@@ -131,6 +178,13 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
         cosupervisor: ["Paperino","Pluto"],
         keywords: ["good","now"]
       },
+      user: {
+        id: 1,
+        name: "Gianni",
+        lastname: "Altobelli",
+        nameID: "gianni.altobelli@email.it",
+        role: "teacher"
+      }
     };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
@@ -145,13 +199,24 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
       const mockReq = {
         body: {
           supervisor: "Pippo",
+          cosupervisor: [''],
           expiration_date: "2015-01-01",
           status : 1,
           level: "Master",
           cosupervisor: ["Paperino","Pluto"],
           keywords: ["good","now"],
-          type : ["Abroad"]
+          type : ["Abroad"],
+          groups: ['group1'],
+          cds: ['cds1'],
+          knowledge: ['none']
         },
+        user: {
+          id: 1,
+          name: "Gianni",
+          lastname: "Altobelli",
+          nameID: "gianni.altobelli@email.it",
+          role: "teacher"
+        }
     };
     const mockRes = {
       status: jest.fn().mockReturnThis(),
@@ -169,6 +234,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
         const mockReq = {
             query: {
                 page: undefined
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -185,6 +258,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
         const mockReq = {
             query: {
                 page: undefined
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -203,6 +284,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 page: 1,
                 order: "titleD",
                 title: ["title1", "title2"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -221,6 +310,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 page: 1,
                 order: "titleD",
                 title: "SELECT * FROM Thesis"
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -239,6 +336,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 page: 1,
                 order: "titleD",
                 title: "Caffeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -258,6 +363,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 order: "titleD",
                 title: "thesis title",
                 supervisor: ["Cool supervisor", "Another one"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -279,6 +392,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 supervisor: "Cool supervisor",
                 keywords: ["Sw", "hw"],
                 groups: ["DEP1", "DEP2"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -301,6 +422,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 keywords: ["Sw", "hw"],
                 groups: "DEP1",
                 knowledge: ["1st", "2nd", "3rd"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -323,6 +452,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 keywords: ["Sw", "hw"],
                 groups: "DEP1",
                 knowledge: ["1st", "2nd", "3rd"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -346,6 +483,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 groups: "DEP1",
                 knowledge: "C programming",
                 expiration_date: ["01", "01", "2030"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -370,6 +515,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 knowledge: "C programming",
                 expiration_date: "2030-01-01",
                 cds: ["LM32", "LM31"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -395,6 +548,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
                 expiration_date: "2030-01-01",
                 cds: "LM32",
                 creation_date: ["01", "01", "2030"]
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 
@@ -411,6 +572,14 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
         const mockReq = {
             query: {
                 page: 1
+            },
+            user: {
+              id: 1,
+              name: "Gianna",
+              lastname: "Altobella",
+              nameID: "gianni.altobelli@email.it",
+              role: "student",
+              cds: "ingInf"
             }
         };
 

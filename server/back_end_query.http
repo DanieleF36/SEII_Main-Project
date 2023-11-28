@@ -3,11 +3,11 @@
 GET {{APIURL}}/professor/1/applications
 ###  
 //UPDATE THE APPLICATION STATUS (PROFESSOR TASK)
-POST {{APIURL}}/professor/2/applications/1
-content-type: application/json
+PUT {{APIURL}}/professor/1/applications/1
+Content-type: application/json
 
 {
-    "accepted" : 1
+    "status" : 1
 }
 ###
 //UPDATE THESIS (Professor TASK) 
