@@ -79,6 +79,15 @@ function Homepage(props) {
         });
     }, [props.active]);
 
+
+    useEffect(() => {
+        API.userAuthenticated().then(user => {
+            console.log(user);
+            props.setUser(user);
+            props.setIsAuth(1);
+        }).catch(console.log('errore'));
+    }, []);
+
     useEffect(() => {
         handleResetChange();
     }, [props.user]);
