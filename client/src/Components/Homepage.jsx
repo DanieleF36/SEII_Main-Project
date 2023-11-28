@@ -68,9 +68,6 @@ function Homepage(props) {
     });
 
     useEffect(() => {
-        if(props.isAuth===0){
-            navigate('/');
-        }
         items.map(e => { if (e.key === props.active) { e.props.active = true } });
         //console.log(filters);
         API.advancedSearchThesis({...filters, page: props.active}).then(res => {
@@ -78,6 +75,19 @@ function Homepage(props) {
             props.setPages(res[0]);
         });
     }, [props.active]);
+
+
+    useEffect(() => {
+        API.userAuthenticated().then(user => {
+            console.log(user);
+            props.setUser(user);
+            props.setIsAuth(1);
+            API.advancedSearchThesis({page: active}).then(res=>{
+                setProposals(res[1]);
+                setPage(res[0]);
+              });
+        }).catch(console.log('errore'));
+    }, []);
 
     useEffect(() => {
         handleResetChange();

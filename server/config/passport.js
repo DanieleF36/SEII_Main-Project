@@ -36,8 +36,6 @@ const samlStrategy = new saml(samlConfig, (profile, done) => {
         user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, cds:user.cds }
     else
         user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID }
-    console.log(profile)
-    console.log(user)
     return done(null, user);
 });
 passport.use("samlStrategy", samlStrategy);
@@ -54,7 +52,6 @@ passport.logoutSaml = function(req, res) {
     if (req.user == null) {
         return res.redirect('/');
     }
-    req.user.nameID = 'gianni.altobelli@studenti.polito.it'
     return samlStrategy.logout(req, function(err, uri) {
         return res.redirect(uri);
     });
