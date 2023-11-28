@@ -7,10 +7,8 @@ async function login(){
 }
 
 async function userAuthenticated(){
-  console.log("userAuth");
-  try{
-    const res = await fetch(URL+ `/session/current`,{credentials:'include'});
-    const user = await res.json();
+  const res = await fetch(URL+ `/session/current`,{credentials:'include'});
+  const user = await res.json();
     console.log(user)
   if(res.ok){
     return user;
@@ -18,9 +16,6 @@ async function userAuthenticated(){
   else{
     return {error: "Unauthorized"}
   }
-  }catch(e){
-    console.log(e)
-  }  
 }
 
 async function logout(){
