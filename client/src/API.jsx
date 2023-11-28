@@ -7,16 +7,20 @@ async function login(){
 }
 
 async function userAuthenticated(){
-  const user = await fetch(URL+ `/session/current`,
-  {
-    credentials:true
-  });
-  if(user.ok){
+  console.log("userAuth");
+  try{
+    const res = await fetch(URL+ `/session/current`,{credentials:'include'});
+    const user = await res.json();
+    console.log(user)
+  if(res.ok){
     return user;
   }
   else{
-    return {error: "error"}
+    return {error: "Unauthorized"}
   }
+  }catch(e){
+    console.log(e)
+  }  
 }
 
 async function logout(){
@@ -129,7 +133,7 @@ async function advancedSearchThesis(params){
     }
   }
   const response = await fetch(URL+ur, {
-    credentials:true
+    credentials:'include'
   });
   if(response.status==200){
     const res = await response.json();
