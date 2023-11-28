@@ -2,6 +2,26 @@ import { alignPropType } from "react-bootstrap/esm/types";
 
 const URL = 'http://localhost:3001';
 
+async function login(){
+  window.location.assign(URL+"/login");
+}
+
+async function userAuthenticated(){
+  const res = await fetch(URL+ `/session/current`,{credentials:'include'});
+  const user = await res.json();
+    console.log(user)
+  if(res.ok){
+    return user;
+  }
+  else{
+    return {error: "Unauthorized"}
+  }
+}
+
+async function logout(){
+  window.location.assign(URL+"/logout", {credentials:'include'});
+}
+
 async function listApplication(id_professor) { 
     const response = await fetch(URL+ `/professor/${id_professor}/applications`);
     const application = await response.json();
@@ -107,7 +127,9 @@ async function advancedSearchThesis(params){
       case "supervisor": ur+="&order=supervisor"+params.order;break;
     }
   }
-  const response = await fetch(URL+ur);
+  const response = await fetch(URL+ur, {
+    credentials:'include'
+  });
   if(response.status==200){
     const res = await response.json();
     console.log(res.thesis);
@@ -251,6 +273,6 @@ function vc_restore(choice) {
     return res
   })
 }
-const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal, browseProposal, vc_set, vc_restore, vc_get };
+const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal, browseProposal, vc_set, vc_restore, vc_get, userAuthenticated, login, logout };
 
 export default API;

@@ -31,6 +31,7 @@ app.use(express.urlencoded({ extended: false })); // Replaces Body Parser
 // login_as TOBE discussed
 let login_as = {user: undefined}
 const isLoggedIn = (req, res, next)=>{
+  
   if(process.env.NODE_ENV === 'test') {
     req.user = login_as.user
 
@@ -78,9 +79,9 @@ app.get("/testing/vc/get", (req, res) => vc.vc_current(req, res))
 
 /******************************************************************Login*********************************************************************************************/
 
-app.get('/login', passport.authenticate('samlStrategy'),(req, res)=>res.redirect('http://localhost:5173/homepage'));
+app.get('/login', passport.authenticate('samlStrategy'),(req, res)=>res.redirect('http://localhost:5173/home'));
 
-app.post('/login/callback', passport.authenticate('samlStrategy'), (req, res)=>res.redirect('http://localhost:5173/homepage'));
+app.post('/login/callback', passport.authenticate('samlStrategy'), (req, res)=>res.redirect('http://localhost:5173/home'));
 
 app.get('/logout', passport.logoutSaml);
 
@@ -88,7 +89,7 @@ app.post('/logout/callback', passport.logoutSamlCallback);
 
 app.get("/metadata", (req, res)=>res.type("application/xml").status(200).send(metadata()));
 
-app.get("/session/current", isLoggedIn, (req, res)=>{req.user.email = req.user.nameID; delete req.user.nameID; res.status(200).send(req.user)})
+app.get("/session/current", isLoggedIn, (req, res)=>{let u = {name: req.user.name, surname: req.user.surname, id: req.user.id, email:req.user.nameID, cds: req.user.cds, role: req.user.role}; res.status(200).send(u)})
 
 const PORT = 3001;
 app.listen(PORT, () =>

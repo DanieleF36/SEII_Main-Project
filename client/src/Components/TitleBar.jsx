@@ -1,19 +1,18 @@
 import { Navbar, Container, Row, Col, Nav, Button, Tab, Modal } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useEffect } from 'react';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import './TitleBar.css'
+import API from '../API';
+import { redirect } from "react-router-dom";
 
 function TitleBar(props) {
 
     const navigate = useNavigate();
 
     const logIn = () => {
-        //props.setUser({role: 'teacher', name: 'Luca', surname: 'Azzurri', id: '12345'})
-        props.setIsAuth(1);
-        navigate('/home');
-        props.setUser({role: 'student', name: 'Giovanni', surname: 'Rossi', id: '12345'})
-        //API.login(...)
+        API.login();
       };
 
     const titleBarStyle = {
@@ -30,11 +29,10 @@ function TitleBar(props) {
     const handleShow = () => setShow(true);
 
     const handleLogOut = () => {
-
-        props.setIsAuth(0);
-        props.setUser('');
-        navigate('/');
-
+        API.logout().then(()=>{
+            setTimeout(()=>{props.setIsAuth(0);
+                props.setUser('');}, 5000);
+        })
     };
 
 
@@ -64,7 +62,7 @@ function TitleBar(props) {
                     </Col>:<Col>
                         <Nav defaultActiveKey="/home">
                             <Nav.Item className='act-link'>
-                                <Nav.Link href="/home" className="thesis-link">
+                                <Nav.Link active href="/home" className="thesis-link">
                                     Thesis
                                 </Nav.Link>
                             </Nav.Item>
