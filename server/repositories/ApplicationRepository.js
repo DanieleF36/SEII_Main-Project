@@ -3,17 +3,10 @@
 const dayjs = require('dayjs')
 
 const db = require("./db");
-
-const nodemailer = require('nodemailer');
-
-const transporter = nodemailer.createTransport({
-  host: '127.0.0.1',
-  port: 1025,
-  auth: {
-    user: 'project.1',
-    pass: 'secret.1'
-  }
-});
+const transporter = require('../email/transporter')
+const thesisRepo = require('./ThesisRepository');
+const teacherRepo = require('./TeacherRepository');
+const studentRepo = require('./StudentRepository');
 
 /**
  * Performs queries to the database for retriving all the needed information given a supervisor's id
@@ -95,216 +88,51 @@ exports.addProposal = (studentId, thesisId, cvPath) => {
   });
 };
 
-exports.acceptApplication = (status, teacherID, applicationID) => {
-  return new Promise((resolve, reject) => {
-    // 1
-    const fetchThesisStudentSQL = 'SELECT id_thesis, id_student FROM Application WHERE id_teacher = ? AND id = ?';
-    db.get(fetchThesisStudentSQL, [teacherID, applicationID], (err, row) => {
+exports.updateStatus = (id, status)=>{
+  const updateApplicationSQL = 'UPDATE Application SET status = ? WHERE id = ?';
+  return new Promise((resolve, reject)=>{
+    db.run(updateApplicationSQL, [status, id], function (err) {
       if (err) {
         console.error("Error in SQLDatabase:", err.message);
-        reject(err);
+        reject({error: err.message});
         return;
       }
+      resolve(this.lastID)
+    })
+  })
+}
 
+exports.updateStatusToCancelledForOtherStudent = (id_thesis, id_student)=>{
+  return new Promise((resolve, reject)=>{
+    const updateOtherApplicationsSQL = 'UPDATE Application SET status = 3 WHERE id_thesis = ? AND id_student != ?';
+    db.run(updateOtherApplicationsSQL, [id_thesis, id_student], function (err) {
+      if (err) {
+        console.error("Error in SQLDatabase:", err.message);
+        reject({error: err.message});
+        return;
+      }
+      resolve(this.lastID)
+    })
+  })
+};
+
+exports.getApplication = (id) => {
+  const fetchThesisStudentSQL = 'SELECT * FROM Application WHERE id = ?';
+  return new Promise((resolve, reject) => {
+    db.get(fetchThesisStudentSQL, [id], (err, row) => {
+      if (err) {
+        console.error("Error in SQLDatabase:", err.message);
+        reject({error: err.message});
+        return;
+      }
       if (!row) {
-        reject({ error: "No rows found. Teacher ID or Application ID not found." });
+        reject({ error: "No application was found, application is missing or is of another teacher" });
         return;
       }
-
-      const id_thesis = row.id_thesis;
-      const id_student = row.id_student;
-
-      // 2
-      const updateApplicationSQL = 'UPDATE Application SET status = ? WHERE id_teacher = ? AND id = ?';
-      db.run(updateApplicationSQL, [status, teacherID, applicationID], function (err) {
-        if (err) {
-          console.error("Error in SQLDatabase:", err.message);
-          reject(err);
-          return;
-        }
-
-        // if (this.changes === 0) {
-        //   reject({ error: "No rows updated. Teacher ID or Application ID not found." });
-        //   return;
-        // }
-
-        const teacherMailSQL = 'SELECT email FROM Teacher WHERE id = ? '
-        const studentMailCancelledSQL = 'SELECT email FROM Student WHERE id != ? '
-        const studentMailSQl = 'SELECT email FROM Student WHERE id = ? '
-        const thesisTitlesSQL = 'SELECT title FROM Thesis WHERE id = ?'
-        const getThesisTitle = (thesisTitlesSQL, id_thesis) => {
-          return new Promise((resolve, reject) => {
-            db.get(thesisTitlesSQL, [id_thesis], function (err, result) {
-              if (err) {
-                console.error("Error in SQLDatabase:", err.message);
-                reject(err);
-                return;
-              }
-              resolve(result.title);
-            })
-          });
-        }
-        const getTeacherEmail = (teacherMailSQL, teacherID) => {
-          return new Promise((resolve, reject) => {
-            db.get(teacherMailSQL, [teacherID], function (err, result) {
-              if (err) {
-                console.error("Error in SQLDatabase:", err.message);
-                reject(err);
-              } else {
-                resolve(result.email);
-              }
-            });
-          });
-        };
-        const getStudentEmail = (studentMailSQl, id_student) => {
-          return new Promise((resolve, reject) => {
-            db.get(studentMailSQl, [id_student], function (err, result) {
-              if (err) {
-                console.error("Error in SQLDatabase:", err.message);
-                reject(err);
-              } else {
-                resolve(result.email);
-              }
-            });
-          });
-        };
-
-        const getStudentEmailCancelled = (studentMailCancelledSQL, id_student) => {
-          return new Promise((resolve, reject) => {
-            db.all(studentMailCancelledSQL, [id_student], function (err, result) {
-              if (err) {
-                console.error("Error in SQLDatabase:", err.message);
-                reject(err);
-              } else {
-                const emails = result.map((row) => row.email);
-                resolve(emails);
-              }
-            });
-          });
-        };
-
-        if (status === 1) {
-          // 3
-          const updateOtherApplicationsSQL = 'UPDATE Application SET status = 3 WHERE id_thesis = ? AND id_student != ?';
-          db.run(updateOtherApplicationsSQL, [id_thesis, id_student], function (err) {
-            if (err) {
-              console.error("Error in SQLDatabase:", err.message);
-              reject(err);
-              return;
-            }
-            // 4
-            const updateThesisSQL = 'UPDATE Thesis SET status = 0 WHERE id = ?';
-            db.run(updateThesisSQL, [id_thesis], function (err) {
-              if (err) {
-                console.error("Error in SQLDatabase:", err.message);
-                reject(err);
-                return;
-              }
-              if (this.changes === 0) {
-                reject({ error: "No rows updated. Thesis ID not found." });
-                return;
-              }
-            });
-          });
-          // Send a notification to all the students with the new status cancelled
-          const sendCancelledEmails = () => {
-            return Promise.all([
-              getTeacherEmail(teacherMailSQL, teacherID),
-              getThesisTitle(thesisTitlesSQL, id_thesis),
-              getStudentEmailCancelled(studentMailCancelledSQL, id_student),
-            ])
-              .then(([teacherEmail, thesisTitle, studentEmailCancelledArray]) => {
-                const emailPromises = studentEmailCancelledArray.map((element) => {
-                  return new Promise((resolve, reject) => {
-                    const mailOptions = {
-                      from: teacherEmail,
-                      to: element,
-                      subject: 'Application Status Update',
-                      text: `Your application status for ${thesisTitle} has been updated to cancelled.`,
-                    };
-                    transporter.sendMail(mailOptions, (error, info) => {
-                      if (error) {
-                        console.error("Error sending email cancelled:", error.message);
-                        reject(error);
-                      } else {
-                        console.log("Email cancelled sent: " + info.response);
-                        resolve("cancelled");
-                      }
-                    });
-                  });
-                });
-
-                // Wait for all email promises to resolve
-                return Promise.all(emailPromises);
-              });
-          };
-
-          // Send a notification to the student accepted
-          const sendAcceptedEmail = () => {
-            return Promise.all([
-              getTeacherEmail(teacherMailSQL, teacherID),
-              getStudentEmail(studentMailSQl, id_student),
-              getThesisTitle(thesisTitlesSQL, id_thesis),
-            ])
-              .then(([teacherEmail, studentEmail, thesisTitle]) => {
-                const mailOptions = {
-                  from: teacherEmail,
-                  to: studentEmail,
-                  subject: 'Application Status Update',
-                  text: `Your application status for ${thesisTitle} has been updated to accepted.`,
-                };
-                return transporter.sendMail(mailOptions);
-              });
-          };
-
-          // Execute the promises sequentially
-          sendCancelledEmails()
-            .then(() => sendAcceptedEmail())
-            .then(() => {
-              console.log("All emails sent successfully");
-              resolve("accepted");
-            })
-            .catch((error) => {
-              // Handle errors
-              console.error("Error:", error.message);
-              reject(error);
-            });
-
-          resolve({ message: "Application and Thesis updated successfully." });
-        } else {
-          // If the status is 2 -> rejected, then resolve directly
-          Promise.all([
-            getTeacherEmail(teacherMailSQL, teacherID),
-            getStudentEmail(studentMailSQl, id_student),
-            getThesisTitle(thesisTitlesSQL, id_thesis),
-          ])
-            .then(([teacherEmail, studentEmail, thesisTitle]) => {
-              const mailOptions = {
-                from: teacherEmail,
-                to: studentEmail,
-                subject: 'Application Status Update',
-                text: `Your application status for ${thesisTitle} has been updated to rejected.`,
-              };
-              transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                  console.error("Error sending email rejected:", error.message);
-                  reject(error);
-                } else {
-                  console.log("Email rejected sent: " + info.response);
-                  resolve("accepted");
-                }
-              });
-            })
-            .catch((error) => {
-              // Handle errors
-              console.error("Error:", error.message);
-            });
-          resolve({ message: "Application updated successfully." });
-        }
-      });
+      resolve(row);
     });
   });
-};
+}
 
 /**
  * Designed for Virtual clock

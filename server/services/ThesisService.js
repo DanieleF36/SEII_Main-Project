@@ -293,30 +293,22 @@ exports.updateThesis = async function (thesis, thesis_id) {
     }
 
     // Add new co-supervisors for this thesis
-    if (cosupervisor_ids.length > 0 || supervisor_ids.length > 0) {
+    if (cosupervisor_ids.length > 0) {
       for (let id of cosupervisor_ids) {
-        result = await coSupervisorThesisRepository.addCoSupervisorThesis(
-          thesis_id,
-          null,
-          id
-        );
-        if (result !== true) {
-          throw { status: 500, error: result.error };
-        }
-      }
-
-      for (let id of supervisor_ids) {
-        result = await coSupervisorThesisRepository.addCoSupervisorThesis(
-          thesis_id,
-          id,
-          null
-        );
+        result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_id, null, id);
         if (result !== true) {
           throw { status: 500, error: result.error };
         }
       }
     }
-
+    if (supervisor_ids.length > 0) {
+      for (let id of supervisor_ids) {
+        result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_id, id, null);
+        if (result !== true) {
+          throw { status: 500, error: result.error };
+        }
+      }
+    }
     return updatedThesis;
   } catch (error) {
     return error;

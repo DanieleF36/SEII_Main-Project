@@ -168,7 +168,7 @@ exports.addApplication = function addApplication(req, res, next) {
 exports.addThesis = async function addThesis(req, res) {
   //checks role NEW
   if(req.user.role !== 'teacher'){
-    return res.status(401).send({error:"You can not access to this route"})
+    return res.status(401).json({error:"You can not access to this route"})
   }
 
   //checks body
@@ -248,6 +248,10 @@ exports.addThesis = async function addThesis(req, res) {
   else {
     req.body.knowledge = req.body.knowledge.join();
   }
+
+  if(req.body.title === undefined || req.body.title === ""){
+    return res.status(400).json({error : "Title missing or empty string"})
+  }
   
   const response = await thesisService.addThesis(req.body)
   if(response.error) {
@@ -270,13 +274,17 @@ exports.getAllCoSupervisorsEmails = async function (req, res) {
 };
 
 exports.updateThesis = async function updateThesis(req, res) {
-  if (req.body === undefined) {
-    return res.status(400).json({ error: "body is missing" });
+  if(req.user.role!=='teacher'){
+    res.status(401).json({error:"You can not access to this route"})
+    return;
   }
-
   if (!req.params.id) {
     res.status(400).json({error: "Thesis id is not valid"})
     return
+  }
+
+  if (req.body === undefined) {
+    return res.status(400).json({ error: "body is missing" });
   }
 
   if (req.body.level === undefined || (req.body.level !== "Master" && req.body.level !== "Bachelor")) {
@@ -287,6 +295,8 @@ exports.updateThesis = async function updateThesis(req, res) {
     return res.status(400).json({ error: "supervisor is missing" });
   }
 
+  req.body.supervisor = req.user.id
+  
   if (req.body.expiration_date === undefined || req.body.expiration_date === "") {
     return res.status(400).json({ error: "expiration date is missing or not valid" });
   }
@@ -297,6 +307,49 @@ exports.updateThesis = async function updateThesis(req, res) {
 
   if (!Array.isArray(req.body.cosupervisor)) {
     return res.status(400).json({ error: "cosupervisor is not an array" });
+  }
+
+  if (!Array.isArray(req.body.keywords)) {
+    return res.status(400).json({ error: "keywords value not recognized" });
+  }
+  else {
+    req.body.keywords = req.body.keywords.join();
+  }
+
+  //checks type
+  if (req.body.type === undefined || !Array.isArray(req.body.type)) {
+    return res.status(400).json({ error: "type value not recognized" });
+  }
+  else {
+    req.body.type = req.body.type.join();
+  }
+
+  //checks groups NEW
+  if (req.body.groups === undefined || !Array.isArray(req.body.groups)) {
+    return res.status(400).json({ error: "groups value not recognized" });
+  }
+  else {
+    req.body.groups = req.body.groups.join();
+  }
+
+  //checks cds NEW
+  if (req.body.cds === undefined || !Array.isArray(req.body.cds)) {
+    return res.status(400).json({ error: "cds value not recognized" });
+  }
+  else {
+    req.body.cds = req.body.cds.join();
+  }
+
+  //checks knowledge NEW
+  if (!Array.isArray(req.body.knowledge)) {
+    return res.status(400).json({ error: "knowledge value not recognized" });
+  }
+  else {
+    req.body.knowledge = req.body.knowledge.join();
+  }
+
+  if(req.body.title === undefined || req.body.title === ""){
+    return res.status(400).json({error : "Title missing or empty string"})
   }
 
   // Additional validation checks for the updateThesis method if needed

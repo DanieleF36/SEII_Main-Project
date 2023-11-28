@@ -85,6 +85,35 @@ exports.findByEmail = (email) => {
   });
 }
 
+exports.getStudentEmail = (id_student) => {
+  const studentMailSQl = 'SELECT email FROM Student WHERE id = ? '
+  return new Promise((resolve, reject) => {
+    db.get(studentMailSQl, [id_student], function (err, result) {
+      if (err) {
+        console.error("Error in SQLDatabase:", err.message);
+        reject(err);
+      } else {
+        resolve(result.email);
+      }
+    });
+  });
+};
+
+exports.getStudentEmailCancelled = (id_student) => {
+  const studentMailCancelledSQL = 'SELECT email FROM Student WHERE id != ? '
+  return new Promise((resolve, reject) => {
+    db.all(studentMailCancelledSQL, [id_student], function (err, result) {
+      if (err) {
+        console.error("Error in SQLDatabase:", err.message);
+        reject(err);
+      } else {
+        const emails = result.map((row) => row.email);
+        resolve(emails);
+      }
+    });
+  });
+};
+
 exports.getStudentAndCDSByEmail= (email) => {
   const sqlCoSupervisor = "SELECT S.id, S.name, S.surname, S.email, S.gender, S.nationality, D.title, S.enrol_year  FROM Student S, Degree D WHERE S.cod_degree=D.cod AND S.email = ?";
 

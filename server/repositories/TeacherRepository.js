@@ -40,7 +40,19 @@ exports.findByEmail = (email)=>{
     });
 }
 
-
+exports.getTeacherEmail = (teacherID) => {
+    const teacherMailSQL = 'SELECT email FROM Teacher WHERE id = ? '
+    return new Promise((resolve, reject) => {
+      db.get(teacherMailSQL, [teacherID], function (err, result) {
+        if (err) {
+          console.error("Error in SQLDatabase:", err.message);
+          reject(err);
+        } else {
+          resolve(result.email);
+        }
+      });
+    });
+  };
 
 /**
  * Perfoms a search according to the following possible combinations:
