@@ -16,14 +16,6 @@ function App() {
   const [currentTime, setCurrentTime] = useState(new Date());  
 
 
-  useEffect(() => {
-    API.advancedSearchThesis({page: active}).then(res=>{
-      setProposals(res[1]);
-      setPage(res[0]);
-    });
-   //proposals.map(e=>console.log(e));
-  }, [user, isAuth]);
-
 
 
     return (

@@ -9,10 +9,6 @@ import { redirect } from "react-router-dom";
 
 function TitleBar(props) {
 
-    useEffect(() => {
-        
-    }, [props.isAuth]);
-
     const navigate = useNavigate();
 
     const logIn = () => {

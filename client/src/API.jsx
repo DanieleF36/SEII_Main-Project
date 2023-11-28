@@ -24,7 +24,7 @@ async function userAuthenticated(){
 }
 
 async function logout(){
-  window.location.assign(URL+"/logout");
+  window.location.assign(URL+"/logout", {credentials:'include'});
 }
 
 async function listApplication(id_professor) { 
