@@ -68,9 +68,6 @@ function Homepage(props) {
     });
 
     useEffect(() => {
-        if(props.isAuth===0){
-            navigate('/');
-        }
         items.map(e => { if (e.key === props.active) { e.props.active = true } });
         //console.log(filters);
         API.advancedSearchThesis({...filters, page: props.active}).then(res => {

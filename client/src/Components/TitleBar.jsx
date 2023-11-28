@@ -1,12 +1,17 @@
 import { Navbar, Container, Row, Col, Nav, Button, Tab, Modal } from 'react-bootstrap'
 import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { useEffect } from 'react';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import './TitleBar.css'
 import API from '../API';
 import { redirect } from "react-router-dom";
 
 function TitleBar(props) {
+
+    useEffect(() => {
+        
+    }, [props.isAuth]);
 
     const navigate = useNavigate();
 
@@ -29,8 +34,8 @@ function TitleBar(props) {
 
     const handleLogOut = () => {
         API.logout().then(()=>{
-            props.setIsAuth(0);
-            props.setUser('');
+            setTimeout(()=>{props.setIsAuth(0);
+                props.setUser('');}, 5000);
         })
     };
 
@@ -61,7 +66,7 @@ function TitleBar(props) {
                     </Col>:<Col>
                         <Nav defaultActiveKey="/home">
                             <Nav.Item className='act-link'>
-                                <Nav.Link href="/home" className="thesis-link">
+                                <Nav.Link active href="/home" className="thesis-link">
                                     Thesis
                                 </Nav.Link>
                             </Nav.Item>
