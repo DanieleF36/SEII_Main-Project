@@ -82,6 +82,10 @@ function Homepage(props) {
             console.log(user);
             props.setUser(user);
             props.setIsAuth(1);
+            API.advancedSearchThesis({page: active}).then(res=>{
+                setProposals(res[1]);
+                setPage(res[0]);
+              });
         }).catch(console.log('errore'));
     }, []);
 
