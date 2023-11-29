@@ -2,7 +2,7 @@
   "openapi": "3.0.2",
   "info": {
     "title": "Thesis Management API",
-    "version": "0.2"
+    "version": "0.2.2"
   },
   "security":[{"samlAuth":[]}],
   "paths": {
@@ -49,8 +49,7 @@
                 "creation_dateD",
                 "creation_dateA"
               ]
-            },
-            "required": true
+            }
           },
           {
             "in": "query",
@@ -81,7 +80,8 @@
             "in": "query",
             "name": "keyword",
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": { "type": "string" }
             },
             "required": false
           },
@@ -89,7 +89,8 @@
             "in": "query",
             "name": "type",
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": { "type": "string" }
             },
             "required": false
           },
@@ -97,7 +98,8 @@
             "in": "query",
             "name": "groups",
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": { "type": "string" }
             },
             "required": false
           },
@@ -105,21 +107,14 @@
             "in": "query",
             "name": "knowledge",
             "schema": {
-              "type": "string"
+              "type": "array",
+              "items": { "type": "string" }
             },
             "required": false
           },
           {
             "in": "query",
             "name": "expiration_date",
-            "schema": {
-              "type": "string"
-            },
-            "required": false
-          },
-          {
-            "in": "query",
-            "name": "cds",
             "schema": {
               "type": "string"
             },
@@ -144,7 +139,8 @@
                   "properties": {
                     "nPage":{"type": "integer", "minimum": 0},
                     "thesis":{"type":"object", "$ref": "#/components/schemas/thesis"}
-                  }
+                  },
+                  "required": ["nPage"]
                 }
               }
             }
@@ -158,6 +154,12 @@
                 }
               }
             }
+          },
+          "401":{
+            "description": "Not authorized"
+          },
+          "500":{
+            "description": "Internal error"
           }
         }
       },
@@ -195,6 +197,12 @@
                 }
               }
             }
+          },
+          "401":{
+            "description": "Not authorized"
+          },
+          "500":{
+            "description": "Internal error"
           }
         }
       }
@@ -230,14 +238,21 @@
           "204":{
             "description": "Updated"
           },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
           "404":{
             "description": "id professor not found"
           },
           "401":{
             "description": "not authorized"
-          },
-          "400":{
-            "description": "bad request"
           },
           "500":{
             "description": "internal error"
@@ -288,6 +303,9 @@
               }
             }
           },
+          "401":{
+            "description": "Not authorized"
+          },
           "404": {
             "description": "Not found"
           },
@@ -337,8 +355,14 @@
                 }
               }
           },
+          "401":{
+            "description": "Not authorized"
+          },
           "404": {
             "description": "Not found"
+          },
+          "500":{
+            "description": "Internel error"
           }
         }
       }
@@ -394,31 +418,26 @@
               }
             }
           },
+          "401":{
+            "description": "Not authorized"
+          },
           "404": {
             "description": "Not found"
+          },
+          "500":{
+            "description": "Internel error"
           }
         }
       }
     },
-    "/professors/{id_professor}/thesis":{
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id_professor",
-          "schema": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "required": true
-        }
-      ],
+    "/professors/thesis":{
       "get":{
         "tags":["professor"],
         "description": "Get all the active thesis for professor id",
-        "operationId": "browseProfessorProposal",
+        "operationId": "browseProposals",
         "responses": {
           "200":{
-            "description": "list of all application",
+            "description": "list of all proposal for the current logged in professor",
             "content": {
               "application/json":{
                 "schema":{
@@ -428,11 +447,11 @@
               }
             }
           },
-          "404":{
-            "description": "id professor not found"
-          },
           "401":{
             "description": "not authorized"
+          },
+          "404":{
+            "description": "id professor not found"
           },
           "500":{
             "description": "internal error"
@@ -441,17 +460,6 @@
       }
     },
     "/students/{id}/applications":{
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id",
-          "schema": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "required": true
-        }
-      ],
       "get":{
         "tags":["student"],
         "description": "get all the applications of student id",
@@ -462,22 +470,14 @@
             "content": {
               "application/json":{
                 "schema":{
-                  "type": "object",
-                  "properties": {
-                    "id":{"type": "integer"},
-                    "title":{"type": "string"},
-                    "supervisorName":{"type": "string"},
-                    "supervisorSurname":{"type": "string"},
-                    "path_cv":{"type": "string"},
-                    "date_application":{"type": "string", "format": "date"},
-                    "status":{"enum": [0,1,2]}
+                  "type": "array",
+                  "items":{
+                    "type": "object",
+                    "$ref": "#/components/schemas/application"
                   }
                 }
               }
             }
-          },
-          "404":{
-            "description": "id student not found"
           },
           "401":{
             "description": "not authorized"
@@ -488,7 +488,7 @@
         }
       }
     },
-    "/students/{id}/notifications":{
+    "/notifications":{
       "parameters": [
         {
           "in": "path",
@@ -501,7 +501,7 @@
         }
       ],
       "get":{
-        "tags":["student"],
+        "tags":["notifications"],
         "description": "get all the notifications of student id",
         "operationId": "browseStudentNotifications",
         "responses": {
@@ -521,11 +521,11 @@
               }
             }
           },
-          "404":{
-            "description": "id student not found"
-          },
           "401":{
             "description": "not authorized"
+          },
+          "404":{
+            "description": "id student not found"
           },
           "500":{
             "description": "internal error"
@@ -533,7 +533,7 @@
         }
       }
     },
-    "/students/{id_student}/notifications/{id_notification}":{
+    "/notifications/{id_notification}":{
       "parameters": [
         {
           "name":"id_student",
@@ -556,7 +556,7 @@
       ],
       "put":{
         "description": "Set if a notification was seen or not",
-        "tags": ["student"],
+        "tags": ["notifications"],
         "operationId": "setNotificationSeen",
         "requestBody": {
           "content": {
@@ -573,14 +573,21 @@
           "204":{
             "description": "Updated"
           },
-          "404":{
-            "description": "Not found"
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
           },
           "401":{
             "description": "Not authorized"
           },
-          "400":{
-            "description": "Bad request"
+          "404":{
+            "description": "Not found"
           },
           "500":{
             "description": "Internal error"
@@ -607,14 +614,97 @@
           "204":{
             "description": "UpdateD"
           },
-          "400":{
-            "description": "Bad request"
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
           },
           "401":{
             "description": "Not authorized"
           },
           "500":{
             "description": "Internal error"
+          }
+        }
+      }
+    },
+    "/login":{
+      "get":{
+        "tags": ["authentication"],
+        "security": [],
+        "description": "Used to be redirected to SAML IDP",
+        "responses": {
+          "304":{
+            "description": "ok"
+          }
+        }
+      }
+    },
+    "/login/callback":{
+      "post":{
+        "tags": ["authentication"],
+        "security": [],
+        "description": "Used from IDP to reply to authentication request",
+        "responses": {
+          "304":{
+            "description": "ok"
+          }
+        }
+      }
+    },
+    "/session/current":{
+      "get":{
+        "tags": ["authentication"],
+        "security": [],
+        "description": "get user information",
+        "responses": {
+          "200":{
+            "description": "ok",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "id":{"type": "integer", "minimum": 0},
+                    "name":{"type": "string"},
+                    "surname":{"type": "string"},
+                    "role":{"enum": ["student", "teacher", "supervisor"]},
+                    "email":{"type": "string"},
+                    "cds":{"type": "string"}
+                  }
+                }
+              }
+            }
+          },
+          "401":{
+            "description": "Not authenticated"
+          }
+        }
+      }
+    },
+    "/logout":{
+      "get":{
+        "tags": ["authentication"],
+        "description": "Used to be redirected to SAML IDP",
+        "responses": {
+          "304":{
+            "description": "ok"
+          }
+        }
+      }
+    },
+    "/logout/callback":{
+      "post":{
+        "tags": ["authentication"],
+        "description": "Used from IDP to reply to authentication request",
+        "responses": {
+          "304":{
+            "description": "ok"
           }
         }
       }
@@ -632,18 +722,35 @@
             "type": "array",
             "items": { "type": "string" }
           },
-          "keyword": { "type": "string" },
-          "type": { "type": "string" },
-          "groups": { "type": "string" },
+          "keyword": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "type": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "groups": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
           "description": { "type": "string" },
-          "knowledge": { "type": "string" },
+          "knowledge": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
           "note": { "type": "string" },
           "expiration_date": { "type": "string" },
-          "level": { "type": "integer" },
-          "cds": { "type": "string" },
+          "level": { 
+            "description":"0 bachelor, 1 master",
+            "enum": [0,1]
+          },
+          "cds": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
           "creation_date": { "type": "string" },
-          "status": { "type": "integer" },
-          "nPage":{"type": "integer"}
+          "status": { "type": "integer" }
         },
         "required": ["title", "supervisor", "expiration_date", "level", "cds"]
       },
@@ -666,7 +773,8 @@
           "name": { "type": "string" },
           "surname": { "type": "string" },
           "company": { "type": "string" }
-        }
+        },
+        "required": ["email"]
       },
       "application": {
         "type": "object",
@@ -674,19 +782,22 @@
           "id": { "type": "integer", "minimum": 0 },
           "id_student": { "type": "integer", "minimum": 0 },
           "id_thesis": { "type": "integer", "minimum": 0 },
-          "date": { "type": "string" },
+          "id_teacher": { "type": "integer", "minimum": 0 },
+          "date": { "type": "string", "format": "date" },
           "path_cv" : {"type" : "string"},
-          "status" : { "type": "integer"}
-        }
+          "status" : { "description":"pending: 0, accepted: 1, rejected: 2, cancelled: 3", "enum": [0,1,2,3]}
+        },
+        "required": ["id_student", "id_thesis"]
       },
       "notification":{
         "type": "object",
         "properties": {
           "id":{"type": "integer", "minimum": 0},
-          "id_thesis":{"type": "integer", "minimum": 0},
+          "id_student":{"type": "integer", "minimum": 0},
           "description":{"type": "string"},
-          "seen":{"enum": [0,1]}
-        }
+          "seen":{"description": "unseen: 0, seen: 1","enum": [0,1]}
+        },
+        "required": ["id_student", "seen"]
       },
       "error": {
         "type": "object",

@@ -1,6 +1,7 @@
 'use strict';
 
 const sqlite = require('sqlite3');
+require('dotenv').config({path: './variable.env'})
 
 const db = require("./db");
 
@@ -25,11 +26,13 @@ exports.findById = (id)=>{
 }
 
 exports.findByEmail = (email)=>{
+    if(!email)
+        throw new Error("email must exist")
     const sqlTeacher = "SELECT * FROM Teacher WHERE email = ?";
     return new Promise((resolve, reject)=>{
         db.get(sqlTeacher, [email], (err, row)=>{
             if (err) {
-                reject(err);
+                reject({error: err.message});
                 return;
             }
             if(row==undefined)
@@ -39,7 +42,21 @@ exports.findByEmail = (email)=>{
     });
 }
 
-
+exports.getTeacherEmail = (teacherID) => {
+    if(!teacherID || teacherID<0)
+        throw new Error("teacherID must exists and be greather than 0")
+    const teacherMailSQL = 'SELECT email FROM Teacher WHERE id = ? '
+    return new Promise((resolve, reject) => {
+      db.get(teacherMailSQL, [teacherID], function (err, result) {
+        if (err) {
+          console.error("Error in SQLDatabase:", err.message);
+          reject({error: err.message});
+        } else {
+          resolve(result.email);
+        }
+      });
+    });
+  };
 
 /**
  * Perfoms a search according to the following possible combinations:
