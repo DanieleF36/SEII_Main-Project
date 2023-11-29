@@ -304,7 +304,7 @@ exports.addThesis = (title, supervisor, keywords, type, groups, description, kno
 };
 
 exports.getActiveThesis = (supervisor, date) => {
-  const sql = `SELECT id, title, supervisor, keywords, type, groups, description,
+  const sql = `SELECT id, title, supervisor, keywords, status, type, groups, description,
                 knowledge, note, expiration_date, level, cds, creation_date 
                FROM thesis 
                WHERE status = 1 AND expiration_date > ? AND supervisor = ?`

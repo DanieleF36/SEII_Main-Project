@@ -70,10 +70,11 @@ function Homepage(props) {
     useEffect(() => {
         items.map(e => { if (e.key === props.active) { e.props.active = true } });
         //console.log(filters);
+        if(props.user.role === 'student'){
         API.advancedSearchThesis({...filters, page: props.active}).then(res => {
             props.setProposals(res[1]);
             props.setPage(res[0]);
-        });
+        });}
     }, [props.active]);
 
 
@@ -82,10 +83,13 @@ function Homepage(props) {
             console.log(user);
             props.setUser(user);
             props.setIsAuth(1);
-            API.advancedSearchThesis({page: active}).then(res=>{
+            if(user.role === 'student'){
+            API.advancedSearchThesis({page: props.active}).then(res=>{
+                console.log("arriviamo");
                 props.setProposals(res[1]);
                 props.setPage(res[0]);
               });
+            }
         }).catch(console.log('errore'));
     }, []);
 
@@ -150,6 +154,7 @@ function Homepage(props) {
     const handleApplyFilters = () => {
         //console.log(filters);
         if (filters.order === '' && filters.orderby === '' || filters.order !== '' && filters.orderby !== '') {
+            
             API.advancedSearchThesis({ ...filters, page: props.active}).then(res => {
                 props.setProposals(res[1]);
                 props.setPages(res[0]);
@@ -400,7 +405,7 @@ function Homepage(props) {
                 <Col xs={9}>
 
                    
-                        <MyProposal />
+                        <MyProposal user={props.user} />
 
                 </Col>
 

@@ -4,14 +4,14 @@ import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 
-function MyProposal() {
+function MyProposal(props) {
 
   const [dirty, setDirty] = useState(true);
   // const [id_professor, setId_professor] = useState(1);
   const [archived, setArchived] = useState(1);
   const [selectedProposal, setSelectedProposal] = useState('');
-  const [proposals, setProposals] = useState([/*{ id: 0, title: 'AI system research', supervisor: 'Mario Rossi', cosupervisor: ['123456@polito.it', '654321@polito.it'], expiration_date: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creatDate: '10/1/2023', status: '1' }*/]);
-  const [proposalsArchiv, setProposalsArchiv] = useState([{ id: 1, title: 'Prova', supervisor: 'Luca Neri', cosupervisor: ['123456@polito.it', '654321@polito.it'], expiration_date: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creatDate: '10/1/2023', status: '0' }]);
+  const [proposals, setProposals] = useState([/*{ id: 0, title: 'AI system research', supervisor: 'Mario Rossi', cosupervisor: ['123456@polito.it', '654321@polito.it'], expiration_date: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creation_date: '10/1/2023', status: '1' }*/]);
+  const [proposalsArchiv, setProposalsArchiv] = useState([{ id: 1, title: 'Prova', supervisor: 'Luca Neri', cosupervisor: ['123456@polito.it', '654321@polito.it'], expiration_date: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creation_date: '10/1/2023', status: '0' }]);
   const [showModal, setShowModal] = useState(false);
 
 
@@ -47,15 +47,16 @@ function MyProposal() {
 
    
     useEffect(() => {
-
+      if(props.user.role === 'teacher'){
         API.browseProposal()
             .then((proposals) => {
                 setProposals(proposals);
                 setDirty(false);
             })
             .catch((err) => { toast.error(err.error); });
+          }
 
-    }, [dirty]);
+    }, [dirty, props.user]);
 
 
   const handleInputChange = (e) => {
@@ -77,9 +78,9 @@ function MyProposal() {
 
   const handleList = (e) => {
     let name = e.target.name;
-    //let cosup_arr = e.target.value.split(",");
-    //let co = cosup_arr.map(e => e.trim());
-    setSelectedProposal({ ...selectedProposal/*, [name]: co */});
+    let cosup_arr = e.target.value.split(",");
+    let co = cosup_arr.map(e => e.trim());
+    setSelectedProposal({ ...selectedProposal, [name]: co });
   };
 
   /*const handleCoSup = (e) => {
@@ -171,6 +172,7 @@ function MyProposal() {
                       </Col>
                       <Col md='3' sm='3' xs='12'>
                         <strong>Status:</strong>{' '}
+                      
                         {proposal.status == 1 ? (
                           <Badge pill bg="success">P</Badge>
                         ) : (
@@ -195,7 +197,7 @@ function MyProposal() {
                   <br />
                   <strong>Description:</strong> {proposal.description}
                   <br />
-                  <strong>Knowledge:</strong> {proposal.know}
+                  <strong>Knowledge:</strong> {proposal.knowledge}
                   <br />
                   <strong>Note:</strong> {proposal.note}
                   <br />
@@ -203,7 +205,7 @@ function MyProposal() {
                   <br />
                   <strong>CdS:</strong> {proposal.cds}
                   <br />
-                  <strong>Creation Date:</strong> {proposal.creatDate}
+                  <strong>Creation Date:</strong> {proposal.creation_date}
                   <br />
                   <br />
                   <Button variant="warning" onClick={() => handleModify(proposal)}><img src="./pencil-fill.svg"
@@ -331,8 +333,8 @@ function MyProposal() {
                 <Form.Label><strong>Knowledge</strong>&nbsp;(separated by ',')</Form.Label>
                 <Form.Control
                   type="text"
-                  name="know"
-                  value={selectedProposal.know}
+                  name="knowledge"
+                  value={selectedProposal.knowledge}
                   onChange={handleList}
                 />
               </Form.Group>
@@ -355,16 +357,16 @@ function MyProposal() {
                     label="Bachelor"
                     name="level"
                     id="levelBachelor"
-                    checked={selectedProposal.level === 'Bachelor'}
-                    onChange={() => handleCheckboxChange('Bachelor')}
+                    checked={selectedProposal.level == 0}
+                    onChange={() => handleCheckboxChange(0)}
                   />
                   <Form.Check
                     type="checkbox"
                     label="Master"
                     name="level"
                     id="levelMaster"
-                    checked={selectedProposal.level === 'Master'}
-                    onChange={() => handleCheckboxChange('Master')}
+                    checked={selectedProposal.level == 1}
+                    onChange={() => handleCheckboxChange(1)}
                   />
                 </div>
               </Form.Group>
@@ -435,7 +437,7 @@ function MyProposal() {
                   <br />
                   <strong>Description:</strong> {proposal.description}
                   <br />
-                  <strong>Knowledge:</strong> {proposal.know}
+                  <strong>Knowledge:</strong> {proposal.knowledge}
                   <br />
                   <strong>Note:</strong> {proposal.note}
                   <br />
@@ -443,7 +445,7 @@ function MyProposal() {
                   <br />
                   <strong>CdS:</strong> {proposal.cds}
                   <br />
-                  <strong>Creation Date:</strong> {proposal.creatDate}
+                  <strong>Creation Date:</strong> {proposal.creation_date}
                   <br />
                   <br />
                 </Accordion.Body>

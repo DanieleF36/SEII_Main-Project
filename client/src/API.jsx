@@ -206,6 +206,7 @@ async function applyForProposal(application) {
     formData.append('cv', application.cv);
     const response = await fetch(URL+ `/thesis/${application.id_thesis}/applications`,{
         method: "POST",
+        credentials: "include",
         body: formData
     });
     console.log("Prima")

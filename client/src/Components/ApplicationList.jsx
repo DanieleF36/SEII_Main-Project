@@ -3,7 +3,7 @@ import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Nav
 import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
 
-function ApplicationList(props ) {
+function ApplicationList(props) {
 
     const [errorMsg, setErrorMsg] = useState(undefined);
     const [dirty, setDirty] = useState(true);
@@ -43,14 +43,14 @@ function ApplicationList(props ) {
     //adding API from backend to set list of applications
 
     useEffect(() => {
-
+        
         API.listApplication(props.user.id)
             .then((applications) => {
                 setApplications(applications);
                 setDirty(false);
             })
             .catch((err) => { toast.error(err.error); });
-
+        
     }, [dirty]);
 
     //applications.map((e)=>{console.log(e.id_application)});

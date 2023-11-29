@@ -49,7 +49,7 @@ const teacherController = require("./controllers/TeacherController");
 const studentController = require("./controllers/StudentController");
 const vc = require('./dayjsvc/index.dayjsvc')
 
-app.get("/thesis", isLoggedIn, thesisController.advancedResearchThesis);
+app.get("/thesis", isLoggedIn, (req, res) => thesisController.advancedResearchThesis(req,res));
 
 app.get("/thesis/supervisor/emails", isLoggedIn, thesisController.getAllCoSupervisorsEmails);
 

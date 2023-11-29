@@ -185,6 +185,7 @@ exports.addThesis = async function addThesis(req, res) {
 
   if( req.body.level === 'Master'){
     req.body.level = 1;
+    
   }
   else{
     req.body.level = 0;
@@ -211,45 +212,55 @@ exports.addThesis = async function addThesis(req, res) {
   
   //checks keywords
   if (!Array.isArray(req.body.keywords)) {
+    console.log("1")
     return res.status(400).json({ error: "keywords value not recognized" });
   }
   else {
+    console.log("12")
     req.body.keywords = req.body.keywords.join();
   }
 
   //checks type
   if (req.body.type === undefined || !Array.isArray(req.body.type)) {
+    console.log("2")
     return res.status(400).json({ error: "type value not recognized" });
   }
   else {
+    console.log("22")
     req.body.type = req.body.type.join();
   }
 
   //checks groups NEW
   if (req.body.groups === undefined || !Array.isArray(req.body.groups)) {
+    console.log("3")
     return res.status(400).json({ error: "groups value not recognized" });
-  }
-  else {
+  }else {
+    console.log("33")
     req.body.groups = req.body.groups.join();
   }
 
   //checks cds NEW
   if (req.body.cds === undefined || !Array.isArray(req.body.cds)) {
+    console.log("4")
     return res.status(400).json({ error: "cds value not recognized" });
   }
   else {
+    console.log("44")
     req.body.cds = req.body.cds.join();
   }
 
   //checks knowledge NEW
   if (!Array.isArray(req.body.knowledge)) {
+    console.log("5")
     return res.status(400).json({ error: "knowledge value not recognized" });
   }
   else {
+    console.log("55")
     req.body.knowledge = req.body.knowledge.join();
   }
 
   if(req.body.title === undefined || req.body.title === ""){
+    console.log("6")
     return res.status(400).json({error : "Title missing or empty string"})
   }
   
