@@ -17,5 +17,4 @@ RUN cd ./server; npm install
 CMD ./start.sh
 
 EXPOSE 3001
-
 EXPOSE 5173

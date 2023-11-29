@@ -4,7 +4,7 @@
 A docker container has been provided for the first release so that it can be easily used by someone who
 wants to run it having a different environment from the one used for deployment.
 ###### Pre-requirements
-The Docker Desktop app must be installed and configured in the host machine
+The Docker Desktop app must be installed and configured in the host machine and nodemailer app running SMPT server on port 1025 from 'https://nodemailer.com/app/'
 ###### Build a docker image
 For building a docker image through the Dockerfile you need to run the following command inside the directory containing it:
 ```

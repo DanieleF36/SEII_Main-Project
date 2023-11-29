@@ -1,7 +1,9 @@
 'use strict';
 const nodemailer = require('nodemailer');
+require('dotenv').config({path: "../docker.env"})
 const transporter = nodemailer.createTransport({
-    host: '127.0.0.1',
+    host: process.env.HOSTIP == undefined ? '127.0.0.1' : process.env.HOSTIP.toString().slice(1, -1),
+    // host: '172.17.0.2',
     port: 1025,
     auth: {
         user: 'project.1',
