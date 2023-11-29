@@ -5,10 +5,10 @@ import Card from 'react-bootstrap/Card';
 import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
 
-function AddProposalForm() {
+function AddProposalForm(props) {
     const [proposalData, setProposalData] = useState({
         title: 'Demo2',
-        supervisor: '',
+        supervisor: props.user.id,
         cosupervisor: '',
         expiration_date: '',
         keywords: ['D2', 'M2'],

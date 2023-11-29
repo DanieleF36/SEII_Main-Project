@@ -23,7 +23,7 @@ async function logout(){
 }
 
 async function listApplication(id_professor) { 
-    const response = await fetch(URL+ `/professor/${id_professor}/applications`);
+    const response = await fetch(URL+ `/professor/${id_professor}/applications`,{credentials:'include'});
     const application = await response.json();
     if (response.ok) {
        return application.map((a) => ({
@@ -43,14 +43,16 @@ async function listApplication(id_professor) {
   }
 
 function insertProposal(thesis) {
+  
   thesis.status = 1;
   thesis.cosupervisor = thesis.cosupervisor === '' ? [''] : thesis.cosupervisor
-
+  console.log(thesis)
   return getJson(fetch(URL + '/thesis', {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials:'include',
     body: JSON.stringify(thesis)
 
   })).then(json => {
@@ -183,6 +185,7 @@ async function acceptApplication(status,id_professor,id_application) {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials:'include',
         body: JSON.stringify({status}),
     });
     //const responsedata = await response.json();
@@ -219,7 +222,7 @@ async function applyForProposal(application) {
 
 async function browserApplicationStudent(id_student) {
   try {
-    const response = await fetch(URL + `/student/${id_student}/applications`);
+    const response = await fetch(URL + `/student/${id_student}/applications`, {credentials:'include'});
     const application = await response.json();
     if (response.ok) {
       return application.map((a) => ({
@@ -251,7 +254,7 @@ async function browserApplicationStudent(id_student) {
 
 function browseProposal() {
   return getJson(fetch(URL + '/professor/thesis', {
-    method: "GET"
+    credentials:'include'
   }))
   .then(res => {
     return res

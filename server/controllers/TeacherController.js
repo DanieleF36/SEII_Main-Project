@@ -35,14 +35,18 @@ const teacherService = require("../services/TeacherService");
  */
 exports.listApplication = function listApplication(req, res) {
   if(req.user.role!=='teacher'){
+    console.log("First")
     res.status(401).json({error:"You can not access to this route"})
     return;
   }
-  if(req.user.id !== req.params.id_professor) {
+  if(req.user.id != req.params.id_professor) {
+    console.log("third "+req.user.id+" "+req.params.id_professor)
+
     res.status(401).json({error:"Unauthorized"})
     return;
   }
   if (!req.params.id_professor) {
+    console.log("Secpnd")
     res.status(400).json({error: "given supervisor's id is not valid"})
     return
   }
@@ -57,16 +61,16 @@ exports.listApplication = function listApplication(req, res) {
 };
 
 exports.acceptApplication = function acceptApplication(req, res) {
-  /*
+  
   if(req.user.role!=='teacher'){
     res.status(401).json({error:"You can not access to this route"})
     return;
   }
-  if(req.user.id !== req.params.id_professor) {
+  if(req.user.id != req.params.id_professor) {
+
     res.status(401).json({error:"Unauthorized"})
     return;
   }
-  */
   if(req.body === undefined) {
     return res.status(400).json({ error: "Body is missing" });
   }
@@ -75,7 +79,7 @@ exports.acceptApplication = function acceptApplication(req, res) {
   }
   if(req.body.status == 1 || req.body.status == 2){
     teacherService
-    .acceptApplication(req.body.status, req.params.id_professor, req.params.id_application)
+    .acceptApplication(req.body.status, req.user.id, req.params.id_application)
     .then(function (response) {
       return res.status(200).json(response);
     })

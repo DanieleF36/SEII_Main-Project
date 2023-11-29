@@ -37,6 +37,7 @@ exports.acceptApplication = async  function (status,teacherID,applicationID) {
     }
     const id_thesis = row.id_thesis;
     const id_student = row.id_student;
+    console.log(id_student)
     if(row.id_teacher != teacherID)
         throw new Error("This application does not own to that teacher, he cant accept it");
     await applicationRepository.updateStatus(applicationID, status);

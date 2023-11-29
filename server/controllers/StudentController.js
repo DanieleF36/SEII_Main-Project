@@ -86,7 +86,7 @@ exports.browserApplicationStudent = function (req, res) {
     res.status(401).json({error:"You can not access to this route"})
     return;
   }
-  if(req.user.id !== req.params.id_student) {
+  if(req.user.id != req.params.id_student) {
     res.status(401).json({error:"Unauthorized"})
     return;
   }

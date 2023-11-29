@@ -131,7 +131,7 @@ exports.getStudentAndCDSByEmail= (email) => {
             resolve({})
           else {
             console.log(row)
-            resolve({id:row.id, name:row.name, surname:row.surname, email:row.email, gender:row.gender, nationality:row.nationality, cds:row.title, enrol_year:enrol_year});
+            resolve({id:row.id, name:row.name, surname:row.surname, email:row.email, gender:row.gender, nationality:row.nationality, cds:row.title, enrol_year:row.enrol_year});
           }
 
       });

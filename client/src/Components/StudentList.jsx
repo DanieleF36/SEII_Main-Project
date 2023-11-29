@@ -3,10 +3,10 @@ import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Nav
 import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
 
-function StudentList() {
+function StudentList(props) {
 
     const [dirty, setDirty] = useState(true);
-    const [id_student, setId_student] = useState(1);
+    //const [id_student, setId_student] = useState(1);
    
     const [list, setList] = useState([/*{id_application:1, 
                                         groups: 'Smart Cities',
@@ -28,7 +28,7 @@ function StudentList() {
     //adding API from backend to set list of applications of the student
     useEffect(() => {
 
-        API.browserApplicationStudent(id_student)
+        API.browserApplicationStudent(props.user.id)
             .then((list) => {
                 setList(list);
                 setDirty(false);

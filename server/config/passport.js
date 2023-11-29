@@ -18,24 +18,26 @@ const samlConfig = {
     signatureAlgorithm: 'sha256',
     options:{ failureRedirect: '/login', failureFlash: true }
 };
-const samlStrategy = new saml(samlConfig, (profile, done) => {
+const samlStrategy = new saml(samlConfig, async (profile, done) => {
     let user, role;
-    if(profile.nameID.includes('studenti') || profile.nameID.includes('studenti')){
-        user = studentRepository.getStudentAndCDSByEmail(profile.nameID);
+    if(profile.nameID.includes('studenti') ){
+        user = await studentRepository.getStudentAndCDSByEmail(profile.nameID);
         role = "student";
     }
-    else if(profile.nameID.includes('professori') || profile.nameID.includes('professori')){
-        user = teacherRepository.findByEmail(profile.nameID);
+    else if(profile.nameID.includes('professori') ){
+        user = await teacherRepository.findByEmail(profile.nameID);
+        console.log(user);
         role = "teacher";
     }
-    else if(profile.nameID.includes('supervisor') || profile.nameID.includes('supervisor')){
-        user = coSupervisorRepository.findByEmail(profile.nameID);
+    else if(profile.nameID.includes('cosupervisor') ){
+        user = await coSupervisorRepository.findByEmail(profile.nameID);
         role = "cosupervisor";
     }
     if(role==='student')
         user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, cds:user.cds }
     else
         user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID }
+    
     return done(null, user);
 });
 passport.use("samlStrategy", samlStrategy);

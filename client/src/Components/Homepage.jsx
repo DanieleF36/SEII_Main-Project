@@ -312,7 +312,7 @@ function Homepage(props) {
                     </Col>
                     <Col xs={9}>
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <StudentList />
+                            <StudentList user={props.user}/>
                         </div>
 
                     </Col>
@@ -340,7 +340,7 @@ function Homepage(props) {
                     </Col>
                     <Col xs={9}>
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <AddProposalForm />
+                            <AddProposalForm user={props.user}/>
                         </div>
 
                     </Col>
@@ -369,7 +369,7 @@ function Homepage(props) {
                     <Col xs={9}>
 
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <ApplicationList />
+                            <ApplicationList user={props.user}/>
                         </div>
 
                     </Col>
