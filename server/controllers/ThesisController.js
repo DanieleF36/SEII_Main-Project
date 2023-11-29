@@ -212,17 +212,14 @@ exports.addThesis = async function addThesis(req, res) {
   
   //checks keywords
   if (!Array.isArray(req.body.keywords)) {
-    console.log("1")
     return res.status(400).json({ error: "keywords value not recognized" });
   }
   else {
-    console.log("12")
     req.body.keywords = req.body.keywords.join();
   }
 
   //checks type
   if (req.body.type === undefined || !Array.isArray(req.body.type)) {
-    console.log("2")
     return res.status(400).json({ error: "type value not recognized" });
   }
   else {
@@ -300,6 +297,14 @@ exports.updateThesis = async function updateThesis(req, res) {
 
   if (req.body.level === undefined || (req.body.level !== "Master" && req.body.level !== "Bachelor")) {
     return res.status(400).json({ error: "level value not recognized" });
+  }
+
+  if( req.body.level === 'Master'){
+    req.body.level = 1;
+    
+  }
+  else{
+    req.body.level = 0;
   }
 
   if (req.body.supervisor === undefined) {

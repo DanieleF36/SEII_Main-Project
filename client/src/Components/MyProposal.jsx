@@ -139,9 +139,9 @@ function MyProposal(props) {
         console.log(updatedProp)
         updatedProp[selectedProposal.id] = selectedProposal;
         setProposals(updatedProp);
-        toast.success('Thesis Proposal successfully updated');
        API.updateProposal(selectedProposal.id, selectedProposal)
          .then(() => {
+           setDirty(true);
            toast.success('Thesis Proposal successfully updated');
          })
          .catch((error) => {

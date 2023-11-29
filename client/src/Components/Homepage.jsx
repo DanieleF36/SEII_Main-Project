@@ -121,7 +121,7 @@ function Homepage(props) {
         if (application.cv !== '') {
             //console.log(application);
             API.applyForProposal(application).then((res) => { toast.success('Application successfully sended'); setApplication({ ...application, cv: '' }) })
-                .catch((res) => console.log(res));
+                .catch((res) => toast.error(res.error));
 
         }
         else (

@@ -138,3 +138,22 @@ exports.getStudentAndCDSByEmail= (email) => {
       });
   })
 }
+
+exports.searchApplicationByStudentId = (studentId) => {
+  const sql = 'SELECT id_student FROM Application WHERE id_student = ?';
+  return new Promise((resolve, reject)=>{
+    db.get(sql, [studentId], (err, result) => {
+      if (err) {
+        console.error("Error in SQLDatabase:", err.message);
+        reject({error: err.message});
+      }
+      console.log(studentId);
+      if(result){
+        resolve(true);
+      }
+      else{
+        resolve(false);
+      }
+    })
+  })
+}

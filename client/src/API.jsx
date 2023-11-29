@@ -62,9 +62,13 @@ function insertProposal(thesis) {
 }
 
 function updateProposal(id_thesis, thesis) {
-  thesis.status = 1;
-  //thesis.cosupervisor = thesis.cosupervisor === '' ? [''] : thesis.cosupervisor
-
+  thesis.cds = Array.isArray(thesis.cds) ? thesis.cds : thesis.cds.split(',').map((k) =>k.trim());
+  thesis.knowledge = Array.isArray(thesis.knowledge) ? thesis.knowledge : thesis.knowledge.split(',').map((k) =>k.trim());
+  thesis.type = Array.isArray(thesis.type) ? thesis.type : thesis.type.split(',').map((k) =>k.trim());
+  thesis.groups = Array.isArray(thesis.groups) ? thesis.groups : thesis.groups.split(',').map((k) =>k.trim());
+  thesis.keywords = Array.isArray(thesis.keywords) ? thesis.keywords : thesis.keywords.split(',').map((k) =>k.trim());
+  thesis.level = thesis.level === 1 ? "Master" : "Bachelor"
+  thesis.cosupervisor = []
   console.log(thesis)
 
   return getJson(fetch(URL + `/thesis/${id_thesis}`, {
@@ -72,6 +76,7 @@ function updateProposal(id_thesis, thesis) {
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: 'include',
     body: JSON.stringify(thesis)
 
   })).then(json => {
@@ -204,21 +209,11 @@ async function acceptApplication(status,id_professor,id_application) {
 async function applyForProposal(application) { 
     const formData = new FormData();
     formData.append('cv', application.cv);
-    const response = await fetch(URL+ `/thesis/${application.id_thesis}/applications`,{
+    return getJson(fetch(URL+ `/thesis/${application.id_thesis}/applications`,{
         method: "POST",
         credentials: "include",
         body: formData
-    });
-    console.log("Prima")
-    console.log(response);
-    const app = await response.json();
-    console.log("dopo")
-    if (response.status==201) {
-        return true;
-    }
-    else if(response.status==400 || response.status==404){
-        return{error: app.error}
-    }
+    })).then(json => {return json});
 }
 
 async function browserApplicationStudent(id_student) {

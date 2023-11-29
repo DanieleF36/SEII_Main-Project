@@ -5,6 +5,7 @@ const path = require('path');
 
 const applicationsService = require("../services/ApplicationService");
 const studentsService = require("../services/StudentService");
+const studentRepository = require("../repositories/StudentRepository");
 
 /**
  * wrapper function for apply to a thesis proposal with id = id_thesis 
@@ -21,13 +22,17 @@ const studentsService = require("../services/StudentService");
  *     }
  *   }
  */
-exports.applyForProposal = function (req, res, next) {
+exports.applyForProposal = async function (req, res) {
   if(req.user.role!=='student'){
     res.status(401).json({error:"You can not access to this route"})
     return;
   }
   if (!req.body) {
     return res.status(400).json({ error: "Body is missing" });
+  }
+  const checkApp = await studentRepository.searchApplicationByStudentId(req.user.id);
+  if(checkApp == true) {
+    return res.status(400).json({error : "You already have an application for a thesis"});
   }
   if (/* studentId != null && */ req.params.id_thesis != null) {
     //Initializes an object that is used to handle the input file in the multipart/form-data format 

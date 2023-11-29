@@ -235,26 +235,25 @@ exports.updateThesis = async function (thesis, thesis_id) {
     let cosupervisor_ids = [];
     let supervisor_ids = [];
 
-    // Look for each co-supervisor id into COSUPERVISOR
-    console.log(thesis.cosupervisor);
-    if (Array.isArray(thesis.cosupervisor) && thesis.cosupervisor[0].length !== 0) {
-      for (let email of thesis.cosupervisor) {
-        let tmp = await coSupervisorRepository.findByEmail(email);
-        if (Object.keys(tmp).length === 0) {
-          tmp = await teacherRepository.findByEmail(email);
-          if (Object.keys(tmp).length === 0) {
-            throw {
-              status: 400,
-              error: `Supervisor ${email} not found in COSUPERVISOR`,
-            };
-          } else {
-            supervisor_ids.push(tmp.id);
-          }
-        } else {
-          cosupervisor_ids.push(tmp.id);
-        }
-      }
-    }
+    // // Look for each co-supervisor id into COSUPERVISOR
+    // if (Array.isArray(thesis.cosupervisor) && thesis.cosupervisor[0].length !== 0) {
+    //   for (let email of thesis.cosupervisor) {
+    //     let tmp = await coSupervisorRepository.findByEmail(email);
+    //     if (Object.keys(tmp).length === 0) {
+    //       tmp = await teacherRepository.findByEmail(email);
+    //       if (Object.keys(tmp).length === 0) {
+    //         throw {
+    //           status: 400,
+    //           error: `Supervisor ${email} not found in COSUPERVISOR`,
+    //         };
+    //       } else {
+    //         supervisor_ids.push(tmp.id);
+    //       }
+    //     } else {
+    //       cosupervisor_ids.push(tmp.id);
+    //     }
+    //   }
+    // }
 
     const exp_date = dayjs(thesis.expiration_date, 'MM-DD-YYYY')
       .format('YYYY-MM-DD')
@@ -284,31 +283,31 @@ exports.updateThesis = async function (thesis, thesis_id) {
     }
 
     // Remove existing co-supervisors for this thesis
-    const removedCoSupervisors = await coSupervisorThesisRepository.removeCoSupervisorsByThesisId(
-      thesis_id
-    );
+    // const removedCoSupervisors = await coSupervisorThesisRepository.removeCoSupervisorsByThesisId(
+    //   thesis_id
+    // );
 
-    if (removedCoSupervisors.error) {
-      throw { status: 500, error: removedCoSupervisors.error };
-    }
+    // if (removedCoSupervisors.error) {
+    //   throw { status: 500, error: removedCoSupervisors.error };
+    // }
 
     // Add new co-supervisors for this thesis
-    if (cosupervisor_ids.length > 0) {
-      for (let id of cosupervisor_ids) {
-        result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_id, null, id);
-        if (result !== true) {
-          throw { status: 500, error: result.error };
-        }
-      }
-    }
-    if (supervisor_ids.length > 0) {
-      for (let id of supervisor_ids) {
-        result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_id, id, null);
-        if (result !== true) {
-          throw { status: 500, error: result.error };
-        }
-      }
-    }
+    // if (cosupervisor_ids.length > 0) {
+    //   for (let id of cosupervisor_ids) {
+    //     result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_id, null, id);
+    //     if (result !== true) {
+    //       throw { status: 500, error: result.error };
+    //     }
+    //   }
+    // }
+    // if (supervisor_ids.length > 0) {
+    //   for (let id of supervisor_ids) {
+    //     result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_id, id, null);
+    //     if (result !== true) {
+    //       throw { status: 500, error: result.error };
+    //     }
+    //   }
+    // }
     return updatedThesis;
   } catch (error) {
     return error;
