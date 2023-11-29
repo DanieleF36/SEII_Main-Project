@@ -46,3 +46,51 @@ describe('browserApplicationStudent', ()=>{
 
     })
 })
+
+describe('getStudentEmailCancelled', ()=>{
+    test('case0: wrongedId', async ()=>{
+        expect(()=>studentRepository.getStudentEmailCancelled()).toThrow(new Error("id_student must exists and be greater than 0"));
+    }),
+    test('case0: wrongedId', async ()=>{
+        const mockId = -1
+        expect(()=>studentRepository.getStudentEmailCancelled(mockId)).toThrow(new Error("id_student must exists and be greater than 0"));
+    }),
+    test('case1: error', async ()=>{
+        const mockId = 1;
+        db.all.mockImplementation((sql, params, callback) => {
+            callback({message: "error SQLite"},null);
+        });
+        expect(studentRepository.getStudentEmailCancelled(mockId)).rejects.toEqual({error: "error SQLite"});
+    }),
+    test('case2: success', async ()=>{
+        const mockId = 1;
+        db.all.mockImplementation((sql, params, callback) => {
+            callback(null, [{email: "email0"}, {email: "email1"}, {email: "email2"}]);
+        });
+        expect(studentRepository.getStudentEmailCancelled(mockId)).resolves.toEqual( ["email0", "email1", "email2"]);
+    })
+});
+
+describe('getStudentEmail', ()=>{
+    test('case0: wrongedId', async ()=>{
+        expect(()=>studentRepository.getStudentEmail()).toThrow(new Error("id_student must exists and be greater than 0"));
+    }),
+    test('case0: wrongedId', async ()=>{
+        const mockId = -1
+        expect(()=>studentRepository.getStudentEmail(mockId)).toThrow(new Error("id_student must exists and be greater than 0"));
+    }),
+    test('case1: error', async ()=>{
+        const mockId = 1;
+        db.all.mockImplementation((sql, params, callback) => {
+            callback({message: "error SQLite"},null);
+        });
+        expect(studentRepository.getStudentEmail(mockId)).rejects.toEqual({error: "error SQLite"});
+    }),
+    test('case2: success', async ()=>{
+        const mockId = 1;
+        db.all.mockImplementation((sql, params, callback) => {
+            callback(null, {email: "email0"});
+        });
+        expect(studentRepository.getStudentEmail(mockId)).resolves.toEqual( "email0");
+    })
+});

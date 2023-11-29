@@ -89,44 +89,50 @@ exports.addProposal = (studentId, thesisId, cvPath) => {
 };
 
 exports.updateStatus = (id, status)=>{
+  if(!id || id<0)
+    throw new Error("id must exists and be greater than 0");
+    if(status == undefined || status<0 || status>3)
+    throw new Error("status must exists and be one or two or three");
   const updateApplicationSQL = 'UPDATE Application SET status = ? WHERE id = ?';
   return new Promise((resolve, reject)=>{
     db.run(updateApplicationSQL, [status, id], function (err) {
       if (err) {
-        console.error("Error in SQLDatabase:", err.message);
+        //console.error("Error in SQLDatabase:", err.message);
         reject({error: err.message});
         return;
       }
-      resolve(this.lastID)
+      resolve("Done")
     })
   })
 }
 
 exports.updateStatusToCancelledForOtherStudent = (id_thesis, id_student)=>{
+  if(!id_thesis || id_thesis<0)
+    throw new Error("id_thesis must exists and be greater than 0");
+    if(!id_student || id_student<0)
+    throw new Error("id_student must exists and be greater than 0");
   return new Promise((resolve, reject)=>{
     const updateOtherApplicationsSQL = 'UPDATE Application SET status = 3 WHERE id_thesis = ? AND id_student != ?';
     db.run(updateOtherApplicationsSQL, [id_thesis, id_student], function (err) {
       if (err) {
-        console.error("Error in SQLDatabase:", err.message);
+        //console.error("Error in SQLDatabase:", err.message);
         reject({error: err.message});
         return;
       }
-      resolve(this.lastID)
+      resolve("Done")
     })
   })
 };
 
 exports.getApplication = (id) => {
+  if(!id || id<0)
+    throw new Error("id must exists and be greater than 0");
   const fetchThesisStudentSQL = 'SELECT * FROM Application WHERE id = ?';
   return new Promise((resolve, reject) => {
     db.get(fetchThesisStudentSQL, [id], (err, row) => {
       if (err) {
-        console.error("Error in SQLDatabase:", err.message);
+        //console.error("Error in SQLDatabase:", err.message);
         reject({error: err.message});
-        return;
-      }
-      if (!row) {
-        reject({ error: "No application was found, application is missing or is of another teacher" });
         return;
       }
       resolve(row);

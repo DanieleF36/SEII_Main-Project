@@ -440,12 +440,14 @@ exports.restoreExpiredAccordingToIds = (ids) => {
 }
 
 exports.getThesisTitle = ( id_thesis) => {
+  if(!id_thesis || id_thesis<0)
+    throw new Error("id_thesis must exists and be greater than 0");
   const thesisTitlesSQL = 'SELECT title FROM Thesis WHERE id = ?'
   return new Promise((resolve, reject) => {
     db.get(thesisTitlesSQL, [id_thesis], function (err, result) {
       if (err) {
         console.error("Error in SQLDatabase:", err.message);
-        reject(err);
+        reject({error: err.message});
         return;
       }
       resolve(result.title);
@@ -454,19 +456,23 @@ exports.getThesisTitle = ( id_thesis) => {
 }
 
 exports.setStatus = (id, status) => {
+  if(!id || id<0)
+    throw new Error("id must exists and be greater than 0");
+  if(status==undefined || status<0 || status>3)
+    throw new Error("status must exists and be one or two or three");
   const updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ?';
   return new Promise((resolve, reject)=>{
     db.run(updateThesisSQL, [status, id], function (err) {
       if (err) {
-        console.error("Error in SQLDatabase:", err.message);
-        reject(err);
+        console.log("Error in SQLDatabase:", err.message);
+        reject({error: err.message});
         return;
       }
       if (this.changes === 0) {
         reject({ error: "No rows updated. Thesis ID not found." });
         return;
       }
-      resolve(this.lastID);
+      resolve("Done");
     });
   })
 }

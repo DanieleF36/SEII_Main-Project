@@ -85,12 +85,14 @@ exports.findByEmail = (email) => {
 }
 
 exports.getStudentEmail = (id_student) => {
+  if(!id_student || id_student<0)
+    throw new Error("id_student must exists and be greater than 0");
   const studentMailSQl = 'SELECT email FROM Student WHERE id = ? '
   return new Promise((resolve, reject) => {
     db.get(studentMailSQl, [id_student], function (err, result) {
       if (err) {
         console.error("Error in SQLDatabase:", err.message);
-        reject(err);
+        reject({error: err.message});
       } else {
         resolve(result.email);
       }
@@ -99,12 +101,14 @@ exports.getStudentEmail = (id_student) => {
 };
 
 exports.getStudentEmailCancelled = (id_student) => {
+  if(!id_student || id_student<0)
+    throw new Error("id_student must exists and be greater than 0");
   const studentMailCancelledSQL = 'SELECT email FROM Student WHERE id != ? '
   return new Promise((resolve, reject) => {
     db.all(studentMailCancelledSQL, [id_student], function (err, result) {
       if (err) {
         console.error("Error in SQLDatabase:", err.message);
-        reject(err);
+        reject({error: err.message});
       } else {
         const emails = result.map((row) => row.email);
         resolve(emails);
