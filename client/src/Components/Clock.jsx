@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button, Container, Row, Col, Form, ButtonGroup } from 'react-bootstrap';
 import API from '../API';
 import './TitleBar.css';
+import dayjs from 'dayjs';
 
 const Clock = (props) => {
 
@@ -18,32 +19,67 @@ const Clock = (props) => {
         props.setCurrentTime(new Date(year, month-1, day, hh, min)) });
     }; 
 
+    // const addTime = (unit, value) => {
+    //     const newTime = new Date(props.currentTime);
+
+    //     switch (unit) {
+    //         case 'minute':
+    //             newTime.setMinutes(newTime.getMinutes() + value);
+    //             break;
+    //         case 'hour':
+    //             newTime.setHours(newTime.getHours() + value);
+    //             break;
+    //         case 'day':
+    //             newTime.setDate(newTime.getDate() + value);
+    //             break;
+    //         case 'month':
+    //             newTime.setMonth(newTime.getMonth() + value);
+    //             break;
+    //         case 'year':
+    //             newTime.setFullYear(newTime.getFullYear() + value);
+    //             break;
+    //         default:
+    //             return;
+    //     }
+    //     API.vc_set(newTime.toISOString().slice(0, 10) + 'T' + newTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })).
+    //     then(()=> {props.setCurrentTime(newTime);})
+    //     .catch();
+       
+    // };
+
+    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv 
     const addTime = (unit, value) => {
-        const newTime = new Date(props.currentTime);
+        let newTime = dayjs(props.currentTime);
 
         switch (unit) {
             case 'minute':
-                newTime.setMinutes(newTime.getMinutes() + value);
+                newTime = newTime.add(value, 'minute');
                 break;
             case 'hour':
-                newTime.setHours(newTime.getHours() + value);
+                newTime = newTime.add(value, 'hour');
                 break;
             case 'day':
-                newTime.setDate(newTime.getDate() + value);
+                newTime = newTime.add(value, 'day');
                 break;
             case 'month':
-                newTime.setMonth(newTime.getMonth() + value);
+                newTime = newTime.add(value, 'month');
                 break;
             case 'year':
-                newTime.setFullYear(newTime.getFullYear() + value);
+                newTime = newTime.add(value, 'year');
                 break;
             default:
                 return;
         }
-        API.vc_set(newTime.toISOString().slice(0, 10) + 'T' + newTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })).
-        then(()=> {props.setCurrentTime(newTime);})
-        .catch();
-       
+
+        const formattedTime = newTime.format('YYYY-MM-DDTHH:mm');
+        
+        API.vc_set(formattedTime)
+            .then(() => {
+                props.setCurrentTime(newTime.toDate());
+            })
+            .catch(error => {
+                // Handle error here
+            });
     };
 
     const handleRestore = () =>{
