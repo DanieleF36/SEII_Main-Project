@@ -57,7 +57,6 @@ exports.listApplication = function listApplication(req, res) {
 };
 
 exports.acceptApplication = function acceptApplication(req, res) {
-  /*
   if(req.user.role!=='teacher'){
     res.status(401).json({error:"You can not access to this route"})
     return;
@@ -66,7 +65,9 @@ exports.acceptApplication = function acceptApplication(req, res) {
     res.status(401).json({error:"Unauthorized"})
     return;
   }
-  */
+  if(!req.params.id_application || req.params.id_application<0){
+    return res.status(400).json({ error: "Wronged id application" });
+  }
   if(req.body === undefined) {
     return res.status(400).json({ error: "Body is missing" });
   }
@@ -80,10 +81,13 @@ exports.acceptApplication = function acceptApplication(req, res) {
       return res.status(200).json(response);
     })
     .catch(function (response) {
+      console.log(response)
       if(response.error)
         return res.status(500).json(response);
+      else if(response.message)
+        return res.status(500).json({error: response.message});
       else
-      return res.status(500).json({error: response});
+        return res.status(500).json({error: response});
     });
   }
   else{
