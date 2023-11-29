@@ -90,7 +90,7 @@ function Homepage(props) {
                 props.setPage(res[0]);
               });
             }
-        }).catch(console.log('errore'));
+        })
     }, []);
 
     useEffect(() => {

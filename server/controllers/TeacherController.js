@@ -112,7 +112,7 @@ exports.browseProposals = async function (req, res) {
 
   const supervisor = req.user.id;
 
-  const response = await teacherService.browseApplication(supervisor)
+  const response = await teacherService.browseProposals(supervisor)
   if(response.error) {
     return res.status(response.status).json(response.error)
   }

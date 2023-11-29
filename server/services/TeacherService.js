@@ -44,7 +44,7 @@ exports.acceptApplication = async  function (status,teacherID,applicationID) {
         await applicationRepository.updateStatusToCancelledForOtherStudent(id_thesis, id_student);
         await thesisRepository.setStatus(id_thesis, 0);
         // Execute the promises sequentially
-        await _sendCancelledEmails(teacherID, id_thesis, id_student);
+        await _sendCancelledEmails(teacherID, id_thesis,applicationID, id_student);
         await _sendAcceptedEmail(teacherID, id_thesis, id_student);
         //resolve({ message: "Application and Thesis updated successfully." });
     } else {
@@ -70,7 +70,7 @@ async function _sendRejectedEmail(teacherID, id_thesis, id_student) {
 };
 
 // Send a notification to all the students with the new status cancelled
-async function _sendCancelledEmails(teacherID, id_thesis, id_student)  {
+async function _sendCancelledEmails(teacherID, id_thesis,id_application, id_student)  {
     if(!teacherID || teacherID<0)
         throw new Error("teacherID must exists and be greater than 0");
     
@@ -78,7 +78,7 @@ async function _sendCancelledEmails(teacherID, id_thesis, id_student)  {
         throw new Error("id_thesis must exists and be greater than 0");    
     if(!id_student || id_student<0)
         throw new Error("id_student must exists and be greater than 0");
-    const [teacherEmail, thesisTitle, studentEmailCancelledArray] = await Promise.all([teacherRepo.getTeacherEmail(teacherID), thesisRepository.getThesisTitle(id_thesis), studentRepo.getStudentEmailCancelled(id_student)])
+    const [teacherEmail, thesisTitle, studentEmailCancelledArray] = await Promise.all([teacherRepo.getTeacherEmail(teacherID), thesisRepository.getThesisTitle(id_thesis), studentRepo.getStudentEmailCancelled(id_student,id_application, id_thesis)])
     console.log(teacherEmail+" "+thesisTitle+" "+JSON.stringify(studentEmailCancelledArray));
     for(let i of studentEmailCancelledArray){
         await transporter.sendEmail(teacherEmail, i, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to cancelled.`);
@@ -105,7 +105,7 @@ async function _sendAcceptedEmail(teacherID, id_thesis, id_student){
         
 };
 
-exports.browseApplication = async function(supervisor) {
+exports.browseProposals = async function(supervisor) {
     const today = dayjs.vc()
     if(!today.isValid())
         return {status: 500, error: 'internal error'}

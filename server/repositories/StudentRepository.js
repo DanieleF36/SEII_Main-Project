@@ -1,5 +1,6 @@
 'use strict';
 
+const { application } = require("express");
 const db = require("./db");
 
 
@@ -101,12 +102,12 @@ exports.getStudentEmail = (id_student) => {
   });
 };
 
-exports.getStudentEmailCancelled = (id_student) => {
+exports.getStudentEmailCancelled = (id_student, id_application, id_thesis) => {
   if(!id_student || id_student<0)
     throw new Error("id_student must exists and be greater than 0");
-  const studentMailCancelledSQL = 'SELECT email FROM Student WHERE id != ? '
+  const studentMailCancelledSQL = 'SELECT email FROM Student WHERE id IN (SELECT id_student FROM Application WHERE id_thesis=? AND id!=?) '
   return new Promise((resolve, reject) => {
-    db.all(studentMailCancelledSQL, [id_student], function (err, result) {
+    db.all(studentMailCancelledSQL, [id_thesis, id_application], function (err, result) {
       if (err) {
         console.error("Error in SQLDatabase:", err.message);
         reject({error: err.message});

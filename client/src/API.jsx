@@ -268,7 +268,7 @@ function vc_set(date) {
   return getJson(fetch(URL + '/testing/vc/set', {
     method: "POST",
     body: {
-      value: data
+      value: date
     }
   }))
   .then(res => {
@@ -276,7 +276,7 @@ function vc_set(date) {
   })
 }
 
-function vc_get(date) {
+function vc_get() {
   return getJson(fetch(URL + '/testing/vc/get', {
     method: "GET"
   }))

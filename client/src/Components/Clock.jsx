@@ -42,9 +42,9 @@ const Clock = (props) => {
             default:
                 return;
         }
-        //API.setTime(newTime).then(props.setCurrentTime(newTime);)
-        props.setCurrentTime(newTime);
-        console.log(newTime.toISOString().slice(0, 10) + 'T' + newTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+        API.vc_set(newTime.toISOString().slice(0, 10) + 'T' + newTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })).then(props.setCurrentTime(newTime))
+        .catch((error)=>{toast.error(error)});
+       
     };
 
     useEffect(() => {
