@@ -80,7 +80,10 @@ exports.acceptApplication = function acceptApplication(req, res) {
       return res.status(200).json(response);
     })
     .catch(function (response) {
-      return res.status(500).json(response);
+      if(response.error)
+        return res.status(500).json(response);
+      else
+      return res.status(500).json({error: response});
     });
   }
   else{
