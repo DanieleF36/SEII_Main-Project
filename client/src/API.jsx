@@ -301,6 +301,24 @@ function vc_restore() {
     return res
   })
 }
-const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, browserApplicationStudent, applyForProposal, browseProposal, vc_set, vc_restore, vc_get, userAuthenticated, login, logout };
+
+async function getCoSupervisorsEmails() {
+  try {
+    const response = await fetch(URL + '/thesis/supervisor/emails');
+    const coSupervisorsEmails = await response.json();
+
+    if (response.ok) {
+      return coSupervisorsEmails;
+    } else {
+      const message = await response.text();
+      throw new Error(message);
+    }
+  } catch (error) {
+    throw new Error(error.message, { cause: error });
+  }
+}
+const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, browserApplicationStudent, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout };
+
+
 
 export default API;
