@@ -260,11 +260,15 @@ function browseProposal() {
 // =================== Virtual clock API ===================
 
 function vc_set(date) {
+  console.log(date);
   return getJson(fetch(URL + '/testing/vc/set', {
+    headers: {
+      "Content-Type": "application/json",
+    },
     method: "POST",
-    body: {
-      value: date
-    }
+    body: JSON.stringify({value: date})
+    
+    
   }))
   .then(res => {
     return res
@@ -281,13 +285,13 @@ function vc_get() {
 }
 
 
-function vc_restore(choice) {
+function vc_restore() {
   return getJson(fetch(URL + '/testing/vc/restore', {
+    headers: {
+      "Content-Type": "application/json",
+    },
     method: "POST",
-    body: {
-      value: choice
-    }
-  }))
+    body: JSON.stringify({value: 1}) }))
   .then(res => {
     return res
   })

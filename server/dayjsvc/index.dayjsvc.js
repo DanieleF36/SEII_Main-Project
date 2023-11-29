@@ -15,7 +15,7 @@ exports.vc_current = async function (req, res) {
     if (offset >= 0)
         result = dayjs().add(offset, 'second')
     else result = dayjs().subtract(offset, 'second')
-    return res.status(200).json(result.format('YYYY-MM-DDThh:mm').toString())
+    return res.status(200).json(result.format('YYYY-MM-DDTHH:mm').toString())
 }
 
 /**
@@ -48,7 +48,7 @@ exports.vc_set = async function (req, res) {
         return res.status(400).json({ error: "wrong parameter" })
 
     const now = dayjs()
-    const act = dayjs(req.body.value, 'YYYY-MM-DDThh:mm')
+    const act = dayjs(req.body.value, 'YYYY-MM-DDTHH:mm')
 
     const duration = act.diff(now, 'second');
     console.log(duration)

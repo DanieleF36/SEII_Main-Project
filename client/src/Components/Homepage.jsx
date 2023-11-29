@@ -23,8 +23,8 @@ function Homepage(props) {
     const [propList, setPropList] = useState(true);
     const [listApplicationStud, setListApplicationStud] = useState(false);
     const [myProp, setMyProp] = useState(true);
-    const [active, setActive] = useState(1);
-
+    
+    
     let items = [];
 
     const navigate = useNavigate();
@@ -85,13 +85,13 @@ function Homepage(props) {
             props.setIsAuth(1);
             if(user.role === 'student'){
             API.advancedSearchThesis({page: props.active}).then(res=>{
-                console.log("arriviamo");
+               
                 props.setProposals(res[1]);
                 props.setPage(res[0]);
               });
             }
         })
-    }, []);
+    }, [props.currentTime]);
 
     useEffect(() => {
         handleResetChange();
