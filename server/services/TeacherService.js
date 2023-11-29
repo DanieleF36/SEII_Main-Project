@@ -25,11 +25,20 @@ exports.listApplication = async function (id_professor) {
  * no response value expected for this operation
  **/
 exports.acceptApplication = async  function (status,teacherID,applicationID) {
+    if(!teacherID || teacherID<0)
+        throw new Error("teacherID must exists and be greater than 0");
+    if(!applicationID || applicationID<0)
+        throw new Error("applicationID must exists and be greater than 0");
+    if(!status || status<0 || status>3)
+        throw new Error("status must exists and be one or two or three");
     let row = await applicationRepository.getApplication(applicationID);
+    if (!row) {
+        throw new Error("No application was found, application is missing or is of another teacher");
+    }
     const id_thesis = row.id_thesis;
     const id_student = row.id_student;
     if(row.id_teacher != teacherID)
-        throw new Error({error:"This application does not own to that teacher, he cant accept it"});
+        throw new Error("This application does not own to that teacher, he cant accept it");
     await applicationRepository.updateStatus(applicationID, status);
     if (status === 1) {
         await applicationRepository.updateStatusToCancelledForOtherStudent(id_thesis, id_student);
@@ -43,38 +52,53 @@ exports.acceptApplication = async  function (status,teacherID,applicationID) {
         await _sendRejectedEmail(teacherID, id_thesis, id_student);
         //resolve({ message: "Application updated successfully." })
     }
-    return {status: status};
+    return status;
 };
 
 // Send a notification to the rejected student 
-const _sendRejectedEmail = (teacherID, id_thesis, id_student) => {
-    return Promise.all([teacherRepo.getTeacherEmail(teacherID), studentRepo.getStudentEmail(id_student), thesisRepository.getThesisTitle(id_thesis),
-    ])
-        .then(([teacherEmail, studentEmail, thesisTitle]) => {
-        transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to rejected.`).catch(e=>reject(e));
-        });
+async function _sendRejectedEmail(teacherID, id_thesis, id_student) {
+    if(!teacherID || teacherID<0)
+        throw new Error("teacherID must exists and be greater than 0");
+    
+    if(!id_thesis || id_thesis<0)
+        throw new Error("id_thesis must exists and be greater than 0");    
+    if(!id_student || id_student<0)
+        throw new Error("id_student must exists and be greater than 0");
+    const [teacherEmail, studentEmail, thesisTitle] = await Promise.all([teacherRepo.getTeacherEmail(teacherID), studentRepo.getStudentEmail(id_student), thesisRepository.getThesisTitle(id_thesis)])
+    await transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to rejected.`);
+
 };
 
 // Send a notification to all the students with the new status cancelled
-const _sendCancelledEmails = (teacherID, id_thesis, id_student) => {
-    return Promise.all([teacherRepo.getTeacherEmail(teacherID), thesisRepository.getThesisTitle(id_thesis), studentRepo.getStudentEmailCancelled(id_student)])
-      .then(([teacherEmail, thesisTitle, studentEmailCancelledArray]) => {
-        const emailPromises = studentEmailCancelledArray.map((element) => {
-          transporter.sendEmail(teacherEmail, element, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to cancelled.`)
-              .catch(e=>reject(e));
-        });
-        // Wait for all email promises to resolve
-        return Promise.all(emailPromises);
-      });
+async function _sendCancelledEmails(teacherID, id_thesis, id_student)  {
+    if(!teacherID || teacherID<0)
+        throw new Error("teacherID must exists and be greater than 0");
+    
+    if(!id_thesis || id_thesis<0)
+        throw new Error("id_thesis must exists and be greater than 0");    
+    if(!id_student || id_student<0)
+        throw new Error("id_student must exists and be greater than 0");
+    const [teacherEmail, thesisTitle, studentEmailCancelledArray] = await Promise.all([teacherRepo.getTeacherEmail(teacherID), thesisRepository.getThesisTitle(id_thesis), studentRepo.getStudentEmailCancelled(id_student)])
+    
+    const emailPromises = studentEmailCancelledArray.map(async (element) => {
+        await transporter.sendEmail(teacherEmail, element, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to cancelled.`);
+    })
+    // Wait for all email promises to resolve
+    return Promise.all(emailPromises);
+      
 };
   
   // Send a notification to the student accepted
-const _sendAcceptedEmail = (teacherID, id_thesis, id_student) => {
-    return Promise.all([teacherRepo.getTeacherEmail(teacherID), studentRepo.getStudentEmail(id_student), thesisRepository.getThesisTitle(id_thesis),
-    ])
-        .then(([teacherEmail, studentEmail, thesisTitle]) => {
-        transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to accepted.`).catch(e=>reject(e));
-        });
+async function _sendAcceptedEmail(teacherID, id_thesis, id_student){
+    if(!teacherID || teacherID<0)
+        throw new Error("teacherID must exists and be greater than 0");
+    if(!id_thesis || id_thesis<0)
+        throw new Error("id_thesis must exists and be greater than 0");    
+    if(!id_student || id_student<0)
+        throw new Error("id_student must exists and be greater than 0");
+    const [teacherEmail, studentEmail, thesisTitle] = await Promise.all([teacherRepo.getTeacherEmail(teacherID), studentRepo.getStudentEmail(id_student), thesisRepository.getThesisTitle(id_thesis)])
+    await transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to accepted.`)
+        
 };
 
 exports.browseApplication = async function(supervisor) {
@@ -90,4 +114,11 @@ exports.browseApplication = async function(supervisor) {
     else {
         return response
     }
+}
+
+// Esporta funzioni Private solo per i test
+if (process.env.NODE_ENV === 'test') {
+    module.exports._sendRejectedEmail = _sendRejectedEmail;
+    module.exports._sendCancelledEmails = _sendCancelledEmails;
+    module.exports._sendAcceptedEmail = _sendAcceptedEmail;
 }

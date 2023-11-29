@@ -10,6 +10,10 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.sendEmail = (from, to, subject, text) => {
+    if(!from)
+        throw new Error("from is missing")
+    if(!to)
+        throw new Error("to is missing")
     const mailOptions = {from, to, subject, text};
     return new Promise((resolve, reject) => {
         transporter.sendMail(mailOptions, (error, info) => {
@@ -21,4 +25,9 @@ exports.sendEmail = (from, to, subject, text) => {
             resolve(info);
         });
     });
+}
+
+// Esporta funzioni Private solo per i test
+if (process.env.NODE_ENV === 'test') {
+    module.exports.transporter = transporter;
 }

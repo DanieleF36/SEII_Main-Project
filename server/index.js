@@ -53,9 +53,7 @@ app.post("/thesis", isLoggedIn, (req, res) => thesisController.addThesis(req, re
 
 app.put("/thesis/:id", isLoggedIn, (req, res) => thesisController.updateThesis(req, res));
 
-app.put("/professor/:id_professor/applications/:id_application", (req, res) =>
-  teacherController.acceptApplication(req, res)
-);
+app.put("/professor/:id_professor/applications/:id_application", teacherController.acceptApplication);
 
 app.post("/thesis/:id_thesis/applications", isLoggedIn, (req, res) => studentController.applyForProposal(req, res));
 
