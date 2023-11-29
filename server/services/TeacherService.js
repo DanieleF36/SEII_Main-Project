@@ -37,7 +37,6 @@ exports.acceptApplication = async  function (status,teacherID,applicationID) {
     }
     const id_thesis = row.id_thesis;
     const id_student = row.id_student;
-    console.log(id_student)
     if(row.id_teacher != teacherID)
         throw new Error("This application does not own to that teacher, he cant accept it");
     await applicationRepository.updateStatus(applicationID, status);
@@ -80,13 +79,17 @@ async function _sendCancelledEmails(teacherID, id_thesis, id_student)  {
     if(!id_student || id_student<0)
         throw new Error("id_student must exists and be greater than 0");
     const [teacherEmail, thesisTitle, studentEmailCancelledArray] = await Promise.all([teacherRepo.getTeacherEmail(teacherID), thesisRepository.getThesisTitle(id_thesis), studentRepo.getStudentEmailCancelled(id_student)])
-    
+    console.log(teacherEmail+" "+thesisTitle+" "+JSON.stringify(studentEmailCancelledArray));
+    for(let i of studentEmailCancelledArray){
+        await transporter.sendEmail(teacherEmail, i, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to cancelled.`);
+    }
+        /*
     const emailPromises = studentEmailCancelledArray.map(async (element) => {
         await transporter.sendEmail(teacherEmail, element, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to cancelled.`);
     })
     // Wait for all email promises to resolve
     return Promise.all(emailPromises);
-      
+      */
 };
   
   // Send a notification to the student accepted
