@@ -1,8 +1,8 @@
 {
   "scripts": {
     "start": "npx nodemon index.js",
-    "test": "jest",
     "test:coverage": "jest --runInBand --coverage --colors",
+    "test": "cross-env NODE_ENV=test jest --coverage",
     "test:unit": "npx jest --runInBand --coverage --coverageDirectory=coverage/coverage_unit --colors auth.unit.test.js controller.unit.test.js users.unit.test.js utils.unit.test.js",
     "test:integration": "npx jest --runInBand --coverage --coverageDirectory=coverage/coverage_integration --colors auth.integration.test.js controller.integration.test.js users.integration.test.js utils.integration.test.js",
     "test:official": "npx jest --runInBand --coverage --colors --coverageDirectory=coverage/coverage_official --testPathPattern=test_official/.*\\.test\\.js$"
@@ -29,6 +29,7 @@
     "supertest": "^6.3.3"
   },
   "devDependencies": {
-    "cross-env": "^7.0.3"
+    "cross-env": "^7.0.3",
+    "sonar-scanner": "^4.6.0"
   }
 }

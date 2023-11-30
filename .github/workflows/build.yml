@@ -1,24 +1,29 @@
-name: Build
 on:
   push:
     branches:
       - main
-  pull_request:
-    types: [opened, synchronize, reopened]
+
 jobs:
   sonarcloud:
-    name: SonarCloud
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
         with:
-          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          node-version: 14
+
       - name: Install dependencies
-         run: npx
-      - name: Test and coverage
-         run: npx jest --coverage
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        run: npm install
+
+      - name: Run tests and coverage
+        run: npm test
+
+      - name: Run SonarCloud
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+        run: npx sonar-scanner
