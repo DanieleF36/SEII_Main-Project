@@ -15,17 +15,21 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 14
-      - name: Moving directory
-        run: cd ./server
-        
+
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd ./server
+          npm install
 
       - name: Run tests and coverage
-        run: npm run test
+        run: |
+          cd ./server
+          npm run test
 
       - name: Run SonarCloud
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
-        run: npx sonar-scanner
+        run: |
+          cd ./server
+          npx sonar-scanner
