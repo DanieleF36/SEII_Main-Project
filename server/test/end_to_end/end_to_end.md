@@ -49,3 +49,33 @@
 ![Frontend](./img/applyForProposal_front.png)
 ###### Status code 200
 ![Success](./img/applyForProposal_200Success.png)
+
+### Story 6, Browse Application Decisions
+
+###### Front-end
+![Frontend](./img/CatturaBrowseStudent.png)
+###### Response
+![Response](./img/CatturaBrowseStudent_response.png)
+###### Status code 200
+![Success](./img/CatturaBrowseStudent_request.png)
+
+### Story 7, Browse Proposals
+
+###### Front-end
+![Frontend](./img/CatturaBrowseProposals_client.png)
+###### Response
+![Response](./img/CatturaBrowseProposals_response.png)
+###### Status code 200
+![Success](./img/CatturaBrowseProposals.png)
+
+### Story 8, Update Proposal
+
+###### Front-end
+![Frontend](./img/CatturaEditProposal.png)
+###### Response
+![Response](./img/CatturaUpdate.png)
+
+### Story 9, Notify Application Decision
+
+###### Front-end
+![Frontend](./img/photo_2023-11-30_14-48-30.jpg)
