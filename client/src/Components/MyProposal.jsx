@@ -134,11 +134,6 @@ function MyProposal(props) {
         toast.error('CdS field cannot be empty');
       } else {
         setShowModal(false);
-        console.log(selectedProposal);
-        let updatedProp = [...proposals];
-        console.log(updatedProp)
-        updatedProp[selectedProposal.id] = selectedProposal;
-        setProposals(updatedProp);
        API.updateProposal(selectedProposal.id, selectedProposal)
          .then(() => {
            setDirty(true);
