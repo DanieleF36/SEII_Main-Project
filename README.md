@@ -6,7 +6,7 @@ wants to run it having a different environment from the one used for deployment.
 ###### Pre-requirements
 The Docker Desktop app must be installed and configured in the host machine
 ###### Build the network
-Firstly, we need to build an internal network for the communication between SMTP server and our web application as follows:
+Firstly, we need to build an internal network for the communication between the SMTP server and our web application as follows:
 ```
 docker network create --driver=bridge --subnet=192.168.10.0/24 --gateway=192.168.10.1 softengnetwork
 ```
@@ -36,12 +36,12 @@ I can see the list of my proposals both published and archived. I have also the 
 I can add a new proposal choosing possible cosupervisor from a list or adding them with the plus button.
 
 ### Application List
-I can see the list of applications to my proposals. To accept or reject an application I have to click on the application itself.
+I can see the list of applications for my proposals. To accept or reject an application I have to click on the application itself.
 It's also possible to download a student's CV to evaluate his application.
 
 ## LIKE A STUDENT
 
 ### Proposal List
-I can see the list of proposals related to my course of study. Once I've clicked on a proposal I can apply for it with the apply button and upload a pdf of my CV.
+I can see the list of proposals related to my course of study. Once I've clicked on a proposal I can apply for it with the apply button and upload a PDF of my CV.
 ### My Application
 I can see the list of my applications and information about the linked proposal. The status of applications can be accepted (in green), pending (in yellow), rejected (in red) or canceled (in grey).

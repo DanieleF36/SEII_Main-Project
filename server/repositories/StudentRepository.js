@@ -140,7 +140,7 @@ exports.getStudentAndCDSByEmail= (email) => {
 }
 
 exports.searchApplicationByStudentId = (studentId) => {
-  const sql = 'SELECT id_student FROM Application WHERE id_student = ?';
+  const sql = 'SELECT id_student FROM Application WHERE id_student = ? AND (status=1 OR status=0) ';
   return new Promise((resolve, reject)=>{
     db.get(sql, [studentId], (err, result) => {
       if (err) {
