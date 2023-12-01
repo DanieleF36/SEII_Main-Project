@@ -96,7 +96,7 @@ function TitleBar(props) {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu style={{ width: '100%' }}>
-                            <Dropdown.Item className="custom-disabled-item" disabled style={customDropdownItemStyle}><h6>User Info</h6></Dropdown.Item>
+                            <Dropdown.Item className="custom-disabled-item" disabled style={customDropdownItemStyle}><strong>User Info</strong></Dropdown.Item>
                                 <Dropdown.Item className="custom-disabled-item" disabled><strong>name:</strong> {props.user.name}</Dropdown.Item>
                                 <Dropdown.Item className="custom-disabled-item" disabled style={customDropdownItemStyle}><strong>surname:</strong> {props.user.surname}</Dropdown.Item>
                                 <Dropdown.Item className='custom-dropdown d-flex align-items-center' onClick={() => handleShow()}><img src="./box-arrow-left.svg"
