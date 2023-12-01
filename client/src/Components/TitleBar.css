@@ -30,7 +30,6 @@
   cursor: not-allowed !important; /* Usa il cursore "not-allowed" */
   background-color: transparent !important; /* Imposta il background come trasparente senza sbiaditura */
   opacity: 1 !important; /* Imposta l'opacità a 1 senza sbiaditura */
-  border: none !important; /* Rimuovi eventuali bordi */
   /* Altri stili personalizzati, se necessario */
 }
 

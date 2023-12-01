@@ -24,6 +24,10 @@ function TitleBar(props) {
         marginLeft: 0, // Remove left margin
     };
 
+    const customDropdownItemStyle = {
+        borderBottom: '1px solid #d3d3d3',  // Colore blu come esempio, sostituisci con il colore desiderato
+      };
+
     const [show, setShow] = useState(false);
 
     const handleClose = () => setShow(false);
@@ -92,12 +96,12 @@ function TitleBar(props) {
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu style={{ width: '100%' }}>
-                            <Dropdown.Item className="custom-disabled-item" disabled><h6>User Info</h6></Dropdown.Item>
+                            <Dropdown.Item className="custom-disabled-item" disabled style={customDropdownItemStyle}><h6>User Info</h6></Dropdown.Item>
                                 <Dropdown.Item className="custom-disabled-item" disabled><strong>name:</strong> {props.user.name}</Dropdown.Item>
-                                <Dropdown.Item className="custom-disabled-item" disabled><strong>surname:</strong> {props.user.surname}</Dropdown.Item>
-                                <Dropdown.Item className='custom-dropdown' onClick={() => handleShow()}><img src="./box-arrow-left.svg"
+                                <Dropdown.Item className="custom-disabled-item" disabled style={customDropdownItemStyle}><strong>surname:</strong> {props.user.surname}</Dropdown.Item>
+                                <Dropdown.Item className='custom-dropdown d-flex align-items-center' onClick={() => handleShow()}><img src="./box-arrow-left.svg"
                                     alt="Logo"
-                                    className="img-responsive"></img></Dropdown.Item>
+                                    className="mr-2" style={{marginTop:'7px'}}></img></Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
 
