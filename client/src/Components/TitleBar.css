@@ -25,7 +25,21 @@
   --bs-nav-tabs-border-color: #ffff;
 }
 
+.custom-disabled-item {
+  color: inherit !important; /* Usa il colore ereditato, senza sbiadimento */
+  cursor: not-allowed !important; /* Usa il cursore "not-allowed" */
+  background-color: transparent !important; /* Imposta il background come trasparente senza sbiaditura */
+  opacity: 1 !important; /* Imposta l'opacità a 1 senza sbiaditura */
+  border: none !important; /* Rimuovi eventuali bordi */
+  /* Altri stili personalizzati, se necessario */
+}
 
+.dropdown-item.active,
+.dropdown-item:active,
+.dropdown-item:focus {
+  background-color: rgb(198, 197, 197) !important; /* Cambia il colore di sfondo quando l'elemento è cliccato o ha lo stato di focus */
+  color: white !important; /* Cambia il colore del testo quando l'elemento è cliccato o ha lo stato di focus */
+}
 
 
 
