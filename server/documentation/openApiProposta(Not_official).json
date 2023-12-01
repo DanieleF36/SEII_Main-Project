@@ -258,6 +258,24 @@
             "description": "internal error"
           }
         }
+      },
+      "delete":{
+        "tags":["thesis"],
+        "description": "Delete thesis with id_thesis",
+        "responses": {
+          "204":{
+            "description": "Deleted"
+          },
+          "401":{
+            "description": "not authorized"
+          },
+          "404":{
+            "description": "id thesis not found"
+          },
+          "500":{
+            "description": "internal error"
+          }
+        }
       }
     },
     "/thesis/{id}/applications": {
@@ -399,6 +417,39 @@
         }
       }
     },
+    "/applications/{id_application}/cv": {
+      "get": {
+        "tags": ["application"],
+        "description": "Return the cv of student who applied",
+        "responses": {
+          "200":{
+            "description": "ok",
+            "content": {
+              "multipart/form-data":{}
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401":{
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500":{
+            "description": "Internel error"
+          }
+        }
+      }
+    },
     "/notifications":{
       "parameters": [
         {
@@ -497,44 +548,6 @@
         }
       }
     },
-    "/clock":{
-      "put":{
-        "tags": ["Virtual clock"],
-        "description": "change date of Virtual clock",
-        "operationId": "changeVirtualClock",
-        "requestBody":{
-          "content": {
-            "application/json":{
-              "schema":{
-                "type": "string",
-                "format": "date"
-              }
-            }
-          }
-        },
-        "responses": {
-          "204":{
-            "description": "UpdateD"
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/error"
-                }
-              }
-            }
-          },
-          "401":{
-            "description": "Not authorized"
-          },
-          "500":{
-            "description": "Internal error"
-          }
-        }
-      }
-    },
     "/login":{
       "get":{
         "tags": ["authentication"],
@@ -555,6 +568,36 @@
         "responses": {
           "304":{
             "description": "ok"
+          }
+        }
+      }
+    },
+    "/session/current":{
+      "get":{
+        "tags": ["authentication"],
+        "description": "Used to get info about authenticatrd user",
+        "responses": {
+          "200":{
+            "description": "ok",
+            "content": {
+              "applications/json":{
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "id":{"type": "integer"},
+                    "name":{"type": "string"},
+                    "surname":{"type": "string"},
+                    "email":{"type": "string"},
+                    "cds":{"type": "string"},
+                    "role":{"enum": ["student", "teacher", "cosupervisor"]}
+                  },
+                  "required": ["id", "name", "surname", "email", "role"]
+                }
+              }
+            }
+          },
+          "401":{
+            "description": "Not authorized"
           }
         }
       }
