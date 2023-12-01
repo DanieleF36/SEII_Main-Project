@@ -16,14 +16,6 @@ function App() {
   const [currentTime, setCurrentTime] = useState(new Date());  
 
 
-  useEffect(() => {
-    API.advancedSearchThesis({page: active}).then(res=>{
-      setProposals(res[1]);
-      setPage(res[0]);
-    });
-   //proposals.map(e=>console.log(e));
-  }, [user, isAuth]);
-
 
 
     return (
@@ -32,7 +24,7 @@ function App() {
           <Routes>
           <Route path='/'element={<InitialPage setIsAuth={setIsAuth} isAuth={isAuth} user={user} setUser={setUser}/>}/>
           <Route path='/home' element={<><Homepage setIsAuth={setIsAuth} isAuth={isAuth} pages={page} user={user} setUser={setUser}
-          proposals={proposals} setProposals={setProposals} setPages={setPage} active={active} setActive={setActive} currentTime={currentTime}
+          proposals={proposals} setProposals={setProposals} setPage={setPage} active={active} setActive={setActive} currentTime={currentTime}
           setCurrentTime={setCurrentTime}/></>} />
           </Routes>
         </BrowserRouter>

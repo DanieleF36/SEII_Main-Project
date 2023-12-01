@@ -2,8 +2,28 @@ import { alignPropType } from "react-bootstrap/esm/types";
 
 const URL = 'http://localhost:3001';
 
+async function login(){
+  window.location.assign(URL+"/login");
+}
+
+async function userAuthenticated(){
+  const res = await fetch(URL+ `/session/current`,{credentials:'include'});
+  const user = await res.json();
+    console.log(user)
+  if(res.ok){
+    return user;
+  }
+  else{
+    return {error: "Unauthorized"}
+  }
+}
+
+async function logout(){
+  window.location.assign(URL+"/logout", {credentials:'include'});
+}
+
 async function listApplication(id_professor) { 
-    const response = await fetch(URL+ `/professor/${id_professor}/applications`);
+    const response = await fetch(URL+ `/professor/${id_professor}/applications`,{credentials:'include'});
     const application = await response.json();
     if (response.ok) {
        return application.map((a) => ({
@@ -23,32 +43,40 @@ async function listApplication(id_professor) {
   }
 
 function insertProposal(thesis) {
-    thesis.status = 1;
-    thesis.supervisor = 1;
-    thesis.cosupervisor = thesis.cosupervisor === '' ? [''] : thesis.cosupervisor
-  //   console.log(thesis)
-  // let response = await fetch(URL + '/thesis', {
-  //   method: "POST",
-  //   headers: {
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify(thesis)
-
-  // })
-  // let risposta = await response.json();
-  // if (risposta.status < 300 || risposta.status >= 200) {
-  //   return true;
-  // } else {
-  //   console.log('wrong')
-  //   throw response.error;
-  // }
-
-
+  
+  thesis.status = 1;
+  thesis.cosupervisor = thesis.cosupervisor === '' ? [''] : thesis.cosupervisor
+  console.log(thesis)
   return getJson(fetch(URL + '/thesis', {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials:'include',
+    body: JSON.stringify(thesis)
+
+  })).then(json => {
+    return json
+  })
+
+}
+
+function updateProposal(id_thesis, thesis) {
+  thesis.cds = Array.isArray(thesis.cds) ? thesis.cds : thesis.cds.split(',').map((k) =>k.trim());
+  thesis.knowledge = Array.isArray(thesis.knowledge) ? thesis.knowledge : thesis.knowledge.split(',').map((k) =>k.trim());
+  thesis.type = Array.isArray(thesis.type) ? thesis.type : thesis.type.split(',').map((k) =>k.trim());
+  thesis.groups = Array.isArray(thesis.groups) ? thesis.groups : thesis.groups.split(',').map((k) =>k.trim());
+  thesis.keywords = Array.isArray(thesis.keywords) ? thesis.keywords : thesis.keywords.split(',').map((k) =>k.trim());
+  thesis.level = thesis.level === 1 ? "Master" : "Bachelor"
+  thesis.cosupervisor = []
+  console.log(thesis)
+
+  return getJson(fetch(URL + `/thesis/${id_thesis}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: 'include',
     body: JSON.stringify(thesis)
 
   })).then(json => {
@@ -125,7 +153,9 @@ async function advancedSearchThesis(params){
       case "supervisor": ur+="&order=supervisor"+params.order;break;
     }
   }
-  const response = await fetch(URL+ur);
+  const response = await fetch(URL+ur, {
+    credentials:'include'
+  });
   if(response.status==200){
     const res = await response.json();
     console.log(res.thesis);
@@ -160,6 +190,7 @@ async function acceptApplication(status,id_professor,id_application) {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials:'include',
         body: JSON.stringify({status}),
     });
     //const responsedata = await response.json();
@@ -178,22 +209,111 @@ async function acceptApplication(status,id_professor,id_application) {
 async function applyForProposal(application) { 
     const formData = new FormData();
     formData.append('cv', application.cv);
-    const response = await fetch(URL+ `/thesis/${application.id_thesis}/applications`,{
+    return getJson(fetch(URL+ `/thesis/${application.id_thesis}/applications`,{
         method: "POST",
+        credentials: "include",
         body: formData
-    });
-    console.log("Prima")
-    console.log(response);
-    const app = await response.json();
-    console.log("dopo")
-    if (response.status==201) {
-        return true;
-    }
-    else if(response.status==400 || response.status==404){
-        return{error: app.error}
-    }
+    })).then(json => {return json});
 }
 
-const API = { listApplication, insertProposal, advancedSearchThesis, acceptApplication, applyForProposal };
+async function browserApplicationStudent(id_student) {
+  try {
+    const response = await fetch(URL + `/student/${id_student}/applications`, {credentials:'include'});
+    const application = await response.json();
+    if (response.ok) {
+      return application.map((a) => ({
+        id_application: a.id_application,
+        title: a.title,
+        supervisor_name: a.supervisor_name,
+        supervisor_surname: a.supervisor_surname,
+        status: a.status,
+        type: a.type,
+        groups: a.groups,
+        description: a.description,
+        knowledge: a.knowledge,
+        note: a.note,
+        level: a.level,
+        keywords: a.keywords,
+        expiration_date: a.expiration_date,
+        cds: a.cds,
+        path_cv: a.path_cv,
+        application_data: a.application_data,
+      }));
+    } else {
+      const message = await response.text();
+      throw new Error(message);
+    }
+  } catch (error) {
+    throw new Error(error.message, { cause: error });
+  }
+}
+
+function browseProposal() {
+  return getJson(fetch(URL + '/professor/thesis', {
+    credentials:'include'
+  }))
+  .then(res => {
+    return res
+  })
+}
+
+// =================== Virtual clock API ===================
+
+function vc_set(date) {
+  console.log(date);
+  return getJson(fetch(URL + '/testing/vc/set', {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: JSON.stringify({value: date})
+    
+    
+  }))
+  .then(res => {
+    return res
+  })
+}
+
+function vc_get() {
+  return getJson(fetch(URL + '/testing/vc/get', {
+    method: "GET"
+  }))
+  .then(res => {
+    return res
+  })
+}
+
+
+function vc_restore() {
+  return getJson(fetch(URL + '/testing/vc/restore', {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+    body: JSON.stringify({value: 1}) }))
+  .then(res => {
+    return res
+  })
+}
+
+async function getCoSupervisorsEmails() {
+  try {
+    const response = await fetch(URL + '/thesis/supervisor/emails');
+    const coSupervisorsEmails = await response.json();
+
+    if (response.ok) {
+      return coSupervisorsEmails;
+    } else {
+      const message = await response.text();
+      throw new Error(message);
+    }
+  } catch (error) {
+    throw new Error(error.message, { cause: error });
+  }
+}
+const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, browserApplicationStudent, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout };
+
+
 
 export default API;

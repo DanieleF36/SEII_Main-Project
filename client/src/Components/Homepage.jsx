@@ -23,8 +23,8 @@ function Homepage(props) {
     const [propList, setPropList] = useState(true);
     const [listApplicationStud, setListApplicationStud] = useState(false);
     const [myProp, setMyProp] = useState(true);
-    const [active, setActive] = useState(1);
-
+    
+    
     let items = [];
 
     const navigate = useNavigate();
@@ -68,16 +68,30 @@ function Homepage(props) {
     });
 
     useEffect(() => {
-        if(props.isAuth===0){
-            navigate('/');
-        }
         items.map(e => { if (e.key === props.active) { e.props.active = true } });
         //console.log(filters);
+        if(props.user.role === 'student'){
         API.advancedSearchThesis({...filters, page: props.active}).then(res => {
             props.setProposals(res[1]);
-            props.setPages(res[0]);
-        });
+            props.setPage(res[0]);
+        });}
     }, [props.active]);
+
+
+    useEffect(() => {
+        API.userAuthenticated().then(user => {
+            console.log(user);
+            props.setUser(user);
+            props.setIsAuth(1);
+            if(user.role === 'student'){
+            API.advancedSearchThesis({page: props.active}).then(res=>{
+               
+                props.setProposals(res[1]);
+                props.setPage(res[0]);
+              });
+            }
+        })
+    }, [props.currentTime]);
 
     useEffect(() => {
         handleResetChange();
@@ -107,7 +121,7 @@ function Homepage(props) {
         if (application.cv !== '') {
             //console.log(application);
             API.applyForProposal(application).then((res) => { toast.success('Application successfully sended'); setApplication({ ...application, cv: '' }) })
-                .catch((res) => console.log(res));
+                .catch((res) => toast.error(res.error));
 
         }
         else (
@@ -140,6 +154,7 @@ function Homepage(props) {
     const handleApplyFilters = () => {
         //console.log(filters);
         if (filters.order === '' && filters.orderby === '' || filters.order !== '' && filters.orderby !== '') {
+            
             API.advancedSearchThesis({ ...filters, page: props.active}).then(res => {
                 props.setProposals(res[1]);
                 props.setPages(res[0]);
@@ -302,7 +317,7 @@ function Homepage(props) {
                     </Col>
                     <Col xs={9}>
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <StudentList />
+                            <StudentList user={props.user}/>
                         </div>
 
                     </Col>
@@ -330,7 +345,7 @@ function Homepage(props) {
                     </Col>
                     <Col xs={9}>
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <AddProposalForm />
+                            <AddProposalForm user={props.user}/>
                         </div>
 
                     </Col>
@@ -359,7 +374,7 @@ function Homepage(props) {
                     <Col xs={9}>
 
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <ApplicationList />
+                            <ApplicationList user={props.user}/>
                         </div>
 
                     </Col>
@@ -390,7 +405,7 @@ function Homepage(props) {
                 <Col xs={9}>
 
                    
-                        <MyProposal />
+                        <MyProposal user={props.user} />
 
                 </Col>
 

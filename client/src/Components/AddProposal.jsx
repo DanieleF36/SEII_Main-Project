@@ -5,20 +5,20 @@ import Card from 'react-bootstrap/Card';
 import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
 
-function AddProposalForm() {
+function AddProposalForm(props) {
     const [proposalData, setProposalData] = useState({
         title: 'Demo2',
-        supervisor: '',
+        supervisor: props.user.id,
         cosupervisor: '',
         expiration_date: '',
         keywords: ['D2', 'M2'],
         type: ['Demo'],
-        groups: 'Group14',
+        groups: [ 'Group14'],
         description: 'Demo Presentation',
-        knowledge: 'Team Organization',
+        knowledge: ['Team Organization'],
         note: 'DEMO2',
         level: 'Master',
-        cds: 'LM-32',
+        cds: ['LM-32'],
     });
 
     const [cosup_email, setCoSup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);

@@ -4,22 +4,20 @@ import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 
-function MyProposal() {
+function MyProposal(props) {
 
-  //const [dirty, setDirty] = useState(true);
+  const [dirty, setDirty] = useState(true);
   // const [id_professor, setId_professor] = useState(1);
   const [archived, setArchived] = useState(1);
   const [selectedProposal, setSelectedProposal] = useState('');
-  const [proposals, setProposals] = useState([{ id: 0, title: 'AI system research', supervisor: 'Mario Rossi', cosupervisor: ['123456@polito.it', '654321@polito.it'], expDate: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creatDate: '10/1/2023', status: '1' }]);
-  const [proposalsArchiv, setProposalsArchiv] = useState([{ id: 1, title: 'Prova', supervisor: 'Luca Neri', cosupervisor: ['123456@polito.it', '654321@polito.it'], expDate: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creatDate: '10/1/2023', status: '0' }]);
+  const [proposals, setProposals] = useState([/*{ id: 0, title: 'AI system research', supervisor: 'Mario Rossi', cosupervisor: ['123456@polito.it', '654321@polito.it'], expiration_date: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creation_date: '10/1/2023', status: '1' }*/]);
+  const [proposalsArchiv, setProposalsArchiv] = useState([{ id: 1, title: 'Prova', supervisor: 'Luca Neri', cosupervisor: ['123456@polito.it', '654321@polito.it'], expiration_date: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creation_date: '10/1/2023', status: '0' }]);
   const [showModal, setShowModal] = useState(false);
 
 
   const handleModify = (proposal) => {
-    setSelectedProposal({ ...proposal });
+    setSelectedProposal( {...proposal} );
     setShowModal(true);
-  
-
   };
 
   const handleSwitch = () => {
@@ -47,6 +45,19 @@ function MyProposal() {
     //proposals.map(e=>console.log(e));
   }, [searchTerm]);
 
+   
+    useEffect(() => {
+      if(props.user.role === 'teacher'){
+        API.browseProposal()
+            .then((proposals) => {
+                setProposals(proposals);
+                setDirty(false);
+            })
+            .catch((err) => { toast.error(err.error); });
+          }
+
+    }, [dirty, props.user]);
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -72,7 +83,7 @@ function MyProposal() {
     setSelectedProposal({ ...selectedProposal, [name]: co });
   };
 
-  const handleCoSup = (e) => {
+  /*const handleCoSup = (e) => {
     if (selectedProposal.cosupervisor === '') {
       let co = [];
       co.push(e);
@@ -89,9 +100,9 @@ function MyProposal() {
         setSearchTerm('');
       }
     }
-  };
+  };*/
   
-  const handleDeleteCoSup = () => {
+  /*const handleDeleteCoSup = () => {
     const updatedCoSupervisors = [...selectedProposal.cosupervisor];
     if (updatedCoSupervisors.length > 0) {
       updatedCoSupervisors.pop();
@@ -99,7 +110,7 @@ function MyProposal() {
     } else {
       toast.error('No co-supervisors to delete');
     }
-  };
+  };*/
 
   const handleSaveChanges = () => {
     if (selectedProposal) {
@@ -115,7 +126,7 @@ function MyProposal() {
         toast.error('Description field cannot be empty');
       } else if (selectedProposal.know === '') {
         toast.error('Knowledge field cannot be empty');
-      } else if (selectedProposal.expDate === '') {
+      } else if (selectedProposal.expiration_date === '') {
         toast.error('Expiration Date field cannot be empty');
       } else if (selectedProposal.level === '') {
         toast.error('Level field cannot be unset');
@@ -123,18 +134,14 @@ function MyProposal() {
         toast.error('CdS field cannot be empty');
       } else {
         setShowModal(false);
-        console.log(selectedProposal);
-        let updatedProp = [...proposals];
-        updatedProp[selectedProposal.id] = selectedProposal;
-        setProposals(updatedProp);
-        toast.success('Thesis Proposal successfully updated');
-       // API.updateProposal(selectedProposal.id, selectedProposal)
-        //  .then(() => {
-        //    toast.success('Thesis Proposal successfully updated');
-         // })
-        //  .catch((error) => {
-         //   toast.error(error.message || 'An error occurred while updating the proposal');
-         // });
+       API.updateProposal(selectedProposal.id, selectedProposal)
+         .then(() => {
+           setDirty(true);
+           toast.success('Thesis Proposal successfully updated');
+         })
+         .catch((error) => {
+           toast.error(error.message || 'An error occurred while updating the proposal');
+         });
       }
     }
   };
@@ -142,6 +149,7 @@ function MyProposal() {
   return (
     archived === 1 ? <>
       <BootstrapSwitchButton onChange={() => handleSwitch()} checked={archived === 1} size="sm" onlabel='published' offlabel='archived' width={100} onstyle="success" offstyle="warning" style="border" />
+
       <div style={{ marginTop: '10px' }}>
         {proposals.map((proposal) => (
           <Card key={proposal.id} style={{ marginBottom: '10px' }}>
@@ -155,10 +163,11 @@ function MyProposal() {
                         <strong>Title:</strong> {proposal.title}
                       </Col>
                       <Col md='4' sm='4' xs='12'>
-                        <strong>Expiration date:</strong> {proposal.expDate}
+                        <strong>Expiration date:</strong> {proposal.expiration_date}
                       </Col>
                       <Col md='3' sm='3' xs='12'>
                         <strong>Status:</strong>{' '}
+                      
                         {proposal.status == 1 ? (
                           <Badge pill bg="success">P</Badge>
                         ) : (
@@ -181,11 +190,9 @@ function MyProposal() {
                   <br />
                   <strong>Groups:</strong> {proposal.groups}
                   <br />
-                  <strong>Cosupervisor:</strong> {...proposal.cosupervisor.join(", ")}
-                  <br />
                   <strong>Description:</strong> {proposal.description}
                   <br />
-                  <strong>Knowledge:</strong> {proposal.know}
+                  <strong>Knowledge:</strong> {proposal.knowledge}
                   <br />
                   <strong>Note:</strong> {proposal.note}
                   <br />
@@ -193,7 +200,7 @@ function MyProposal() {
                   <br />
                   <strong>CdS:</strong> {proposal.cds}
                   <br />
-                  <strong>Creation Date:</strong> {proposal.creatDate}
+                  <strong>Creation Date:</strong> {proposal.creation_date}
                   <br />
                   <br />
                   <Button variant="warning" onClick={() => handleModify(proposal)}><img src="./pencil-fill.svg"
@@ -226,7 +233,7 @@ function MyProposal() {
                 />
               </Form.Group>
 
-              <Form.Group className="mb-3">
+              {/* <Form.Group className="mb-3">
                 <Form.Label><strong>Cosupervisors mails</strong></Form.Label>
                 <Form.Control
                   type="text"
@@ -265,14 +272,14 @@ function MyProposal() {
                     </Col>
                   </Row>
                 </Container>
-              </Form.Group>
+              </Form.Group> */}
 
               <Form.Group className="mb-3">
                 <Form.Label><strong>Expiration Date</strong></Form.Label>
                 <Form.Control
                   type="date"
-                  name="expDate"
-                  value={selectedProposal.expDate.split('/').reverse().join('-')} // cambiare con proposal dinamica
+                  name="expiration_date"
+                  value={selectedProposal.expiration_date} // cambiare con proposal dinamica
                   onChange={handleInputChange}
                 />
               </Form.Group>
@@ -321,8 +328,8 @@ function MyProposal() {
                 <Form.Label><strong>Knowledge</strong>&nbsp;(separated by ',')</Form.Label>
                 <Form.Control
                   type="text"
-                  name="know"
-                  value={selectedProposal.know}
+                  name="knowledge"
+                  value={selectedProposal.knowledge}
                   onChange={handleList}
                 />
               </Form.Group>
@@ -345,16 +352,16 @@ function MyProposal() {
                     label="Bachelor"
                     name="level"
                     id="levelBachelor"
-                    checked={selectedProposal.level === 'Bachelor'}
-                    onChange={() => handleCheckboxChange('Bachelor')}
+                    checked={selectedProposal.level == 0}
+                    onChange={() => handleCheckboxChange(0)}
                   />
                   <Form.Check
                     type="checkbox"
                     label="Master"
                     name="level"
                     id="levelMaster"
-                    checked={selectedProposal.level === 'Master'}
-                    onChange={() => handleCheckboxChange('Master')}
+                    checked={selectedProposal.level == 1}
+                    onChange={() => handleCheckboxChange(1)}
                   />
                 </div>
               </Form.Group>
@@ -397,7 +404,7 @@ function MyProposal() {
                         <strong>Title:</strong> {proposal.title}
                       </Col>
                       <Col md='4' sm='4' xs='12'>
-                        <strong>Expiration date:</strong> {proposal.expDate}
+                        <strong>Expiration date:</strong> {proposal.expiration_date}
                       </Col>
                       <Col md='3' sm='3' xs='12'>
                         <strong>Status:</strong>{' '}
@@ -423,11 +430,9 @@ function MyProposal() {
                   <br />
                   <strong>Groups:</strong> {proposal.groups}
                   <br />
-                  <strong>Cosupervisor:</strong> {...proposal.cosupervisor.join(", ")}
-                  <br />
                   <strong>Description:</strong> {proposal.description}
                   <br />
-                  <strong>Knowledge:</strong> {proposal.know}
+                  <strong>Knowledge:</strong> {proposal.knowledge}
                   <br />
                   <strong>Note:</strong> {proposal.note}
                   <br />
@@ -435,7 +440,7 @@ function MyProposal() {
                   <br />
                   <strong>CdS:</strong> {proposal.cds}
                   <br />
-                  <strong>Creation Date:</strong> {proposal.creatDate}
+                  <strong>Creation Date:</strong> {proposal.creation_date}
                   <br />
                   <br />
                 </Accordion.Body>

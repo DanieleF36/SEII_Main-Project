@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Container, Row, Col, Form, ButtonGroup } from 'react-bootstrap';
+import API from '../API';
 import './TitleBar.css';
+import dayjs from 'dayjs';
 
 const Clock = (props) => {
 
@@ -13,43 +15,81 @@ const Clock = (props) => {
         //const dateObject = new Date(year, month - 1, day, hours, minutes);
         // props.setCurrentTime(dateObject)).catch(...)
 
-        if (props.currentTime) {
-            let newTime = new Date(props.currentTime);
-            newTime.setMinutes(newTime.getMinutes() + 1);
-            props.setCurrentTime(newTime);
-        }
-    };
+        API.vc_get().then((time)=>{const [date, hour] = time.split('T'); const [year, month, day] = date.split('-').map(Number); const [hh, min] = hour.split(':').map(Number);
+        props.setCurrentTime(new Date(year, month-1, day, hh, min)) });
+    }; 
 
+    // const addTime = (unit, value) => {
+    //     const newTime = new Date(props.currentTime);
+
+    //     switch (unit) {
+    //         case 'minute':
+    //             newTime.setMinutes(newTime.getMinutes() + value);
+    //             break;
+    //         case 'hour':
+    //             newTime.setHours(newTime.getHours() + value);
+    //             break;
+    //         case 'day':
+    //             newTime.setDate(newTime.getDate() + value);
+    //             break;
+    //         case 'month':
+    //             newTime.setMonth(newTime.getMonth() + value);
+    //             break;
+    //         case 'year':
+    //             newTime.setFullYear(newTime.getFullYear() + value);
+    //             break;
+    //         default:
+    //             return;
+    //     }
+    //     API.vc_set(newTime.toISOString().slice(0, 10) + 'T' + newTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })).
+    //     then(()=> {props.setCurrentTime(newTime);})
+    //     .catch();
+       
+    // };
+
+    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv 
     const addTime = (unit, value) => {
-        const newTime = new Date(props.currentTime);
+        let newTime = dayjs(props.currentTime);
 
         switch (unit) {
             case 'minute':
-                newTime.setMinutes(newTime.getMinutes() + value);
+                newTime = newTime.add(value, 'minute');
                 break;
             case 'hour':
-                newTime.setHours(newTime.getHours() + value);
+                newTime = newTime.add(value, 'hour');
                 break;
             case 'day':
-                newTime.setDate(newTime.getDate() + value);
+                newTime = newTime.add(value, 'day');
                 break;
             case 'month':
-                newTime.setMonth(newTime.getMonth() + value);
+                newTime = newTime.add(value, 'month');
                 break;
             case 'year':
-                newTime.setFullYear(newTime.getFullYear() + value);
+                newTime = newTime.add(value, 'year');
                 break;
             default:
                 return;
         }
-        //API.setTime(newTime).then(props.setCurrentTime(newTime);)
-        props.setCurrentTime(newTime);
-        console.log(newTime.toISOString().slice(0, 10) + 'T' + newTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }));
+
+        const formattedTime = newTime.format('YYYY-MM-DDTHH:mm');
+        
+        API.vc_set(formattedTime)
+            .then(() => {
+                props.setCurrentTime(newTime.toDate());
+            })
+            .catch(error => {
+                // Handle error here
+            });
     };
+
+    const handleRestore = () =>{
+
+        API.vc_restore().then(props.setCurrentTime(new Date()));
+    }
 
     useEffect(() => {
 
-        const interval = setInterval(updateClock, 60000);
+        const interval = setInterval(updateClock, 10000);
         return () => clearInterval(interval);
 
 
@@ -97,6 +137,15 @@ const Clock = (props) => {
                                 + mm
                             </Button>
 
+                        </ButtonGroup>
+                        < br/>
+
+                        <ButtonGroup aria-label="Basic example">
+                            <Button onClick={() => handleRestore()} variant='danger' className="my-2">
+                                <img src='./arrow-counterclockwise.svg'
+                                 alt="Logo"
+                                 className="img-responsive"/>
+                            </Button>
                         </ButtonGroup>
 
 

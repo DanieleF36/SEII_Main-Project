@@ -3,7 +3,7 @@ import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Nav
 import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
 
-function ApplicationList() {
+function ApplicationList(props) {
 
     const [errorMsg, setErrorMsg] = useState(undefined);
     const [dirty, setDirty] = useState(true);
@@ -43,23 +43,23 @@ function ApplicationList() {
     //adding API from backend to set list of applications
 
     useEffect(() => {
-
-        API.listApplication(id_professor)
+        
+        API.listApplication(props.user.id)
             .then((applications) => {
                 setApplications(applications);
                 setDirty(false);
             })
             .catch((err) => { toast.error(err.error); });
-
+        
     }, [dirty]);
 
     //applications.map((e)=>{console.log(e.id_application)});
 
     //adding API from backend to post accept application
-    const acceptPropByProf = (status, id_professor, id_app) => {
+    const acceptPropByProf = (status, id_app) => {
         //console.log(status,id_professor,id_app);
 
-        API.acceptApplication(status, id_professor, id_app)
+        API.acceptApplication(status, props.user.id, id_app)
             .then((res) => {
                 setDirty(true);
                 if (res == 1) {
@@ -128,9 +128,9 @@ function ApplicationList() {
                                     <br />
                                     <br />
                                     <br />
-                                    {application.status == '0' ? <Button onClick={() => acceptPropByProf(1, id_professor, application.id_application)} variant='primary'>Accept</Button> : ''}
+                                    {application.status == '0' ? <Button onClick={() => acceptPropByProf(1, application.id_application)} variant='primary'>Accept</Button> : ''}
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    {application.status == '0' ? <Button onClick={() => acceptPropByProf(2, id_professor, application.id_application)} variant='danger'>Reject</Button> : ''}
+                                    {application.status == '0' ? <Button onClick={() => acceptPropByProf(2, application.id_application)} variant='danger'>Reject</Button> : ''}
                                 </Accordion.Body>
                             </Accordion.Item>
                         </Accordion>

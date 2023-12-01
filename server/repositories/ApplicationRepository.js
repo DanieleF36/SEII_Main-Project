@@ -3,6 +3,10 @@
 const dayjs = require('dayjs')
 
 const db = require("./db");
+const transporter = require('../email/transporter')
+const thesisRepo = require('./ThesisRepository');
+const teacherRepo = require('./TeacherRepository');
+const studentRepo = require('./StudentRepository');
 
 /**
  * Performs queries to the database for retriving all the needed information given a supervisor's id
@@ -15,9 +19,6 @@ const db = require("./db");
 exports.listApplication = (id_teacher) => {
   const sqlApplication =
     "SELECT innerTable.id_thesis, innerTable.id, innerTable.id_student, title, S.name, S.surname, innerTable.data, innerTable.path_cv, innerTable.status FROM (SELECT id,id_student,path_cv,status,id_thesis,data FROM Application WHERE id_teacher=?) AS innerTable, Thesis AS T, Student AS S WHERE T.id = innerTable.id_thesis AND S.id = innerTable.id_student";
-  const sqlStudent = "SELECT surname,name,cod_degree FROM Student WHERE id=?";
-  const sqlThesis = "SELECT title,cds FROM Thesis WHERE id=?";
-  let student;
   return new Promise((resolve, reject) => {
     //! QUERY TO THE APPLICATION DATABASE, asks for the whole set of applications given a supervisor's id
     db.all(sqlApplication, [id_teacher], (err, rows) => {
@@ -31,14 +32,6 @@ exports.listApplication = (id_teacher) => {
          reject({ error: "Application not found." });
          return
       } else {
-        // const application = rows.map((a) => ({
-        //   id_application: a.id,
-        //   id_student: a.id_student,
-        //   id_thesis: a.id_thesis,
-        //   data: a.data,
-        //   path_cv: a.path_cv,
-        //   status: a.status,
-        // }));
         const application = rows.map((a) => ({
           id_student: a.id_student,
           id_application: a.id,
@@ -50,54 +43,7 @@ exports.listApplication = (id_teacher) => {
           path_cv: a.path_cv,
           status: a.status
         }))
-
-        console.log(application)
         resolve(application);
-        /*
-        // for each application found student's information are requested
-        application.forEach((element) => {
-          //! QUERY TO THE STUDENT DATABASE
-          db.all(sqlStudent, [element.id_student], (err, rows) => {
-            if (err) {
-              console.error("SQLite Error:", err.message);
-              reject(err);
-              return;
-            }
-            //! CHECK TO SEE IF STUDENT EXIST OR NOT
-            if (rows.length == 0) {
-              reject({ error: "Student not found." });
-              return;
-            } else {
-              student = rows.map((s) => ({
-                surname: s.surname,
-                name: s.name,
-              }));
-            }
-            // asks for the thesis linked to the current application's id
-            db.all(sqlThesis, [element.id_thesis], (err, rows) => {
-              if (err) {
-                console.error("SQLite Error:", err.message);
-                reject(err);
-                return;
-              }
-              //! CHECK TO SEE IF THE THESIS EXIST OR NOT
-              if (rows.length == 0) {
-                reject({ error: "Thesis not found." });
-                return
-              } else {
-                const thesis = rows.map((t) => ({
-                  title: t.title,
-                  cds: t.cds,
-                }));
-                resolve({
-                  thesis: thesis,
-                  student: student,
-                  application: application,
-                });
-              }
-            });
-          });
-        });*/
       }
     });
   });
@@ -142,21 +88,88 @@ exports.addProposal = (studentId, thesisId, cvPath) => {
   });
 };
 
-exports.acceptApplication = (status, teacherID, applicationID,) => {
-  return new Promise((resolve, reject) => {
-    const sql = 'UPDATE Application SET status = ? WHERE id_teacher = ? AND id = ?';
-    db.run(sql, [status, teacherID, applicationID], function (err) {
+exports.updateStatus = (id, status)=>{
+  if(!id || id<0)
+    throw new Error("id must exists and be greater than 0");
+    if(status == undefined || status<0 || status>3)
+    throw new Error("status must exists and be one or two or three");
+  const updateApplicationSQL = 'UPDATE Application SET status = ? WHERE id = ?';
+  return new Promise((resolve, reject)=>{
+    db.run(updateApplicationSQL, [status, id], function (err) {
       if (err) {
-        console.error("Error in SQLDatabase:", err.message);
-        reject(err);
-        return
-      } else {
-        if (this.changes === 0) {
-          reject({ error : "No rows updated. Teacher ID or Application Id not found."});
-          return
-        }
-        resolve(status);
+        //console.error("Error in SQLDatabase:", err.message);
+        reject({error: err.message});
+        return;
       }
+      resolve("Done")
+    })
+  })
+}
+
+exports.updateStatusToCancelledForOtherStudent = (id_thesis, id_student)=>{
+  if(!id_thesis || id_thesis<0)
+    throw new Error("id_thesis must exists and be greater than 0");
+    if(!id_student || id_student<0)
+    throw new Error("id_student must exists and be greater than 0");
+  return new Promise((resolve, reject)=>{
+    const updateOtherApplicationsSQL = 'UPDATE Application SET status = 3 WHERE id_thesis = ? AND id_student != ?';
+    db.run(updateOtherApplicationsSQL, [id_thesis, id_student], function (err) {
+      if (err) {
+        //console.error("Error in SQLDatabase:", err.message);
+        reject({error: err.message});
+        return;
+      }
+      resolve("Done")
+    })
+  })
+};
+
+exports.getApplication = (id) => {
+  if(!id || id<0)
+    throw new Error("id must exists and be greater than 0");
+  const fetchThesisStudentSQL = 'SELECT * FROM Application WHERE id = ?';
+  return new Promise((resolve, reject) => {
+    db.get(fetchThesisStudentSQL, [id], (err, row) => {
+      if (err) {
+        //console.error("Error in SQLDatabase:", err.message);
+        reject({error: err.message});
+        return;
+      }
+      resolve(row);
     });
   });
-};
+}
+
+/**
+ * Designed for Virtual clock
+ * @param {*} ids of updated thesis  
+ */
+exports.setCancelledAccordingToThesis = (ids) => {
+  const placeholders = ids.map(() => '?').join(',');
+  const sql = `UPDATE Application SET status = 3 WHERE id_thesis IN (${placeholders}) AND status = 0`
+
+  return new Promise( (resolve, reject) => {
+    db.run(sql, ids, (err) => {
+      if(err)
+        reject(err)
+      resolve(true)
+    })
+  })
+}
+
+/**
+ * Designed for Virtual clock
+ * @param {*} ids of updated thesis  
+ */
+exports.setPendingAccordingToThesis = (ids) => {
+  const placeholders = ids.map(() => '?').join(',');
+  const sql = `UPDATE Application SET status = 0 WHERE id_thesis IN (${placeholders}) AND status = 3`
+
+  return new Promise( (resolve, reject) => {
+    db.run(sql, ids, (err) => {
+      if(err)
+        reject(err)
+      resolve(true)
+    })
+  })
+}

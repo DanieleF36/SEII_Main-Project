@@ -2,8 +2,7 @@
 
 const sqlite = require('sqlite3');
 
-const db = require("./db");
-
+const db = require('./db')
 /**
  * Insert an entry into COSUPERVISORTHESIS table without performing any checks over parameters exis
  * @param {*} id_thesis must exists in THESIS 
@@ -63,3 +62,20 @@ exports.findCoSupervisorIdsByThesisId = (id)=>{
         }); 
     });
 }
+
+
+exports.removeCoSupervisorsByThesisId = (thesisId) => {
+  const sql = 'DELETE FROM CoSupervisorThesis WHERE id_thesis = ?';
+
+  return new Promise((resolve, reject) => {
+    db.run(sql, [thesisId], function (err) {
+      if (err) {
+        console.error("SQLite Error:", err.message);
+        reject({ error: 'Failed to remove co-supervisors for the thesis.' });
+        return;
+      }
+
+      resolve(true);
+    });
+  });
+};
