@@ -67,6 +67,20 @@ function MyProposal(props) {
     }));
   };
 
+  const correctSpace = (prop) => {
+    let c = prop.cds.map(e=>e.trim());
+    prop.cds = c;
+    let k = prop.keywords.map(e=>e.trim());
+    prop.keywords = k;
+    let t = prop.type.map(e=>e.trim());
+    prop.type = t;
+    let kn = prop.knowledge.map(e=>e.trim());
+    prop.knowledge = kn;
+    let g = prop.groups.map(e=>e.trim());
+    prop.groups = g;
+    return prop;
+  }
+
 
   const handleResetChange = () => {
     setSelectedProposal('');
@@ -79,8 +93,7 @@ function MyProposal(props) {
   const handleList = (e) => {
     let name = e.target.name;
     let cosup_arr = e.target.value.split(",");
-    let co = cosup_arr.map(e => e.trim());
-    setSelectedProposal({ ...selectedProposal, [name]: co });
+    setSelectedProposal({ ...selectedProposal, [name]: cosup_arr});
   };
 
   /*const handleCoSup = (e) => {
@@ -134,7 +147,8 @@ function MyProposal(props) {
         toast.error('CdS field cannot be empty');
       } else {
         setShowModal(false);
-       API.updateProposal(selectedProposal.id, selectedProposal)
+        let updatep = selectedProposal
+       API.updateProposal(selectedProposal.id, correctSpace(updatep))
          .then(() => {
            setDirty(true);
            toast.success('Thesis Proposal successfully updated');
