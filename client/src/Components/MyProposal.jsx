@@ -68,16 +68,26 @@ function MyProposal(props) {
   };
 
   const correctSpace = (prop) => {
+    if(Array.isArray(prop.cds)){
     let c = prop.cds.map(e=>e.trim());
     prop.cds = c;
+    }
+    if(Array.isArray(prop.keywords)){
     let k = prop.keywords.map(e=>e.trim());
     prop.keywords = k;
+    }
+    if(Array.isArray(prop.type)){
     let t = prop.type.map(e=>e.trim());
     prop.type = t;
+    }
+    if(Array.isArray(prop.knowledge)){
     let kn = prop.knowledge.map(e=>e.trim());
     prop.knowledge = kn;
+    }
+    if(Array.isArray(prop.groups)){
     let g = prop.groups.map(e=>e.trim());
     prop.groups = g;
+    }
     return prop;
   }
 
