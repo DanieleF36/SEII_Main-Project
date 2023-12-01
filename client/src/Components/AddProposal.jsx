@@ -38,6 +38,31 @@ function AddProposalForm(props) {
         setProposalData({ ...proposalData, [name]: value });
     };
 
+    const correctSpace = (prop) => {
+        if(Array.isArray(prop.cds)){
+        let c = prop.cds.map(e=>e.trim());
+        prop.cds = c;
+        }
+        if(Array.isArray(prop.keywords)){
+        let k = prop.keywords.map(e=>e.trim());
+        prop.keywords = k;
+        }
+        if(Array.isArray(prop.type)){
+        let t = prop.type.map(e=>e.trim());
+        prop.type = t;
+        }
+        if(Array.isArray(prop.knowledge)){
+        let kn = prop.knowledge.map(e=>e.trim());
+        prop.knowledge = kn;
+        }
+        if(Array.isArray(prop.groups)){
+        let g = prop.groups.map(e=>e.trim());
+        prop.groups = g;
+        }
+        return prop;
+      }
+    
+
     const handleResetChange = () => {
         setProposalData({
             title: '',
@@ -62,8 +87,7 @@ function AddProposalForm(props) {
     const handleList = (e) => {
         let name = e.target.name;
         let cosup_arr = e.target.value.split(",");
-        let co = cosup_arr.map(e => e.trim());
-        setProposalData({ ...proposalData, [name]: co });
+        setProposalData({ ...proposalData, [name]: cosup_arr });
     };
 
     const handleCoSup = (e) => {
@@ -130,8 +154,8 @@ function AddProposalForm(props) {
         }
         else {
             // Implement the logic to add the proposal using the proposalData state- API
-            console.log(proposalData);
-            API.insertProposal(proposalData)
+            let addP = proposalData;
+            API.insertProposal(correctSpace(addP))
                 .then(() => { toast.success('Thesis Proposal successfully added'); handleResetChange() })
                 .catch((error) => toast.error(error));
         }
