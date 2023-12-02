@@ -8,7 +8,7 @@ const teacherRepository = require("../repositories/TeacherRepository");
 const nItem = 10; //number of item per page
 
 /**
- * Return a list of thesis that respect all the parameters
+ * Return a list of thesis that respect all the parameters including name, surname and company for co-supervisor and the whole structure of supervisor
  *
  * @param page Integer, first thesis at page 1
  * @param order string with A(SC) or D(ESC) (ie titleD will became ORDER BY title DESC)
@@ -89,9 +89,7 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   //find ids about co-supervisors
   for (let i = 0; i < res.length; i++) {
     const idList =
-      await coSupervisorThesisRepository.findCoSupervisorIdsByThesisId(
-        res[i].id
-      );
+      await coSupervisorThesisRepository.findCoSupervisorIdsByThesisId(res[i].id);
     res[i].coSupervisor = [];
     for (let j = 0; j < idList.length; j++) {
       if (idList[j].idTeacher != null) {
@@ -108,6 +106,12 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   }
   return [res, npage];
 };
+
+exports.getActiveBySupervisor = async function(supervisorId){
+  if(supervisorId<0)
+    throw new Error("Supervisor id can not be lower than 0");
+  return await thesisRepository.getActiveBySupervisor(supervisorId);
+}
 
 /**
  * A student send his/her application for thesis {id} and attach his cv as json

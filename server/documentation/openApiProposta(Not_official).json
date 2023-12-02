@@ -559,6 +559,36 @@
         }
       }
     },
+    "/session/current":{
+      "get":{
+        "tags": ["authentication"],
+        "security": [],
+        "description": "get user information",
+        "responses": {
+          "200":{
+            "description": "ok",
+            "content": {
+              "application/json":{
+                "schema":{
+                  "type": "object",
+                  "properties": {
+                    "id":{"type": "integer", "minimum": 0},
+                    "name":{"type": "string"},
+                    "surname":{"type": "string"},
+                    "role":{"enum": ["student", "teacher", "supervisor"]},
+                    "email":{"type": "string"},
+                    "cds":{"type": "string"}
+                  }
+                }
+              }
+            }
+          },
+          "401":{
+            "description": "Not authorized"
+          }
+        }
+      }
+    },
     "/logout":{
       "get":{
         "tags": ["authentication"],

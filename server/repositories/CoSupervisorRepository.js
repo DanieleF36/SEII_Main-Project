@@ -19,6 +19,21 @@ exports.findById = (id)=>{
         });
     });
 }
+
+exports.getEmailsByThesisId = (id) => {
+    const sql = 'SELECT email FROM CoSupervisor  WHERE id IN (SELECT id_cosupervisor AS List FROM CoSupervisorThesis WHERE id_thesis=?)'
+  
+    return new Promise( (resolve, reject) => {
+      db.all(sql, [id], (err, rows) => {
+        if(err)
+          reject(err)
+        else if(rows.length == 0)
+          resolve([])
+        resolve(rows.map(a => a.email))
+      })
+    })
+  }
+
 exports.findByEmail = (email)=>{
     const sqlCoSupervisor = "SELECT id, name, surname, email, company FROM CoSupervisor WHERE email = ?";
 

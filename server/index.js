@@ -49,7 +49,7 @@ const teacherController = require("./controllers/TeacherController");
 const studentController = require("./controllers/StudentController");
 const vc = require('./dayjsvc/index.dayjsvc')
 
-app.get("/thesis", isLoggedIn, (req, res) => thesisController.advancedResearchThesis(req,res));
+app.get("/thesis", isLoggedIn, (req, res) => thesisController.searchThesis(req,res));
 
 app.get("/thesis/supervisor/emails", isLoggedIn, thesisController.getAllCoSupervisorsEmails);
 
@@ -68,7 +68,7 @@ app.post("/thesis/:id_thesis/applications", isLoggedIn, (req, res) => studentCon
 
 app.get("/student/:id_student/applications", isLoggedIn, (req,res) => studentController.browserApplicationStudent(req, res));
 
-app.get('/professor/thesis', isLoggedIn, (req, res) => teacherController.browseProposals(req, res))
+//app.get('/professor/thesis', isLoggedIn, (req, res) => teacherController.browseProposals(req, res))
 
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
 

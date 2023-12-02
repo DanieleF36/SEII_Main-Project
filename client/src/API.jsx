@@ -248,13 +248,18 @@ async function browserApplicationStudent(id_student) {
   }
 }
 
-function browseProposal() {
-  return getJson(fetch(URL + '/professor/thesis', {
+async function browseProposal() {
+  const res = await fetch(URL + '/thesis', {
     credentials:'include'
-  }))
-  .then(res => {
-    return res
-  })
+  });
+  if(res.status == 200){
+    const thesis = await res.json();
+    return thesis.thesis;
+  }
+  else{
+    const err = await res.json();
+    return err;
+  }
 }
 
 // =================== Virtual clock API ===================

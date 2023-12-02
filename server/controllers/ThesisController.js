@@ -123,28 +123,50 @@ function checkQuery(req) {
  * @returns ERROR: common error handling object
  * @returns ERROR: not authorized, only student can call this
  */
-exports.advancedResearchThesis = function advancedResearchThesis(req, res, next) {
-  const error = checkQuery(req);
-  if (error) {
-    res.status(400).json({ error: error });
-    return;
-  }
-  //checks if order is defined or not, otherwise titleD is setted as defaul value
-  const order = req.query.order ? req.query.order : "titleD";
+exports.searchThesis = function searchThesis(req, res, next) {
+  if(req.user.role == 'student'){
+    const error = checkQuery(req);
+    if (error) {
+      res.status(400).json({ error: error });
+      return;
+    }
+    //checks if order is defined or not, otherwise titleD is setted as defaul value
+    const order = req.query.order ? req.query.order : "titleD";
 
-  thesisService.advancedResearchThesis(req.query.page, order, req.query.title, req.query.supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, req.user.cds, req.query.creation_date)
-    .then(function (response) {
-      let nPage = response[1];
-      response = response[0];
-      response.forEach((e) => {
-        e.supervisor = e.supervisor.name + " " + e.supervisor.surname;
-        if (e.coSupervisors)
-          e.coSupervisors.forEach((e1, index, v) => {
-            v[index] = e1.name + " " + e1.surname;
-          });
-      });
-      res.status(200).json({ nPage: nPage, thesis: response });
+    thesisService.advancedResearchThesis(req.query.page, order, req.query.title, req.query.supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, req.user.cds, req.query.creation_date)
+      .then(function (response) {
+        let nPage = response[1];
+        response = response[0];
+        response.forEach((e) => {
+          e.supervisor = e.supervisor.name + " " + e.supervisor.surname;
+          if (e.coSupervisors)
+            e.coSupervisors.forEach((e1, index, v) => {
+              v[index] = e1.name + " " + e1.surname;
+            });
+        });
+        res.status(200).json({ nPage: nPage, thesis: response });
+    }).catch(e=>{
+      let err = {error: ""};
+      if(e.message)
+        err.error = e.message;
+      else
+        err.error = e.error; 
+      res.status(500).json(err)
     });
+  }else if(req.user.role == 'teacher'){
+    thesisService.getActiveBySupervisor(req.user.id)
+    .then(response=>{
+      res.status(200).json({ nPage: 1, thesis: response })
+    })
+    .catch(response=>{
+      if(response.message)
+        res.status(500).json(response.message);
+      else
+        res.status(500).json(response.error);
+    })
+  }else{
+    res.status(401).json({error: "Only student or teacher can access list of thesis"})
+  }
 };
 
 exports.addApplication = function addApplication(req, res, next) {
