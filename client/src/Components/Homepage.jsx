@@ -84,7 +84,7 @@ function Homepage(props) {
             props.setUser(user);
             props.setIsAuth(1);
             if(user.role === 'student'){
-            API.advancedSearchThesis({page: props.active}).then(res=>{
+            API.advancedSearchThesis({...filters, page: props.active}).then(res=>{
                
                 props.setProposals(res[1]);
                 props.setPage(res[0]);
@@ -92,10 +92,6 @@ function Homepage(props) {
             }
         })
     }, [props.currentTime]);
-
-    useEffect(() => {
-        handleResetChange();
-    }, [props.user]);
 
 
     const handleFilterChange = (e) => {
