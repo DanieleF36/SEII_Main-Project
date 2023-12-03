@@ -6,28 +6,52 @@ require('dotenv').config({path: './variable.env'})
 const db = require("./db");
 
 /**
+ * create a new object that represent teacher 
+ * @returns 
+ */
+function newTeacher(id, name, surname, email, codGroup, codDep){
+    return {
+        id: row.id,
+        name: row.name, 
+        surname:row.surname, 
+        email:row.email, 
+        codGroup:row.cod_group, 
+        codDep:row.cod_dep
+    }
+}
+
+//==================================Create==================================
+
+
+//==================================Get==================================
+/**
  * Given a teacher's id, returns all the stored information
  * @param {*} id teacher's id
  * @returns all the teacher's information
  */
 exports.findById = (id)=>{
+    if(!id || id<0)
+        throw {error: "id must be greather than 0"}
     const sqlTeacher = "SELECT * FROM Teacher WHERE id = ?";
     return new Promise((resolve, reject)=>{
         db.get(sqlTeacher, [id], (err, row)=>{
-            if (err) {
-                reject(err);
-                return;
-            }
+            if (err) 
+                return reject({error: err.message});
             if(row==undefined)
                 return resolve({});
-            resolve({id: row.id, name: row.name, surname:row.surname, email:row.email, codGroup:row.cod_group, codDep:row.cod_dep});
+            resolve(newTeacher(row.id, row.name, row.surname, row.email, row.cod_group, row.cod_dep));
         });
     });
 }
 
+/**
+ * Given a teacher's email, returns all the stored information
+ * @param {*} email teacher's email
+ * @returns all the teacher's information
+ */
 exports.findByEmail = (email)=>{
     if(!email)
-        throw new Error("email must exist")
+        throw {error:"email must exist"}
     const sqlTeacher = "SELECT * FROM Teacher WHERE email = ?";
     return new Promise((resolve, reject)=>{
         db.get(sqlTeacher, [email], (err, row)=>{
@@ -37,26 +61,10 @@ exports.findByEmail = (email)=>{
             }
             if(row==undefined)
                 return resolve({});
-            resolve({id: row.id, name: row.name, surname:row.surname, email:row.email, codGroup:row.cod_group, codDep:row.cod_dep});
+            resolve(newTeacher(row.id, row.name, row.surname, row.email, row.cod_group, row.cod_dep));
         });
     });
 }
-
-exports.getTeacherEmail = (teacherID) => {
-    if(!teacherID || teacherID<0)
-        throw new Error("teacherID must exists and be greather than 0")
-    const teacherMailSQL = 'SELECT email FROM Teacher WHERE id = ? '
-    return new Promise((resolve, reject) => {
-      db.get(teacherMailSQL, [teacherID], function (err, result) {
-        if (err) {
-          console.error("Error in SQLDatabase:", err.message);
-          reject({error: err.message});
-        } else {
-          resolve(result.email);
-        }
-      });
-    });
-  };
 
 /**
  * Perfoms a search according to the following possible combinations:
@@ -79,10 +87,12 @@ exports.findByNSorS = (surname, name)=>{
         params.push("%"+name+"%");
         params.push("%"+surname+"%");
     }
-    else{
+    else if(surname != null){
         sql+="surname LIKE ?";
         params.push("%"+surname+"%");
     }
+    else
+        throw {error: "at least surname have to be provided"}
     return new Promise((resolve, reject)=>{
         db.all(sql, params, (err, rows)=>{
             if (err) {
@@ -93,7 +103,14 @@ exports.findByNSorS = (surname, name)=>{
         });
     });
 }
-//support method that translate a teacher into a supervisor
+
+//==================================Set==================================
+
+//==================================Delete==================================
+
+//==================================Support==================================
+
+//translate a teacher into a supervisor
 exports.fromTeacherToCoSupervisor= (teacher)=>{
     return {email:teacher.email, name:teacher.name, surname:teacher.surname, company:"PoliTo"};
 }

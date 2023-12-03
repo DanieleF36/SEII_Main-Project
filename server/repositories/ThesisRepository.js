@@ -35,6 +35,8 @@ function newThesis(id, title, supervisor, coSupervisors, keywords, type, groups,
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.addThesis = (title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) => {
+  if(!(title && supervisor && keywords && type && groups && description && knowledge && note && expiration_date && level && cds && creation_date && status))
+    throw {error: "Parameters can not be null or undefined"}
   const sql = `INSERT INTO Thesis(title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status)
                VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
 
@@ -57,9 +59,9 @@ exports.addThesis = (title, supervisor, keywords, type, groups, description, kno
  * @returns an object that represent thesis or undefined if id does not exist
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
-exports.getById = ( id_thesis) => {
+exports.getById = (id_thesis) => {
   if(!id_thesis || id_thesis<0)
-    throw new Error("id_thesis must exists and be greater than 0");
+    throw {error:"id_thesis must exists and be greater than 0"};
   const thesisTitlesSQL = 'SELECT * FROM Thesis WHERE id = ?'
   return new Promise((resolve, reject) => {
     db.get(thesisTitlesSQL, [id_thesis], function (err, result) {
@@ -78,8 +80,9 @@ exports.getById = ( id_thesis) => {
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.getActiveBySupervisor = (supervisorId) => {
+  if(!supervisorId || supervisorId<0)
+    throw {error:"supervisorId must exists and be greater than 0"};
   const sql = `SELECT * FROM thesis WHERE status = 1 AND supervisor = ?`
-  
   return new Promise( (resolve, reject) => {
     db.all(sql, [supervisorId], (err, rows) => {
       if(err) {
@@ -114,6 +117,8 @@ exports.getActiveBySupervisor = (supervisorId) => {
  * @returns list of thesis objects
  */
 exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
+  if(!from || !to || !order)
+    throw {error: "from, to and order must be defined"}
   let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
   const params = sql[1];
   sql = sql[0];
@@ -150,6 +155,8 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.updateThesis = (id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status)=> {
+  if(!(title && supervisor && keywords && type && groups && description && knowledge && note && expiration_date && level && cds && creation_date && status))
+    throw {error: "Parameters can not be null or undefined"}
   const sql = `UPDATE Thesis 
                SET title = ?, supervisor = ?, keywords = ?, type = ?, groups = ?, description = ?, 
                    knowledge = ?, note = ?, expiration_date = ?, level = ?, cds = ?, creation_date = ?, status = ?
@@ -177,9 +184,9 @@ exports.updateThesis = (id, title, supervisor, keywords, type, groups, descripti
  */
 exports.setStatus = (id, status) => {
   if(!id || id<0)
-    throw new Error("id must exists and be greater than 0");
+    throw {error: "id must exists and be greater than 0"};
   if(status==undefined || status<0 || status>1)
-    throw new Error("status must exists and be zero or one");
+    throw {error: "status must exists and be zero or one"};
   const updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ?';
   return new Promise((resolve, reject)=>{
     db.run(updateThesisSQL, [status, id], function (err) {
@@ -397,7 +404,7 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
 exports.selectExpiredAccordingToDate = (date) => {
   const sql = 'SELECT id FROM Thesis WHERE expiration_date <= ? AND status = 1'
 
-return new Promise( (resolve, reject) => {
+  return new Promise( (resolve, reject) => {
     db.all(sql, [date], (err, rows) => {
       if(err)
         return reject({error: err.message});
