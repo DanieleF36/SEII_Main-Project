@@ -11,12 +11,12 @@ const db = require("./db");
  */
 function newTeacher(id, name, surname, email, codGroup, codDep){
     return {
-        id: row.id,
-        name: row.name, 
-        surname:row.surname, 
-        email:row.email, 
-        codGroup:row.cod_group, 
-        codDep:row.cod_dep
+        id: id,
+        name: name, 
+        surname: surname, 
+        email: email, 
+        codGroup:codGroup, 
+        codDep:codDep
     }
 }
 
@@ -29,7 +29,7 @@ function newTeacher(id, name, surname, email, codGroup, codDep){
  * @param {*} id teacher's id
  * @returns all the teacher's information
  */
-exports.findById = (id)=>{
+exports.getById = (id)=>{
     if(!id || id<0)
         throw {error: "id must be greather than 0"}
     const sqlTeacher = "SELECT * FROM Teacher WHERE id = ?";
