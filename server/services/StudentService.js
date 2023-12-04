@@ -26,6 +26,6 @@ const studentRepository = require("../repositories/StudentRepository");
  * }
  */
 exports.browserApplicationStudent = async function (id_student) {
-
-    return studentRepository.browserApplicationStudent(id_student).then(res=>res).catch(err=>err);
-  };
+    const result = await studentRepository.browserApplicationStudent(id_student)
+    return result
+};

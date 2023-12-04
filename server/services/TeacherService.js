@@ -6,6 +6,7 @@ const transporter = require('../email/transporter');
 const teacherRepo = require('../repositories/TeacherRepository');
 const studentRepo = require('../repositories/StudentRepository');
 const dayjs = require('../dayjsvc/index.dayjsvc.js')
+
 /**
  * Get all the application for the professor
  *
@@ -24,13 +25,7 @@ exports.listApplication = async function (id_professor) {
  * id_application Integer
  * no response value expected for this operation
  **/
-exports.acceptApplication = async  function (status,teacherID,applicationID) {
-    if(!teacherID || teacherID<0)
-        throw new Error("teacherID must exists and be greater than 0");
-    if(!applicationID || applicationID<0)
-        throw new Error("applicationID must exists and be greater than 0");
-    if(!status || status<0 || status>3)
-        throw new Error("status must exists and be one or two or three");
+exports.acceptApplication = async function (status, teacherID, applicationID) {
     let row = await applicationRepository.getApplication(applicationID);
     if (!row) {
         throw new Error("No application was found, application is missing or is of another teacher");
@@ -46,24 +41,15 @@ exports.acceptApplication = async  function (status,teacherID,applicationID) {
         // Execute the promises sequentially
         await _sendCancelledEmails(teacherID, id_thesis,applicationID, id_student);
         await _sendAcceptedEmail(teacherID, id_thesis, id_student);
-        //resolve({ message: "Application and Thesis updated successfully." });
     } else {
         // If the status is 2 -> rejected, then resolve directly
         await _sendRejectedEmail(teacherID, id_thesis, id_student);
-        //resolve({ message: "Application updated successfully." })
     }
     return status;
 };
 
 // Send a notification to the rejected student 
 async function _sendRejectedEmail(teacherID, id_thesis, id_student) {
-    if(!teacherID || teacherID<0)
-        throw new Error("teacherID must exists and be greater than 0");
-    
-    if(!id_thesis || id_thesis<0)
-        throw new Error("id_thesis must exists and be greater than 0");    
-    if(!id_student || id_student<0)
-        throw new Error("id_student must exists and be greater than 0");
     const [teacherEmail, studentEmail, thesisTitle] = await Promise.all([teacherRepo.getTeacherEmail(teacherID), studentRepo.getStudentEmail(id_student), thesisRepository.getThesisTitle(id_thesis)])
     await transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to rejected.`);
 
@@ -71,15 +57,7 @@ async function _sendRejectedEmail(teacherID, id_thesis, id_student) {
 
 // Send a notification to all the students with the new status cancelled
 async function _sendCancelledEmails(teacherID, id_thesis,id_application, id_student)  {
-    if(!teacherID || teacherID<0)
-        throw new Error("teacherID must exists and be greater than 0");
-    
-    if(!id_thesis || id_thesis<0)
-        throw new Error("id_thesis must exists and be greater than 0");    
-    if(!id_student || id_student<0)
-        throw new Error("id_student must exists and be greater than 0");
     const [teacherEmail, thesisTitle, studentEmailCancelledArray] = await Promise.all([teacherRepo.getTeacherEmail(teacherID), thesisRepository.getThesisTitle(id_thesis), studentRepo.getStudentEmailCancelled(id_student,id_application, id_thesis)])
-    console.log(teacherEmail+" "+thesisTitle+" "+JSON.stringify(studentEmailCancelledArray));
     for(let i of studentEmailCancelledArray){
         await transporter.sendEmail(teacherEmail, i, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to cancelled.`);
     }
@@ -94,31 +72,19 @@ async function _sendCancelledEmails(teacherID, id_thesis,id_application, id_stud
   
   // Send a notification to the student accepted
 async function _sendAcceptedEmail(teacherID, id_thesis, id_student){
-    if(!teacherID || teacherID<0)
-        throw new Error("teacherID must exists and be greater than 0");
-    if(!id_thesis || id_thesis<0)
-        throw new Error("id_thesis must exists and be greater than 0");    
-    if(!id_student || id_student<0)
-        throw new Error("id_student must exists and be greater than 0");
     const [teacherEmail, studentEmail, thesisTitle] = await Promise.all([teacherRepo.getTeacherEmail(teacherID), studentRepo.getStudentEmail(id_student), thesisRepository.getThesisTitle(id_thesis)])
     await transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to accepted.`)
         
 };
 
+/**
+ * TOBE changed and used for either the active and not active thesis
+ * @param {*} supervisor id of a supervisor
+ * @returns list of thesis object
+ */
 exports.browseProposals = async function(supervisor) {
-    const today = dayjs.vc()
-    if(!today.isValid())
-        return {status: 500, error: 'internal error'}
-
-    const date = today.format('YYYY-MM-DD').toString()
-    const response = await thesisRepository.getActiveThesis(supervisor, date)
-    console.log("HERE", response)
-    if(!Array.isArray(response)) {
-        return {status: 500, error: 'internal error'}
-    }
-    else {
-        return response
-    }
+    const response = await thesisRepository.getActiveBySupervisor(supervisor)
+    return response
 }
 
 // Esporta funzioni Private solo per i test
