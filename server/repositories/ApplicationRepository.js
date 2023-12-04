@@ -116,36 +116,25 @@ exports.listApplication = (id_teacher) => {
  * @param {*} cvPath 
  * @returns object = {applicationID : integer, studentId: integer,date : date, status: 0, professorId: integer}
  */
-exports.addProposal = (studentId, thesisId, cvPath) => {
+exports.addProposal = (studentId, thesisId, cvPath, supervisorId) => {
   return new Promise((resolve, reject) => {
-    // Fetch supervisor id based on the given thesisId
-    const getSupervisorSql = 'SELECT supervisor FROM Thesis WHERE id = ?';
-    db.get(getSupervisorSql, [thesisId], (err, result) => {
+    //Create a current date to add at the new application 
+    const currentDate = dayjs().format('YYYY-MM-DD').toString()
+    const sql = 'INSERT INTO Application (id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?)';
+    db.run(sql, [studentId, thesisId, currentDate, cvPath, 0, supervisorId], function (err) {
       if (err) {
         return reject({ error: err.message });
+      } else {
+        // Access the auto-generated ID if needed.
+        const insertedId = this.lastID;
+        resolve({
+          applicationID: insertedId,
+          studentId: studentId,
+          date: currentDate,
+          status: 0,
+          professorId: supervisorId
+        });
       }
-      if (!result.supervisor) {
-        return reject({ error: "Not found" });
-      }
-      const supervisorId = result.supervisor;
-      //Create a current date to add at the new application 
-      const currentDate = dayjs().format('YYYY-MM-DD').toString()
-      const sql = 'INSERT INTO Application (id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?)';
-      db.run(sql, [studentId, thesisId, currentDate, cvPath, 0, supervisorId], function (err) {
-        if (err) {
-          return reject({ error: err.message });
-        } else {
-          // Access the auto-generated ID if needed.
-          const insertedId = this.lastID;
-          resolve({
-            applicationID: insertedId,
-            studentId: studentId,
-            date: currentDate,
-            status: 0,
-            professorId: supervisorId
-          });
-        }
-      });
     });
   });
 };

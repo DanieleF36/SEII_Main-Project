@@ -6,6 +6,7 @@ const path = require('path');
 const applicationsService = require("../services/ApplicationService");
 const studentsService = require("../services/StudentService");
 const studentRepository = require("../repositories/StudentRepository");
+const supervisorRepository = require("../services/SupervisorRepository");
 
 /**
  * wrapper function for apply to a thesis proposal with id = id_thesis 
@@ -34,7 +35,11 @@ exports.applyForProposal = async function (req, res) {
   if(checkApp == true) {
     return res.status(400).json({error : "You already have an application for a thesis"});
   }
-  if (/* studentId != null && */ req.params.id_thesis != null) {
+  const supervisorId = await supervisorRepository.getSupervisorIdByThesisId(req.params.id_thesis);
+  if(supervisorId == undefined) {
+    return res.status(400).json({error : "Supervisor not found"});
+  }
+  if (req.params.id_thesis != null) {
     //Initializes an object that is used to handle the input file in the multipart/form-data format 
     const form = new formidable.IncomingForm();
     //Translate the file into a js object and call it files
@@ -47,7 +52,7 @@ exports.applyForProposal = async function (req, res) {
           return res.status(400).json({ error: "Multiple Files" });
         }
       const file = files.cv[0];
-      applicationsService.addProposal(req.user.id, req.params.id_thesis, file)
+      applicationsService.addProposal(req.user.id, req.params.id_thesis, file, supervisorId)
       .then(function (response) {
         return res.status(201).json(response);
       })
