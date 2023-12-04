@@ -6,7 +6,7 @@ const path = require('path');
 const applicationsService = require("../services/ApplicationService");
 const studentsService = require("../services/StudentService");
 const studentRepository = require("../repositories/StudentRepository");
-const supervisorRepository = require("../services/SupervisorRepository");
+const teacherRepository = require("../repositories/TeacherRepository");
 
 /**
  * wrapper function for apply to a thesis proposal with id = id_thesis 
@@ -35,7 +35,7 @@ exports.applyForProposal = async function (req, res) {
   if(checkApp == true) {
     return res.status(400).json({error : "You already have an application for a thesis"});
   }
-  const supervisorId = await supervisorRepository.getSupervisorIdByThesisId(req.params.id_thesis);
+  const supervisorId = await teacherRepository.getSupervisorIdByThesisId(req.params.id_thesis);
   if(supervisorId == undefined) {
     return res.status(400).json({error : "Supervisor not found"});
   }
