@@ -2,6 +2,8 @@
 
 const sqlite = require('sqlite3');
 
+//==================================Support==================================
+
 const db = require('./db')
 /**
  * Insert an entry into COSUPERVISORTHESIS table without performing any checks over parameters exis
@@ -13,25 +15,30 @@ const db = require('./db')
 exports.addCoSupervisorThesis = (id_thesis, id_theacher, id_cosupervisor) => {
     const sql = "INSERT INTO CoSupervisorThesis(id_thesis, id_teacher, id_cosupervisor) VALUES (?, ?, ?)"
 
-    return new Promise( (resolve, reject) => {
+    return new Promise((resolve, reject) => {
         db.run(sql, [id_thesis, id_theacher, id_cosupervisor], (err) => {
-            if(err)
+            if (err)
                 reject(err)
             resolve(true)
         })
     })
 }
 
-exports.findThesisByCoSupervisorId = (id)=>{
+/**
+ * Support function to find the thesisId given the CoSupervisor id
+ * @param {*} id: id of the co-supervisor
+ * @returns idThesis: integer
+ */
+exports.findThesisByCoSupervisorId = (id) => {
     let idsThesis = [];
     const sqlIdThesis = "SELECT id_thesis FROM CoSupervisorThesis WHERE id_cosupervisor = ?";
-    return new Promise((resolve, reject)=>{
-        db.all(sqlIdThesis, [id], (err, rows)=>{
+    return new Promise((resolve, reject) => {
+        db.all(sqlIdThesis, [id], (err, rows) => {
             if (err) {
                 reject(err);
                 return;
             }
-            rows.map((e)=>{
+            rows.map((e) => {
                 idsThesis.push(e.id_thesis);
             });
             resolve(idsThesis);
@@ -44,38 +51,39 @@ exports.findThesisByCoSupervisorId = (id)=>{
  * @param {*} id of a selected thesis 
  * @returns [id1, id2, ...]
  */
-exports.findCoSupervisorIdsByThesisId = (id)=>{
+exports.findCoSupervisorIdsByThesisId = (id) => {
     const sqlCoSupervisor = "SELECT id_teacher, id_cosupervisor FROM CoSupervisorThesis WHERE id_thesis = ?";
-    return new Promise((resolve, reject)=>{
-        db.all(sqlCoSupervisor, [id], (err, rows)=>{
+    return new Promise((resolve, reject) => {
+        db.all(sqlCoSupervisor, [id], (err, rows) => {
             if (err) {
                 reject(err);
                 return;
             }
-            const res = rows.map((e)=>{
-                if(e.id_teacher==0 || e.id_teacher==null)
-                    return {idCoSupervisor:e.id_cosupervisor};
-                else if(e.id_cosupervisor==0 || e.id_cosupervisor==null)
-                    return {idTeacher:e.id_teacher};
-        });
+            const res = rows.map((e) => {
+                if (e.id_teacher == 0 || e.id_teacher == null)
+                    return { idCoSupervisor: e.id_cosupervisor };
+                else if (e.id_cosupervisor == 0 || e.id_cosupervisor == null)
+                    return { idTeacher: e.id_teacher };
+            });
             resolve(res);
-        }); 
+        });
     });
 }
 
-
+/**
+ * Delete coSupervisor given the thesis id
+ * @param {*} thesisId 
+ * @returns true: delete completed without error
+ * @returns ERROR: sqlite error is returned in the form {error: "message"}
+ */
 exports.removeCoSupervisorsByThesisId = (thesisId) => {
-  const sql = 'DELETE FROM CoSupervisorThesis WHERE id_thesis = ?';
-
-  return new Promise((resolve, reject) => {
-    db.run(sql, [thesisId], function (err) {
-      if (err) {
-        console.error("SQLite Error:", err.message);
-        reject({ error: 'Failed to remove co-supervisors for the thesis.' });
-        return;
-      }
-
-      resolve(true);
+    const sql = 'DELETE FROM CoSupervisorThesis WHERE id_thesis = ?';
+    return new Promise((resolve, reject) => {
+        db.run(sql, [thesisId], function (err) {
+            if (err) {
+                return reject({ error: err.message });
+            }
+            resolve(true);
+        });
     });
-  });
 };
