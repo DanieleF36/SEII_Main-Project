@@ -116,7 +116,7 @@ exports.listApplication = (id_teacher) => {
  * @param {*} cvPath 
  * @returns object = {applicationID : integer, studentId: integer,date : date, status: 0, professorId: integer}
  */
-exports.addProposal = (studentId, thesisId, cvPath, supervisorId) => {
+exports.addApplication = (studentId, thesisId, cvPath, supervisorId) => {
   return new Promise((resolve, reject) => {
     //Create a current date to add at the new application 
     const currentDate = dayjs().format('YYYY-MM-DD').toString()
