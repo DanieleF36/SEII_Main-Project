@@ -42,7 +42,7 @@ exports.getById = (id) => {
  * @param {*} email student's email
  * @returns all the student's information
  */
-exports.findByEmail = (email) => {
+exports.getByEmail = (email) => {
   if(!email)
         throw {error:"email must exist"}
   const sqlCoSupervisor = "SELECT * FROM Student WHERE email = ?";

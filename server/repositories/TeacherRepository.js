@@ -49,7 +49,7 @@ exports.getById = (id)=>{
  * @param {*} email teacher's email
  * @returns all the teacher's information
  */
-exports.findByEmail = (email)=>{
+exports.getByEmail = (email)=>{
     if(!email)
         throw {error:"email must exist"}
     const sqlTeacher = "SELECT * FROM Teacher WHERE email = ?";
@@ -73,14 +73,16 @@ exports.findByEmail = (email)=>{
  * 3. only name is defined, error (never possible if checks are done over surname at controller level)
  * 4. none of them are defined, error (never possible)
  * 
- * This will return a list of ids because more supervisor with same name/lastname pair could exist
+ * This will return a list of teacher Objects because more supervisor with same name/lastname pair could exist
  * 
  * @param {String} surname, must be defined
  * @param {String} name, could be undefined
  * @returns [id1, id2, ...]
  */
-exports.findByNSorS = (surname, name)=>{
-    let sql = "SELECT id FROM Teacher WHERE ";
+exports.getByNSorS = (surname, name)=>{
+    if(!surname || (name && !surname))
+        throw {error: "surname must exists"}
+    let sql = "SELECT * FROM Teacher WHERE ";
     let params = [];
     if(name != null && surname != null){
         sql+="name LIKE ? AND surname LIKE ?";
@@ -96,12 +98,33 @@ exports.findByNSorS = (surname, name)=>{
     return new Promise((resolve, reject)=>{
         db.all(sql, params, (err, rows)=>{
             if (err) {
-                reject(err);
+                reject({ error: err.message });
                 return;
             }
             resolve(rows);
         });
     });
+}
+
+/**
+ * Support function to retrive the supervisorId given the thesisId
+ * @param {*} thesisId
+ * @returns supervisorId : integer
+ * @returns ERROR: sqlite error is returned in the form {error: "message"}
+ * @returns "Not found" : if there is no match
+ */
+exports.getIdByThesisId = (thesisId) => {
+    if(!thesisId || thesisId<0)
+        throw {error: "thesisId must be greather than 0"}
+    const getSupervisorSql = 'SELECT supervisor FROM Thesis WHERE id = ?';
+    return new Promise((resolve, reject) => {
+        db.get(getSupervisorSql, [thesisId], (err, result) => {
+            if (err) {
+                return reject({ error: err.message });
+            }
+            resolve(result.supervisor);
+        });
+    })
 }
 
 //==================================Set==================================
@@ -115,21 +138,3 @@ exports.fromTeacherToCoSupervisor= (teacher)=>{
     return {email:teacher.email, name:teacher.name, surname:teacher.surname, company:"PoliTo"};
 }
 
-/**
- * Support function to retrive the supervisorId given the thesisId
- * @param {*} thesisId
- * @returns supervisorId : integer
- * @returns ERROR: sqlite error is returned in the form {error: "message"}
- * @returns "Not found" : if there is no match
- */
-exports.getSupervisorIdByThesisId = (thesisId) => {
-    const getSupervisorSql = 'SELECT supervisor FROM Thesis WHERE id = ?';
-    return new Promise((resolve, reject) => {
-        db.get(getSupervisorSql, [thesisId], (err, result) => {
-            if (err) {
-                return reject({ error: err.message });
-            }
-            resolve(result.supervisor);
-        });
-    })
-}

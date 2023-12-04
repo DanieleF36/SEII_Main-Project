@@ -1,7 +1,6 @@
 "use strict";
 
 const db = require("./db");
-const applicationRepository = require('./ApplicationRepository.js')
 
 /**
  * create a new object that represent thesis 
@@ -117,8 +116,8 @@ exports.getActiveBySupervisor = (supervisorId) => {
  * @returns list of thesis objects
  */
 exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
-  if(!from || !to || !order)
-    throw {error: "from, to and order must be defined"}
+  if(!from || !to || !order || !specific)
+    throw {error: "from, to, order and specific must be defined"}
   let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
   const params = sql[1];
   sql = sql[0];
@@ -133,6 +132,30 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
     });
   });
 };
+
+/**
+ * Find the thesisId given the CoSupervisor id
+ * @param {*} id: id of the co-supervisor
+ * @returns [id1, id2, ....]
+ */
+exports.getIdByCoSupervisorId = (id) => {
+  if(!id || id<0)
+      throw {error: "id must be greather than 0"}
+  let idsThesis = [];
+  const sqlIdThesis = "SELECT id_thesis FROM CoSupervisorThesis WHERE id_cosupervisor = ?";
+  return new Promise((resolve, reject) => {
+      db.all(sqlIdThesis, [id], (err, rows) => {
+          if (err) {
+              reject({error: err.message});
+              return;
+          }
+          rows.map((e) => {
+              idsThesis.push(e.id_thesis);
+          });
+          resolve(idsThesis);
+      });
+  });
+}
 
 //==================================Set==================================
 /**
@@ -397,6 +420,7 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
 
 //==================================Virtual CLock==================================
 
+const applicationRepository = require('./ApplicationRepository.js')
 /**
  * Designed for Virtual clock
  * @param {*} date 

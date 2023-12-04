@@ -2,14 +2,18 @@
 
 const db = require("./db");
 
-//==================================Support==================================
+//==================================Create==================================
+
+//==================================Get==================================
 
 /**
- * Support function to get certain info about a CoSupervisor given his id
+ * Returns a CoSupervisor given his id
  * @param {*} id: coSupervisor id 
  * @returns Object: {name: string, surname: string, email: string, company: string}
  */
-exports.findById = (id) => {
+exports.getById = (id) => {
+  if(!id || id<0)
+        throw {error: "id must be greather than 0"}
   const sqlCoSupervisor = "SELECT name, surname, email, company FROM CoSupervisor WHERE id = ?";
   return new Promise((resolve, reject) => {
     db.get(sqlCoSupervisor, [id], (err, row) => {
@@ -19,40 +23,42 @@ exports.findById = (id) => {
       if (!row)
         resolve({})
       else
-        resolve({ name: row.name, surname: row.surname, email: row.surname, company: row.company });
+        resolve(row);
 
     });
   });
 }
 
 /**
- * Support function to retrive the email of a CoSupervisor (one or more) given of a certain thesis
- * given the thesis id 
+ * Returns all CoSupervisor (one or more) given of a certain thesis id
  * @param {*} id : thesisId
- * @returns object : {email: string}
+ * @returns [{name: string, surname: string, email: string, company: string}, ...................]
  */
-exports.getEmailsByThesisId = (id) => {
-    const sql = 'SELECT email FROM CoSupervisor WHERE id IN (SELECT id_cosupervisor AS List FROM CoSupervisorThesis WHERE id_thesis=?)'
-    return new Promise( (resolve, reject) => {
-      db.all(sql, [id], (err, rows) => {
-        if (err) {
-          return reject({error: err.message});
-        }
-        else if(rows.length == 0)
-          resolve([])
-        resolve(rows.map(a => a.email))
-      })
+exports.getByThesisId = (id) => {
+  if(!id || id<0)
+        throw {error: "id must be greather than 0"}
+  const sql = 'SELECT email FROM CoSupervisor WHERE id IN (SELECT id_cosupervisor AS List FROM CoSupervisorThesis WHERE id_thesis=?)'
+  return new Promise( (resolve, reject) => {
+    db.all(sql, [id], (err, rows) => {
+      if (err) {
+        return reject({error: err.message});
+      }
+      else if(rows.length == 0)
+        resolve([])
+      resolve(rows)
     })
-  }
+  })
+}
 
 /**
  * Support function to retrive the info about a CoSupervisor having his email
  * @param email: Cosupervisor email
  * @returns object : {id : string, name : string, surname : string, email : string, company: string} 
  */
-exports.findByEmail = (email) => {
+exports.getByEmail = (email) => {
+  if(!email)
+    throw {error: "email must exists"}
   const sqlCoSupervisor = "SELECT id, name, surname, email, company FROM CoSupervisor WHERE email = ?";
-
   return new Promise((resolve, reject) => {
     db.get(sqlCoSupervisor, [email], (err, row) => {
       if (err) {
@@ -62,7 +68,7 @@ exports.findByEmail = (email) => {
       if (!row)
         resolve({})
       else
-        resolve({ id: row.id, name: row.name, surname: row.surname, email: row.surname, company: row.company });
+        resolve(row);
 
     });
   });
@@ -81,7 +87,9 @@ exports.findByEmail = (email) => {
  * @param {String} name 
  * @returns [id1, id2, ...]
  */
-exports.findByNSorS = (surname, name) => {
+exports.getByNSorS = (surname, name) => {
+  if(!surname || (!surname && name))
+    throw {error: "surname must exists"}
   let sql = "SELECT id FROM CoSupervisor WHERE ";
   let params = [];
   if (name != null && surname != null) {
@@ -104,11 +112,17 @@ exports.findByNSorS = (surname, name) => {
   });
 }
 
+//==================================Set==================================
+
+//==================================Delete==================================
+
+//==================================Support==================================
+
 /**
  * Support function that retrive all the CoSupervisors email
  * @returns array of CoSupervisorsEmail (string)
  */
-exports.getAllCoSupervisorsEmails = () => {
+exports.getAllEmails = () => {
   return new Promise((resolve, reject) => {
     const coSupervisorSql = 'SELECT email FROM CoSupervisor';
     db.all(coSupervisorSql, [], (coSupervisorErr, coSupervisors) => {
@@ -125,4 +139,4 @@ exports.getAllCoSupervisorsEmails = () => {
       }
     });
   });
-};
+}

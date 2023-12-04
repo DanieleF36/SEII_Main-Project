@@ -1,5 +1,4 @@
 "use strict";
-const fs=require('fs');
 const applicationRepository = require('../repositories/ApplicationRepository')
 
 /**
@@ -26,6 +25,6 @@ const applicationRepository = require('../repositories/ApplicationRepository')
  * }
  */
 exports.browserApplicationStudent = async function (id_student) {
-    const result = await applicationRepository.browserApplicationStudent(id_student)
+    const result = await applicationRepository.getByStudentId(id_student)
     return result
 };

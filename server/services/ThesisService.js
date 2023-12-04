@@ -37,9 +37,9 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
 
     // performs a search by name and/or lastname and returns an array of ids
     if (ns.length > 1)
-      idSupervisors = await teacherRepository.findByNSorS(ns[1], ns[0]);
+      idSupervisors = await teacherRepository.ByNSorS(ns[1], ns[0]).map(e=>e.id);
     else
-      idSupervisors = await teacherRepository.findByNSorS(ns[0]);
+      idSupervisors = await teacherRepository.getByNSorS(ns[0]).map(e=>e.id);
 
     // if idSupervisors is defined we found a user(s) who is managing a thesis in our system
     if (idSupervisors != null && idSupervisors.length > 0)
@@ -53,12 +53,12 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
       const ns = e.split(" ");
       let idsCo;
       if (ns.length > 1)
-        idsCo = await coSupervisorRepository.findByNSorS(ns[1], ns[0]);
+        idsCo = await coSupervisorRepository.getByNSorS(ns[1], ns[0]);
       else
-        idsCo = await coSupervisorRepository.findByNSorS(ns[0]);
+        idsCo = await coSupervisorRepository.getByNSorS(ns[0]);
       if (idsCo > 0)
         // add the thesis managed by the chosen cosupervisor 
-        idCoSupervisorsThesis.push(await coSupervisorThesisRepository.findThesisByCoSupervisorId(idsCo));
+        idCoSupervisorsThesis.push(await thesisRepository.getIdByCoSupervisorId(idsCo));
 
       // if no. idCoSupervisorsThesis.length > 0 some data have been found
       if (idCoSupervisorsThesis.length > 0) ok = true;
@@ -82,24 +82,23 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   //find information about teacher
   for (let i = 0; i < res.length; i++) {
     // get all the superior's information given an id
-    const t = await teacherRepository.findById(res[i].supervisor);
+    const t = await teacherRepository.getById(res[i].supervisor);
     // add superior's information to each thesis
     res[i].supervisor = t;
   }
   //find ids about co-supervisors
   for (let i = 0; i < res.length; i++) {
-    const idList =
-      await coSupervisorThesisRepository.findCoSupervisorIdsByThesisId(res[i].id);
+    const idList = await coSupervisorThesisRepository.getIdsByThesisId(res[i].id);
     res[i].coSupervisor = [];
     for (let j = 0; j < idList.length; j++) {
       if (idList[j].idTeacher != null) {
-        const t = await teacherRepository.findById(idList[j].idTeacher);
+        const t = await teacherRepository.getById(idList[j].idTeacher);
         res[i].coSupervisors.push(
           teacherRepository.fromTeacherToCoSupervisor(t)
         );
       } else {
         res[i].coSupervisors.push(
-          await coSupervisorRepository.findById(idList[j].idCoSupervisor)
+          await coSupervisorRepository.getById(idList[j].idCoSupervisor)
         );
       }
     }
@@ -161,9 +160,9 @@ exports.addThesis = async function (thesis) {
     // look for each co-supervisor id into COSUPERVISOR
     if (Array.isArray(thesis.cosupervisor) && thesis.cosupervisor[0].length!==0) {
       for (let email of thesis.cosupervisor) {
-        let tmp = await coSupervisorRepository.findByEmail(email);
+        let tmp = await coSupervisorRepository.getByEmail(email);
         if (Object.keys(tmp).length === 0) {
-          tmp = await teacherRepository.findByEmail(email);
+          tmp = await teacherRepository.getByEmail(email);
           if (Object.keys(tmp).length === 0) {
             throw {
               status: 400,

@@ -5,7 +5,6 @@ const thesisRepository = require('../repositories/ThesisRepository.js');
 const transporter = require('../email/transporter');
 const teacherRepo = require('../repositories/TeacherRepository');
 const studentRepo = require('../repositories/StudentRepository');
-const dayjs = require('../dayjsvc/index.dayjsvc.js')
 
 /**
  * Get all the application for the professor
@@ -26,7 +25,7 @@ exports.listApplication = async function (id_professor) {
  * no response value expected for this operation
  **/
 exports.acceptApplication = async function (status, teacherID, applicationID) {
-    let row = await applicationRepository.getApplication(applicationID);
+    let row = await applicationRepository.getById(applicationID);
     if (!row) {
         throw new Error("No application was found, application is missing or is of another teacher");
     }
@@ -50,14 +49,20 @@ exports.acceptApplication = async function (status, teacherID, applicationID) {
 
 // Send a notification to the rejected student 
 async function _sendRejectedEmail(teacherID, id_thesis, id_student) {
-    const [teacherEmail, studentEmail, thesisTitle] = await Promise.all([teacherRepo.getTeacherEmail(teacherID), studentRepo.getStudentEmail(id_student), thesisRepository.getThesisTitle(id_thesis)])
+    const [teacherEmail, studentEmail, thesisTitle] = await Promise.all([
+        teacherRepo.getById(teacherID).map(e=>e.email), 
+        studentRepo.getStudentEmail(id_student), 
+        thesisRepository.getById(id_thesis).title]);
     await transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to rejected.`);
 
 };
 
 // Send a notification to all the students with the new status cancelled
 async function _sendCancelledEmails(teacherID, id_thesis,id_application, id_student)  {
-    const [teacherEmail, thesisTitle, studentEmailCancelledArray] = await Promise.all([teacherRepo.getTeacherEmail(teacherID), thesisRepository.getThesisTitle(id_thesis), studentRepo.getStudentEmailCancelled(id_student,id_application, id_thesis)])
+    const [teacherEmail, thesisTitle, studentEmailCancelledArray] = await Promise.all([
+        teacherRepo.getById(teacherID).map(e=>e.email),
+        thesisRepository.getById(id_thesis).title,
+        studentRepo.getStudentEmailCancelled(id_student,id_application, id_thesis)])
     for(let i of studentEmailCancelledArray){
         await transporter.sendEmail(teacherEmail, i, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to cancelled.`);
     }
@@ -72,7 +77,10 @@ async function _sendCancelledEmails(teacherID, id_thesis,id_application, id_stud
   
   // Send a notification to the student accepted
 async function _sendAcceptedEmail(teacherID, id_thesis, id_student){
-    const [teacherEmail, studentEmail, thesisTitle] = await Promise.all([teacherRepo.getTeacherEmail(teacherID), studentRepo.getStudentEmail(id_student), thesisRepository.getThesisTitle(id_thesis)])
+    const [teacherEmail, studentEmail, thesisTitle] = await Promise.all([
+        teacherRepo.getById(teacherID).map(e=>e.email),
+        studentRepo.getStudentEmail(id_student), 
+        thesisRepository.getById(id_thesis).title])
     await transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to accepted.`)
         
 };
