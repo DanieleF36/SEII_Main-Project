@@ -1,7 +1,6 @@
 "use strict";
 
 const thesisService = require("../services/ThesisService");
-const applicationService = require("../services/ApplicationService");
 const teacherService = require("../services/TeacherService");
 
 function isConvertible(str) {
@@ -170,15 +169,6 @@ exports.searchThesis = function searchThesis(req, res, next) {
   }
 };
 
-exports.addApplication = function addApplication(req, res, next) {
-  thesisService
-    .addApplication(req.params.id)
-    .then(function (response) {
-      res.status(201).json(response);
-    })
-    .catch(function (response) {});
-};
-
 /**
  * Wrapper function for adding a new thesis to the database
  *
@@ -291,16 +281,6 @@ exports.addThesis = async function addThesis(req, res) {
   }
   else {
     return res.status(200).json(response)
-  }
-};
-
-exports.getAllCoSupervisorsEmails = async function (req, res) {
-  try {
-    const result = await applicationService.getAllCoSupervisorsEmailsService();
-    res.status(result.status).json(result.data || result.error);
-  } catch (error) {
-    console.error("Error in someControllerMethod:", error.message);
-    res.status(500).json('Internal server error');
   }
 };
 

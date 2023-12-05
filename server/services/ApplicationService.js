@@ -3,7 +3,7 @@ const fs = require('fs');
 const applicationRepository = require("../repositories/ApplicationRepository");
 
 /**
- * Add a new proposal
+ * Add a new application
  *
  * @param {*} studentId Integer
  * @param {*} thesisId Integer
@@ -19,7 +19,7 @@ const applicationRepository = require("../repositories/ApplicationRepository");
  * in case of error
  *  object {error: "string"}
  **/
-exports.addProposal = function (studentId, thesisId, cv) {
+exports.addApplication = function (studentId, thesisId, cv) {
     return new Promise((resolve, reject) => {
       //At the begginning the file is saved in tmp 
       let oldPath = cv.filepath;
@@ -34,11 +34,9 @@ exports.addProposal = function (studentId, thesisId, cv) {
             let res = await applicationRepository.addApplication(studentId, thesisId, newPath);
             resolve(res);
           } catch (error) {
-            reject(error);
+            reject({ error: err.message });
           }
         }
       });
     });
-  };
-
-
+};

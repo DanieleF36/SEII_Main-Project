@@ -45,29 +45,24 @@ const isLoggedIn = (req, res, next)=>{
 /******************************************************************Route*********************************************************************************************/
 
 const thesisController = require("./controllers/ThesisController");
-//const teacherController = require("./controllers/TeacherController");
-const studentController = require("./controllers/StudentController");
+const coSupervisorController = require("./controllers/CoSupervisorController");
 const applicationController = require("./controllers/ApplicationController");
 const vc = require('./dayjsvc/index.dayjsvc')
 
 app.get("/thesis", isLoggedIn, (req, res) => thesisController.searchThesis(req,res));
 
-app.get("/thesis/supervisor/emails", isLoggedIn, thesisController.getAllCoSupervisorsEmails);
-
-app.get("/applications", isLoggedIn, (req, res) => applicationController.listApplication(req, res));
-
 app.post("/thesis", isLoggedIn, (req, res) => thesisController.addThesis(req, res));
 
 app.put("/thesis/:id", isLoggedIn, (req, res) => thesisController.updateThesis(req, res));
 
-app.put("/professor/:id_professor/applications/:id_application", applicationController.acceptApplication);
+app.post("/thesis/:id_thesis/applications", isLoggedIn, (req, res) => applicationController.applyForProposal(req, res));
 
-app.post("/thesis/:id_thesis/applications", isLoggedIn, (req, res) => studentController.applyForProposal(req, res));
+app.get("/applications", isLoggedIn, (req, res) => applicationController.listApplication(req, res));
 
+app.put("/applications/:id_applications", applicationController.acceptApplication);
 
-app.get("/student/:id_student/applications", isLoggedIn, (req,res) => studentController.browserApplicationStudent(req, res));
+app.get("/cosupervisors/email", isLoggedIn, coSupervisorController.getAllCoSupervisorsEmails);
 
-//app.get('/professor/thesis', isLoggedIn, (req, res) => teacherController.browseProposals(req, res))
 
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
 

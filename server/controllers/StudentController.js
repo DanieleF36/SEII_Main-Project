@@ -1,7 +1,5 @@
 "use strict";
 const formidable = require('formidable');
-const fs = require('fs');
-const path = require('path');
 
 const applicationsService = require("../services/ApplicationService");
 const studentsService = require("../services/StudentService");
