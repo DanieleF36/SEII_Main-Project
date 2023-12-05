@@ -2,6 +2,7 @@
 
 const thesisService = require("../services/ThesisService");
 const applicationService = require("../services/ApplicationService");
+const teacherService = require("../services/TeacherService");
 
 function isConvertible(str) {
   if(str=="undefined")
@@ -402,3 +403,29 @@ exports.updateThesis = async function updateThesis(req, res) {
     return res.status(200).json(response);
   }
 };
+
+/**
+ * FOR TEACHER ONLY
+ * Wrapper function for recovering the whole set of ACTIVE thesis for the current logged in 
+ * supervisor so that the expired ones as well as the ones which are in the archive are not
+ * returned. This function could be affected by the fast forwarding in time by virtual clock
+ * usage and that's managed at service level.
+ * 
+ * @param {*} req none
+ * @param {*} res [thesis1, thesis2, ...]
+ */
+exports.browseProposals = async function (req, res) {
+  if(req.user.role !== 'teacher'){
+    return res.status(401).json({error:"You can not access to this route"})
+  }
+
+  const supervisor = req.user.id;
+
+  const response = await teacherService.browseProposals(supervisor)
+  if(response.error) {
+    return res.status(response.status).json(response.error)
+  }
+  else {
+    return res.status(200).json(response)
+  }
+}

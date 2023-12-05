@@ -10,10 +10,21 @@ const studentRepo = require('../repositories/StudentRepository');
  * Get all the application for the professor
  *
  * @param {*} id_professor Integer
- * @returns object { application: application, thesis: thesis, student: student } defined in controller file
- **/
-exports.listApplication = async function (id_professor) {
-    let res = await applicationRepository.listApplication(id_professor);
+ * @returns an array of object 
+ * { 
+ * id_student: integer,
+ * id_application: integer,
+ * id_thesis: integer,
+ * title: string,
+ * name: string,
+ * surname: string,
+ * data: date,
+ * path_cv: string,
+ * status: integer
+ * }
+ */
+exports.browseApplicationProfessor = async function (id_professor) {
+    let res = await applicationRepository.getByTeacherId(id_professor);
     return res;
 };
 

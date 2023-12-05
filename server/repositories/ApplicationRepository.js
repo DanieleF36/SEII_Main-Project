@@ -147,17 +147,24 @@ exports.getActiveByStudentId = (studentId) => {
 /**
  * Performs queries to the database for retriving all the needed information given a supervisor's id
  * 
- * first applications are obtained throught id_teacher, then for each of them student's information are added (name and lastname) as well as thesis information (title and cds)
- * 
  * @param {*} id_teacher 
- * @returns object { application: application, thesis: thesis, student: student } defined in controller file
+ * @returns an array of object 
+ * { 
+ * id_student: integer,
+ * id_application: integer,
+ * id_thesis: integer,
+ * title: string,
+ * name: string,
+ * surname: string,
+ * data: date,
+ * path_cv: string,
+ * status: integer
+ * }
  */
-//? TO BE MERGED WITH FOR HAVING A SINGLE LIST APPLICATION FUNCTION FOR TEACHER AND STUDENT
-exports.listApplication = (id_teacher) => {
+exports.getByTeacherId = (id_teacher) => {
   const sqlApplication =
     "SELECT innerTable.id_thesis, innerTable.id, innerTable.id_student, title, S.name, S.surname, innerTable.data, innerTable.path_cv, innerTable.status FROM (SELECT id,id_student,path_cv,status,id_thesis,data FROM Application WHERE id_teacher=?) AS innerTable, Thesis AS T, Student AS S WHERE T.id = innerTable.id_thesis AND S.id = innerTable.id_student";
   return new Promise((resolve, reject) => {
-    //! QUERY TO THE APPLICATION DATABASE, asks for the whole set of applications given a supervisor's id
     db.all(sqlApplication, [id_teacher], (err, rows) => {
       if (err) {
         return reject({ error: err.message });

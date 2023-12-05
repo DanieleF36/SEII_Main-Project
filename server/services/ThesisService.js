@@ -37,9 +37,9 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
 
     // performs a search by name and/or lastname and returns an array of ids
     if (ns.length > 1)
-      idSupervisors = await teacherRepository.ByNSorS(ns[1], ns[0]).map(e=>e.id);
+      idSupervisors = await teacherRepository.getByNSorS(ns[1], ns[0]).map(e => e.id);
     else
-      idSupervisors = await teacherRepository.getByNSorS(ns[0]).map(e=>e.id);
+      idSupervisors = await teacherRepository.getByNSorS(ns[0]).map(e => e.id);
 
     // if idSupervisors is defined we found a user(s) who is managing a thesis in our system
     if (idSupervisors != null && idSupervisors.length > 0)
@@ -78,7 +78,7 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
 
   //find number of page
   let npage = await thesisRepository.numberOfPage(false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, 1);
-  npage = Math.ceil(npage.nRows/nItem);
+  npage = Math.ceil(npage.nRows / nItem);
   //find information about teacher
   for (let i = 0; i < res.length; i++) {
     // get all the superior's information given an id
@@ -111,13 +111,6 @@ exports.getActiveBySupervisor = async function(supervisorId){
     throw new Error("Supervisor id can not be lower than 0");
   return await thesisRepository.getActiveBySupervisor(supervisorId);
 }
-
-/**
- * A student send his/her application for thesis {id} and attach his cv as json
- *
- * id Integer
- **/
-exports.addApplication = function (id) { };
 
 /**
  * ~ UPDATED 26 nov
@@ -158,7 +151,7 @@ exports.addThesis = async function (thesis) {
     let supervisor_ids = []
 
     // look for each co-supervisor id into COSUPERVISOR
-    if (Array.isArray(thesis.cosupervisor) && thesis.cosupervisor[0].length!==0) {
+    if (Array.isArray(thesis.cosupervisor) && thesis.cosupervisor[0].length !== 0) {
       for (let email of thesis.cosupervisor) {
         let tmp = await coSupervisorRepository.getByEmail(email);
         if (Object.keys(tmp).length === 0) {
@@ -174,8 +167,6 @@ exports.addThesis = async function (thesis) {
         else cosupervisor_ids.push(tmp.id)
       }
     }
-
-
     // parse expiration date and creation date
 
     // ________________________________________________________________________TOBE checked the format with @frontend
@@ -208,24 +199,22 @@ exports.addThesis = async function (thesis) {
     }
 
     let result
-    if(cosupervisor_ids.length > 0) {
-      for(let id of cosupervisor_ids) {
+    if (cosupervisor_ids.length > 0) {
+      for (let id of cosupervisor_ids) {
         result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, null, id)
         if (result != true) {
           throw { status: 500, error: result.err };
         }
       }
     }
-    if(supervisor_ids.length > 0) {
-      for(let id of supervisor_ids) {
+    if (supervisor_ids.length > 0) {
+      for (let id of supervisor_ids) {
         result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, id, null)
         if (result != true) {
           throw { status: 500, error: result.err };
         }
       }
     }
-    
-    console.log(thesis)
     return thesis;
   }
   catch (error) {
@@ -318,34 +307,10 @@ exports.updateThesis = async function (thesis, thesis_id) {
 };
 
 /**
- * Performs queries to the database for retriving all the info about the application made by a student
- * 
- * @param {*} id_student 
- * @returns object {
-          id_application: a.id_application,
-          id_thesis: a.id_thesis,
-          thesis_title: a.thesis_title,
-          thesis_supervisor: a.thesis_supervisor,
-          thesis_keywords: a.thesis_keywords,
-          thesis_type: a.thesis_type,
-          thesis_groups: a.thesis_groups,
-          thesis_description: a.thesis_description,
-          thesis_knowledge: a.thesis_knowledge,
-          thesis_note: a.thesis_note,
-          thesis_expiration_date: a.thesis_expiration_date,
-          thesis_level: a.thesis_level,
-          thesis_cds: a.thesis_cds,
-          thesis_creation_date: a.thesis_creation_date,
-          thesis_status: a.thesis_status,
-          cosupervisor_name: a.cosupervisor_name,
-          cosupervisor_surname: a.cosupervisor_surname,
-          application_data: a.application_data,
-          application_path_cv: a.application_path_cv,
-          application_status: a.application_status,
-        }
+ * Retrive the all the email of all the Cosupervisor
+ * @returns array of CoSupervisorsEmail (string)
 */
-
 exports.getAllCoSupervisorsEmailsService = async function () {
-  const result = await coSupervisorRepository.getAllCoSupervisorsEmails();
+  const result = await coSupervisorRepository.getAllEmails();
   return result
 };
