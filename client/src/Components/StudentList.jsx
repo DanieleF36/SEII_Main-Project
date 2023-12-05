@@ -126,7 +126,7 @@ function StudentList(props) {
                                     <br />
                                     <strong>Application Date:</strong> {application.application_data}
                                     <br />
-                                    <strong>Stundent Cv: </strong><br /><Button variant='danger' style={{marginTop:'2px'}} onClick={()=>handleGetCV(application.id_application)}><img src="./file-earmark-pdf-fill.svg"
+                                    <strong>Student Cv: </strong><br /><Button variant='danger' style={{marginTop:'2px'}} onClick={()=>handleGetCV(application.id_application)}><img src="./file-earmark-pdf-fill.svg"
                                     alt="Logo"
                                     className="mr-2" style={{marginBottom:'4px'}}></img></Button>
                                     <br />
