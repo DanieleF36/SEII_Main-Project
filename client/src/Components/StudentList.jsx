@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, NavLink, Accordion, Badge, Card } from 'react-bootstrap';
 import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
+import { useNavigate } from 'react-router-dom';
 
 function StudentList(props) {
-
+    
     const [dirty, setDirty] = useState(true);
     //const [id_student, setId_student] = useState(1);
    
@@ -50,6 +51,11 @@ function StudentList(props) {
             })
             .catch((err) => { toast.error(err.error); });
     }*/
+
+    const handleGetCV = (id) => {
+     //API.getCV(id)
+
+    }
 
 
     return (
@@ -120,7 +126,9 @@ function StudentList(props) {
                                     <br />
                                     <strong>Application Date:</strong> {application.application_data}
                                     <br />
-                                    <strong>Path Cv: </strong>  {application.path_cv}
+                                    <strong>Stundent Cv: </strong><br /><Button variant='danger' style={{marginTop:'2px'}} onClick={()=>handleGetCV(application.id_application)}><img src="./file-earmark-pdf-fill.svg"
+                                    alt="Logo"
+                                    className="mr-2" style={{marginBottom:'4px'}}></img></Button>
                                     <br />
                                     <br />
                                     <br />

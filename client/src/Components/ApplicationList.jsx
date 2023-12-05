@@ -46,6 +46,8 @@ function ApplicationList(props) {
         
         API.listApplication(props.user.id)
             .then((applications) => {
+                //API.getCarreer(props.user.id).then(...)
+                applications.map((e)=>{e.student_carreer= [{title: 'DataScience', grade:'28'}, {title: 'Reti di Calcolatori', grade:'30'}] })
                 setApplications(applications);
                 setDirty(false);
             })
@@ -70,6 +72,12 @@ function ApplicationList(props) {
             })
             .catch((err) => { toast.error(err.error); });
     };
+
+    const handleGetCV = (id) => {
+        //API.getCV(id)
+   
+       }
+   
 
 
 
@@ -124,7 +132,11 @@ function ApplicationList(props) {
                                     <br />
                                     <strong>Application Date:</strong> {application.data}
                                     <br />
-                                    <strong>Path Cv: </strong>  <a>CV.pdf</a>
+                                    <strong>Student Carrer:</strong> {application.student_carreer.map((e, index)=>{return(<li key={index}><strong>course:</strong> {e.title}&nbsp;&nbsp;&nbsp;&nbsp;<strong>grade:</strong> {e.grade}</li>)})}
+                                    <br />
+                                    <strong>Student Cv: </strong> <br /><Button variant='danger' style={{marginTop:'2px'}} onClick={()=>handleGetCV(application.id_application)}><img src="./file-earmark-pdf-fill.svg"
+                                    alt="Logo"
+                                    className="mr-2" style={{marginBottom:'4px'}}></img></Button>
                                     <br />
                                     <br />
                                     <br />
