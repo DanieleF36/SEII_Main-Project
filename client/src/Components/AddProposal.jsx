@@ -20,7 +20,7 @@ function AddProposalForm(props) {
         level: 'Master',
         cds: ['LM-32'],
     });
-
+    const [warned, setWarned] = useState();
     const [cosup_email, setCoSup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);
     const [filt_cosup, setFilt_cosup] = useState([]);
 
@@ -30,8 +30,9 @@ function AddProposalForm(props) {
         setFilt_cosup(cosup_email.filter((item) =>
             item.toLowerCase().includes(searchTerm.toLowerCase()))
         );
-        //proposals.map(e=>console.log(e));
-    }, [searchTerm]);
+        if(props.copy!==undefined)
+         setProposalData(props.copy);
+    }, [searchTerm, props.copy]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -152,11 +153,17 @@ function AddProposalForm(props) {
         else if (proposalData.cds === '') {
             toast.error('CdS field cannot be empty')
         }
+        else if(warned !== 1 && props.copyT !== undefined && props.copyD !== undefined && ( props.copyT === proposalData.title && props.copyD === proposalData.description)){
+            toast('Title/Description fields are unchanged', {
+                icon: '⚠️',
+              })
+              setWarned(1);
+        }
         else {
             // Implement the logic to add the proposal using the proposalData state- API
             let addP = proposalData;
             API.insertProposal(correctSpace(addP))
-                .then(() => { toast.success('Thesis Proposal successfully added'); handleResetChange() })
+                .then(() => { toast.success('Thesis Proposal successfully added'); handleResetChange(); props.setCopy(undefined); props.setCopyT(undefined); props.setCopyD(undefined); setWarned(0);})
                 .catch((error) => toast.error(error));
         }
     };

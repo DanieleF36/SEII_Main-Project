@@ -244,8 +244,9 @@ function MyProposal(props) {
                   <strong>Creation Date:</strong> {proposal.creation_date}
                   <br />
                   <br />
-                  <Button variant="warning" onClick={() => handleModify(proposal)}><img src="./pencil-fill.svg"alt="Logo"/></Button>
-                  <Button variant="secondary" onClick={() => setShowModal2(true)}><i className="bi bi-archive"/></Button>
+                  <Button variant="warning mx-2" onClick={() => handleModify(proposal)}><i className="bi bi-pencil-fill" style={{color:'white'}}/></Button>
+                  <Button variant="secondary mx-2" onClick={() => setShowModal2(true)}><i className="bi bi-archive"/></Button>
+                  <Button variant="success mx-2" onClick={() => props.handleCopy(proposal)} ><i className="bi bi-clipboard-plus-fill"/></Button>
                   
                 </Accordion.Body>
               </Accordion.Item>
@@ -434,11 +435,11 @@ function MyProposal(props) {
         </Modal.Header>
         <Modal.Body>
           
-          <Button variant="success" onClick={handleStatus}>Yes</Button>
+          <Button variant="success mx-2" onClick={handleStatus}>Yes</Button>
           <Button variant="danger" onClick={handleCloseModal2}>No</Button>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal2}>Chiudi</Button>
+          <Button variant="secondary" onClick={handleCloseModal2}>Close</Button>
         </Modal.Footer>
       </Modal>
     </>

@@ -25,6 +25,9 @@ function Homepage(props) {
     const [propList, setPropList] = useState(true);
     const [listApplicationStud, setListApplicationStud] = useState(false);
     const [myProp, setMyProp] = useState(true);
+    const [copy, setCopy] = useState(undefined);
+    const [copyT, setCopyT] = useState(undefined);
+    const [copyD, setCopyD] = useState(undefined);
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -122,6 +125,23 @@ function Homepage(props) {
         }
     };
 
+    const handleCopy = (copyP) => {
+        delete(copyP.id);
+        delete(copyP.creation_date);
+        copyP.keywords= copyP.keywords.split(',');
+        copyP.type= copyP.type.split(',');
+        copyP.groups= copyP.groups.split(',');
+        copyP.knowledge= copyP.knowledge.split(',');
+        copyP.cds= copyP.cds.split(',');
+        setCopy({...copyP, cosupervisor: '', level: copyP.level === 1 ? 'Master' : 'Bachelor'});
+        setCopyT(copyP.title);
+        setCopyD(copyP.description);
+        setAdd(true);
+        setMyProp(false);
+        setListA(false);
+
+    };
+
 
 
     return (
@@ -194,7 +214,7 @@ function Homepage(props) {
                     </Col>
                     <Col xs={9}>
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <AddProposalForm user={props.user}/>
+                            <AddProposalForm user={props.user} copy={copy} setCopy={setCopy} setCopyD={setCopyD} setCopyT={setCopyT} copyD={copyD} copyT={copyT}/>
                         </div>
                     </Col>
                 </Row>
@@ -237,7 +257,7 @@ function Homepage(props) {
                     <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
                 </Col>
                 <Col xs={9}>
-                 <MyProposal user={props.user} />
+                 <MyProposal user={props.user} handleCopy={handleCopy}/>
                 </Col>
             </Row>
         </Container>
