@@ -2,7 +2,7 @@
 
 const thesisService = require("../services/ThesisService");
 const teacherService = require("../services/TeacherService");
-
+/*
 function isConvertible(str) {
   if(str=="undefined")
     return true;
@@ -103,6 +103,7 @@ function checkQuery(req) {
   }
   return false;
 }
+*/
 /**
  * wrapper function for performing advanced search over the database, possible fields for the search are:
  * - title
@@ -125,11 +126,6 @@ function checkQuery(req) {
  */
 exports.searchThesis = function searchThesis(req, res, next) {
   if(req.user.role == 'student'){
-    const error = checkQuery(req);
-    if (error) {
-      res.status(400).json({ error: error });
-      return;
-    }
     //checks if order is defined or not, otherwise titleD is setted as defaul value
     const order = req.query.order ? req.query.order : "titleD";
 
@@ -146,12 +142,7 @@ exports.searchThesis = function searchThesis(req, res, next) {
         });
         res.status(200).json({ nPage: nPage, thesis: response });
     }).catch(e=>{
-      let err = {error: ""};
-      if(e.message)
-        err.error = e.message;
-      else
-        err.error = e.error; 
-      res.status(500).json(err)
+      res.status(500).json(e)
     });
   }else if(req.user.role == 'teacher'){
     thesisService.getActiveBySupervisor(req.user.id)
@@ -159,10 +150,7 @@ exports.searchThesis = function searchThesis(req, res, next) {
       res.status(200).json({ nPage: 1, thesis: response })
     })
     .catch(response=>{
-      if(response.message)
-        res.status(500).json(response.message);
-      else
-        res.status(500).json(response.error);
+      res.status(500).json(response.error);
     })
   }else{
     res.status(401).json({error: "Only student or teacher can access list of thesis"})
@@ -178,32 +166,26 @@ exports.searchThesis = function searchThesis(req, res, next) {
  * @returns thesis object
  */
 exports.addThesis = async function addThesis(req, res) {
-  console.log(req.body)
   //checks role NEW
   if(req.user.role !== 'teacher'){
     return res.status(401).json({error:"You can not access to this route"})
   }
 
+  if( req.body.level === 'Master')
+    req.body.level = 1;
+  else
+    req.body.level = 0;
+
+  req.body.supervisor = req.user.id
+/*
   //checks body
   if (req.body === undefined) {
     return res.status(400).json({ error: "body is missing" });
   }
-  
-  req.body.supervisor = req.user.id
-
   //checks level
   if (req.body.level === undefined || (req.body.level !== "Master" && req.body.level !== "Bachelor")) {
     return res.status(400).json({ error: "level value not recognized" });
   }
-
-  if( req.body.level === 'Master'){
-    req.body.level = 1;
-    
-  }
-  else{
-    req.body.level = 0;
-  }
-
   //checks exp_date
   if (req.body.expiration_date === undefined | (req.body.expiration_date == "")) {
     return res
@@ -273,11 +255,10 @@ exports.addThesis = async function addThesis(req, res) {
     console.log("6")
     return res.status(400).json({error : "Title missing or empty string"})
   }
-  
+  */
   const response = await thesisService.addThesis(req.body)
   if(response.error) {
-    console.log(response.error)
-    return res.status(response.status).json(response.error)
+    return res.status(response.status).json()
   }
   else {
     return res.status(200).json(response)
@@ -293,7 +274,14 @@ exports.updateThesis = async function updateThesis(req, res) {
     res.status(400).json({error: "Thesis id is not valid"})
     return
   }
+  if( req.body.level === 'Master')
+    req.body.level = 1;
+  else
+    req.body.level = 0;
 
+  req.body.supervisor = req.user.id
+
+/*
   if (req.body === undefined) {
     return res.status(400).json({ error: "body is missing" });
   }
@@ -370,7 +358,7 @@ exports.updateThesis = async function updateThesis(req, res) {
   if(req.body.title === undefined || req.body.title === ""){
     return res.status(400).json({error : "Title missing or empty string"})
   }
-
+*/
   // Additional validation checks for the updateThesis method if needed
 
   // Call the updateThesis method from the thesisService
