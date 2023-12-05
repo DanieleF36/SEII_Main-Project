@@ -133,7 +133,8 @@ function Homepage(props) {
         copyP.groups= copyP.groups.split(',');
         copyP.knowledge= copyP.knowledge.split(',');
         copyP.cds= copyP.cds.split(',');
-        setCopy({...copyP, cosupervisor: '', level: copyP.level === 1 ? 'Master' : 'Bachelor'});
+        copyP.cosupervisor= [];
+        setCopy({...copyP, level: copyP.level === 1 ? 'Master' : 'Bachelor'});
         setCopyT(copyP.title);
         setCopyD(copyP.description);
         setAdd(true);

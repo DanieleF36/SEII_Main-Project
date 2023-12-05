@@ -162,6 +162,8 @@ function AddProposalForm(props) {
         else {
             // Implement the logic to add the proposal using the proposalData state- API
             let addP = proposalData;
+            if(addP.cosupervisor.length === 0)
+                addP.cosupervisor='';
             API.insertProposal(correctSpace(addP))
                 .then(() => { toast.success('Thesis Proposal successfully added'); handleResetChange(); props.setCopy(undefined); props.setCopyT(undefined); props.setCopyD(undefined); setWarned(0);})
                 .catch((error) => toast.error(error));
