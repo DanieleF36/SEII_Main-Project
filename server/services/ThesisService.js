@@ -5,7 +5,7 @@ const thesisRepository = require("../repositories/ThesisRepository");
 const coSupervisorThesisRepository = require("../repositories/CoSupervisorThesisRepository");
 const teacherRepository = require("../repositories/TeacherRepository");
 const nItem = 10; //number of item per page
-
+const coSupervisorRepository = require('../repositories/CoSupervisorRepository')
 /**
  * Return a list of thesis that respect all the parameters including name, surname and company for co-supervisor and the whole structure of supervisor
  *
@@ -184,8 +184,8 @@ exports.addThesis = async function (thesis) {
     thesis.creation_date,
     thesis.status
   )
-  if (thesis_res.err_message) {
-    throw { status: 500, error: thesis_res.err };
+  if (thesis_res.error) {
+    throw { status: 500, error: thesis_res.error };
   }
 
   let result
