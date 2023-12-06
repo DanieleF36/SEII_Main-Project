@@ -1,12 +1,13 @@
 'use strict'
-const applicationService = require("../services/ApplicationService");
+const cosupervisorService = require("../services/CoSupervisorService");
 
 exports.getAllCoSupervisorsEmails = async function (req, res) {
-    try {
-      const result = await applicationService.getAllCoSupervisorsEmailsService();
-      res.status(result.status).json(result.data || result.error);
-    } catch (error) {
-      console.error("Error in someControllerMethod:", error.message);
-      res.status(500).json('Internal server error');
-    }
+  if(req.user.role !== 'teacher')
+    return res.status(401).json({error: "Only teacher can access to this API"});
+  try {
+    const result = await cosupervisorService.getAllCoSupervisorsEmailsService();
+    res.status(200).json(result.data);
+  } catch (error) {
+    res.status(500).json({error:'Internal server error'});
+  }
   };

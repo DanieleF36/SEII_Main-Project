@@ -2,7 +2,6 @@
 const dayjs = require("dayjs");
 
 const thesisRepository = require("../repositories/ThesisRepository");
-const coSupervisorRepository = require("../repositories/CoSupervisorRepository");
 const coSupervisorThesisRepository = require("../repositories/CoSupervisorThesisRepository");
 const teacherRepository = require("../repositories/TeacherRepository");
 const nItem = 10; //number of item per page
@@ -232,13 +231,4 @@ exports.updateThesis = async function (thesis, thesis_id) {
     thesis.status
   );
   return updatedThesis;
-};
-
-/**
- * Retrive the all the email of all the Cosupervisor
- * @returns array of CoSupervisorsEmail (string)
-*/
-exports.getAllCoSupervisorsEmailsService = async function () {
-  const result = await coSupervisorRepository.getAllEmails();
-  return result
 };

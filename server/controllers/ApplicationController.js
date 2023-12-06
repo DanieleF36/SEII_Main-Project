@@ -1,5 +1,7 @@
 "use strict";
 const applicationsService = require("../services/ApplicationService");
+const teacherService = require('../services/TeacherService');
+const studentService = require('../services/StudentService')
 const studentRepository = require("../repositories/StudentRepository");
 const teacherRepository = require("../repositories/TeacherRepository");
 const formidable = require('formidable');
@@ -41,12 +43,12 @@ const formidable = require('formidable');
  * }
  */
 exports.listApplication = function listApplication(req, res) {
-    if (req.user.role != "teacher" || req.user.role != "student") {
+    if (req.user.role != "teacher" && req.user.role != "student") {
         return res.status(401).json({ error: "You can't access to this route. You're not a student or a professor" });
     }
     if (req.user.role == 'teacher') {
         if (!req.user.id) {
-            res.status(400).json({ error: "Given supervisor's id is not valid" })
+            res.status(500).json({ error: "Given supervisor's id is not valid" })
             return
         }
         teacherService
@@ -55,12 +57,11 @@ exports.listApplication = function listApplication(req, res) {
                 return res.status(200).json(response)
             })
             .catch(function (response) {
-                return res.status(500).json(response);
+              return res.status(500).json(response);
             });
-    }
-    if (req.user.role == 'student') {
+    }else if (req.user.role == 'student') {
         if (!req.user.id) {
-            res.status(400).json({ error: "Given student's id is not valid" })
+            res.status(500).json({ error: "Given student's id is not valid" })
             return
         }
         studentService
