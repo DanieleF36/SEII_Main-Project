@@ -105,6 +105,16 @@ function checkQuery(req) {
 }
 */
 /**
+ * /**
+ * FOR TEACHER ONLY side
+ * Wrapper function for recovering the whole set of ACTIVE thesis for the current logged in 
+ * supervisor so that the expired ones as well as the ones which are in the archive are not
+ * returned. This function could be affected by the fast forwarding in time by virtual clock
+ * usage and that's managed at service level.
+ * 
+ * @param {*} req none
+ * @param {*} res [thesis1, thesis2, ...]
+ * ===============================================
  * wrapper function for performing advanced search over the database, possible fields for the search are:
  * - title
  * - supervisor, name lastname or lastname
@@ -278,6 +288,7 @@ exports.addThesis = async function addThesis(req, res, validate) {
   }
   */
   const response = await thesisService.addThesis(req.body)
+  console.log(response)
   if(response.error) {
     return res.status(response.status).json()
   }
@@ -286,11 +297,17 @@ exports.addThesis = async function addThesis(req, res, validate) {
   }
 };
 
-exports.updateThesis = async function updateThesis(req, res) {
+exports.updateThesis = async function updateThesis(req, res, validate) {
   if(req.user.role!=='teacher'){
     res.status(401).json({error:"You can not access to this route"})
     return;
   }
+  let validationResult;
+  validate(req, res, (a)=>{validationResult = a});
+  //console.log(JSON.stringify(validationResult))
+  if (validationResult instanceof ValidationError)
+    return res.status(400).json({error: validationResult.validationErrors});
+
   if (!req.params.id) {
     res.status(400).json({error: "Thesis id is not valid"})
     return
@@ -386,35 +403,9 @@ exports.updateThesis = async function updateThesis(req, res) {
   const response = await thesisService.updateThesis(req.body, req.params.id);
 
   if (response.error) {
-    console.error(response.error);
     return res.status(response.status).json(response.error);
   } else {
     return res.status(200).json(response);
   }
 };
 
-/**
- * FOR TEACHER ONLY
- * Wrapper function for recovering the whole set of ACTIVE thesis for the current logged in 
- * supervisor so that the expired ones as well as the ones which are in the archive are not
- * returned. This function could be affected by the fast forwarding in time by virtual clock
- * usage and that's managed at service level.
- * 
- * @param {*} req none
- * @param {*} res [thesis1, thesis2, ...]
- */
-exports.browseProposals = async function (req, res) {
-  if(req.user.role !== 'teacher'){
-    return res.status(401).json({error:"You can not access to this route"})
-  }
-
-  const supervisor = req.user.id;
-
-  const response = await teacherService.browseProposals(supervisor)
-  if(response.error) {
-    return res.status(response.status).json(response.error)
-  }
-  else {
-    return res.status(200).json(response)
-  }
-}

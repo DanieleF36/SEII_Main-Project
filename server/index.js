@@ -66,7 +66,7 @@ app.get("/thesis", isLoggedIn, (req, res) => thesisController.searchThesis(req,r
 
 app.post("/thesis", isLoggedIn, (req, res) => thesisController.addThesis(req, res, validate({body: thesisSchema})));
 
-app.put("/thesis/:id", isLoggedIn, validate({body: thesisSchema}), (req, res) => thesisController.updateThesis(req, res));
+app.put("/thesis/:id", isLoggedIn, (req, res) => thesisController.updateThesis(req, res, validate({body: thesisSchema})));
 
 app.post("/thesis/:id_thesis/applications", isLoggedIn, (req, res) => applicationController.applyForProposal(req, res));
 
