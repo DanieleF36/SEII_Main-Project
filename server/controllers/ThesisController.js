@@ -178,6 +178,9 @@ exports.addThesis = async function addThesis(req, res) {
     return res.status(401).json({error:"You can not access to this route"})
   }
 
+  if(!req.body.groups.includes(req.user.group)){
+    return res.status(400).json({error:"You are not allowed to add for this group"})
+  }
   if( req.body.level === 'Master')
     req.body.level = 1;
   else
