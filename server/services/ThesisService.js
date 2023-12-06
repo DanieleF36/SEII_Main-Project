@@ -27,27 +27,24 @@ const nItem = 10; //number of item per page
 exports.advancedResearchThesis = async function (page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) {
   // If we don't find any supervisor or cosupervisors or any thesis linked to these the research can stop
   let ok = !(supervisor || coSupervisor);
-
   //find information about id of supervisor
   let idSupervisors = null;
-  if (supervisor != null) {
+  if (supervisor) {
     const ns = supervisor.split(" ");
-
     // ns[1] is going to be undefined in case we did not put a name
 
     // performs a search by name and/or lastname and returns an array of ids
     if (ns.length > 1)
-      idSupervisors = await teacherRepository.getByNSorS(ns[1], ns[0]).map(e => e.id);
+      idSupervisors = (await teacherRepository.getByNSorS(ns[1], ns[0])).map(e => e.id);
     else
-      idSupervisors = await teacherRepository.getByNSorS(ns[0]).map(e => e.id);
-
+      idSupervisors = (await teacherRepository.getByNSorS(ns[0])).map(e => e.id);
     // if idSupervisors is defined we found a user(s) who is managing a thesis in our system
     if (idSupervisors != null && idSupervisors.length > 0)
       ok = true;
   }
   // find information about id of coSupervisors 
   let idCoSupervisorsThesis = [];
-  if (coSupervisor != null) {
+  if (coSupervisor) {
     for (let i = 0; i < coSupervisor.length; i++) {
       const e = coSupervisor[i];
       const ns = e.split(" ");
@@ -56,7 +53,7 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
         idsCo = await coSupervisorRepository.getByNSorS(ns[1], ns[0]);
       else
         idsCo = await coSupervisorRepository.getByNSorS(ns[0]);
-      if (idsCo > 0)
+      if (idsCo.length > 0)
         // add the thesis managed by the chosen cosupervisor 
         idCoSupervisorsThesis.push(await thesisRepository.getIdByCoSupervisorId(idsCo));
 
@@ -77,7 +74,7 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   // res contains a list of thesis objects which are okay with given filters
 
   //find number of page
-  let npage = await thesisRepository.numberOfPage(false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, 1);
+  let npage = await thesisRepository.numberOfPage(false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
   npage = Math.ceil(npage.nRows / nItem);
   //find information about teacher
   for (let i = 0; i < res.length; i++) {
@@ -93,11 +90,11 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
     for (let j = 0; j < idList.length; j++) {
       if (idList[j].idTeacher != null) {
         const t = await teacherRepository.getById(idList[j].idTeacher);
-        res[i].coSupervisors.push(
+        res[i].coSupervisor.push(
           teacherRepository.fromTeacherToCoSupervisor(t)
         );
       } else {
-        res[i].coSupervisors.push(
+        res[i].coSupervisor.push(
           await coSupervisorRepository.getById(idList[j].idCoSupervisor)
         );
       }
