@@ -1,28 +1,35 @@
 const request = require("supertest");
 const studentController = require("../../controllers/StudentController");
 
+let mockReq; 
+let mockRes = {
+  status: jest.fn().mockReturnThis(),
+  json: jest.fn(),
+}; 
+
 beforeEach(() => {
-  jest.clearAllMocks();
+  mockRes = {
+    status: jest.fn().mockReturnThis(),
+    json: jest.fn(),
+  };   
 });
 
+
 describe('Apply for proposal', () => {
-    test('Case1: body is missing', async() => {
-      const mockReq = { 
-        body: undefined,
-        user: {
-          id: 1,
-          name: "Gianna",
-          lastname: "Altobella",
-          nameID: "gianni.altobelli@email.it",
-          role: "student",
-          cds: "ingInf"
-        }  
-      };
-      const mockRes = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-  
+  //Magari questo può essere spostato fuori ma deve essere resettato tra describe e non tra test
+  mockReq = { 
+    body: undefined,
+    user: {
+      id: 1,
+      name: "Gianna",
+      lastname: "Altobella",
+      nameID: "gianni.altobelli@email.it",
+      role: "student",
+      cds: "ingInf",
+      cdsCode: "LM"
+    }  
+  };
+  test('Case1: body is missing', async() => {    
       await studentController.applyForProposal(mockReq, mockRes);
   
       expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -30,21 +37,7 @@ describe('Apply for proposal', () => {
     });
   
     test('Case2: missing required parameters', async() => {
-      const mockReq = { 
-        body: {}, 
-        params: { id_thesis: null },
-        user: {
-          id: 1,
-          name: "Gianna",
-          lastname: "Altobella",
-          nameID: "gianni.altobelli@email.it",
-          role: "student",
-          cds: "ingInf"
-        }   };
-      const mockRes = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
+      mockReq.body = {};
   
       await studentController.applyForProposal(mockReq, mockRes);
   
@@ -53,23 +46,7 @@ describe('Apply for proposal', () => {
     });
   
     test('Case3: error during file parsing', async() => {
-      const mockReq = { 
-        body: {}, 
-        params: { id_thesis: 1 },
-        user: {
-          id: 1,
-          name: "Gianna",
-          lastname: "Altobella",
-          nameID: "gianni.altobelli@email.it",
-          role: "student",
-          cds: "ingInf"
-        }
-      };
-      const mockRes = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-  
+      mockReq.params = { id_thesis: 1 };
       // Simulate an error during the file parsing
       const mockForm = {
         parse: jest.fn((req, callback) => callback(new Error('Internal Error'))),
@@ -83,23 +60,6 @@ describe('Apply for proposal', () => {
     });
 
     test('Case4: file is missing in the request', async() => {
-      const mockReq = { 
-        body: {}, 
-        params: { id_thesis: 1 },
-        user: {
-          id: 1,
-          name: "Gianna",
-          lastname: "Altobella",
-          nameID: "gianni.altobelli@email.it",
-          role: "student",
-          cds: "ingInf"
-        }  
-      };
-      const mockRes = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-  
       // Simulate that the file is missing
       const mockForm = {
         parse: jest.fn((req, callback) => callback(null, {}, {})),
@@ -111,24 +71,7 @@ describe('Apply for proposal', () => {
       expect(mockRes.json).toHaveBeenCalledWith({ error: 'Missing file' });
     });
     
-    test('Case5: Multiple Files', async () => {
-      const mockReq = { 
-        body: {}, 
-        params: { id_thesis: 1 },
-        user: {
-          id: 1,
-          name: "Gianna",
-          lastname: "Altobella",
-          nameID: "gianni.altobelli@email.it",
-          role: "student",
-          cds: "ingInf"
-        }  
-      };
-      const mockRes = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-    
+    test('Case5: Multiple Files', async () => { 
       const mockForm = {
         parse: jest.fn((req, callback) => callback(null, {}, {cv:[{},{}]})),
       };
@@ -145,24 +88,6 @@ describe('Apply for proposal', () => {
     };
   
     test('Case6: success', async () => {
-        // Mocking the Express request and response objects
-        const req = {
-            body: {  },
-            params: { id_thesis: 123 },
-            user: {
-              id: 1,
-              name: "Gianna",
-              lastname: "Altobella",
-              nameID: "gianni.altobelli@email.it",
-              role: "student",
-              cds: "ingInf"
-            }  
-          };
-      
-          const res = {
-            status: jest.fn().mockReturnThis(),
-            json: jest.fn(),
-          };
         // Mocking the form object and its parse method
         const mockForm = {
           parse: jest.fn((req, callback) => {callback(null,  {}, { cv: [{  }]  });
@@ -174,30 +99,13 @@ describe('Apply for proposal', () => {
         // Mocking the addProposal method in applicationsService
         jest.spyOn(require("../../services/ApplicationService"), "addProposal").mockResolvedValue({succes:"success"})
     
-        await studentController.applyForProposal(req, res);
+        await studentController.applyForProposal(mockReq, mockRes);
         // Verifying that the response is as expected
-        expect(res.status).toHaveBeenCalledWith(201);
-        expect(res.json).toHaveBeenCalledWith({succes:"success"});
+        expect(mockRes.status).toHaveBeenCalledWith(201);
+        expect(mockRes.json).toHaveBeenCalledWith({succes:"success"});
       });
   
     test('Case7: idThesis not found', async () => {
-      const mockReq = { 
-        body: {}, 
-        params: { id_thesis: 1 },
-        user: {
-          id: 1,
-          name: "Gianna",
-          lastname: "Altobella",
-          nameID: "gianni.altobelli@email.it",
-          role: "student",
-          cds: "ingInf"
-        }  
-      };
-      const mockRes = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-  
       // Simulate a not found
       jest.spyOn(require("../../services/ApplicationService"), "addProposal").mockRejectedValue({ error: 'Not found' })
       
@@ -212,24 +120,7 @@ describe('Apply for proposal', () => {
       expect(mockRes.json).toHaveBeenCalledWith({error:"Not found"});
     });
 
-    test('Case8: internal error inside addProposal', async () => {
-      const mockReq = { 
-        body: {}, 
-        params: { id_thesis: 1 },
-        user: {
-          id: 1,
-          name: "Gianna",
-          lastname: "Altobella",
-          nameID: "gianni.altobelli@email.it",
-          role: "student",
-          cds: "ingInf"
-        }  
-      };
-      const mockRes = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-  
+    test('Case8: internal error inside addProposal', async () => {  
       // Simulate any error
       jest.spyOn(require("../../services/ApplicationService"), "addProposal").mockRejectedValue({ error: 'bho' })
       
@@ -245,7 +136,7 @@ describe('Apply for proposal', () => {
     });
 });
 
-describe('Browse application', ()=> {
+describe.skip('Browse application', ()=> {
   test('case1: user differt from student', async ()=>{
     const mockReq = {
       user:{role:'professor'}

@@ -24,7 +24,7 @@ const nItem = 10; //number of item per page
  * @param creation_date String  (optional)
  * @returns thesis
  **/
-exports.advancedResearchThesis = async function (page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date) {
+exports.advancedResearchThesis = async function (page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) {
   // If we don't find any supervisor or cosupervisors or any thesis linked to these the research can stop
   let ok = !(supervisor || coSupervisor);
 
@@ -73,7 +73,7 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
     return [[], 0];
 
   //find all thesis
-  let res = await thesisRepository.advancedResearch(nItem * (page - 1), nItem * page, order, false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, 1);
+  let res = await thesisRepository.advancedResearch(nItem * (page - 1), nItem * page, order, false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
   // res contains a list of thesis objects which are okay with given filters
 
   //find number of page
