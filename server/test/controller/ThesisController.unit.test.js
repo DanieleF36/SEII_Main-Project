@@ -308,9 +308,10 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    jest.spyOn(require('../../services/ThesisService.js'), 'advancedResearchThesis').mockRejectedValue({error: 'error'});
+    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'advancedResearchThesis').mockRejectedValue({error: 'error'});
     await controller.searchThesis(mockReq, mockRes, mockValidate);
     await Promise.resolve();
+    expect(spy).toHaveBeenCalledWith(1, "titleD", undefined, undefined,undefined,undefined,undefined,undefined,undefined,undefined,"ingInf",undefined,"LM");
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toHaveBeenCalledWith({error: "error"});
   }),
@@ -318,25 +319,28 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    jest.spyOn(require('../../services/ThesisService.js'), 'advancedResearchThesis').mockResolvedValue([[{success: 'success', supervisor:{name:"name", surname:"surname"}}], 0]);
+    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'advancedResearchThesis').mockResolvedValue([[{success: 'success', supervisor:{name:"name", surname:"surname"}}], 0]);
     await controller.searchThesis(mockReq, mockRes, mockValidate);
     await Promise.resolve();
+    expect(spy).toHaveBeenCalledWith(1, "titleD", undefined, undefined,undefined,undefined,undefined,undefined,undefined,undefined,"ingInf",undefined,"LM");
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toHaveBeenCalledWith({nPage:0, thesis:[{success: 'success', supervisor:"name surname"}]});
   }),
   test('case5: role teacher: error', async()=>{
     mockReq.user.role = 'teacher';
-    jest.spyOn(require('../../services/ThesisService.js'), 'getActiveBySupervisor').mockRejectedValue({error: 'error'});
+    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'getActiveBySupervisor').mockRejectedValue({error: 'error'});
     await controller.searchThesis(mockReq, mockRes);
     await Promise.resolve();
+    expect(spy).toHaveBeenCalledWith(1);
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toHaveBeenCalledWith({error: 'error'});
   }),
   test('case6: role teacher: success', async()=>{
     mockReq.user.role = 'teacher';
-    jest.spyOn(require('../../services/ThesisService.js'), 'getActiveBySupervisor').mockResolvedValue({success: 'success'});
+    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'getActiveBySupervisor').mockResolvedValue({success: 'success'});
     await controller.searchThesis(mockReq, mockRes);
     await Promise.resolve();
+    expect(spy).toHaveBeenCalledWith(1);
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toHaveBeenCalledWith({nPage:1, thesis:{success: 'success'}});
   })

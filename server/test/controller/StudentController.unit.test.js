@@ -1,12 +1,5 @@
 const request = require("supertest");
 const studentController = require("../../controllers/StudentController");
-
-let mockReq; 
-let mockRes = {
-  status: jest.fn().mockReturnThis(),
-  json: jest.fn(),
-}; 
-
 // beforeEach(() => {
 //   jest.clearAllMocks();
 // });
