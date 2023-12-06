@@ -15,9 +15,9 @@ const db = require("./db");
  */
 exports.addApplication = (studentId, thesisId, cvPath, supervisorId) => {
   if(!(studentId && thesisId && supervisorId) || studentId<0 || studentId<0 || supervisorId<0)
-    throw {error: "student and theis's id must exist and be greater than 0"};
+    return reject({error: "student and theis's id must exist and be greater than 0"});
   if(!path_cv)
-    throw {error: "path_cv must exists"}
+    return reject({error: "path_cv must exists"});
   return new Promise((resolve, reject) => {
     //Create a current date to add at the new application 
     const currentDate = dayjs().format('YYYY-MM-DD').toString()
