@@ -124,13 +124,20 @@ function checkQuery(req) {
  * @returns ERROR: common error handling object
  * @returns ERROR: not authorized, only student can call this
  */
-exports.searchThesis = function searchThesis(req, res, next) {
+const { ValidationError } = require('express-json-validator-middleware');
+exports.searchThesis = function searchThesis(req, res, validate) {
   if(req.user.role == 'student'){
+    let validationResult;
+    validate(req, res, (a)=>{validationResult = a});
+    //console.log(JSON.stringify(validationResult))
+    if (validationResult instanceof ValidationError)
+      return res.status(400).json({error: validationResult.validationErrors});
     //checks if order is defined or not, otherwise titleD is setted as defaul value
     const order = req.query.order ? req.query.order : "titleD";
 
-    thesisService.advancedResearchThesis(req.query.page, order, req.query.title, req.query.supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, req.user.cds, req.query.creation_date)
+    thesisService.advancedResearchThesis(req.query.page, order, req.query.title, req.query.supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, req.user.cds, req.query.creation_date, req.user.cdsCode)
       .then(function (response) {
+        console.log(response);
         let nPage = response[1];
         response = response[0];
         response.forEach((e) => {
@@ -150,7 +157,7 @@ exports.searchThesis = function searchThesis(req, res, next) {
       res.status(200).json({ nPage: 1, thesis: response })
     })
     .catch(response=>{
-      res.status(500).json(response.error);
+      res.status(500).json(response);
     })
   }else{
     res.status(401).json({error: "Only student or teacher can access list of thesis"})
