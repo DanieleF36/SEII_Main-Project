@@ -172,21 +172,32 @@ exports.searchThesis = function searchThesis(req, res, validate) {
  * @param {*} next
  * @returns thesis object
  */
-exports.addThesis = async function addThesis(req, res) {
-  //checks role NEW
+exports.addThesis = async function addThesis(req, res, validate) {
   if(req.user.role !== 'teacher'){
     return res.status(401).json({error:"You can not access to this route"})
+  }
+  let validationResult;
+  validate(req, res, (a)=>{validationResult = a});
+  //console.log(JSON.stringify(validationResult))
+  if (validationResult instanceof ValidationError)
+    return res.status(400).json({error: validationResult.validationErrors});
+
+  if (req.body === undefined) {
+    return res.status(400).json({ error: "body is missing" });
   }
 
   if(!req.body.groups.includes(req.user.group)){
     return res.status(400).json({error:"You are not allowed to add for this group"})
   }
+
   if( req.body.level === 'Master')
     req.body.level = 1;
   else
     req.body.level = 0;
 
   req.body.supervisor = req.user.id
+
+
 /*
   //checks body
   if (req.body === undefined) {
