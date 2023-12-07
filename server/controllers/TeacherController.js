@@ -114,10 +114,11 @@ exports.browseProposals = async function (req, res) {
   if(req.user.role !== 'teacher'){
     return res.status(401).json({error:"You can not access to this route"})
   }
-
+  
+  const queryParam= req.query.status;
   const supervisor = req.user.id;
 
-  const response = await teacherService.browseProposals(supervisor)
+  const response = await teacherService.browseProposals(supervisor, queryParam)
   if(response.error) {
     return res.status(response.status).json(response.error)
   }

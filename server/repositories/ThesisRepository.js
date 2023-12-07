@@ -303,14 +303,13 @@ exports.addThesis = (title, supervisor, keywords, type, groups, description, kno
   });
 };
 
-exports.getActiveThesis = (supervisor, date) => {
+exports.getActiveThesis = (supervisor, date, queryParam) => {
   const sql = `SELECT id, title, supervisor, keywords, status, type, groups, description,
                 knowledge, note, expiration_date, level, cds, creation_date 
                FROM thesis 
-               WHERE status = 1 AND expiration_date > ? AND supervisor = ?`
-  
+               WHERE status = ? AND expiration_date > ? AND supervisor = ?`
   return new Promise( (resolve, reject) => {
-    db.all(sql, [date, supervisor], (err, rows) => {
+    db.all(sql, [queryParam, date, supervisor], (err, rows) => {
       if(err) {
         reject(err)
       }

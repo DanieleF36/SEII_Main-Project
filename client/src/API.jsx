@@ -248,8 +248,9 @@ async function browserApplicationStudent(id_student) {
   }
 }
 
-function browseProposal() {
-  return getJson(fetch(URL + '/professor/thesis', {
+function browseProposal(status) {
+  console.log(status)
+  return getJson(fetch(URL + `/professor/thesis?status=${status}`, {
     credentials:'include'
   }))
   .then(res => {

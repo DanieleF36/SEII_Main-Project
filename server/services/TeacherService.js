@@ -105,14 +105,14 @@ async function _sendAcceptedEmail(teacherID, id_thesis, id_student){
         
 };
 
-exports.browseProposals = async function(supervisor) {
+exports.browseProposals = async function(supervisor, queryParam) {
     const today = dayjs.vc()
     if(!today.isValid())
         return {status: 500, error: 'internal error'}
-
+    if(queryParam!=0 && queryParam!=1)
+        return {status: 500, error: 'internal error'}
     const date = today.format('YYYY-MM-DD').toString()
-    const response = await thesisRepository.getActiveThesis(supervisor, date)
-    console.log("HERE", response)
+    const response = await thesisRepository.getActiveThesis(supervisor, date, queryParam)
     if(!Array.isArray(response)) {
         return {status: 500, error: 'internal error'}
     }

@@ -66,7 +66,7 @@ function MyProposal(props) {
    
     useEffect(() => {
       if(props.user.role === 'teacher'){
-          API.browseProposal(/*archived*/)
+          API.browseProposal(archived)
           .then((proposals) => {
               setProposals(proposals);
               setDirty(false);
@@ -246,8 +246,12 @@ function MyProposal(props) {
                   <br />
                   <br />
                   <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Modify</Tooltip>  }><Button variant="warning mx-2" onClick={() => handleModify(proposal)}><i className="bi bi-pencil-fill" style={{color:'white'}}/></Button></OverlayTrigger>
-                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Archive</Tooltip>  }><Button variant="secondary mx-2" onClick={() => setShowModal2(true)}><i className="bi bi-archive"/></Button></OverlayTrigger>
-                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Copy</Tooltip>  }><Button variant="success mx-2" onClick={() => props.handleCopy(proposal)} ><i className="bi bi-clipboard-plus-fill"/></Button></OverlayTrigger>
+                  {proposal.status==1 ?
+                    (<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Archive</Tooltip>  }><Button variant="secondary mx-2" onClick={() => setShowModal2(true)}><i className="bi bi-archive"/></Button></OverlayTrigger>)
+                   :
+                    (<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Active</Tooltip>  }><Button variant="success mx-2" onClick={() => setShowModal2(true)}><i className="bi bi-archive"/></Button></OverlayTrigger>)
+                  }
+                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Copy</Tooltip>  }><Button variant="primary mx-2" onClick={() => props.handleCopy(proposal)} ><i className="bi bi-clipboard-plus-fill"/></Button></OverlayTrigger>
                   
                 </Accordion.Body>
               </Accordion.Item>
