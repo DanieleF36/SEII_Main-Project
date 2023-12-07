@@ -3,8 +3,8 @@ on:
   push:
     branches:
       - main
-      - backend_gang/*
-      - Front-end/*
+      - backend_gang
+      - Front-end
   pull_request:
     types: [opened, synchronize, reopened]
 
