@@ -4,7 +4,8 @@ const coSupervisorThesisRepository = require('../../repositories/CoSupervisorThe
 const coSupervisorRepository = require('../../repositories/CoSupervisorRepository.js')
 const teacherRepository = require('../../repositories/TeacherRepository.js')
 const dayjs = require('dayjs')
-describe.only('addThesis unit tests', () => {
+
+describe('addThesis unit tests', () => {
     let thesis
     beforeAll(() => {
         thesis = {
@@ -23,17 +24,18 @@ describe.only('addThesis unit tests', () => {
             status: 1
         }
     })
+
+    jest.mock('dayjs', () => {
+        const originalDayjs = jest.requireActual('dayjs'); // Keep the original dayjs functions
+
+        return jest.fn((dateString) => ({
+            format: jest.fn(() => originalDayjs(dateString).format('YYYY-MM-DD')),
+            toString: jest.fn(() => originalDayjs(dateString).toString()),
+        }));
+    });
+
     test('U1: adding a thesis with no cosupervisor', async () => {
         thesis.cosupervisor = [""]
-
-        jest.mock('dayjs', () => {
-            const originalDayjs = jest.requireActual('dayjs'); // Keep the original dayjs functions
-
-            return jest.fn((dateString) => ({
-                format: jest.fn(() => originalDayjs(dateString).format('YYYY-MM-DD')),
-                toString: jest.fn(() => originalDayjs(dateString).toString()),
-            }));
-        });
 
         const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({...thesis, id: 1})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
@@ -61,15 +63,6 @@ describe.only('addThesis unit tests', () => {
     test('U3: adding a thesis but an error in repository occurs', async () => {
         thesis.cosupervisor = [""]
 
-        jest.mock('dayjs', () => {
-            const originalDayjs = jest.requireActual('dayjs'); // Keep the original dayjs functions
-
-            return jest.fn((dateString) => ({
-                format: jest.fn(() => originalDayjs(dateString).format('YYYY-MM-DD')),
-                toString: jest.fn(() => originalDayjs(dateString).toString()),
-            }));
-        });
-
         const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
@@ -81,6 +74,135 @@ describe.only('addThesis unit tests', () => {
             expect(error.status).toBe(500)
             expect(error.error).toBeDefined()
         }
+    })
+
+    test('U4: adding a thesis but an error in coSupervisorThesis repository occurs', async () => {
+        jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {
+            name: 'gigi',
+            surname: 'verdi',
+            email: 'gigiverdi@mail.com'
+        }})
+        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return {error: 'error'}})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
+
+        try{
+            await service.addThesis(thesis)
+        }
+        catch(error) {
+            expect(error.error).toBe('error')
+        }
+    })
+
+    test('U5: adding a thesis but an another error in coSupervisorThesis repository occurs', async () => {
+        jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {
+            name: 'gigi',
+            surname: 'verdi',
+            email: 'gigiverdi@mail.com'
+        }})
+        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return {error: 'error'}})
+
+        try{
+            await service.addThesis(thesis)
+        }
+        catch(error) {
+            expect(error.error).toBe("error")
+        }        
+    })
+
+    test('U6: adding a thesis with an internal cosupervisor and an external one', async () => {
+        thesis.cosupervisor = ['gigiverdi@mail.com', 'gigirossi@mail.com']
+
+        jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {
+            name: 'gigi',
+            surname: 'verdi',
+            email: 'gigiverdi@mail.com'
+        }})
+        jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {}})
+        jest.spyOn(teacherRepository, 'getByEmail').mockImplementationOnce(() => { return{
+            name: 'gigi',
+            surname: 'rossi',
+            email: 'gigirossi@mail.com'
+        }})
+        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({...thesis, id: 1})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
+
+        await service.addThesis(thesis)
+        expect(res).toHaveBeenCalledWith(...Object.values(res.mock.calls[0]))    
+    })
+
+    test('U7: adding a thesis with an two external cosupervisors', async () => {
+        thesis.cosupervisor = ['gigiverdi@mail.com', 'gigirossi@mail.com']
+
+        jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {
+            name: 'gigi',
+            surname: 'verdi',
+            email: 'gigiverdi@mail.com'
+        }})
+        jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => { return{
+            name: 'gigi',
+            surname: 'rossi',
+            email: 'gigirossi@mail.com'
+        }})
+        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({...thesis, id: 1})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
+
+        await service.addThesis(thesis)
+        expect(res).toHaveBeenCalledWith(...Object.values(res.mock.calls[0]))    
+    })
+
+    test('U8: adding a thesis with an two internal cosupervisors', async () => {
+        thesis.cosupervisor = ['gigiverdi@mail.com', 'gigirossi@mail.com']
+        
+        jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {}})
+        jest.spyOn(teacherRepository, 'getByEmail').mockImplementationOnce(() => {return {
+            name: 'gigi',
+            surname: 'verdi',
+            email: 'gigiverdi@mail.com'
+        }})
+        jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {}})
+        jest.spyOn(teacherRepository, 'getByEmail').mockImplementationOnce(() => { return{
+            name: 'gigi',
+            surname: 'rossi',
+            email: 'gigirossi@mail.com'
+        }})
+        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({...thesis, id: 1})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
+
+        await service.addThesis(thesis)
+        expect(res).toHaveBeenCalledWith(...Object.values(res.mock.calls[0]))    
+    })
+
+    test('U9: adding a thesis with an two internal cosupervisors but an error occurs in coSupervisorThesis repository', async () => {
+        thesis.cosupervisor = ['gigiverdi@mail.com', 'gigirossi@mail.com']
+        
+        jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {}})
+        jest.spyOn(teacherRepository, 'getByEmail').mockImplementationOnce(() => {return {
+            name: 'gigi',
+            surname: 'verdi',
+            email: 'gigiverdi@mail.com'
+        }})
+        jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {}})
+        jest.spyOn(teacherRepository, 'getByEmail').mockImplementationOnce(() => { return{
+            name: 'gigi',
+            surname: 'rossi',
+            email: 'gigirossi@mail.com'
+        }})
+        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({...thesis, id: 1})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return {error: 'error'}})
+
+        try{
+            await service.addThesis(thesis)
+        }
+        catch(error) {
+            expect(error.error).toBe("error")
+        }        
     })
 })
 
@@ -238,3 +360,57 @@ describe('advancedResearchThesis', () => {
             expect(getByIdC).toHaveBeenCalledWith(1);
         })
 });
+
+describe('updateThesis unit tests', () => {
+    let thesis
+    let thesisId
+
+    beforeAll(() => {
+        thesis = {
+            supervisor: 1,
+            title: "New thesis is added",
+            keywords: ["SoftEng"],
+            type: ["abroad"],
+            groups: ["group1"],
+            description: "new thesis description",
+            knowledge: ["none"],
+            note: "",
+            expiration_date: '2024-10-10',
+            level: "Master",
+            cds: ["ingInf"],
+            creation_date: '2023-12-07',
+            status: 1
+        }
+        thesisId = 1
+    })
+
+    jest.mock('dayjs', () => {
+        const originalDayjs = jest.requireActual('dayjs'); // Keep the original dayjs functions
+
+        return jest.fn((dateString) => ({
+            format: jest.fn(() => originalDayjs(dateString).format('YYYY-MM-DD')),
+            toString: jest.fn(() => originalDayjs(dateString).toString()),
+        }));
+    });
+
+    test('U1: updateThesis is done', async () => {
+        jest.spyOn(repository, 'updateThesis').mockResolvedValue(1)
+        const res = await service.updateThesis({...thesis, thesisId})
+        expect(res).toBe(1)
+    })
+
+    test('U2: updateThesis is not done, no thesis ID found', async () => {
+        thesisId = 31
+        jest.spyOn(repository, 'updateThesis').mockImplementationOnce(() => {return {error: 'No rows updated. Thesis ID not found.'}})
+
+        const res = await service.updateThesis({...thesis, thesisId})
+        expect(res.error).toBe('No rows updated. Thesis ID not found.')
+    })
+
+    test('U3: updateThesis is not done, internal DB error', async () => {
+        jest.spyOn(repository, 'updateThesis').mockImplementationOnce(() => {return {error: 'Internal DB error'}})
+
+        const res = await service.updateThesis({...thesis, thesisId})
+        expect(res.error).toBe('Internal DB error')
+    })
+})
