@@ -21,15 +21,15 @@ function AddProposalForm(props) {
         cds: ['LM-32'],
     });
     const [warned, setWarned] = useState();
-    const [cosup_email, setCoSup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);
+    const [cosup_email, setCoSup_email] = useState(props.mails);
     const [filt_cosup, setFilt_cosup] = useState([]);
 
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         setFilt_cosup(cosup_email.filter((item) =>
-            item.toLowerCase().includes(searchTerm.toLowerCase()))
-        );
+        item.toLowerCase().includes(searchTerm.toLowerCase()))
+    )
         if(props.copy!==undefined)
          setProposalData(props.copy);
     }, [searchTerm, props.copy]);

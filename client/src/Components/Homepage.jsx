@@ -28,6 +28,7 @@ function Homepage(props) {
     const [copy, setCopy] = useState(undefined);
     const [copyT, setCopyT] = useState(undefined);
     const [copyD, setCopyD] = useState(undefined);
+    const [mails, setMails] = useState(undefined);
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
@@ -78,6 +79,9 @@ function Homepage(props) {
             }
         })
     }, [props.currentTime]);
+
+    useEffect(()=>{
+        API.getCoSupervisorsEmails().then((res)=>{setMails(res);})}, [props.currentTime]);
 
     //handleFunctions
 
@@ -219,7 +223,7 @@ function Homepage(props) {
                     </Col>
                     <Col xs={9}>
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <AddProposalForm user={props.user} copy={copy} setCopy={setCopy} setCopyD={setCopyD} setCopyT={setCopyT} copyD={copyD} copyT={copyT}/>
+                            <AddProposalForm user={props.user} copy={copy} setCopy={setCopy} setCopyD={setCopyD} setCopyT={setCopyT} copyD={copyD} copyT={copyT} mails={mails}/>
                         </div>
                     </Col>
                 </Row>

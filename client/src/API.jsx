@@ -300,7 +300,9 @@ function vc_restore() {
 
 async function getCoSupervisorsEmails() {
   try {
-    const response = await fetch(URL + '/thesis/supervisor/emails');
+    const response = await fetch(URL + '/thesis/supervisor/emails', {
+      credentials:'include'
+    });
     const coSupervisorsEmails = await response.json();
 
     if (response.ok) {
