@@ -5,8 +5,19 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe('_sendCancelledEmails', ()=>{
-    const mockTeacherID = 1, mockIdThesis = 1, mockIdStudent = 1; 
+let mockTeacherID
+let mockIdThesis
+let mockIdStudent
+let mockApplicationId
+
+beforeEach(() =>{
+    mockTeacherID = 1,
+    mockIdThesis = 1,
+    mockIdStudent = 1;
+    mockApplicationId = 1; 
+})
+
+describe('_sendCancelledEmails', ()=>{ 
     test('case1: getTeacherEmail fails', async ()=>{
         
         jest.spyOn(require("../../repositories/TeacherRepository"), "getById").mockRejectedValue({error: "error"})
@@ -88,9 +99,18 @@ describe('_sendCancelledEmails', ()=>{
 })
 
 describe('_sendAcceptedEmail', ()=>{
-    test('case0: wronged teacherID', async ()=>{
-        expect(()=>teacherService._sendAcceptedEmail()).rejects.toThrow(new Error("teacherID must exists and be greater than 0"));
-    }),
+    test('case0: teacherRepo.getById fails', async ()=>{
+        jest.spyOn(require("../../repositories/TeacherRepository"), "getById").mockRejectedValue({error: "error"})
+        jest.spyOn(require("../../repositories/StudentRepository"), "getStudentEmail").mockResolvedValue("success")
+        jest.spyOn(require("../../repositories/StudentRepository"), "getById").mockResolvedValue("success")
+        try{
+            await teacherService._sendAcceptedEmail(mockTeacherID, mockIdThesis, mockIdStudent);
+        }
+        catch(error) {
+            expect(error).toStrictEqual({error: "error"})
+        }
+    });
+    
     test('case1: wronged teacherID', async ()=>{
         const mockTeacherID = -1
         expect(()=>teacherService._sendAcceptedEmail(mockTeacherID)).rejects.toThrow(new Error("teacherID must exists and be greater than 0"));
