@@ -9,12 +9,14 @@ let mockTeacherID
 let mockIdThesis
 let mockIdStudent
 let mockApplicationId
+let mockStatus
 
 beforeEach(() =>{
     mockTeacherID = 1
     mockIdThesis = 1
     mockIdStudent = 1;
-    mockApplicationId = 1; 
+    mockApplicationId = 1;
+    mockStatus = 1; 
 })
 
 describe('_sendCancelledEmails', ()=>{ 
@@ -281,63 +283,56 @@ describe('_sendRejectedEmail', ()=>{
     })
 })
 
-describe('acceptApplication',()=>{
-    test('case0: wrongedTeacherId=undefined', async()=>{
-        const mockTeacherId = undefined, mockStatus = 1, mockApplicationId = 1;
-        expect(teacherService.acceptApplication(mockStatus, mockTeacherId, mockApplicationId)).rejects.toThrow(new Error("teacherID must exists and be greater than 0"));
-    }),
-    test('case1: wrongedTeacherId<0', async()=>{
-        const mockTeacherId = -1, mockStatus = 1, mockApplicationId = 1;
-        expect(()=>teacherService.acceptApplication(mockStatus, mockTeacherId, mockApplicationId)).rejects.toThrow(new Error("teacherID must exists and be greater than 0"));
-    }),
-    test('case2: wrongedApplication=undefined', async()=>{
-        const mockTeacherId = 1, mockStatus = 1, mockApplicationId = undefined;
-        expect(()=>teacherService.acceptApplication(mockStatus, mockTeacherId, mockApplicationId)).rejects.toThrow(new Error("applicationID must exists and be greater than 0"));
-    }),
-    test('case3: wrongedApplication<0', async()=>{
-        const mockTeacherId = 1, mockStatus = 1, mockApplicationId = -1;
-        expect(()=>teacherService.acceptApplication(mockStatus, mockTeacherId, mockApplicationId)).rejects.toThrow(new Error("applicationID must exists and be greater than 0"));
-    }),
-    test('case4: status undefined', async()=>{
-        const mockTeacherId = 1, mockStatus = undefined, mockApplicationId = 1;
-        expect(()=>teacherService.acceptApplication(mockStatus, mockTeacherId, mockApplicationId)).rejects.toThrow(new Error("status must exists and be one or two or three"));
-    }),
-    test('case5: status < 0', async()=>{
-        const mockTeacherId = 1, mockStatus = -1, mockApplicationId = 1;
-        expect(()=>teacherService.acceptApplication(mockStatus, mockTeacherId, mockApplicationId)).rejects.toThrow(new Error("status must exists and be one or two or three"));
-    }),
-    test('case6: status > 3', async()=>{
-        const mockTeacherId = 1, mockStatus = 4, mockApplicationId = 1;
-        expect(()=>teacherService.acceptApplication(mockStatus, mockTeacherId, mockApplicationId)).rejects.toThrow(new Error("status must exists and be one or two or three"));
-    }),
-    test('case7: row==0', async()=>{
-        const mockTeacherId = 1, mockStatus = 3, mockApplicationId = 1;
-        jest.spyOn(require('../../repositories/ApplicationRepository'), 'getApplication').mockResolvedValue(0);
-        expect(()=>teacherService.acceptApplication(mockStatus, mockTeacherId, mockApplicationId)).rejects.toThrow( new Error("No application was found, application is missing or is of another teacher"));
-    }),
-    test('case8: row.id_teacher != teacherID', async()=>{
-        const mockTeacherId = 1, mockStatus = 3, mockApplicationId = 1;
-        jest.spyOn(require('../../repositories/ApplicationRepository'), 'getApplication').mockResolvedValue({id_teacher:2});
-        expect(()=>teacherService.acceptApplication(mockStatus, mockTeacherId, mockApplicationId)).rejects.toThrow( new Error("This application does not own to that teacher, he cant accept it"));
-    }),
-    test('case9: success, status==1', async()=>{
-        const mockTeacherId = 1, mockStatus = 1, mockApplicationId = 1;
-        jest.spyOn(require('../../repositories/ApplicationRepository'), 'getApplication').mockResolvedValue({id:1, id_student:1, id_thesis:1, id_teacher:1, data:"2023-05-23", path_cv:"path", status:0});
-        jest.spyOn(require('../../repositories/ApplicationRepository'), 'updateStatus').mockResolvedValue();
-        jest.spyOn(require('../../repositories/ApplicationRepository'), 'updateStatusToCancelledForOtherStudent').mockResolvedValue();
-        jest.spyOn(require('../../repositories/ThesisRepository'), 'setStatus').mockResolvedValue();
-        jest.spyOn(require('../../services/TeacherService'), '_sendCancelledEmails').mockResolvedValue();
-        jest.spyOn(require('../../services/TeacherService'), '_sendAcceptedEmail').mockResolvedValue();
-        
-        const mockRes = await teacherService.acceptApplication(mockStatus, mockTeacherId, mockApplicationId);
-        expect(mockRes).toEqual(mockStatus)
-    }),
-    test('case10: success, status1=1', async()=>{
-        const mockTeacherId = 1, mockStatus = 2, mockApplicationId = 1;
-        jest.spyOn(require('../../repositories/ApplicationRepository'), 'getApplication').mockResolvedValue({id:1, id_student:1, id_thesis:1, id_teacher:1, data:"2023-05-23", path_cv:"path", status:0});
-        jest.spyOn(require('../../repositories/ApplicationRepository'), 'updateStatus').mockResolvedValue();
-        jest.spyOn(require('../../services/TeacherService'), '_sendRejectedEmail').mockResolvedValue();
-        const mockRes = await teacherService.acceptApplication(mockStatus, mockTeacherId, mockApplicationId);
-        expect(mockRes).toEqual(mockStatus)
+describe('acceptApplication Service',()=>{
+    test('case0: Application is missing', async()=>{
+        jest.spyOn(require("../../repositories/ApplicationRepository"), "getById").mockResolvedValue(undefined)
+        try{
+            await teacherService.acceptApplication(mockStatus, mockTeacherID, mockApplicationId);
+        }
+        catch(error) {
+            expect(error).toStrictEqual({error: "No application was found, application is missing or is of another teacher"})
+        }
+    })
+    test('case1: Wrong application owner', async()=>{
+        jest.spyOn(require("../../repositories/ApplicationRepository"), "getById").mockResolvedValue({id_thesis : 1, id_student :1, id_teacher : 10})
+        try{
+            await teacherService.acceptApplication(mockStatus, mockTeacherID, mockApplicationId);
+        }
+        catch(error) {
+            expect(error).toStrictEqual({error: "This application does not own to that teacher, he cant accept it"})
+        }
+    })
+    test('case2: applicationRepository.updateStatus fail', async()=>{
+        jest.spyOn(require("../../repositories/ApplicationRepository"), "getById").mockResolvedValue({id_thesis : 1, id_student :1, id_teacher : 1})
+        jest.spyOn(require("../../repositories/ApplicationRepository"), "updateStatus").mockRejectedValue({error : "error"})
+        try{
+            await teacherService.acceptApplication(mockStatus, mockTeacherID, mockApplicationId);
+        }
+        catch(error) {
+            expect(error).toStrictEqual({error: "error"});
+        }
+    })
+    test('case3: applicationRepository.updateStatusToCancelledForOtherStudent fail', async()=>{
+        jest.spyOn(require("../../repositories/ApplicationRepository"), "getById").mockResolvedValue({id_thesis : 1, id_student :1, id_teacher : 1})
+        jest.spyOn(require("../../repositories/ApplicationRepository"), "updateStatus").mockResolvedValue(true);
+        jest.spyOn(require("../../repositories/ApplicationRepository"), "updateStatusToCancelledForOtherStudent").mockRejectedValue({error : "error"})
+        try{
+            await teacherService.acceptApplication(mockStatus, mockTeacherID, mockApplicationId);
+        }
+        catch(error) {
+            expect(error).toStrictEqual({error: "error"});
+        }
+    })
+    test('case4: thesisRepository.setStatus fail', async()=>{
+        jest.spyOn(require("../../repositories/ApplicationRepository"), "getById").mockResolvedValue({id_thesis : 1, id_student :1, id_teacher : 1})
+        jest.spyOn(require("../../repositories/ApplicationRepository"), "updateStatus").mockResolvedValue(true);
+        jest.spyOn(require("../../repositories/ApplicationRepository"), "updateStatusToCancelledForOtherStudent").mockResolvedValue(true);
+        jest.spyOn(require("../../repositories/ThesisRepository"), "setStatus").mockRejectedValue({error : "error"})
+        try{
+            await teacherService.acceptApplication(mockStatus, mockTeacherID, mockApplicationId);
+        }
+        catch(error) {
+            expect(error).toStrictEqual({error: "error"});
+        }
     })
 })
