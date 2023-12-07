@@ -270,7 +270,7 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
     const spy = jest.spyOn(require('../../services/ThesisService.js'), 'getActiveBySupervisor').mockRejectedValue({error: 'error'});
     await controller.searchThesis(mockReq, mockRes);
     await Promise.resolve();
-    expect(spy).toHaveBeenCalledWith(1);
+    expect(spy).toHaveBeenCalledWith(1,0);
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toHaveBeenCalledWith({error: 'error'});
   }),
@@ -278,7 +278,7 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
     const spy = jest.spyOn(require('../../services/ThesisService.js'), 'getActiveBySupervisor').mockResolvedValue({success: 'success'});
     await controller.searchThesis(mockReq, mockRes);
     await Promise.resolve();
-    expect(spy).toHaveBeenCalledWith(1);
+    expect(spy).toHaveBeenCalledWith(1,0);
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toHaveBeenCalledWith({nPage:1, thesis:{success: 'success'}});
   })

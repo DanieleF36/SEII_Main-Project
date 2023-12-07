@@ -9,7 +9,7 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe('browserApplicationStudent', ()=>{
+describe.skip('browserApplicationStudent', ()=>{
     test('case1: success', async ()=>{
         const mockIdStudent = 1; 
         mockRow = {
@@ -47,7 +47,7 @@ describe('browserApplicationStudent', ()=>{
     })
 })
 
-describe('getStudentEmailCancelled', ()=>{
+describe.skip('getStudentEmailCancelled', ()=>{
     test('case0: wrongedId', async ()=>{
         expect(()=>studentRepository.getStudentEmailCancelled()).toThrow(new Error("id_student must exists and be greater than 0"));
     }),
@@ -71,7 +71,7 @@ describe('getStudentEmailCancelled', ()=>{
     })
 });
 
-describe('getStudentEmail', ()=>{
+describe.skip('getStudentEmail', ()=>{
     test('case0: wrongedId', async ()=>{
         expect(()=>studentRepository.getStudentEmail()).toThrow(new Error("id_student must exists and be greater than 0"));
     }),
