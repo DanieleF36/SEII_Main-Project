@@ -78,12 +78,12 @@ exports.getById = (id_thesis) => {
  * @returns a list of thesis object
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
-exports.getActiveBySupervisor = (supervisorId) => {
+exports.getActiveBySupervisor = (supervisorId, queryParam) => {
   if(!supervisorId || supervisorId<0)
     throw {error:"supervisorId must exists and be greater than 0"};
-  const sql = `SELECT * FROM thesis WHERE status = 1 AND supervisor = ?`
+  const sql = `SELECT * FROM thesis WHERE status = ? AND supervisor = ?`
   return new Promise( (resolve, reject) => {
-    db.all(sql, [supervisorId], (err, rows) => {
+    db.all(sql, [queryParam, supervisorId], (err, rows) => {
       if(err) {
         return reject({error: err.message});
       }

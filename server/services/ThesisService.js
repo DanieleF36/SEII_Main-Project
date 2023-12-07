@@ -102,8 +102,8 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   return [res, npage];
 };
 
-exports.getActiveBySupervisor = async function(supervisorId){
-  return await thesisRepository.getActiveBySupervisor(supervisorId);
+exports.getActiveBySupervisor = async function(supervisorId,queryParam){
+  return await thesisRepository.getActiveBySupervisor(supervisorId, queryParam);
 }
 
 /**
