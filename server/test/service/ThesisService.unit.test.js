@@ -63,7 +63,7 @@ describe('addThesis unit tests', () => {
     test('U3: adding a thesis but an error in repository occurs', async () => {
         thesis.cosupervisor = [""]
 
-        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
+        const res = jest.spyOn(Promise, 'all').mockResolvedValue({error: 'error'})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
 
