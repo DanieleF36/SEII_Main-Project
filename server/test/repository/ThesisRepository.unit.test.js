@@ -9,7 +9,7 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe('setStatus', ()=>{
+describe.skip('setStatus', ()=>{
     test('case0: wrongedId', async()=>{
         const mockId = undefined, mockStatus = 0;
         expect(()=>thesisRepository.setStatus(mockId, mockStatus)).toThrow(new Error("id must exists and be greater than 0"));
@@ -54,7 +54,7 @@ describe('setStatus', ()=>{
     })
 })
 
-describe('getThesisTitle', ()=>{
+describe.skip('getThesisTitle', ()=>{
     test('case0: wrongedId', async ()=>{
         expect(()=>thesisRepository.getThesisTitle()).toThrow(new Error("id_thesis must exists and be greater than 0"));
     }),

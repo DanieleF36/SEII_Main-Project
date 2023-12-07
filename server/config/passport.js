@@ -25,16 +25,17 @@ const samlStrategy = new saml(samlConfig, async (profile, done) => {
         role = "student";
     }
     else if(profile.nameID.includes('professori') ){
-        user = await teacherRepository.findByEmail(profile.nameID);
-        console.log(user);
+        user = await teacherRepository.getByEmail(profile.nameID);
         role = "teacher";
     }
     else if(profile.nameID.includes('cosupervisor') ){
-        user = await coSupervisorRepository.findByEmail(profile.nameID);
+        user = await coSupervisorRepository.getByEmail(profile.nameID);
         role = "cosupervisor";
     }
     if(role==='student')
-        user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, cds:user.cds }
+        user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, cds:user.cds, cdsCode:user.cdsCode }
+    else if(role==='teacher')
+        user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, group:user.code_group }
     else
         user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID }
     

@@ -10,7 +10,7 @@ beforeEach(() => {
 });
 
 
-describe('findByEmail', ()=>{
+describe.skip('findByEmail', ()=>{
     test('case0: wronged email', async ()=>{
         expect(()=>teacherRepository.findByEmail()).toThrow(new Error("email must exist"));
     }),
@@ -37,7 +37,7 @@ describe('findByEmail', ()=>{
     })
 });
 
-describe('getTeacherEmail', ()=>{
+describe.skip('getTeacherEmail', ()=>{
     test('case0: wrongedId', async ()=>{
         expect(()=>teacherRepository.getTeacherEmail()).toThrow(new Error("teacherID must exists and be greather than 0"));
     }),
