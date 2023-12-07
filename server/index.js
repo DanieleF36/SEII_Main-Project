@@ -8,6 +8,19 @@ const metadata = require('./config/passport').metadata;
 const app = express();
 require('dotenv').config({path: './variable.env'})
 
+/* json schema validator */
+const { Validator, ValidationError } = require('express-json-validator-middleware');
+const fs = require('fs');
+
+const addFormats = require('ajv-formats').default;
+const thesisSchema = JSON.parse(fs.readFileSync('./json_schema/thesisSchema.json').toString());
+const querySearch = JSON.parse(fs.readFileSync('./json_schema/querySearch.json').toString());
+const validator = new Validator({ allErrors: true });
+validator.ajv.addSchema(thesisSchema);
+addFormats(validator.ajv);
+const validate = validator.validate;
+/* end json schema validator*/
+
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.static("public"));
@@ -45,30 +58,24 @@ const isLoggedIn = (req, res, next)=>{
 /******************************************************************Route*********************************************************************************************/
 
 const thesisController = require("./controllers/ThesisController");
-const teacherController = require("./controllers/TeacherController");
-const studentController = require("./controllers/StudentController");
+const coSupervisorController = require("./controllers/CoSupervisorController");
+const applicationController = require("./controllers/ApplicationController");
 const vc = require('./dayjsvc/index.dayjsvc')
 
-app.get("/thesis", isLoggedIn, (req, res) => thesisController.advancedResearchThesis(req,res));
+app.get("/thesis", isLoggedIn, (req, res) => thesisController.searchThesis(req,res, validate({query: querySearch})));
 
-app.get("/thesis/supervisor/emails", isLoggedIn, thesisController.getAllCoSupervisorsEmails);
+app.post("/thesis", isLoggedIn, (req, res) => thesisController.addThesis(req, res, validate({body: thesisSchema})));
 
-app.get("/professor/:id_professor/applications",isLoggedIn, (req, res) =>
-  teacherController.listApplication(req, res)
-);
+app.put("/thesis/:id", isLoggedIn, (req, res) => thesisController.updateThesis(req, res, validate({body: thesisSchema})));
 
-app.post("/thesis", isLoggedIn, (req, res) => thesisController.addThesis(req, res));
+app.post("/thesis/:id_thesis/applications", isLoggedIn, (req, res) => applicationController.applyForProposal(req, res));
 
-app.put("/thesis/:id", isLoggedIn, (req, res) => thesisController.updateThesis(req, res));
+app.get("/applications", isLoggedIn, (req, res) => applicationController.listApplication(req, res));
 
-app.put("/professor/:id_professor/applications/:id_application", teacherController.acceptApplication);
+app.put("/applications/:id_applications", applicationController.acceptApplication);
 
-app.post("/thesis/:id_thesis/applications", isLoggedIn, (req, res) => studentController.applyForProposal(req, res));
+app.get("/cosupervisors/email", isLoggedIn, coSupervisorController.getAllCoSupervisorsEmails);
 
-
-app.get("/student/:id_student/applications", isLoggedIn, (req,res) => studentController.browserApplicationStudent(req, res));
-
-app.get('/professor/thesis', isLoggedIn, (req, res) => teacherController.browseProposals(req, res))
 
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
 
@@ -89,6 +96,12 @@ app.post('/logout/callback', passport.logoutSamlCallback);
 app.get("/metadata", (req, res)=>res.type("application/xml").status(200).send(metadata()));
 
 app.get("/session/current", isLoggedIn, (req, res)=>{let u = {name: req.user.name, surname: req.user.surname, id: req.user.id, email:req.user.nameID, cds: req.user.cds, role: req.user.role}; res.status(200).send(u)})
+
+app.use(function(err, req, res, next) {
+  if (err instanceof ValidationError) {
+      res.status(400).send({error: err.requestProperty});
+  } else next(err);
+});
 
 const PORT = 3001;
 app.listen(PORT, () =>

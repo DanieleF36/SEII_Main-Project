@@ -1,9 +1,304 @@
 "use strict";
 
 const db = require("./db");
-const applicationRepository = require('./ApplicationRepository.js')
 
 /**
+ * create a new object that represent thesis 
+ * @returns 
+ */
+function newThesis(id, title, supervisor, coSupervisors, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status){
+  return{
+    id: id,
+    title: title,
+    supervisor: supervisor,
+    coSupervisor: coSupervisors,
+    keywords: keywords,
+    type: type,
+    groups: groups,
+    description: description,
+    knowledge: knowledge,
+    note: note,
+    expiration_date: expiration_date,
+    level: level,
+    cds: cds,
+    creation_date: creation_date,
+    status: status,
+  };
+}
+
+//==================================Create==================================
+
+/**
+ * add a new thesis
+ * @returns SUCCESS: the new entry with the new ID is returned
+ * @returns ERROR: sqlite error is returned in the form {error: "message"}
+ */
+exports.addThesis = (title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) => {
+  if(!(title && supervisor && keywords && type && groups && description && knowledge && note && expiration_date && level && cds && creation_date && status))
+    throw {error: "Parameters can not be null or undefined"}
+  const sql = `INSERT INTO Thesis(title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status)
+               VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+
+  return new Promise((resolve, reject) => {
+    db.run(sql, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status], function (err) {
+        if (err) {
+          return reject({error: err.message});
+        }
+        resolve(newThesis(this.lastID, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status));
+      }
+    );
+  });
+};
+
+//==================================Get==================================
+
+/**
+ * Return the thesis with the specificated ID
+ * @param {*} id_thesis 
+ * @returns an object that represent thesis or undefined if id does not exist
+ * @returns ERROR: sqlite error is returned in the form {error: "message"}
+ */
+exports.getById = (id_thesis) => {
+  if(!id_thesis || id_thesis<0)
+    throw {error:"id_thesis must exists and be greater than 0"};
+  const thesisTitlesSQL = 'SELECT * FROM Thesis WHERE id = ?'
+  return new Promise((resolve, reject) => {
+    db.get(thesisTitlesSQL, [id_thesis], function (err, result) {
+      if (err) {
+        return reject({error: err.message});
+      }
+      resolve(result);
+    })
+  });
+}
+
+/**
+ * Find all the active thesis of onw specific supervisor 
+ * @param {*} supervisorId, id of that specific supervisor 
+ * @returns a list of thesis object
+ * @returns ERROR: sqlite error is returned in the form {error: "message"}
+ */
+exports.getActiveBySupervisor = (supervisorId, queryParam) => {
+  if(!supervisorId || supervisorId<0)
+    throw {error:"supervisorId must exists and be greater than 0"};
+  const sql = `SELECT * FROM thesis WHERE status = ? AND supervisor = ?`
+  return new Promise( (resolve, reject) => {
+    db.all(sql, [queryParam, supervisorId], (err, rows) => {
+      if(err) {
+        return reject({error: err.message});
+      }
+      else if(rows.length === 0) {
+        resolve([])
+      }
+      else resolve(rows)
+    })
+  })
+}
+
+/**
+ * Composes the query and performs an advanced search
+ *
+ * @param {*} from defines the index of 1st chosen entries (offset)
+ * @param {*} to defines the index of last chosen entries (to-from = no_entries)
+ * @param {*} order string with A(SC) or D(ESC) (ie titleD will became ORDER BY title DESC)
+ * @param {*} specific true if your research is for something that is exactily like your params
+ * @param {*} title string
+ * @param {*} idSupervisors list of ids
+ * @param {*} idCoSupervisorsThesis list of ids
+ * @param {*} keyword Array of String
+ * @param {*} type string
+ * @param {*} groups Array of String
+ * @param {*} knowledge Array of String
+ * @param {*} expiration_date string
+ * @param {*} cds Array of String
+ * @param {*} creation_date string
+ * @param {*} level 0 (bachelor) | 1 (master)
+ * @returns list of thesis objects
+ */
+exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
+  if(!from || !to || !order || !specific)
+    throw {error: "from, to, order and specific must be defined"}
+  let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+  const params = sql[1];
+  sql = sql[0];
+  return new Promise((resolve, reject) => {
+    
+    db.all(sql, params, (err, rows) => {
+      if (err) {
+        return reject({error: err.message});
+      }
+      const res = rows.map((e) => (newThesis(e.id, e.title, e.supervisor, [], e.keywords, e.type, e.groups, e.description, e.knowledge, e.note, e.expiration_date, e.level, e.cds, e.creation_date, e.status)));
+      resolve(res);
+    });
+  });
+};
+
+/**
+ * Find the thesisId given the CoSupervisor id
+ * @param {*} id: id of the co-supervisor
+ * @returns [id1, id2, ....]
+ */
+exports.getIdByCoSupervisorId = (id) => {
+  if(!id || id<0)
+      throw {error: "id must be greather than 0"}
+  let idsThesis = [];
+  const sqlIdThesis = "SELECT id_thesis FROM CoSupervisorThesis WHERE id_cosupervisor = ?";
+  return new Promise((resolve, reject) => {
+      db.all(sqlIdThesis, [id], (err, rows) => {
+          if (err) {
+              reject({error: err.message});
+              return;
+          }
+          rows.map((e) => {
+              idsThesis.push(e.id_thesis);
+          });
+          resolve(idsThesis);
+      });
+  });
+}
+
+//==================================Set==================================
+/**
+ * Update thesis with the same id with new parameters 
+ * @param {*} id integer > 0
+ * @param {*} title string
+ * @param {*} supervisorId integer > 0
+ * @param {*} keywords string
+ * @param {*} type string
+ * @param {*} groups string
+ * @param {*} description string
+ * @param {*} knowledge string
+ * @param {*} note string
+ * @param {*} expiration_date string 
+ * @param {*} level 0 (bachelor) | 1 (master)
+ * @param {*} cds string
+ * @param {*} creation_date string
+ * @param {*} status 0 | 1 (published)
+ * @returns the number of row modified, if different from 1 it is an error
+ * @returns ERROR: sqlite error is returned in the form {error: "message"}
+ */
+exports.updateThesis = (id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status)=> {
+  if(!(title && supervisor && keywords && type && groups && description && knowledge && note && expiration_date && level && cds && creation_date && status))
+    throw {error: "Parameters can not be null or undefined"}
+  const sql = `UPDATE Thesis 
+               SET title = ?, supervisor = ?, keywords = ?, type = ?, groups = ?, description = ?, 
+                   knowledge = ?, note = ?, expiration_date = ?, level = ?, cds = ?, creation_date = ?, status = ?
+               WHERE id = ?`;
+  return new Promise((resolve, reject) => {
+    db.run(sql,[title,supervisor,keywords,type,groups,description,knowledge,note,expiration_date,level,cds,creation_date,status,id], function (err) {
+        if (err) {
+          return reject({error: err.message});
+        }
+        if (this.changes === 0) {
+          return reject({ error: "No rows updated. Thesis ID not found." });
+          
+        }
+        resolve(this.changes);
+      }
+    );
+  });
+};
+/**
+ * Update the status of the thesis with the same id
+ * @param {*} id integer > 0
+ * @param {*} status 0 | 1 (published)
+ * @returns the number of row modified, if different from 1 it is an error
+ * @returns ERROR: sqlite error is returned in the form {error: "message"}
+ */
+exports.setStatus = (id, status) => {
+  if(!id || id<0)
+    throw {error: "id must exists and be greater than 0"};
+  if(status==undefined || status<0 || status>1)
+    throw {error: "status must exists and be zero or one"};
+  const updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ?';
+  return new Promise((resolve, reject)=>{
+    db.run(updateThesisSQL, [status, id], function (err) {
+      if (err) {
+        return reject({error: err.message});
+      }
+      if (this.changes === 0) {
+        return reject({ error: "No rows updated. Thesis ID not found." });
+      }
+      resolve(this.changes);
+    });
+  })
+}
+
+//==================================Delete==================================
+
+//==================================Support==================================
+
+/**
+ * @returns SUCCESS: object defined as {nPage: 1}
+ * @returns ERROR: sqlite error is returned in the form {error: "message"}
+ */
+exports.numberOfPage = (specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
+  let sql = sqlQueryCreator( undefined, undefined, "titleD", specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+  const params = sql[1];
+  sql = sql[0];
+  sql = sql.slice(8);
+  sql = "SELECT COUNT(*) AS cnt"+sql;
+  return new Promise((resolve, reject) => {
+    db.all(sql, params, (err, rows) => {
+      if (err) {
+        return reject({error: err.message});
+      }
+      resolve({ nRows: rows[0] ? rows[0].cnt : 0 });
+    });
+  });
+};
+
+//Only for advancedSearch
+//Trasform order and make it suitable for an SQL query
+function transformOrder(order) {
+  switch (order) {
+    case "titleD":
+      return "title DESC ";
+    case "titleA":
+      return "title ASC ";
+    case "supervisorD":
+      return "supervisor DESC ";
+    case "supervisorA":
+      return "supervisor ASC ";
+    case "co-supervisorD":
+      return "co-supervisor DESC ";
+    case "co-supervisorA":
+      return "co-supervisor ASC ";
+    case "keywordD":
+      return "keywords DESC ";
+    case "keywordA":
+      return "keywords ASC ";
+    case "typeD":
+      return "type DESC ";
+    case "typeA":
+      return "type ASC ";
+    case "groupsD":
+      return "groups DESC ";
+    case "groupsA":
+      return "groups ASC ";
+    case "knowledgeD":
+      return "knowledge DESC ";
+    case "knowledgeA":
+      return "knowledge ASC ";
+    case "expiration_dateD":
+      return "expiration_date DESC ";
+    case "expiration_dateA":
+      return "expiration_date ASC ";
+    case "cdsD":
+      return "cds DESC ";
+    case "cdsA":
+      return "cds ASC ";
+    case "creation_dateD":
+      return "creation_date DESC ";
+    case "creation_dateA":
+      return "creation_date ASC ";
+    default:
+      return `Azione non valida per ${order}`;
+  }
+}
+
+/**
+ * Only for advancedSearch
  * Composes the query and performs an advanced search
  *
  * @param {*} from defines the index of 1st chosen entries (offset)
@@ -23,8 +318,6 @@ const applicationRepository = require('./ApplicationRepository.js')
  * @param {*} level 0 (bachelor) | 1 (master)
  * @returns list of thesis objects
  */
-
-//Only for advancedSearch
 function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) {
   let sql = "SELECT * FROM Thesis WHERE status=1 AND level=" + level + " ";
   let params = [];
@@ -125,238 +418,9 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   return [sql, params];
 }
 
-//Only for advancedSearch
-//Trasform order and make it suitable for an SQL query
-function transformOrder(order) {
-  switch (order) {
-    case "titleD":
-      return "title DESC ";
-    case "titleA":
-      return "title ASC ";
-    case "supervisorD":
-      return "supervisor DESC ";
-    case "supervisorA":
-      return "supervisor ASC ";
-    case "co-supervisorD":
-      return "co-supervisor DESC ";
-    case "co-supervisorA":
-      return "co-supervisor ASC ";
-    case "keywordD":
-      return "keywords DESC ";
-    case "keywordA":
-      return "keywords ASC ";
-    case "typeD":
-      return "type DESC ";
-    case "typeA":
-      return "type ASC ";
-    case "groupsD":
-      return "groups DESC ";
-    case "groupsA":
-      return "groups ASC ";
-    case "knowledgeD":
-      return "knowledge DESC ";
-    case "knowledgeA":
-      return "knowledge ASC ";
-    case "expiration_dateD":
-      return "expiration_date DESC ";
-    case "expiration_dateA":
-      return "expiration_date ASC ";
-    case "cdsD":
-      return "cds DESC ";
-    case "cdsA":
-      return "cds ASC ";
-    case "creation_dateD":
-      return "creation_date DESC ";
-    case "creation_dateA":
-      return "creation_date ASC ";
-    default:
-      return `Azione non valida per ${order}`;
-  }
-}
+//==================================Virtual CLock==================================
 
-/**
- * Composes the query and performs an advanced search
- *
- * @param {*} from defines the index of 1st chosen entries (offset)
- * @param {*} to defines the index of last chosen entries (to-from = no_entries)
- * @param {*} order string with A(SC) or D(ESC) (ie titleD will became ORDER BY title DESC)
- * @param {*} specific true if your research is for something that is exactily like your params
- * @param {*} title string
- * @param {*} idSupervisors list of ids
- * @param {*} idCoSupervisorsThesis list of ids
- * @param {*} keyword Array of String
- * @param {*} type string
- * @param {*} groups Array of String
- * @param {*} knowledge Array of String
- * @param {*} expiration_date string
- * @param {*} cds Array of String
- * @param {*} creation_date string
- * @param {*} level 0 (bachelor) | 1 (master)
- * @returns list of thesis objects
- */
-exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
-  let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-  const params = sql[1];
-  sql = sql[0];
-  return new Promise((resolve, reject) => {
-    
-    db.all(sql, params, (err, rows) => {
-      if (err) {
-        reject(err);
-        return;
-      }
-      const res = rows.map((e) => ({
-        id: e.id,
-        title: e.title,
-        supervisor: e.supervisor,
-        coSupervisors: [],
-        keywords: e.keywords,
-        type: e.type,
-        note: e.note,
-        level:e.level,
-        groups: e.groups,
-        knowledge: e.knowledge,
-        expiration_date: e.expiration_date,
-        cds: e.cds,
-        creation_date: e.creation_date,
-        status: e.status,
-        description: e.description
-      }));
-      resolve(res);
-    });
-  });
-};
-/**
- * @returns SUCCESS: the new entry ID is returned
- * @returns ERROR: sqlite error is returned
- */
-exports.numberOfPage = (specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
-  let sql = sqlQueryCreator( undefined, undefined, "titleD", specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-  const params = sql[1];
-  sql = sql[0];
-  sql = sql.slice(8);
-  sql = "SELECT COUNT(*) AS cnt"+sql;
-  return new Promise((resolve, reject) => {
-    db.all(sql, params, (err, rows) => {
-      if (err) {
-        console.log("errore " + err);
-        reject(err);
-        return;
-      }
-      resolve({ nRows: rows[0] ? rows[0].cnt : 0 });
-    });
-  });
-};
-
-/**
- * @returns SUCCESS: the new entry ID is returned
- * @returns ERROR: sqlite error is returned
- */
-exports.addThesis = (title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) => {
-  const sql = `INSERT INTO Thesis(title, supervisor, keywords, type, groups, description, 
-                                        knowledge, note, expiration_date, level, cds, creation_date, status)
-                 VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
-
-  return new Promise((resolve, reject) => {
-    db.run(
-      sql,
-      [
-        title,
-        supervisor,
-        keywords,
-        type,
-        groups,
-        description,
-        knowledge,
-        note,
-        expiration_date,
-        level,
-        cds,
-        creation_date,
-        status,
-      ],
-      function (err) {
-        if (err) {
-          console.error("SQLite Error:", err.message);
-          reject(err);
-          return;
-        }
-        const thesis_obj = {
-          id: this.lastID,
-          title: title,
-          supervisor: supervisor,
-          keywords: keywords,
-          type: type,
-          groups: groups,
-          description: description,
-          knowledge: knowledge,
-          note: note,
-          expiration_date: expiration_date,
-          level: level,
-          cds: cds,
-          creation_date: creation_date,
-          status: status,
-        };
-        resolve(thesis_obj);
-      }
-    );
-  });
-};
-
-exports.getActiveThesis = (supervisor, date) => {
-  const sql = `SELECT id, title, supervisor, keywords, status, type, groups, description,
-                knowledge, note, expiration_date, level, cds, creation_date 
-               FROM thesis 
-               WHERE status = 1 AND expiration_date > ? AND supervisor = ?`
-  
-  return new Promise( (resolve, reject) => {
-    db.all(sql, [date, supervisor], (err, rows) => {
-      if(err) {
-        reject(err)
-      }
-      else if(rows.length === 0) {
-        resolve([])
-      }
-      else resolve(rows)
-    })
-  })
-}
-
-exports.updateThesis = (id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status)=> {
-  const sql = `UPDATE Thesis 
-               SET title = ?, supervisor = ?, keywords = ?, type = ?, groups = ?, description = ?, 
-                   knowledge = ?, note = ?, expiration_date = ?, level = ?, cds = ?, creation_date = ?, status = ?
-               WHERE id = ?`;
-  return new Promise((resolve, reject) => {
-    db.run(sql,[title,supervisor,keywords,type,groups,description,knowledge,note,expiration_date,level,cds,creation_date,status,id], function (err) {
-        if (err) {
-          console.error("SQLite Error:", err.message);
-          reject(err);
-          return;
-        }
-        if (this.changes === 0) {
-          reject({ error: "No rows updated. Thesis ID not found." });
-          return;
-        }
-        resolve(true);
-      }
-    );
-  });
-};
-
-exports.getCosupervisorByThesis = (id) => {
-  const sql = 'SELECT email FROM CoSupervisor  WHERE id IN (SELECT id_cosupervisor AS List FROM CoSupervisorThesis WHERE id_thesis=?)'
-
-  return new Promise( (resolve, reject) => {
-    db.all(sql, [id], (err, rows) => {
-      if(err)
-        reject(err)
-      else if(rows.length == 0)
-        resolve([])
-      resolve(rows.map(a => a.email))
-    })
-  })
-}
+const applicationRepository = require('./ApplicationRepository.js')
 /**
  * Designed for Virtual clock
  * @param {*} date 
@@ -367,7 +431,7 @@ exports.selectExpiredAccordingToDate = (date) => {
   return new Promise( (resolve, reject) => {
     db.all(sql, [date], (err, rows) => {
       if(err)
-        reject(err)
+        return reject({error: err.message});
       else if(rows.length == 0)
         resolve([])
       resolve(rows.map(a => a.id))
@@ -385,7 +449,7 @@ exports.selectRestoredExpiredAccordingToDate = (date) => {
   return new Promise( (resolve, reject) => {
     db.all(sql, [date], (err, rows) => {
       if(err)
-        reject(err)
+        return reject({error: err.message});
       else if(rows.length == 0)
         resolve([])
       resolve(rows.map(a => a.id))
@@ -404,7 +468,7 @@ exports.setExpiredAccordingToIds = (ids) => {
   return new Promise( (resolve, reject) => {
     db.run(sql, ids, (err) => {
       if(err)
-        reject(err)
+      return reject({error: err.message});
       else {
         applicationRepository.setCancelledAccordingToThesis(ids)
           .then( resolve(true) )
@@ -425,50 +489,12 @@ exports.restoreExpiredAccordingToIds = (ids) => {
   return new Promise( (resolve, reject) => {
     db.run(sql, ids, (err) => {
       if(err)
-        reject(err)
+        return reject({error: err.message});
       else {
         applicationRepository.setPendingAccordingToThesis(ids)
           .then( resolve(true) )
           .catch( err => reject(err) )
       }
     })
-  })
-}
-
-exports.getThesisTitle = ( id_thesis) => {
-  if(!id_thesis || id_thesis<0)
-    throw new Error("id_thesis must exists and be greater than 0");
-  const thesisTitlesSQL = 'SELECT title FROM Thesis WHERE id = ?'
-  return new Promise((resolve, reject) => {
-    db.get(thesisTitlesSQL, [id_thesis], function (err, result) {
-      if (err) {
-        console.error("Error in SQLDatabase:", err.message);
-        reject({error: err.message});
-        return;
-      }
-      resolve(result.title);
-    })
-  });
-}
-
-exports.setStatus = (id, status) => {
-  if(!id || id<0)
-    throw new Error("id must exists and be greater than 0");
-  if(status==undefined || status<0 || status>3)
-    throw new Error("status must exists and be one or two or three");
-  const updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ?';
-  return new Promise((resolve, reject)=>{
-    db.run(updateThesisSQL, [status, id], function (err) {
-      if (err) {
-        console.log("Error in SQLDatabase:", err.message);
-        reject({error: err.message});
-        return;
-      }
-      if (this.changes === 0) {
-        reject({ error: "No rows updated. Thesis ID not found." });
-        return;
-      }
-      resolve("Done");
-    });
   })
 }

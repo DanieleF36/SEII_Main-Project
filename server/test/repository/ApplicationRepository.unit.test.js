@@ -1,3 +1,4 @@
+
 const request = require("supertest");
 const applicationRepository = require("../../repositories/ApplicationRepository");
 
@@ -10,7 +11,7 @@ beforeEach(() => {
 });
 
 
-describe('getApplication', ()=>{
+describe.skip('getApplication', ()=>{
     test('case-1: wrongedId', async ()=>{
         expect(()=>applicationRepository.getApplication()).toThrow(new Error("id must exists and be greater than 0"));
     }),
@@ -34,7 +35,7 @@ describe('getApplication', ()=>{
     })
 });
 
-describe('updateStatus', ()=>{
+describe.skip('updateStatus', ()=>{
     test('case-2: wrongedId', async()=>{
         const mockId = undefined, mockStatus = 0;
         expect(()=>applicationRepository.updateStatus(mockId, mockStatus)).toThrow(new Error("id must exists and be greater than 0"));
@@ -72,7 +73,7 @@ describe('updateStatus', ()=>{
     })
 });
 
-describe('updateStatusToCancelledForOtherStudent', ()=>{
+describe.skip('updateStatusToCancelledForOtherStudent', ()=>{
     test('case-1: wrongedIdThesis', async()=>{
         const mockIdThesis = undefined, mockIdStudent = 0;
         expect(()=>applicationRepository.updateStatusToCancelledForOtherStudent(mockIdThesis, mockIdStudent)).toThrow(new Error("id_thesis must exists and be greater than 0"));

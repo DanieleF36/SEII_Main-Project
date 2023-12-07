@@ -49,10 +49,10 @@ if (args.length === 0) {
             console.log("Testing database is loaded")
             break;
         case '-s':
-            console.log('Switching state for environment');
+            console.log(`Switching state for environment ${process.env.INUSE_DATABASE}`);
 
             if(process.env.INUSE_DATABASE === "dbtest.sqlite"){
-                data = `INUSE_DATABASE="db.sqlite";NODE_ENV="nottest"`
+                data = `INUSE_DATABASE="db.sqlite"\nNODE_ENV="nottest"`
                 fs.writeFile('variable.env', data, (err) => {
                     if (err) {
                       console.error(err);
@@ -62,7 +62,7 @@ if (args.length === 0) {
                   });
             }
             else if(process.env.INUSE_DATABASE === "db.sqlite"){
-                data = `INUSE_DATABASE="dbtest.sqlite";NODE_ENV="test"`
+                data = `INUSE_DATABASE="dbtest.sqlite"\nNODE_ENV="test"`
                 fs.writeFile('variable.env', data, (err) => {
                     if (err) {
                     console.error(err);

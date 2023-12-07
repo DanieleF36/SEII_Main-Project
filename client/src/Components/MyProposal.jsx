@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, NavLink, Accordion, Badge, Card, Modal } from 'react-bootstrap';
+import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, NavLink, Accordion, Badge, Card, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 
 function MyProposal(props) {
 
   const [dirty, setDirty] = useState(true);
-  // const [id_professor, setId_professor] = useState(1);
   const [archived, setArchived] = useState(1);
   const [selectedProposal, setSelectedProposal] = useState('');
   const [proposals, setProposals] = useState([/*{ id: 0, title: 'AI system research', supervisor: 'Mario Rossi', cosupervisor: ['123456@polito.it', '654321@polito.it'], expiration_date: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creation_date: '10/1/2023', status: '1' }*/]);
-  const [proposalsArchiv, setProposalsArchiv] = useState([{ id: 1, title: 'Prova', supervisor: 'Luca Neri', cosupervisor: ['123456@polito.it', '654321@polito.it'], expiration_date: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creation_date: '10/1/2023', status: '0' }]);
   const [showModal, setShowModal] = useState(false);
+  const [showModal2, setShowModal2] = useState(false);
 
 
   const handleModify = (proposal) => {
@@ -20,16 +21,36 @@ function MyProposal(props) {
     setShowModal(true);
   };
 
+  const handleStatus = (proposal) => {
+    /*API.updateStatus(proposal.id, proposal)
+         .then(() => {
+           setDirty(true);
+           toast.success('Thesis Proposal successfully archived');
+         })
+         .catch((error) => {
+           toast.error(error.message || 'An error occurred while updating the proposal');
+         });*/
+    setShowModal2(false);
+  };
+
   const handleSwitch = () => {
-    if (archived === 0)
+    if (archived === 0){
       setArchived(1);
-    else
+      setDirty(true);
+    }else{
       setArchived(0);
+      setDirty(true);
+    }
 
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
+    setSelectedProposal('');
+  };
+
+  const handleCloseModal2 = () => {
+    setShowModal2(false);
     setSelectedProposal('');
   };
   
@@ -42,13 +63,12 @@ function MyProposal(props) {
     setFilt_cosup(cosup_email.filter((item) =>
       item.toLowerCase().includes(searchTerm.toLowerCase()))
     );
-    //proposals.map(e=>console.log(e));
   }, [searchTerm]);
 
    
     useEffect(() => {
       if(props.user.role === 'teacher'){
-        API.browseProposal()
+        API.browseProposal(archived)
             .then((proposals) => {
                 setProposals(proposals);
                 setDirty(false);
@@ -147,10 +167,8 @@ function MyProposal(props) {
   };
 
   return (
-    archived === 1 ? <>
-      <BootstrapSwitchButton onChange={() => handleSwitch()} checked={archived === 1} size="sm" onlabel='published' offlabel='archived' width={100} onstyle="success" offstyle="warning" style="border" />
-
-      <div style={{ marginTop: '10px' }}>
+     <>
+      <BootstrapSwitchButton onChange={() => handleSwitch()} checked={archived === 1} size="sm" onlabel='published' offlabel='archived' width={100} onstyle="success" offstyle="warning" style="border" />      <div style={{ marginTop: '10px' }}>
         {proposals.map((proposal) => (
           <Card key={proposal.id} style={{ marginBottom: '10px' }}>
             <Toaster position="top-center" reverseOrder={false} />
@@ -203,10 +221,13 @@ function MyProposal(props) {
                   <strong>Creation Date:</strong> {proposal.creation_date}
                   <br />
                   <br />
-                  <Button variant="warning" onClick={() => handleModify(proposal)}><img src="./pencil-fill.svg"
-                            alt="Logo"
-                           /></Button>
-                  
+                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Modify</Tooltip>  }><Button variant="warning mx-2" onClick={() => handleModify(proposal)}><i className="bi bi-pencil-fill" style={{color:'white'}}/></Button></OverlayTrigger>
+                  {proposal.status==1 ?
+                    (<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Archive</Tooltip>  }><Button variant="secondary mx-2" onClick={() => setShowModal2(true)}><i className="bi bi-archive"/></Button></OverlayTrigger>)
+                   :
+                    (<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Active</Tooltip>  }><Button variant="success mx-2" onClick={() => setShowModal2(true)}><i className="bi bi-archive"/></Button></OverlayTrigger>)
+                  }
+                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Copy</Tooltip>  }><Button variant="primary mx-2" onClick={() => props.handleCopy(proposal)} ><i className="bi bi-clipboard-plus-fill"/></Button></OverlayTrigger>
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
@@ -389,68 +410,22 @@ function MyProposal(props) {
           </Button>
         </Modal.Footer>
       </Modal>
-
-    </> : <>
-      <BootstrapSwitchButton onChange={() => handleSwitch()} checked={archived === 1} size="sm" onlabel='published' offlabel='archived' width={100} onstyle="success" offstyle="warning" style="border" />
-      <div style={{ marginTop: '10px' }}>
-        {proposalsArchiv.map((proposal) => (
-          <Card key={proposal.id} style={{ marginBottom: '10px' }}>
-            <Accordion>
-              <Accordion.Item eventKey={proposal.id}>
-                <Accordion.Header>
-                  <Container fluid>
-                    <Row className="d-md-flex justify-content-center align-items-center">
-                      <Col md='4' sm='4' xs='12'>
-                        <strong>Title:</strong> {proposal.title}
-                      </Col>
-                      <Col md='4' sm='4' xs='12'>
-                        <strong>Expiration date:</strong> {proposal.expiration_date}
-                      </Col>
-                      <Col md='3' sm='3' xs='12'>
-                        <strong>Status:</strong>{' '}
-                        {proposal.status == 1 ? (
-                          <Badge pill bg="success">P</Badge>
-                        ) : (
-                          <Badge pill bg="warning">A</Badge>
-                        )}
-                      </Col>
-                      <Col md='1' sm='1' xs='12' className="text-center">
-                        <img src="./info-circle.svg"
-                          alt="info"
-                          className="img-responsive" />
-
-                      </Col>
-                    </Row>
-                  </Container>
-                </Accordion.Header>
-                <Accordion.Body>
-                  <strong>Keywords:</strong> {proposal.keywords}
-                  <br />
-                  <strong>Type:</strong> {proposal.type}
-                  <br />
-                  <strong>Groups:</strong> {proposal.groups}
-                  <br />
-                  <strong>Description:</strong> {proposal.description}
-                  <br />
-                  <strong>Knowledge:</strong> {proposal.knowledge}
-                  <br />
-                  <strong>Note:</strong> {proposal.note}
-                  <br />
-                  <strong>Level:</strong> {proposal.level === 1 ? 'Master' : 'Bachelor'}
-                  <br />
-                  <strong>CdS:</strong> {proposal.cds}
-                  <br />
-                  <strong>Creation Date:</strong> {proposal.creation_date}
-                  <br />
-                  <br />
-                </Accordion.Body>
-              </Accordion.Item>
-            </Accordion>
-          </Card>
-        ))}
-      </div>
-    </>
-  );
+      <Modal show={showModal2} onHide={handleCloseModal2}>
+      <Modal.Header closeButton>
+          <Modal.Title>Are you sure to archive this proposal?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          
+          <Button variant="success mx-2" onClick={handleStatus}>Yes</Button>
+          <Button variant="danger" onClick={handleCloseModal2}>No</Button>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal2}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+    </> 
+                 
+  )
 }
 
 export default MyProposal;
