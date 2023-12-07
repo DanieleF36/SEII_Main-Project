@@ -15,27 +15,32 @@ function MyProposal(props) {
   const [showModal2, setShowModal2] = useState(false);
 
 
+
   const handleModify = (proposal) => {
     setSelectedProposal( {...proposal} );
     setShowModal(true);
   };
 
   const handleStatus = (proposal) => {
-    /*API.updateStatus(proposal.id, proposal)
+    setShowModal2(false);
+  
+    API.updateProposal(proposal.id, proposal, proposal.status)
          .then(() => {
            setDirty(true);
-           toast.success('Thesis Proposal successfully archived');
+            toast.success('Thesis Proposal successfully archived');
          })
          .catch((error) => {
            toast.error(error.message || 'An error occurred while updating the proposal');
-         });*/
-    setShowModal2(false);
+         });
+    
   };
 
   const handleSwitch = () => {
     if (archived === 0){
+      
       setArchived(1);
       setDirty(true);
+      
     }else{
       setArchived(0);
       setDirty(true);
@@ -45,10 +50,13 @@ function MyProposal(props) {
 
   const handleCloseModal = () => {
     setShowModal(false);
+
     setSelectedProposal('');
+    
   };
   const handleCloseModal2 = () => {
     setShowModal2(false);
+
     setSelectedProposal('');
   };
   
@@ -247,9 +255,9 @@ function MyProposal(props) {
                   <br />
                   <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Modify</Tooltip>  }><Button variant="warning mx-2" onClick={() => handleModify(proposal)}><i className="bi bi-pencil-fill" style={{color:'white'}}/></Button></OverlayTrigger>
                   {proposal.status==1 ?
-                    (<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Archive</Tooltip>  }><Button variant="secondary mx-2" onClick={() => setShowModal2(true)}><i className="bi bi-archive"/></Button></OverlayTrigger>)
-                   :
-                    (<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Active</Tooltip>  }><Button variant="success mx-2" onClick={() => setShowModal2(true)}><i className="bi bi-archive"/></Button></OverlayTrigger>)
+                    (<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Archive</Tooltip>  }><Button variant="secondary mx-2" onClick={() => {setShowModal2(true); setSelectedProposal(proposal);}}><i className="bi bi-archive"/></Button></OverlayTrigger>)
+                   : ''
+                    /*(<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Active</Tooltip>  }><Button variant="success mx-2" onClick={() => {setShowModal2(true); setSelectedProposal(proposal);}}><i className="bi bi-archive"/></Button></OverlayTrigger>)*/
                   }
                   <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Copy</Tooltip>  }><Button variant="primary mx-2" onClick={() => props.handleCopy(proposal)} ><i className="bi bi-clipboard-plus-fill"/></Button></OverlayTrigger>
                   
@@ -434,13 +442,14 @@ function MyProposal(props) {
           </Button>
         </Modal.Footer>
       </Modal>
-      <Modal show={showModal2} onHide={handleCloseModal2}>
+
+      <Modal show={showModal2} onHide={handleCloseModal2} backdrop="static"
+        keyboard={false}>
       <Modal.Header closeButton>
           <Modal.Title>Are you sure to archive this proposal?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          
-          <Button variant="success mx-2" onClick={handleStatus}>Yes</Button>
+          <Button variant="success mx-2" onClick={() => handleStatus(selectedProposal)}>Yes</Button>
           <Button variant="danger" onClick={handleCloseModal2}>No</Button>
         </Modal.Body>
         <Modal.Footer>

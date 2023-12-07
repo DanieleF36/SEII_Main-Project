@@ -317,7 +317,7 @@ exports.updateThesis = async function updateThesis(req, res) {
     return res.status(400).json({ error: "expiration date is missing or not valid" });
   }
 
-  if (req.body.status === undefined || req.body.status !== 1) {
+  if (req.body.status === undefined || (req.body.status !== 1 && req.body.status !==0)) {
     return res.status(400).json({ error: "status value not recognized or allowed" });
   }
 
