@@ -4,7 +4,8 @@ const coSupervisorThesisRepository = require('../../repositories/CoSupervisorThe
 const coSupervisorRepository = require('../../repositories/CoSupervisorRepository.js')
 const teacherRepository = require('../../repositories/TeacherRepository.js')
 const dayjs = require('dayjs')
-describe.only('addThesis unit tests', () => {
+
+describe('addThesis unit tests', () => {
     let thesis
     beforeAll(() => {
         thesis = {
@@ -81,6 +82,90 @@ describe.only('addThesis unit tests', () => {
             expect(error.status).toBe(500)
             expect(error.error).toBeDefined()
         }
+    })
+
+    test('U4: adding a thesis but an error in coSupervisorThesis repository occurs', async () => {
+        jest.mock('dayjs', () => {
+            const originalDayjs = jest.requireActual('dayjs'); // Keep the original dayjs functions
+
+            return jest.fn((dateString) => ({
+                format: jest.fn(() => originalDayjs(dateString).format('YYYY-MM-DD')),
+                toString: jest.fn(() => originalDayjs(dateString).toString()),
+            }));
+        });
+
+        jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {
+            name: 'gigi',
+            surname: 'verdi',
+            email: 'gigiverdi@mail.com'
+        }})
+        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return {error: 'error'}})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
+
+        try{
+            await service.addThesis(thesis)
+        }
+        catch(error) {
+            expect(error.error).toBe('error')
+        }
+    })
+
+    test('U5: adding a thesis but an another error in coSupervisorThesis repository occurs', async () => {
+        jest.mock('dayjs', () => {
+            const originalDayjs = jest.requireActual('dayjs'); // Keep the original dayjs functions
+
+            return jest.fn((dateString) => ({
+                format: jest.fn(() => originalDayjs(dateString).format('YYYY-MM-DD')),
+                toString: jest.fn(() => originalDayjs(dateString).toString()),
+            }));
+        });
+
+        jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {
+            name: 'gigi',
+            surname: 'verdi',
+            email: 'gigiverdi@mail.com'
+        }})
+        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return {error: 'error'}})
+
+        try{
+            await service.addThesis(thesis)
+        }
+        catch(error) {
+            expect(error.error).toBe("error")
+        }        
+    })
+
+    test('U5: adding a thesis with an internal cosupervisor and an external one', async () => {
+        thesis.cosupervisor = ['gigiverdi@mail.com', 'gigirossi@mail.com']
+        jest.mock('dayjs', () => {
+            const originalDayjs = jest.requireActual('dayjs'); // Keep the original dayjs functions
+
+            return jest.fn((dateString) => ({
+                format: jest.fn(() => originalDayjs(dateString).format('YYYY-MM-DD')),
+                toString: jest.fn(() => originalDayjs(dateString).toString()),
+            }));
+        });
+
+        jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {
+            name: 'gigi',
+            surname: 'verdi',
+            email: 'gigiverdi@mail.com'
+        }})
+        jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {}})
+        jest.spyOn(teacherRepository, 'getByEmail').mockImplementationOnce(() => { return{
+            name: 'gigi',
+            surname: 'rossi',
+            email: 'gigirossi@mail.com'
+        }})
+        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({...thesis, id: 1})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
+
+        await service.addThesis(thesis)
+        expect(res).toHaveBeenCalledWith(...Object.values(res.mock.calls[0]))    
     })
 })
 
