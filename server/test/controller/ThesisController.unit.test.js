@@ -257,8 +257,16 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toHaveBeenCalledWith({nPage:0, thesis:[{success: 'success', supervisor:"name surname", coSupervisors:["name surname"]}]});
   }),
-  test('case5: role teacher: error', async()=>{
+  test('case4_BIS: role teacher: status != 0 or 1', async()=>{
     mockReq.user.role = 'teacher';
+    mockReq.query = {status: 3}
+    await controller.searchThesis(mockReq, mockRes);
+    await Promise.resolve();
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toHaveBeenCalledWith({error: 'status not valid'});
+  }),
+  test('case5: role teacher: error', async()=>{
+    mockReq.query.status = 0;
     const spy = jest.spyOn(require('../../services/ThesisService.js'), 'getActiveBySupervisor').mockRejectedValue({error: 'error'});
     await controller.searchThesis(mockReq, mockRes);
     await Promise.resolve();
@@ -267,7 +275,6 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
     expect(mockRes.json).toHaveBeenCalledWith({error: 'error'});
   }),
   test('case6: role teacher: success', async()=>{
-    mockReq.user.role = 'teacher';
     const spy = jest.spyOn(require('../../services/ThesisService.js'), 'getActiveBySupervisor').mockResolvedValue({success: 'success'});
     await controller.searchThesis(mockReq, mockRes);
     await Promise.resolve();

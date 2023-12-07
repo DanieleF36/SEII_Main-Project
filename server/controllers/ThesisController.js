@@ -164,7 +164,7 @@ exports.searchThesis = function searchThesis(req, res, validate) {
   }else if(req.user.role == 'teacher'){
     const queryParam= req.query.status;
     if(queryParam!=0 && queryParam!=1){
-      res.status(500).json("status error");
+      res.status(400).json({error: "status not valid"});
 
     }
     thesisService.getActiveBySupervisor(req.user.id, queryParam)
