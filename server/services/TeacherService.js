@@ -62,10 +62,10 @@ exports.acceptApplication = async function (status, teacherID, applicationID) {
 async function _sendRejectedEmail(teacherID, id_thesis, id_student) {
     const [teacherEmail, studentEmail, thesisTitle] = await Promise.all([
         teacherRepo.getById(teacherID).map(e=>e.email), 
-        studentRepo.getStudentEmail(id_student), 
+        studentRepo.getById(id_student).map(e=>e.email), 
         thesisRepository.getById(id_thesis).title]);
     await transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to rejected.`);
-
+    return true
 };
 
 // Send a notification to all the students with the new status cancelled
