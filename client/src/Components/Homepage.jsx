@@ -53,7 +53,11 @@ function Homepage(props) {
     //useEffects
 
     useEffect(() => {
-        items.map(e => { if (e.key === props.active) { e.props.active = true } });
+        items.forEach(e => {
+            if (e.key === props.active) {
+              e.props.active = true;
+            }
+          });
         if(props.user.role === 'student'){
         API.advancedSearchThesis({...filters, page: props.active}).then(res => {
             props.setProposals(res[1]);
