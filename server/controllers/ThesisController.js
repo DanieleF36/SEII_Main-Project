@@ -319,10 +319,11 @@ exports.updateThesis = async function updateThesis(req, res, validate) {
 
   req.body.supervisor = req.user.id
 
-/*
-  if (req.body === undefined) {
-    return res.status(400).json({ error: "body is missing" });
+  if(!req.body.groups.includes(req.user.group)){
+    return res.status(400).json({error:"You are not allowed to add for this group"})
   }
+
+/*
 
   if (req.body.level === undefined || (req.body.level !== "Master" && req.body.level !== "Bachelor")) {
     return res.status(400).json({ error: "level value not recognized" });
