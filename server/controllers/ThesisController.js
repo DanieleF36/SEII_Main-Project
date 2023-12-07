@@ -287,9 +287,7 @@ exports.addThesis = async function addThesis(req, res, validate) {
     return res.status(400).json({error : "Title missing or empty string"})
   }
   */
- console.log(req.body)
   const response = await thesisService.addThesis(req.body)
-  console.log(response)
   if(response.error) {
     return res.status(response.status).json()
   }

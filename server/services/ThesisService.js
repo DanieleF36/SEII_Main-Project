@@ -150,7 +150,7 @@ exports.addThesis = async function (thesis) {
       if (Object.keys(tmp).length === 0) {
         tmp = await teacherRepository.getByEmail(email);
         if (Object.keys(tmp).length === 0) {
-          throw {
+          return {
             status: 400,
             error: `supervisor ${email} not found in COSUPERVISOR`,
           };
