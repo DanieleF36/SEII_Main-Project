@@ -15,7 +15,7 @@ beforeEach(() => {
   };   
 });
 
-describe.skip("INSERT PROPOSAL UNIT TEST", () => {
+describe("INSERT PROPOSAL UNIT TEST", () => {
   const { ValidationError } = require('express-json-validator-middleware');
   
   let mockReq
@@ -201,7 +201,7 @@ describe.skip("INSERT PROPOSAL UNIT TEST", () => {
   });
 });
 
-describe.skip('SEARCH PROPOSAL UNIT TEST', () => {
+describe('SEARCH PROPOSAL UNIT TEST', () => {
   //Magari questo può essere spostato fuori ma deve essere resettato tra describe e non tra test
   mockReq = { 
     body: undefined,
@@ -284,7 +284,7 @@ describe.skip('SEARCH PROPOSAL UNIT TEST', () => {
   })
 })
 
-describe.skip("UPDATE PROPOSAL UNIT TEST", () => {
+describe("UPDATE PROPOSAL UNIT TEST", () => {
   const { ValidationError } = require('express-json-validator-middleware');
   
   let mockReq
