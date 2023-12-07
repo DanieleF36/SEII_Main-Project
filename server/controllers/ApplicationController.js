@@ -5,6 +5,7 @@ const studentService = require('../services/StudentService')
 const studentRepository = require("../repositories/StudentRepository");
 const teacherRepository = require("../repositories/TeacherRepository");
 const formidable = require('formidable');
+const applicationRepository = require('../repositories/ApplicationRepository')
 /**
  * wrapper function for showing the list of application for the teacher or for the student based on the role
  * @param {*} req in params.id_professor or params.id_student is stored the id
@@ -120,59 +121,43 @@ exports.acceptApplication = function acceptApplication(req, res) {
  *   }
  */
 exports.applyForProposal = async function (req, res) {
-    if(req.user.role!=='student'){
-      res.status(401).json({error:"You can not access to this route"})
-      return;
-    }
-    if (!req.body) {
-      return res.status(400).json({ error: "Body is missing" });
-    }
-    const checkApp = await studentRepository.searchApplicationByStudentId(req.user.id);
-    if(checkApp == true) {
-      return res.status(400).json({error : "You already have an application for a thesis"});
-    }
-    const supervisorId = await teacherRepository.getSupervisorIdByThesisId(req.params.id_thesis);
-    if(supervisorId == undefined) {
-      return res.status(400).json({error : "Supervisor not found"});
-    }
-    if (req.params.id_thesis != null) {
-      //Initializes an object that is used to handle the input file in the multipart/form-data format 
-      const form = new formidable.IncomingForm();
-      //Translate the file into a js object and call it files
-      form.parse(req, function (err, fields, files) {
-        if(err)
-          return res.status(500).json({error:"Internal Error"});
-        if(!files.cv || !files.cv[0])
-          return res.status(400).json({ error: "Missing file" });
-        if(files.cv.length>1){
-            return res.status(400).json({ error: "Multiple Files" });
-          }
-        const file = files.cv[0];
-        applicationsService.addApplication(req.user.id, req.params.id_thesis, file, supervisorId)
+  if (req.user.role !== 'student') {
+    res.status(401).json({ error: "You can not access to this route" })
+    return;
+  }
+  if (!req.body) {
+    return res.status(400).json({ error: "Body is missing" });
+  }
+  const checkApp = await applicationRepository.getActiveByStudentId(req.user.id);
+  if (checkApp != undefined) {
+    return res.status(400).json({ error: "You already have an application for a thesis" });
+  }
+  const supervisorId = await teacherRepository.getIdByThesisId(req.params.id_thesis);
+  if (supervisorId == undefined) {
+    return res.status(400).json({ error: "Supervisor not found" });
+  }
+  if (req.params.id_thesis != null) {
+    //Initializes an object that is used to handle the input file in the multipart/form-data format 
+    const form = new formidable.IncomingForm();
+    //Translate the file into a js object and call it files
+    form.parse(req, function (err, fields, files) {
+      if (err)
+        return res.status(500).json({ error: "Internal Error" });
+      if (!files.cv || !files.cv[0])
+        return res.status(400).json({ error: "Missing file" });
+      if (files.cv.length > 1) {
+        return res.status(400).json({ error: "Multiple Files" });
+      }
+      const file = files.cv[0];
+      applicationsService.addApplication(req.user.id, req.params.id_thesis, file, supervisorId)
         .then(function (response) {
           return res.status(201).json(response);
         })
         .catch(function (response) {
-          if(response.error != "Not found"){
-            return res.status(500).json({error:"Internal Error"});
-          }
-          else
-            return res.status(404).json(response);
+          res.status(500).json(response);
         });
-      })
-    } else {
-      return res.status(400).json({ error: "Missing required parameters" });
-    }
-   
-};
-
-exports.addApplication = function addApplication(req, res, next) {
-    applicationsService
-        .addApplication(req.params.id)
-        .then(function (response) {
-        res.status(201).json(response);
-        })
-      .catch(function (response) {
-        res.status(500).json(response);
-      });
+    })
+  } else {
+    return res.status(400).json({ error: "Missing required parameters" });
+  }
 };
