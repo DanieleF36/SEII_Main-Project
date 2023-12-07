@@ -60,17 +60,20 @@ exports.acceptApplication = async function (status, teacherID, applicationID) {
 
 // Send a notification to the rejected student 
 async function _sendRejectedEmail(teacherID, id_thesis, id_student) {
-    const [teacherEmail, studentEmail, thesisTitle] = await Promise.all([
-        teacherRepo.getById(teacherID).map(e=>e.email), 
-        studentRepo.getById(id_student).map(e=>e.email), 
-        thesisRepository.getById(id_thesis).title]);
+    let [teacherEmail, studentEmail, thesisTitle] = await Promise.all([
+        teacherRepo.getById(teacherID), 
+        studentRepo.getById(id_student), 
+        thesisRepository.getById(id_thesis)]);
+    teacherEmail = teacherEmail.map(e=>e.email)
+    studentEmail = studentEmail.map(e=>e.email)
+    thesisTitle = thesisTitle.title
     await transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to rejected.`);
     return true
 };
 
 // Send a notification to all the students with the new status cancelled
 async function _sendCancelledEmails(teacherID, id_thesis,id_application, id_student)  {
-    const [teacherEmail, thesisTitle, studentEmailCancelledArray] = await Promise.all([
+    let [teacherEmail, thesisTitle, studentEmailCancelledArray] = await Promise.all([
         teacherRepo.getById(teacherID),
         thesisRepository.getById(id_thesis),
         studentRepo.getStudentEmailCancelled(id_student,id_application, id_thesis)]);
@@ -86,6 +89,7 @@ async function _sendCancelledEmails(teacherID, id_thesis,id_application, id_stud
     // Wait for all email promises to resolve
     return Promise.all(emailPromises);
       */
+    return true
 };
   
   // Send a notification to the student accepted
