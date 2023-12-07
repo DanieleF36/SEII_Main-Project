@@ -1,5 +1,6 @@
 const request = require("supertest");
 const teacherService = require("../../services/TeacherService");
+const applicationRepository = require('../../repositories/ApplicationRepository')
 
 beforeEach(() => {
   jest.clearAllMocks();
@@ -334,5 +335,43 @@ describe('acceptApplication Service',()=>{
         catch(error) {
             expect(error).toStrictEqual({error: "error"});
         }
+    })
+})
+
+describe('browseApplicationProfessor unit tests', () => {
+    const applications = [
+        {
+            id_student: 1,
+            id_application: 1,
+            id_thesis: 1,
+            title: 'title',
+            name: 'name',
+            surname: 'surname',
+            data: '2024-10-10',
+            path: '/path/to/the/file',
+            status: 1
+        }
+    ]
+    const id_professor = 1
+    test('U1: get all the applications by id', async () => {
+        jest.spyOn(applicationRepository, 'getByTeacherId').mockImplementation(() => {
+            return applications
+        })
+        const res = await teacherService.browseApplicationProfessor(id_professor)
+        expect(res).toBe(applications)
+    })
+    test('U2: get all the applications but there are none', async () => {
+        jest.spyOn(applicationRepository, 'getByTeacherId').mockImplementation(() => {
+            return []
+        })
+        const res = await teacherService.browseApplicationProfessor(id_professor)
+        expect(res.length).toBe(0)
+    })
+    test('U3: get all the applications but an error occurs', async () => {
+        jest.spyOn(applicationRepository, 'getByTeacherId').mockImplementation(() => {
+            return {error: 'error'}
+        })
+        const res = await teacherService.browseApplicationProfessor(id_professor)
+        expect(res.error).toBe('error')
     })
 })
