@@ -19,7 +19,7 @@ const applicationRepository = require("../repositories/ApplicationRepository");
  * in case of error
  *  object {error: "string"}
  **/
-exports.addApplication = function (studentId, thesisId, cv) {
+exports.addApplication = function (studentId, thesisId, cv, supervisorId) {
     return new Promise((resolve, reject) => {
       //At the begginning the file is saved in tmp 
       let oldPath = cv.filepath;
@@ -31,7 +31,7 @@ exports.addApplication = function (studentId, thesisId, cv) {
         } 
         else {
           try {
-            let res = await applicationRepository.addApplication(studentId, thesisId, newPath);
+            let res = await applicationRepository.addApplication(studentId, thesisId, newPath, supervisorId);
             resolve(res);
           } catch (error) {
             reject({ error: err.message });

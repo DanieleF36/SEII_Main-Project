@@ -162,7 +162,12 @@ exports.searchThesis = function searchThesis(req, res, validate) {
       res.status(500).json(e)
     });
   }else if(req.user.role == 'teacher'){
-    thesisService.getActiveBySupervisor(req.user.id)
+    const queryParam= req.query.status;
+    if(queryParam!=0 && queryParam!=1){
+      res.status(500).json("status error");
+
+    }
+    thesisService.getActiveBySupervisor(req.user.id, queryParam)
     .then(response=>{
       res.status(200).json({ nPage: 1, thesis: response })
     })
