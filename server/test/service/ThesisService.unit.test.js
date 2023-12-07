@@ -24,17 +24,18 @@ describe('addThesis unit tests', () => {
             status: 1
         }
     })
+
+    jest.mock('dayjs', () => {
+        const originalDayjs = jest.requireActual('dayjs'); // Keep the original dayjs functions
+
+        return jest.fn((dateString) => ({
+            format: jest.fn(() => originalDayjs(dateString).format('YYYY-MM-DD')),
+            toString: jest.fn(() => originalDayjs(dateString).toString()),
+        }));
+    });
+
     test('U1: adding a thesis with no cosupervisor', async () => {
         thesis.cosupervisor = [""]
-
-        jest.mock('dayjs', () => {
-            const originalDayjs = jest.requireActual('dayjs'); // Keep the original dayjs functions
-
-            return jest.fn((dateString) => ({
-                format: jest.fn(() => originalDayjs(dateString).format('YYYY-MM-DD')),
-                toString: jest.fn(() => originalDayjs(dateString).toString()),
-            }));
-        });
 
         const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({...thesis, id: 1})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
@@ -62,15 +63,6 @@ describe('addThesis unit tests', () => {
     test('U3: adding a thesis but an error in repository occurs', async () => {
         thesis.cosupervisor = [""]
 
-        jest.mock('dayjs', () => {
-            const originalDayjs = jest.requireActual('dayjs'); // Keep the original dayjs functions
-
-            return jest.fn((dateString) => ({
-                format: jest.fn(() => originalDayjs(dateString).format('YYYY-MM-DD')),
-                toString: jest.fn(() => originalDayjs(dateString).toString()),
-            }));
-        });
-
         const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
@@ -85,15 +77,6 @@ describe('addThesis unit tests', () => {
     })
 
     test('U4: adding a thesis but an error in coSupervisorThesis repository occurs', async () => {
-        jest.mock('dayjs', () => {
-            const originalDayjs = jest.requireActual('dayjs'); // Keep the original dayjs functions
-
-            return jest.fn((dateString) => ({
-                format: jest.fn(() => originalDayjs(dateString).format('YYYY-MM-DD')),
-                toString: jest.fn(() => originalDayjs(dateString).toString()),
-            }));
-        });
-
         jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {
             name: 'gigi',
             surname: 'verdi',
@@ -112,15 +95,6 @@ describe('addThesis unit tests', () => {
     })
 
     test('U5: adding a thesis but an another error in coSupervisorThesis repository occurs', async () => {
-        jest.mock('dayjs', () => {
-            const originalDayjs = jest.requireActual('dayjs'); // Keep the original dayjs functions
-
-            return jest.fn((dateString) => ({
-                format: jest.fn(() => originalDayjs(dateString).format('YYYY-MM-DD')),
-                toString: jest.fn(() => originalDayjs(dateString).toString()),
-            }));
-        });
-
         jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {
             name: 'gigi',
             surname: 'verdi',
@@ -138,16 +112,8 @@ describe('addThesis unit tests', () => {
         }        
     })
 
-    test('U5: adding a thesis with an internal cosupervisor and an external one', async () => {
+    test('U6: adding a thesis with an internal cosupervisor and an external one', async () => {
         thesis.cosupervisor = ['gigiverdi@mail.com', 'gigirossi@mail.com']
-        jest.mock('dayjs', () => {
-            const originalDayjs = jest.requireActual('dayjs'); // Keep the original dayjs functions
-
-            return jest.fn((dateString) => ({
-                format: jest.fn(() => originalDayjs(dateString).format('YYYY-MM-DD')),
-                toString: jest.fn(() => originalDayjs(dateString).toString()),
-            }));
-        });
 
         jest.spyOn(coSupervisorRepository, 'getByEmail').mockImplementationOnce(() => {return {
             name: 'gigi',
