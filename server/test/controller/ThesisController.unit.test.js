@@ -250,12 +250,12 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'advancedResearchThesis').mockResolvedValue([[{success: 'success', supervisor:{name:"name", surname:"surname"}}], 0]);
+    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'advancedResearchThesis').mockResolvedValue([[{success: 'success', supervisor:{name:"name", surname:"surname"}, coSupervisors:[{name:"name", surname:"surname"}]}], 0]);
     await controller.searchThesis(mockReq, mockRes, mockValidate);
     await Promise.resolve();
     expect(spy).toHaveBeenCalledWith(1, "titleD", undefined, undefined,undefined,undefined,undefined,undefined,undefined,undefined,"ingInf",undefined,"LM");
     expect(mockRes.status).toHaveBeenCalledWith(200);
-    expect(mockRes.json).toHaveBeenCalledWith({nPage:0, thesis:[{success: 'success', supervisor:"name surname"}]});
+    expect(mockRes.json).toHaveBeenCalledWith({nPage:0, thesis:[{success: 'success', supervisor:"name surname", coSupervisors:["name surname"]}]});
   }),
   test('case5: role teacher: error', async()=>{
     mockReq.user.role = 'teacher';
