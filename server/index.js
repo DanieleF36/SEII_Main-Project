@@ -97,6 +97,12 @@ app.get("/metadata", (req, res)=>res.type("application/xml").status(200).send(me
 
 app.get("/session/current", isLoggedIn, (req, res)=>{let u = {name: req.user.name, surname: req.user.surname, id: req.user.id, email:req.user.nameID, cds: req.user.cds, role: req.user.role}; res.status(200).send(u)})
 
+app.get('/quit', function(req,res) {
+  console.log('closing..');
+  server.close();
+  res.status(200).json({message: 'ended'})
+});
+
 app.use(function(err, req, res, next) {
   if (err instanceof ValidationError) {
       res.status(400).send({error: err.requestProperty});
@@ -104,7 +110,7 @@ app.use(function(err, req, res, next) {
 });
 
 const PORT = 3001;
-app.listen(PORT, () =>
+const server = app.listen(PORT, () =>
   console.log(`Server running on http://localhost:${PORT}`)
 );
 module.exports = {app, login_as};
