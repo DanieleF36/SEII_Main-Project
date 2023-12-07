@@ -90,11 +90,15 @@ async function _sendCancelledEmails(teacherID, id_thesis,id_application, id_stud
   
   // Send a notification to the student accepted
 async function _sendAcceptedEmail(teacherID, id_thesis, id_student){
-    const [teacherEmail, studentEmail, thesisTitle] = await Promise.all([
-        teacherRepo.getById(teacherID).map(e=>e.email),
-        studentRepo.getStudentEmail(id_student), 
-        thesisRepository.getById(id_thesis).title])
-    await transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to accepted.`)      
+    let [teacherEmail, studentEmail, thesisTitle] = await Promise.all([
+        teacherRepo.getById(teacherID),
+        studentRepo.getById(id_student), 
+        thesisRepository.getById(id_thesis)]);
+    teacherEmail = teacherEmail.map(e=>e.email);
+    studentEmail = studentEmail.map(e=>e.email);
+    thesisTitle = thesisTitle.title;
+    await transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to accepted.`)
+    return true;      
 };
 
 /**
