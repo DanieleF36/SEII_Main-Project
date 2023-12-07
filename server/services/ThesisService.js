@@ -5,7 +5,7 @@ const thesisRepository = require("../repositories/ThesisRepository");
 const coSupervisorThesisRepository = require("../repositories/CoSupervisorThesisRepository");
 const teacherRepository = require("../repositories/TeacherRepository");
 const nItem = 10; //number of item per page
-
+const coSupervisorRepository = require('../repositories/CoSupervisorRepository')
 /**
  * Return a list of thesis that respect all the parameters including name, surname and company for co-supervisor and the whole structure of supervisor
  *
@@ -102,8 +102,8 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   return [res, npage];
 };
 
-exports.getActiveBySupervisor = async function(supervisorId){
-  return await thesisRepository.getActiveBySupervisor(supervisorId);
+exports.getActiveBySupervisor = async function(supervisorId,queryParam){
+  return await thesisRepository.getActiveBySupervisor(supervisorId, queryParam);
 }
 
 /**
@@ -150,7 +150,7 @@ exports.addThesis = async function (thesis) {
       if (Object.keys(tmp).length === 0) {
         tmp = await teacherRepository.getByEmail(email);
         if (Object.keys(tmp).length === 0) {
-          throw {
+          return {
             status: 400,
             error: `supervisor ${email} not found in COSUPERVISOR`,
           };
@@ -184,8 +184,8 @@ exports.addThesis = async function (thesis) {
     thesis.creation_date,
     thesis.status
   )
-  if (thesis_res.err_message) {
-    throw { status: 500, error: thesis_res.err };
+  if (thesis_res.error) {
+    throw { status: 500, error: thesis_res.error };
   }
 
   let result

@@ -22,6 +22,7 @@ const applicationRepository = require("../repositories/ApplicationRepository");
  *     }
  *   }
  */
+//? TO BE DELETED
 exports.applyForProposal = async function (req, res) {
   if (req.user.role !== 'student') {
     res.status(401).json({ error: "You can not access to this route" })
@@ -85,6 +86,7 @@ exports.applyForProposal = async function (req, res) {
  *  application_data: string,
  * }
  */
+//? TO BE MOVED TO APPLICATION CONTROLLER
 exports.browserApplicationStudent = function (req, res) {
   if(req.user.role!=='student'){
     res.status(401).json({error:"You can not access to this route"})

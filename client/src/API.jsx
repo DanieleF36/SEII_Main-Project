@@ -248,8 +248,8 @@ async function browserApplicationStudent(id_student) {
   }
 }
 
-async function browseProposal() {
-  const res = await fetch(URL + '/thesis', {
+async function browseProposal(status) { 
+  const res = await fetch(URL + `/thesis?status=${status}`, {
     credentials:'include'
   });
   if(res.status == 200){

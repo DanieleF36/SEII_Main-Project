@@ -467,4 +467,15 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toBeDefined()
   });
+
+  test("U15: New thesis proposal is not inserted due to not being part of that group", async () => {
+    mockReq.body.groups = ['ingIngGroup']
+    mockValidate.mockImplementation((req, res, callback) => {
+      callback(null);
+    });
+    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockImplementation(() => {return {error: 'error', status: 500} });
+    await controller.updateThesis(mockReq, mockRes, mockValidate)
+    expect(mockRes.status).toHaveBeenCalledWith(400);
+    expect(mockRes.json).toBeDefined()
+  });
 });

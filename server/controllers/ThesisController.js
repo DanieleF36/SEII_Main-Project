@@ -162,7 +162,12 @@ exports.searchThesis = function searchThesis(req, res, validate) {
       res.status(500).json(e)
     });
   }else if(req.user.role == 'teacher'){
-    thesisService.getActiveBySupervisor(req.user.id)
+    const queryParam= req.query.status;
+    if(queryParam!=0 && queryParam!=1){
+      res.status(500).json("status error");
+
+    }
+    thesisService.getActiveBySupervisor(req.user.id, queryParam)
     .then(response=>{
       res.status(200).json({ nPage: 1, thesis: response })
     })
@@ -288,7 +293,6 @@ exports.addThesis = async function addThesis(req, res, validate) {
   }
   */
   const response = await thesisService.addThesis(req.body)
-  console.log(response)
   if(response.error) {
     return res.status(response.status).json()
   }
@@ -319,10 +323,11 @@ exports.updateThesis = async function updateThesis(req, res, validate) {
 
   req.body.supervisor = req.user.id
 
-/*
-  if (req.body === undefined) {
-    return res.status(400).json({ error: "body is missing" });
+  if(!req.body.groups.includes(req.user.group)){
+    return res.status(400).json({error:"You are not allowed to add for this group"})
   }
+
+/*
 
   if (req.body.level === undefined || (req.body.level !== "Master" && req.body.level !== "Bachelor")) {
     return res.status(400).json({ error: "level value not recognized" });
