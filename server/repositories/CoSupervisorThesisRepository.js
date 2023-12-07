@@ -13,7 +13,7 @@ const db = require('./db')
  * @returns true
  */
 exports.addCoSupervisorThesis = (id_thesis, id_theacher, id_cosupervisor) => {
-    if(!id_thesis || id_thesis<0 || !id_theacher || id_theacher<0 || !id_cosupervisor || id_cosupervisor<0)
+    if(id_thesis<0 || id_theacher<0 || id_cosupervisor<0)
         throw {error: "id must be greather than 0"}
     const sql = "INSERT INTO CoSupervisorThesis(id_thesis, id_teacher, id_cosupervisor) VALUES (?, ?, ?)"
     return new Promise((resolve, reject) => {
