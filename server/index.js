@@ -20,7 +20,6 @@ validator.ajv.addSchema(thesisSchema);
 addFormats(validator.ajv);
 const validate = validator.validate;
 /* end json schema validator*/
-
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.static("public"));
@@ -99,7 +98,7 @@ app.get("/session/current", isLoggedIn, (req, res)=>{let u = {name: req.user.nam
 
 app.use(function(err, req, res, next) {
   if (err instanceof ValidationError) {
-      res.status(400).send({error: err.requestProperty});
+      res.status(400).send({error: err.validationErrors});
   } else next(err);
 });
 
