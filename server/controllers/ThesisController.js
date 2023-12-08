@@ -85,7 +85,7 @@ exports.searchThesis = function searchThesis(req, res, validate) {
  * @param {*} next
  * @returns thesis object
  */
-exports.addThesis = async function addThesis(req, res, validate) {
+exports.addThesis = function addThesis(req, res, validate) {
   if(req.user.role !== 'teacher'){
     res.status(401).json({message:"You can not access to this route"});
     return;
@@ -107,18 +107,21 @@ exports.addThesis = async function addThesis(req, res, validate) {
     req.body.level = 0;
 
   req.body.supervisor = req.user.id
-  const response = await thesisService.addThesis(req.body)
-  if(response.message) {
-    res.status(response.status).json();
-    return;
-  }
-  else {
-    res.status(200).json(response);
-    return;
-  }
+  thesisService.addThesis(req.body)
+    .then(response => {
+      if(response.message) {
+        res.status(response.status).json(response.message);
+        return;
+      }
+      else {
+        res.status(200).json(response);
+        return;
+      }
+    })
+    .catch((err) => res.status(500).json(err))
 };
 
-exports.updateThesis = async function updateThesis(req, res, validate) {
+exports.updateThesis = function updateThesis(req, res, validate) {
   if(req.user.role!=='teacher'){
     res.status(401).json({message:"You can not access to this route"})
     return;
@@ -140,12 +143,17 @@ exports.updateThesis = async function updateThesis(req, res, validate) {
   }
 
   // Call the updateThesis method from the thesisService
-  const response = await thesisService.updateThesis(req.body, req.params.id);
-
-  if (response.message) {
-    res.status(response.status).json(response.message);
-  } else {
-    res.status(200).json(response);
-  }
+  thesisService.updateThesis(req.body, req.params.id)
+    .then(response => {
+      if(response.message) {
+        res.status(response.status).json(response.message);
+        return;
+      }
+      else {
+        res.status(200).json(response);
+        return;
+      }
+    })
+    .catch((err) => res.status(500).json(err))
 };
 
