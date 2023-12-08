@@ -366,16 +366,16 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
     { name: 'cds', column: 'cds', operator: op },
     { name: 'creation_date', column: 'creation_date', operator: specific ? '>=' : '=' },
   ];
-  const specific = (arg)=>{return specific ? `%${arg}%` : arg}
+  const cb = (arg)=>{return specific ? `%${arg}%` : arg}
   conditions.forEach((condition) => {
     const value = input[condition.name];
     if (value != null) {
       if (Array.isArray(value) && value.length>0) {
         sql += 'AND ('+condition.column+" "+condition.operator+"? ";
-        params.push((value[0]));
+        params.push(cb(value[0]));
         value.slice(1).forEach((item) => {
           sql += `OR ${condition.column} ${condition.operator} ? `;
-          params.push(specific(item));
+          params.push(cb(item));
         });
         sql+=") ";
       } else {

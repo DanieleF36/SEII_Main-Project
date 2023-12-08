@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.41% </span>
+                <span class="strong">11.29% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/184</span>
+                <span class='fraction'>21/186</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">3.4% </span>
+                <span class="strong">3.75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/147</span>
+                <span class='fraction'>5/133</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">6.12% </span>
+                <span class="strong">6% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>3/49</span>
+                <span class='fraction'>3/50</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.86% </span>
+                <span class="strong">11.79% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>21/177</span>
+                <span class='fraction'>21/178</span>
             </div>
         
             
@@ -536,8 +536,7 @@
 <a name='L471'></a><a href='#L471'>471</a>
 <a name='L472'></a><a href='#L472'>472</a>
 <a name='L473'></a><a href='#L473'>473</a>
-<a name='L474'></a><a href='#L474'>474</a>
-<a name='L475'></a><a href='#L475'>475</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L474'></a><a href='#L474'>474</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -892,21 +891,19 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -915,9 +912,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1056,7 +1054,7 @@ exports.addThesis = <span class="fstat-no" title="function not covered" >(t</spa
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.run(sql, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status], <span class="fstat-no" title="function not covered" >(e</span>rr) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        reject({ error: err.message });</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 &nbsp;
@@ -1082,7 +1080,7 @@ exports.getById = <span class="fstat-no" title="function not covered" >(i</span>
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.get(fetchThesisByIdSQL, [idThesis], <span class="fstat-no" title="function not covered" >(e</span>rr, result) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        reject({ error: err.message });</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 &nbsp;
@@ -1107,7 +1105,7 @@ exports.getActiveBySupervisor = (supervisorId, queryParam) =&gt; {
   return new Promise((resolve, reject) =&gt; {
     db.all(fetchActiveThesesBySupervisorSQL, [queryParam, supervisorId], (err, rows) =&gt; {
       <span class="missing-if-branch" title="if path not taken" >I</span>if (err) {
-<span class="cstat-no" title="statement not covered" >        reject({ error: err.message });</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 &nbsp;
@@ -1152,7 +1150,7 @@ exports.advancedResearch = <span class="fstat-no" title="function not covered" >
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.all(sql, params, <span class="fstat-no" title="function not covered" >(e</span>rr, rows) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        reject({ error: err.message });</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 &nbsp;
@@ -1178,7 +1176,7 @@ exports.getIdByCoSupervisorId = <span class="fstat-no" title="function not cover
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.all(fetchThesisIdsByCoSupervisorIdSQL, [id], <span class="fstat-no" title="function not covered" >(e</span>rr, rows) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        reject({ error: err.message });</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 &nbsp;
@@ -1218,12 +1216,12 @@ exports.updateThesis = <span class="fstat-no" title="function not covered" >(i</
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.run(updateThesisSQL, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status, id], <span class="fstat-no" title="function not covered" >(e</span>rr) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        reject({ error: err.message });</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      if (this.changes === 0) {</span>
-<span class="cstat-no" title="statement not covered" >        reject({ error: 'No rows updated. Thesis ID not found.' });</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error('No rows updated. Thesis ID not found.'));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 &nbsp;
@@ -1248,12 +1246,12 @@ exports.setStatus = <span class="fstat-no" title="function not covered" >(i</spa
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.run(updateThesisSQL, [status, id], <span class="fstat-no" title="function not covered" >(e</span>rr) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        reject({ error: err.message });</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >      if (this.changes === 0) {</span>
-<span class="cstat-no" title="statement not covered" >        reject({ error: 'No rows updated. Thesis ID not found.' });</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error('No rows updated. Thesis ID not found.'));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 &nbsp;
@@ -1281,7 +1279,7 @@ exports.numberOfPage = <span class="fstat-no" title="function not covered" >(s</
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.all(sql, params, <span class="fstat-no" title="function not covered" >(e</span>rr, rows) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        reject({ error: err.message });</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 &nbsp;
@@ -1366,32 +1364,31 @@ function <span class="fstat-no" title="function not covered" >sqlQueryCreator(</
 <span class="cstat-no" title="statement not covered" >  specific = !specific;</span>
   
   let input = <span class="cstat-no" title="statement not covered" >{from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level};</span>
-&nbsp;
+  const op = <span class="cstat-no" title="statement not covered" >specific ? 'LIKE' : '=';</span>
   const conditions = <span class="cstat-no" title="statement not covered" >[</span>
-    { name: 'title', column: 'title', operator: specific ? 'LIKE' : '=' },
-    { name: 'idSupervisors', column: 'supervisor', operator: specific ? 'LIKE' : '=' },
+    { name: 'title', column: 'title', operator: op },
+    { name: 'idSupervisors', column: 'supervisor', operator: op },
     { name: 'idCoSupervisorsThesis', column: 'id', operator: '=' },
-    { name: 'keyword', column: 'keywords', operator: specific ? 'LIKE' : '=' },
-    { name: 'type', column: 'type', operator: specific ? 'LIKE' : '=' },
-    { name: 'groups', column: 'groups', operator: specific ? 'LIKE' : '=' },
-    { name: 'knowledge', column: 'knowledge', operator: specific ? 'LIKE' : '=' },
+    { name: 'keyword', column: 'keywords', operator: op },
+    { name: 'type', column: 'type', operator: op },
+    { name: 'groups', column: 'groups', operator: op },
+    { name: 'knowledge', column: 'knowledge', operator: op },
     { name: 'expiration_date', column: 'expiration_date', operator: specific ? '&lt;=' : '=' },
-    { name: 'cds', column: 'cds', operator: specific ? 'LIKE' : '=' },
+    { name: 'cds', column: 'cds', operator: op },
     { name: 'creation_date', column: 'creation_date', operator: specific ? '&gt;=' : '=' },
   ];
+  const cb = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(a</span>rg)=&gt;{<span class="cstat-no" title="statement not covered" >return specific ? `%${arg}%` : arg}</span></span>
 <span class="cstat-no" title="statement not covered" >  conditions.forEach(<span class="fstat-no" title="function not covered" >(c</span>ondition) =&gt; {</span>
     const value = <span class="cstat-no" title="statement not covered" >input[condition.name];</span>
 <span class="cstat-no" title="statement not covered" >    if (value != null) {</span>
-<span class="cstat-no" title="statement not covered" >      if (Array.isArray(value)) {</span>
-<span class="cstat-no" title="statement not covered" >        if(value.length&gt;0){</span>
-<span class="cstat-no" title="statement not covered" >          sql += 'AND ('+condition.column+" "+condition.operator+"? ";</span>
-<span class="cstat-no" title="statement not covered" >          params.push(specific ? `%${value[0]}%` : value[0]);</span>
-<span class="cstat-no" title="statement not covered" >          value.slice(1).forEach(<span class="fstat-no" title="function not covered" >(i</span>tem) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >            sql += `OR ${condition.column} ${condition.operator} ? `;</span>
-<span class="cstat-no" title="statement not covered" >            params.push(specific ? `%${item}%` : item);</span>
-          });
-<span class="cstat-no" title="statement not covered" >          sql+=") "</span>
-        }
+<span class="cstat-no" title="statement not covered" >      if (Array.isArray(value) &amp;&amp; value.length&gt;0) {</span>
+<span class="cstat-no" title="statement not covered" >        sql += 'AND ('+condition.column+" "+condition.operator+"? ";</span>
+<span class="cstat-no" title="statement not covered" >        params.push(cb(value[0]));</span>
+<span class="cstat-no" title="statement not covered" >        value.slice(1).forEach(<span class="fstat-no" title="function not covered" >(i</span>tem) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >          sql += `OR ${condition.column} ${condition.operator} ? `;</span>
+<span class="cstat-no" title="statement not covered" >          params.push(cb(item));</span>
+        });
+<span class="cstat-no" title="statement not covered" >        sql+=") ";</span>
       } else {
 <span class="cstat-no" title="statement not covered" >        sql += `AND ${condition.column} ${condition.operator} ? `;</span>
 <span class="cstat-no" title="statement not covered" >        params.push(specific ? `%${value}%` : value);</span>
@@ -1492,7 +1489,7 @@ exports.restoreExpiredAccordingToIds = <span class="fstat-no" title="function no
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-08T16:57:17.732Z
+                at 2023-12-08T17:22:45.540Z
             </div>
         <script src="../prettify.js"></script>
         <script>
