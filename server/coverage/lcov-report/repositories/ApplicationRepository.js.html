@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.22% </span>
+                <span class="strong">10.89% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/98</span>
+                <span class='fraction'>11/101</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.7% </span>
+                <span class="strong">11.34% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/94</span>
+                <span class='fraction'>11/97</span>
             </div>
         
             
@@ -356,7 +356,10 @@
 <a name='L291'></a><a href='#L291'>291</a>
 <a name='L292'></a><a href='#L292'>292</a>
 <a name='L293'></a><a href='#L293'>293</a>
-<a name='L294'></a><a href='#L294'>294</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L294'></a><a href='#L294'>294</a>
+<a name='L295'></a><a href='#L295'>295</a>
+<a name='L296'></a><a href='#L296'>296</a>
+<a name='L297'></a><a href='#L297'>297</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -481,6 +484,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -578,6 +582,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -603,6 +608,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -677,7 +683,7 @@ exports.addApplication = <span class="fstat-no" title="function not covered" >(s
     const sql = <span class="cstat-no" title="statement not covered" >'INSERT INTO Application (id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?)';</span>
 <span class="cstat-no" title="statement not covered" >    db.run(sql, [studentId, thesisId, currentDate, cvPath, 0, supervisorId], <span class="fstat-no" title="function not covered" >fu</span>nction (err) {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        return reject({ error: err.message });</span>
+<span class="cstat-no" title="statement not covered" >        return reject(new Error(err.message));</span>
       } else {
         // Access the auto-generated ID if needed.
         const insertedId = <span class="cstat-no" title="statement not covered" >this.lastID;</span>
@@ -731,7 +737,7 @@ exports.getByStudentId = <span class="fstat-no" title="function not covered" >(i
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.all(sqlApplication, [id_student], <span class="fstat-no" title="function not covered" >(e</span>rr, rows) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        return reject({ error: err.message });</span>
+<span class="cstat-no" title="statement not covered" >        return reject(new Error(err.message));</span>
       } else {
         const applications = <span class="cstat-no" title="statement not covered" >rows.map(<span class="fstat-no" title="function not covered" >(a</span>) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
           id_application: a.id_application,
@@ -772,6 +778,7 @@ exports.getById = <span class="fstat-no" title="function not covered" >(i</span>
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.get(fetchThesisStudentSQL, [id], <span class="fstat-no" title="function not covered" >(e</span>rr, row) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
@@ -870,6 +877,7 @@ exports.updateStatus = <span class="fstat-no" title="function not covered" >(i</
 <span class="cstat-no" title="statement not covered" >    db.run(updateApplicationSQL, [status, id], <span class="fstat-no" title="function not covered" >(e</span>rr) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
 <span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 <span class="cstat-no" title="statement not covered" >      resolve('Done');</span>
@@ -899,6 +907,7 @@ exports.updateStatusToCancelledForOtherStudent = <span class="fstat-no" title="f
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.run(updateOtherApplicationsSQL, [id_thesis, id_student], <span class="fstat-no" title="function not covered" >(e</span>rr) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
@@ -949,7 +958,7 @@ exports.setPendingAccordingToThesis = <span class="fstat-no" title="function not
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-08T16:29:41.244Z
+                at 2023-12-08T16:39:52.413Z
             </div>
         <script src="../prettify.js"></script>
         <script>
