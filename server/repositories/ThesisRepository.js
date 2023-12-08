@@ -353,32 +353,31 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   specific = !specific;
   
   let input = {from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level};
-
+  const op = specific ? 'LIKE' : '=';
   const conditions = [
-    { name: 'title', column: 'title', operator: specific ? 'LIKE' : '=' },
-    { name: 'idSupervisors', column: 'supervisor', operator: specific ? 'LIKE' : '=' },
+    { name: 'title', column: 'title', operator: op },
+    { name: 'idSupervisors', column: 'supervisor', operator: op },
     { name: 'idCoSupervisorsThesis', column: 'id', operator: '=' },
-    { name: 'keyword', column: 'keywords', operator: specific ? 'LIKE' : '=' },
-    { name: 'type', column: 'type', operator: specific ? 'LIKE' : '=' },
-    { name: 'groups', column: 'groups', operator: specific ? 'LIKE' : '=' },
-    { name: 'knowledge', column: 'knowledge', operator: specific ? 'LIKE' : '=' },
+    { name: 'keyword', column: 'keywords', operator: op },
+    { name: 'type', column: 'type', operator: op },
+    { name: 'groups', column: 'groups', operator: op },
+    { name: 'knowledge', column: 'knowledge', operator: op },
     { name: 'expiration_date', column: 'expiration_date', operator: specific ? '<=' : '=' },
-    { name: 'cds', column: 'cds', operator: specific ? 'LIKE' : '=' },
+    { name: 'cds', column: 'cds', operator: op },
     { name: 'creation_date', column: 'creation_date', operator: specific ? '>=' : '=' },
   ];
+  const specific = (arg)=>{return specific ? `%${arg}%` : arg}
   conditions.forEach((condition) => {
     const value = input[condition.name];
     if (value != null) {
-      if (Array.isArray(value)) {
-        if(value.length>0){
-          sql += 'AND ('+condition.column+" "+condition.operator+"? ";
-          params.push(specific ? `%${value[0]}%` : value[0]);
-          value.slice(1).forEach((item) => {
-            sql += `OR ${condition.column} ${condition.operator} ? `;
-            params.push(specific ? `%${item}%` : item);
-          });
-          sql+=") "
-        }
+      if (Array.isArray(value) && value.length>0) {
+        sql += 'AND ('+condition.column+" "+condition.operator+"? ";
+        params.push((value[0]));
+        value.slice(1).forEach((item) => {
+          sql += `OR ${condition.column} ${condition.operator} ? `;
+          params.push(specific(item));
+        });
+        sql+=") ";
       } else {
         sql += `AND ${condition.column} ${condition.operator} ? `;
         params.push(specific ? `%${value}%` : value);
