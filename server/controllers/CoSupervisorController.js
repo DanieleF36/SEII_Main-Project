@@ -1,15 +1,17 @@
 'use strict'
 const cosupervisorService = require("../services/CoSupervisorService");
 
-exports.getAllCoSupervisorsEmails = async function (req, res) {
+exports.getAllCoSupervisorsEmails = function (req, res) {
   if(req.user.role !== 'teacher'){
-    res.status(401).json({message: "Only teacher can access to this API"});
+    res.status(401).json({error: "Only teacher can access to this API"});
     return;
   }
-  try {
-    const result = await cosupervisorService.getAllCoSupervisorsEmailsService();
-    res.status(200).json(result.data);
-  } catch (message) {
-    res.status(500).json({message:'Internal server error'});
-  }
+  cosupervisorService.getAllCoSupervisorsEmailsService()
+    .then((result) => {
+      res.status(200).json(result.data);
+
+    })
+    .catch((err) => {
+      res.status(500).json({error:'Internal server error'});
+    })
   };
