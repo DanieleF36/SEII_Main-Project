@@ -57,10 +57,8 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
   test("U1: missing body", async () => {
     mockReq.body = undefined
 
-    mockValidate.mockImplementation((req, res, callback) => {
-      callback(null);
-    });
-    await controller.addThesis(mockReq, mockRes, mockValidate);
+    controller.addThesis(mockReq, mockRes, mockValidate);
+    await Promise.resolve()
     expect(mockRes.status).toHaveBeenCalledWith(400);
     expect(mockRes.json).toHaveBeenCalledWith({ error: "body is missing" });
   });
@@ -68,18 +66,17 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
   test("U2: user is not logged in or it's not a professor", async () => {
     mockReq.user.role = 'student';
 
-    await controller.addThesis(mockReq, mockRes);
+    controller.addThesis(mockReq, mockRes);
+    await Promise.resolve()
     expect(mockRes.status).toHaveBeenCalledWith(401);
     expect(mockRes.json).toHaveBeenCalledWith({ error: "You can not access to this route" });
   });
 
   test("U10: New thesis proposal is inserted correctly", async () => {
 
-    mockValidate.mockImplementation((req, res, callback) => {
-      callback(null);
-    });
     jest.spyOn(thesisService, "addThesis").mockResolvedValue(true);          
-    await controller.addThesis(mockReq, mockRes, mockValidate)
+    controller.addThesis(mockReq, mockRes, mockValidate)
+    await Promise.resolve()
     expect(mockReq.body.level).toBe(1)
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toBeDefined()
@@ -88,10 +85,8 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
   test("U11: not for this group", async () => {
     mockReq.body.groups = 'ingInfGroup'
 
-    mockValidate.mockImplementation((req, res, callback) => {
-      callback(null);
-    });
-    await controller.addThesis(mockReq, mockRes, mockValidate);
+    controller.addThesis(mockReq, mockRes, mockValidate);
+    await Promise.resolve()
     expect(mockRes.status).toHaveBeenCalledWith(400);
     expect(mockRes.json).toHaveBeenCalledWith({ error: "You are not allowed to add for this group" });
   });
@@ -99,11 +94,10 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
 
   test("U12: New thesis proposal is inserted correctly for bachelor", async () => {
     mockReq.body.level = 'Bachelor'
-    mockValidate.mockImplementation((req, res, callback) => {
-      callback(null);
-    });
+
     jest.spyOn(thesisService, "addThesis").mockResolvedValue(true);          
-    await controller.addThesis(mockReq, mockRes, mockValidate)
+    controller.addThesis(mockReq, mockRes, mockValidate)
+    await Promise.resolve()
     expect(mockReq.body.level).toBe(0)
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toBeDefined()
@@ -113,8 +107,9 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    jest.spyOn(require('../../services/ThesisService.js'), 'addThesis').mockImplementation(() => {return {error: 'error', status: 500} });
-    await controller.addThesis(mockReq, mockRes, mockValidate)
+    jest.spyOn(require('../../services/ThesisService.js'), 'addThesis').mockResolvedValue({error: 'error', status: 500});
+    controller.addThesis(mockReq, mockRes, mockValidate)
+    await Promise.resolve()
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toBeDefined()
   });

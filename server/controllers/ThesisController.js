@@ -1,5 +1,6 @@
 "use strict";
 
+const { response } = require("express");
 const thesisService = require("../services/ThesisService");
 
 /**
@@ -85,7 +86,7 @@ exports.searchThesis = function searchThesis(req, res, validate) {
  * @param {*} next
  * @returns thesis object
  */
-exports.addThesis = async function addThesis(req, res, validate) {
+exports.addThesis = function addThesis(req, res, validate) {
   if(req.user.role !== 'teacher'){
     res.status(401).json({error:"You can not access to this route"});
     return;
@@ -107,13 +108,18 @@ exports.addThesis = async function addThesis(req, res, validate) {
     req.body.level = 0;
 
   req.body.supervisor = req.user.id
-  const response = await thesisService.addThesis(req.body)
-  if(response.error) {
-    return res.status(response.status).json();
-  }
-  else {
-    return res.status(200).json(response);
-  }
+  thesisService.addThesis(req.body)
+    .then(response => {
+      console.log(response)
+      if(response.error) {
+        res.status(response.status).json(response.error);
+        return;
+      }
+      else {
+        res.status(200).json(response);
+        return;
+      }
+    })
 };
 
 exports.updateThesis = async function updateThesis(req, res, validate) {
