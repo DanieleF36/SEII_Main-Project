@@ -132,7 +132,7 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
     throw new Error('"from", "to", "order" and "specific" parameters must be defined');
   }
 
-  const sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+  let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
   const params = sql[1];
   sql = sql[0];
 
@@ -169,7 +169,7 @@ exports.getIdByCoSupervisorId = (id) => {
         return;
       }
 
-      rows.map((e) => thesisIds.push(e.id_thesis));
+      rows.forEach((e) => thesisIds.push(e.id_thesis));
       resolve(thesisIds);
     });
   });
