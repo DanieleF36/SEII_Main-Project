@@ -31,6 +31,7 @@ describe('getAllCoSupervisorsEmails', () => {
     mockReq.user.role = 'teacher';
     jest.spyOn(require('../../services/CoSupervisorService'), "getAllCoSupervisorsEmailsService").mockRejectedValue({ error: "error" });
     await controller.getAllCoSupervisorsEmails(mockReq, mockRes);
+    await Promise.resolve()
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toHaveBeenCalledWith({ error: "Internal server error" });
   });
@@ -38,6 +39,7 @@ describe('getAllCoSupervisorsEmails', () => {
     mockReq.user.role = 'teacher';
     jest.spyOn(require('../../services/CoSupervisorService.js'), "getAllCoSupervisorsEmailsService").mockResolvedValue({ data: "success" });
     await controller.getAllCoSupervisorsEmails(mockReq, mockRes);
+    await Promise.resolve()
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toHaveBeenCalledWith("success");
   });
