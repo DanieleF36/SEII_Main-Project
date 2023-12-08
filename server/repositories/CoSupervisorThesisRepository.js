@@ -19,7 +19,7 @@ exports.addCoSupervisorThesis = (id_thesis, id_theacher, id_cosupervisor) => {
     return new Promise((resolve, reject) => {
         db.run(sql, [id_thesis, id_theacher, id_cosupervisor], (err) => {
             if (err)
-                return reject({error: err.message})
+                return reject(new Error(err.message));
             resolve(true)
         })
     })
@@ -39,7 +39,7 @@ exports.getIdsByThesisId = (id) => {
     return new Promise((resolve, reject) => {
         db.all(sqlCoSupervisor, [id], (err, rows) => {
             if (err) {
-                reject({error: err.message});
+                reject(new Error(err.message));
                 return;
             }
             const res = rows.map((e) => {
@@ -70,7 +70,7 @@ exports.removeCoSupervisorsByThesisId = (thesisId) => {
     return new Promise((resolve, reject) => {
         db.run(sql, [thesisId], function (err) {
             if (err) {
-                return reject({ error: err.message });
+                return reject(new Error(err.message));
             }
             resolve(true);
         });

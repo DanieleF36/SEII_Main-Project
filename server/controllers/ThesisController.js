@@ -109,12 +109,10 @@ exports.addThesis = async function addThesis(req, res, validate) {
   req.body.supervisor = req.user.id
   const response = await thesisService.addThesis(req.body)
   if(response.error) {
-    res.status(response.status).json();
-    return;
+    return res.status(response.status).json();
   }
   else {
-    res.status(200).json(response);
-    return;
+    return res.status(200).json(response);
   }
 };
 

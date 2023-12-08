@@ -44,9 +44,8 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   // find information about id of coSupervisors 
   let idCoSupervisorsThesis = [];
   if (coSupervisor) {
-    for (let i = 0; i < coSupervisor.length; i++) {
-      const e = coSupervisor[i];
-      const ns = e.split(" ");
+    for (let tmp of coSupervisors) {
+      const ns = tmp.split(" ");
       let idsCo;
       if (ns.length > 1)
         idsCo = await coSupervisorRepository.getByNSorS(ns[1], ns[0]);
@@ -76,25 +75,25 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   let npage = await thesisRepository.numberOfPage(false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
   npage = Math.ceil(npage.nRows / nItem);
   //find information about teacher
-  for (let i = 0; i < res.length; i++) {
+  for (let info of res) {
     // get all the superior's information given an id
-    const t = await teacherRepository.getById(res[i].supervisor);
+    const t = await teacherRepository.getById(info.supervisor);
     // add superior's information to each thesis
-    res[i].supervisor = t;
+    info.supervisor = t;
   }
   //find ids about co-supervisors
-  for (let i = 0; i < res.length; i++) {
-    const idList = await coSupervisorThesisRepository.getIdsByThesisId(res[i].id);
-    res[i].coSupervisor = [];
-    for (let j = 0; j < idList.length; j++) {
-      if (idList[j].idTeacher != null) {
-        const t = await teacherRepository.getById(idList[j].idTeacher);
-        res[i].coSupervisor.push(
+  for (let ids of res) {
+    const idList = await coSupervisorThesisRepository.getIdsByThesisId(ids.id);
+    ids.coSupervisor = [];
+    for (let tmp of idList) {
+      if (tmp.idTeacher != null) {
+        const t = await teacherRepository.getById(tmp.idTeacher);
+        ids.coSupervisor.push(
           teacherRepository.fromTeacherToCoSupervisor(t)
         );
       } else {
-        res[i].coSupervisor.push(
-          await coSupervisorRepository.getById(idList[j].idCoSupervisor)
+        ids.coSupervisor.push(
+          await coSupervisorRepository.getById(tmp.idCoSupervisor)
         );
       }
     }
@@ -192,7 +191,7 @@ exports.addThesis = async function (thesis) {
   if (cosupervisor_ids.length > 0) {
     for (let id of cosupervisor_ids) {
       result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, null, id)
-      if (result != true) {
+      if (!result) {
         return result
       }
     }
@@ -200,7 +199,7 @@ exports.addThesis = async function (thesis) {
   if (supervisor_ids.length > 0) {
     for (let id of supervisor_ids) {
       result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, id, null)
-      if (result != true) 
+      if (!result) 
         return result
     }
   }

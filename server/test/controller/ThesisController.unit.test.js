@@ -3,10 +3,7 @@ const controller = require("../../controllers/ThesisController.js");
 const thesisService = require('../../services/ThesisService.js')
 
 let mockReq; 
-let mockRes = {
-  status: jest.fn().mockReturnThis(),
-  json: jest.fn(),
-}; 
+let mockRes;
 
 beforeEach(() => {
   mockRes = {
@@ -16,12 +13,11 @@ beforeEach(() => {
 });
 
 describe("INSERT PROPOSAL UNIT TEST", () => {
-  const { ValidationError } = require('express-json-validator-middleware');
   
   let mockReq
   let mockValidate
   beforeEach(() => {
-    const mockRes = {
+    mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
@@ -117,7 +113,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'addThesis').mockImplementation(() => {return {error: 'error', status: 500} });
+    jest.spyOn(require('../../services/ThesisService.js'), 'addThesis').mockImplementation(() => {return {error: 'error', status: 500} });
     await controller.addThesis(mockReq, mockRes, mockValidate)
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toBeDefined()
@@ -213,7 +209,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
   let mockReq
   let mockValidate
   beforeEach(() => {
-    const mockRes = {
+    mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
@@ -289,9 +285,9 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
       callback(null);
     });
     jest.spyOn(thesisService, "updateThesis").mockImplementation(async () => {
-      return Promise.reject({ error: "No rows updated. Thesis ID not found." });
+      return Promise.reject(new Error( "No rows updated. Thesis ID not found." ));
     });
-    await expect(controller.updateThesis(mockReq, mockRes, mockValidate)).rejects.toEqual({ error: "No rows updated. Thesis ID not found." });
+    await expect(controller.updateThesis(mockReq, mockRes, mockValidate)).rejects.toEqual(new Error("No rows updated. Thesis ID not found."));
   });
 
 
@@ -321,7 +317,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockImplementation(() => {return {error: 'error', status: 500} });
+    jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockImplementation(() => {return {error: 'error', status: 500} });
     await controller.updateThesis(mockReq, mockRes, mockValidate)
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toBeDefined()
@@ -332,7 +328,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockImplementation(() => {return {error: 'error', status: 500} });
+    jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockImplementation(() => {return {error: 'error', status: 500} });
     await controller.updateThesis(mockReq, mockRes, mockValidate)
     expect(mockRes.status).toHaveBeenCalledWith(400);
     expect(mockRes.json).toBeDefined()

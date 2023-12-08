@@ -36,7 +36,7 @@ exports.getById = (id)=>{
     return new Promise((resolve, reject)=>{
         db.get(sqlTeacher, [id], (err, row)=>{
             if (err) 
-                return reject({error: err.message});
+                return reject(new Error(err.message));
             if(row==undefined)
                 return resolve({});
             resolve(newTeacher(row.id, row.name, row.surname, row.email, row.cod_group, row.cod_dep));
@@ -56,7 +56,7 @@ exports.getByEmail = (email)=>{
     return new Promise((resolve, reject)=>{
         db.get(sqlTeacher, [email], (err, row)=>{
             if (err) {
-                reject({error: err.message});
+                reject(new Error(err.message));
                 return;
             }
             if(row==undefined)
@@ -120,7 +120,7 @@ exports.getIdByThesisId = (thesisId) => {
     return new Promise((resolve, reject) => {
         db.get(getSupervisorSql, [thesisId], (err, result) => {
             if (err) {
-                return reject({ error: err.message });
+                return reject(new Error(err.message));
             }
             resolve(result.supervisor);
         });

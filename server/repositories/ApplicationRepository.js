@@ -24,7 +24,7 @@ exports.addApplication = (studentId, thesisId, cvPath, supervisorId) => {
     const sql = 'INSERT INTO Application (id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?)';
     db.run(sql, [studentId, thesisId, currentDate, cvPath, 0, supervisorId], function (err) {
       if (err) {
-        return reject({ error: err.message });
+        return reject(new Error(err.message));
       } else {
         // Access the auto-generated ID if needed.
         const insertedId = this.lastID;
@@ -78,7 +78,7 @@ exports.getByStudentId = (id_student) => {
   return new Promise((resolve, reject) => {
     db.all(sqlApplication, [id_student], (err, rows) => {
       if (err) {
-        return reject({ error: err.message });
+        return reject(new Error(err.message));
       } else {
         const applications = rows.map((a) => ({
           id_application: a.id_application,
@@ -117,7 +117,7 @@ exports.getById = (id) => {
   return new Promise((resolve, reject) => {
     db.get(fetchThesisStudentSQL, [id], (err, row) => {
       if (err) {
-        reject({error: err.message});
+        reject(new Error(err.message));
         return;
       }
       resolve(row);
@@ -137,7 +137,7 @@ exports.getActiveByStudentId = (studentId) => {
   return new Promise((resolve, reject)=>{
     db.get(sql, [studentId], (err, result) => {
       if (err) {
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       }
       resolve(result);
     })
@@ -167,7 +167,7 @@ exports.getByTeacherId = (id_teacher) => {
   return new Promise((resolve, reject) => {
     db.all(sqlApplication, [id_teacher], (err, rows) => {
       if (err) {
-        return reject({ error: err.message });
+        return reject(new Error(err.message));
       }
       const application = rows.map((a) => ({
         id_student: a.id_student,
@@ -203,7 +203,7 @@ exports.updateStatus = (id, status)=>{
   return new Promise((resolve, reject)=>{
     db.run(updateApplicationSQL, [status, id], function (err) {
       if (err) {
-        reject({error: err.message});
+        reject(new Error(err.message));
         return;
       }
       resolve("Done")
@@ -229,7 +229,7 @@ exports.updateStatusToCancelledForOtherStudent = (id_thesis, id_student) => {
     const updateOtherApplicationsSQL = 'UPDATE Application SET status = 3 WHERE id_thesis = ? AND id_student != ?';
     db.run(updateOtherApplicationsSQL, [id_thesis, id_student], function (err) {
       if (err) {
-        reject({ error: err.message });
+        reject(new Error(err.message));
         return;
       }
       resolve("Done")

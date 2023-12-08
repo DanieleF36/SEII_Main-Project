@@ -65,7 +65,7 @@ exports.getById = (id_thesis) => {
   return new Promise((resolve, reject) => {
     db.get(thesisTitlesSQL, [id_thesis], function (err, result) {
       if (err) {
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       }
       resolve(result);
     })
@@ -85,7 +85,7 @@ exports.getActiveBySupervisor = (supervisorId, queryParam) => {
   return new Promise( (resolve, reject) => {
     db.all(sql, [queryParam, supervisorId], (err, rows) => {
       if(err) {
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       }
       else if(rows.length === 0) {
         resolve([])
@@ -125,7 +125,7 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
     
     db.all(sql, params, (err, rows) => {
       if (err) {
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       }
       const res = rows.map((e) => (newThesis(e.id, e.title, e.supervisor, [], e.keywords, e.type, e.groups, e.description, e.knowledge, e.note, e.expiration_date, e.level, e.cds, e.creation_date, e.status)));
       resolve(res);
@@ -146,7 +146,7 @@ exports.getIdByCoSupervisorId = (id) => {
   return new Promise((resolve, reject) => {
       db.all(sqlIdThesis, [id], (err, rows) => {
           if (err) {
-              reject({error: err.message});
+              reject(new Error(err.message));
               return;
           }
           rows.map((e) => {
@@ -187,7 +187,7 @@ exports.updateThesis = (id, title, supervisor, keywords, type, groups, descripti
   return new Promise((resolve, reject) => {
     db.run(sql,[title,supervisor,keywords,type,groups,description,knowledge,note,expiration_date,level,cds,creation_date,status,id], function (err) {
         if (err) {
-          return reject({error: err.message});
+          return reject(new Error(err.message));
         }
         if (this.changes === 0) {
           return reject({ error: "No rows updated. Thesis ID not found." });
@@ -214,7 +214,7 @@ exports.setStatus = (id, status) => {
   return new Promise((resolve, reject)=>{
     db.run(updateThesisSQL, [status, id], function (err) {
       if (err) {
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       }
       if (this.changes === 0) {
         return reject({ error: "No rows updated. Thesis ID not found." });
@@ -241,7 +241,7 @@ exports.numberOfPage = (specific, title, idSupervisors, idCoSupervisorsThesis, k
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {
       if (err) {
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       }
       resolve({ nRows: rows[0] ? rows[0].cnt : 0 });
     });
@@ -431,7 +431,7 @@ exports.selectExpiredAccordingToDate = (date) => {
   return new Promise( (resolve, reject) => {
     db.all(sql, [date], (err, rows) => {
       if(err)
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       else if(rows.length == 0)
         resolve([])
       resolve(rows.map(a => a.id))
@@ -449,7 +449,7 @@ exports.selectRestoredExpiredAccordingToDate = (date) => {
   return new Promise( (resolve, reject) => {
     db.all(sql, [date], (err, rows) => {
       if(err)
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       else if(rows.length == 0)
         resolve([])
       resolve(rows.map(a => a.id))
@@ -468,7 +468,7 @@ exports.setExpiredAccordingToIds = (ids) => {
   return new Promise( (resolve, reject) => {
     db.run(sql, ids, (err) => {
       if(err)
-      return reject({error: err.message});
+      return reject(new Error(err.message));
       else {
         applicationRepository.setCancelledAccordingToThesis(ids)
           .then( resolve(true) )
@@ -489,7 +489,7 @@ exports.restoreExpiredAccordingToIds = (ids) => {
   return new Promise( (resolve, reject) => {
     db.run(sql, ids, (err) => {
       if(err)
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       else {
         applicationRepository.setPendingAccordingToThesis(ids)
           .then( resolve(true) )
