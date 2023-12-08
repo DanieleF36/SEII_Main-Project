@@ -208,8 +208,6 @@ describe('addThesis unit tests', () => {
 
 describe('advancedResearchThesis', () => {
     let page = 1, order = 'titleD', title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level;
-    let input = {from:10 * (page - 1), to:10 * page, order: 'titleD', specific:false, title, idSupervisors:null, idCoSupervisorsThesis:[], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level}
-    let inputNPage = {specific:false, title, idSupervisors:null, idCoSupervisorsThesis:[], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level}
     test('case1: ns.length>1 error', async () => {
         supervisor = "nome cognome";
         const spy = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getByNSorS').mockRejectedValue({ error: "error" })
@@ -281,17 +279,15 @@ describe('advancedResearchThesis', () => {
         test('case7: advancedResearch error ', async () => {
             supervisor = undefined;
             title = "title";
-            input.title = "title";
             const spy = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'advancedResearch').mockRejectedValue({ error: "error" });
             try {
                 await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
             } catch (e) {
                 expect(e).toStrictEqual({ error: "error" });
             }
-            expect(spy).toHaveBeenCalledWith(input);
+            expect(spy).toHaveBeenCalledWith(10 * (page - 1), 10 * page, 'titleD', false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
         }),
         test('case8: npage error ', async () => {
-            inputNPage.title = "title";
             const advancedResearch = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'advancedResearch').mockResolvedValue([{ id: 1, supervisor: 1 }]);
             const nPage = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'numberOfPage').mockRejectedValue({ error: "error" });
             try {
@@ -299,8 +295,8 @@ describe('advancedResearchThesis', () => {
             } catch (e) {
                 expect(e).toStrictEqual({ error: "error" });
             }
-            expect(advancedResearch).toHaveBeenCalledWith(input);
-            expect(nPage).toHaveBeenCalledWith(inputNPage);
+            expect(advancedResearch).toHaveBeenCalledWith(10 * (page - 1), 10 * page, 'titleD', false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+            expect(nPage).toHaveBeenCalledWith(false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
         }),
         test('case9: getById err ', async () => {
             const advancedResearch = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'advancedResearch').mockResolvedValue([{ id: 1, supervisor: 1 }]);
@@ -311,8 +307,8 @@ describe('advancedResearchThesis', () => {
             } catch (e) {
                 expect(e).toStrictEqual({ error: "error" });
             }
-            expect(advancedResearch).toHaveBeenCalledWith(input);
-            expect(nPage).toHaveBeenCalledWith(inputNPage);
+            expect(advancedResearch).toHaveBeenCalledWith(10 * (page - 1), 10 * page, 'titleD', false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+            expect(nPage).toHaveBeenCalledWith(false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
             expect(getById).toHaveBeenCalledWith(1);
         }),
         test('case10: getIdsByThesisId err ', async () => {
@@ -325,8 +321,8 @@ describe('advancedResearchThesis', () => {
             } catch (e) {
                 expect(e).toStrictEqual({ error: "error" });
             }
-            expect(advancedResearch).toHaveBeenCalledWith(input);
-            expect(nPage).toHaveBeenCalledWith(inputNPage);
+            expect(advancedResearch).toHaveBeenCalledWith(10 * (page - 1), 10 * page, 'titleD', false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+            expect(nPage).toHaveBeenCalledWith(false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
             expect(getById).toHaveBeenCalledWith(1);
             expect(getIdsByThesisId).toHaveBeenCalledWith(1);
         }),
@@ -341,8 +337,8 @@ describe('advancedResearchThesis', () => {
             } catch (e) {
                 expect(e).toStrictEqual({ error: "error" });
             }
-            expect(advancedResearch).toHaveBeenCalledWith(input);
-            expect(nPage).toHaveBeenCalledWith(inputNPage);
+            expect(advancedResearch).toHaveBeenCalledWith(10 * (page - 1), 10 * page, 'titleD', false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+            expect(nPage).toHaveBeenCalledWith(false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
             expect(getById).toHaveBeenCalledWith(1);
             expect(getIdsByThesisId).toHaveBeenCalledWith(1);
             expect(getByIdC).toHaveBeenCalledWith(1);
@@ -357,8 +353,8 @@ describe('advancedResearchThesis', () => {
             expect(service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)).resolves
                 .toStrictEqual([[{ id: 1, supervisor: { name: "name" }, coSupervisor: [{ name: "coSUpervisor" }, { email: undefined, name: "name", surname: undefined, company: "PoliTo" }] }], 1]);
 
-            expect(advancedResearch).toHaveBeenCalledWith(input);
-            expect(nPage).toHaveBeenCalledWith(inputNPage);
+            expect(advancedResearch).toHaveBeenCalledWith(10 * (page - 1), 10 * page, 'titleD', false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+            expect(nPage).toHaveBeenCalledWith(false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
             expect(getById).toHaveBeenCalledWith(1);
             expect(getIdsByThesisId).toHaveBeenCalledWith(1);
             expect(getByIdC).toHaveBeenCalledWith(1);
