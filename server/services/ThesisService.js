@@ -75,9 +75,8 @@ exports.supervisorCheck = async(supervisor)=>{
 
 exports.coSupervisorCheck=async(coSupervisor)=>{
   let idCoSupervisorsThesis = [];
-  for (let i = 0; coSupervisor && i < coSupervisor.length; i++) {
-    const e = coSupervisor[i];
-    const ns = e.split(" ");
+  for (let tmp of coSupervisor) {
+    const ns = tmp.split(" ");
     let idsCo;
     if (ns.length > 1)
       idsCo = (await coSupervisorRepository.getByNSorS(ns[1], ns[0])).map(e=>e.id);
@@ -92,27 +91,27 @@ exports.coSupervisorCheck=async(coSupervisor)=>{
 }
 
 exports.supervisorInfo=async(res)=>{
-  for (let i = 0; i < res.length; i++) {
+  for (let info of res) {
     // get all the superior's information given an id
-    const t = await teacherRepository.getById(res[i].supervisor);
+    const t = await teacherRepository.getById(info.supervisor);
     // add superior's information to each thesis
-    res[i].supervisor = t;
+    info.supervisor = t;
   }
 }
 
 exports.coSupervisorInfo=async(res)=>{
-  for (let i = 0; i < res.length; i++) {
-    const idList = await coSupervisorThesisRepository.getIdsByThesisId(res[i].id);
-    res[i].coSupervisor = [];
-    for (let j = 0; j < idList.length; j++) {
-      if (idList[j].idTeacher != null) {
-        const t = await teacherRepository.getById(idList[j].idTeacher);
-        res[i].coSupervisor.push(
+  for (let ids of res) {
+    const idList = await coSupervisorThesisRepository.getIdsByThesisId(ids.id);
+    ids.coSupervisor = [];
+    for (let tmp of idList) {
+      if (tmp.idTeacher != null) {
+        const t = await teacherRepository.getById(tmp.idTeacher);
+        ids.coSupervisor.push(
           teacherRepository.fromTeacherToCoSupervisor(t)
         );
       } else {
-        res[i].coSupervisor.push(
-          await coSupervisorRepository.getById(idList[j].idCoSupervisor)
+        ids.coSupervisor.push(
+          await coSupervisorRepository.getById(tmp.idCoSupervisor)
         );
       }
     }

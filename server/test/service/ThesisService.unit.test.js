@@ -241,7 +241,7 @@ describe('supervisorCheck', ()=>{
 })
 
 describe('coSupervisorCheck', ()=>{
-    let coSupervisor;
+    let coSupervisor=[];
     test('case2: coSupervisor missing', async () => {    
         const e = await service.coSupervisorCheck(coSupervisor);
         expect(e).toStrictEqual([])
