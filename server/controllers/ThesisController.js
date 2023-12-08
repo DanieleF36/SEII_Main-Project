@@ -110,6 +110,7 @@ exports.addThesis = function addThesis(req, res, validate) {
   req.body.supervisor = req.user.id
   thesisService.addThesis(req.body)
     .then(response => {
+      console.log(response)
       if(response.error) {
         res.status(response.status).json(response.error);
         return;
