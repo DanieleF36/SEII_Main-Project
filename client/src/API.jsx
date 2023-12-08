@@ -1,4 +1,3 @@
-import { alignPropType } from "react-bootstrap/esm/types";
 
 const URL = 'http://localhost:3001';
 
@@ -95,7 +94,7 @@ function getJson(httpResponsePromise) {
           // the server always returns a JSON, even empty {}. Never null or non json, otherwise the method will fail
           response.json()
             .then(json => resolve(json))
-            .catch(err => reject({ error: "Cannot parse server response" }))
+            .catch(err => reject(new Error("Cannot parse server response")));
 
         } else {
           // analyzing the cause of error
@@ -103,11 +102,11 @@ function getJson(httpResponsePromise) {
             .then(obj =>
               reject(obj)
             ) // error msg in the response body
-            .catch(err => reject({ error: "Cannot parse server response" })) // something else
+            .catch(err => reject(new Error("Cannot parse server response"))) // something else
         }
       })
       .catch(err =>
-        reject({ error: "Cannot communicate" })
+        reject(new Error("Cannot communicate"))
       ) // connection error
   });
 }

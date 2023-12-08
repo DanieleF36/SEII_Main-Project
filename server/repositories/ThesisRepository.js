@@ -406,7 +406,7 @@ exports.selectExpiredAccordingToDate = (date) => {
   return new Promise( (resolve, reject) => {
     db.all(sql, [date], (err, rows) => {
       if(err)
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       else if(rows.length == 0)
         resolve([])
       resolve(rows.map(a => a.id))
@@ -424,7 +424,7 @@ exports.selectRestoredExpiredAccordingToDate = (date) => {
   return new Promise( (resolve, reject) => {
     db.all(sql, [date], (err, rows) => {
       if(err)
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       else if(rows.length == 0)
         resolve([])
       resolve(rows.map(a => a.id))
@@ -443,7 +443,7 @@ exports.setExpiredAccordingToIds = (ids) => {
   return new Promise( (resolve, reject) => {
     db.run(sql, ids, (err) => {
       if(err)
-      return reject({error: err.message});
+      return reject(new Error(err.message));
       else {
         applicationRepository.setCancelledAccordingToThesis(ids)
           .then( resolve(true) )
@@ -464,7 +464,7 @@ exports.restoreExpiredAccordingToIds = (ids) => {
   return new Promise( (resolve, reject) => {
     db.run(sql, ids, (err) => {
       if(err)
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       else {
         applicationRepository.setPendingAccordingToThesis(ids)
           .then( resolve(true) )

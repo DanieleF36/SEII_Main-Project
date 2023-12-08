@@ -8,7 +8,6 @@ describe('db', ()=>{
         callback(new Error('Errore di connessione al database'));
       });
       try {
-        const db = dbModule;
         console.log("Should fail")
       } catch (error) {
         expect(error).toBe({error: "error"});

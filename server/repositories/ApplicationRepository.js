@@ -26,7 +26,7 @@ exports.addApplication = (studentId, thesisId, cvPath, supervisorId) => {
     const sql = 'INSERT INTO Application (id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?)';
     db.run(sql, [studentId, thesisId, currentDate, cvPath, 0, supervisorId], function (err) {
       if (err) {
-        return reject({ error: err.message });
+        return reject(new Error(err.message));
       } else {
         // Access the auto-generated ID if needed.
         const insertedId = this.lastID;
@@ -80,7 +80,7 @@ exports.getByStudentId = (id_student) => {
   return new Promise((resolve, reject) => {
     db.all(sqlApplication, [id_student], (err, rows) => {
       if (err) {
-        return reject({ error: err.message });
+        return reject(new Error(err.message));
       } else {
         const applications = rows.map((a) => ({
           id_application: a.id_application,
@@ -121,6 +121,7 @@ exports.getById = (id) => {
   return new Promise((resolve, reject) => {
     db.get(fetchThesisStudentSQL, [id], (err, row) => {
       if (err) {
+        reject(new Error(err.message));
         reject(new Error(err.message));
         return;
       }
@@ -219,6 +220,7 @@ exports.updateStatus = (id, status) => {
     db.run(updateApplicationSQL, [status, id], (err) => {
       if (err) {
         reject(new Error(err.message));
+        reject(new Error(err.message));
         return;
       }
       resolve('Done');
@@ -248,6 +250,7 @@ exports.updateStatusToCancelledForOtherStudent = (id_thesis, id_student) => {
   return new Promise((resolve, reject) => {
     db.run(updateOtherApplicationsSQL, [id_thesis, id_student], (err) => {
       if (err) {
+        reject(new Error(err.message));
         reject(new Error(err.message));
         return;
       }

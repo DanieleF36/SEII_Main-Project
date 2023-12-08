@@ -62,7 +62,7 @@ describe('addThesis unit tests', () => {
     test('U3: adding a thesis but an error in repository occurs', async () => {
         thesis.cosupervisor = [""]
 
-        const res = jest.spyOn(Promise, 'all').mockResolvedValue({error: 'error'})
+        jest.spyOn(Promise, 'all').mockResolvedValue({error: 'error'})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
 
@@ -81,7 +81,7 @@ describe('addThesis unit tests', () => {
             surname: 'verdi',
             email: 'gigiverdi@mail.com'
         }})
-        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
+        jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return {error: 'error'}})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
 
@@ -99,7 +99,7 @@ describe('addThesis unit tests', () => {
             surname: 'verdi',
             email: 'gigiverdi@mail.com'
         }})
-        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
+        jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return {error: 'error'}})
 
@@ -192,7 +192,7 @@ describe('addThesis unit tests', () => {
             surname: 'rossi',
             email: 'gigirossi@mail.com'
         }})
-        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({...thesis, id: 1})
+        jest.spyOn(repository, 'addThesis').mockResolvedValue({...thesis, id: 1})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return {error: 'error'}})
 
