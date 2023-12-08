@@ -28,6 +28,7 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   let ok = !(supervisor || coSupervisor);
   //find information about id of supervisor
   let idSupervisors = null;
+  console.log(supervisor);
   if (supervisor) {
     const ns = supervisor.split(" ");
     // ns[1] is going to be undefined in case we did not put a name
@@ -44,8 +45,8 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   // find information about id of coSupervisors 
   let idCoSupervisorsThesis = [];
   if (coSupervisor) {
-    for (let tmp of coSupervisors) {
-      const ns = tmp.split(" ");
+    for (const e of coSupervisor) {
+      const ns = e.split(" ");
       let idsCo;
       if (ns.length > 1)
         idsCo = await coSupervisorRepository.getByNSorS(ns[1], ns[0]);
@@ -75,29 +76,27 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   let npage = await thesisRepository.numberOfPage(false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
   npage = Math.ceil(npage.nRows / nItem);
   //find information about teacher
-  for (let info of res) {
-    // get all the superior's information given an id
-    const t = await teacherRepository.getById(info.supervisor);
-    // add superior's information to each thesis
-    info.supervisor = t;
+  // Update the loop that fetches supervisor information
+  for (const thesis of res) {
+    const t = await teacherRepository.getById(thesis.supervisor);
+    thesis.supervisor = t;
   }
-  //find ids about co-supervisors
-  for (let ids of res) {
-    const idList = await coSupervisorThesisRepository.getIdsByThesisId(ids.id);
-    ids.coSupervisor = [];
-    for (let tmp of idList) {
-      if (tmp.idTeacher != null) {
-        const t = await teacherRepository.getById(tmp.idTeacher);
-        ids.coSupervisor.push(
-          teacherRepository.fromTeacherToCoSupervisor(t)
-        );
+
+  // Update the loop that finds ids about co-supervisors
+  for (const thesis of res) {
+    const idList = await coSupervisorThesisRepository.getIdsByThesisId(thesis.id);
+    thesis.coSupervisor = [];
+
+    for (const idItem of idList) {
+      if (idItem.idTeacher != null) {
+        const t = await teacherRepository.getById(idItem.idTeacher);
+        thesis.coSupervisor.push(teacherRepository.fromTeacherToCoSupervisor(t));
       } else {
-        ids.coSupervisor.push(
-          await coSupervisorRepository.getById(tmp.idCoSupervisor)
-        );
+        thesis.coSupervisor.push(await coSupervisorRepository.getById(idItem.idCoSupervisor));
       }
     }
   }
+
   return [res, npage];
 };
 

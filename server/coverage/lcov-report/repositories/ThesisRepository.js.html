@@ -1128,7 +1128,7 @@ exports.getById = <span class="fstat-no" title="function not covered" >(i</span>
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.get(thesisTitlesSQL, [id_thesis], <span class="fstat-no" title="function not covered" >fu</span>nction (err, result) {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        return reject({error: err.message});</span>
+<span class="cstat-no" title="statement not covered" >        return reject(new Error(err.message));</span>
       }
 <span class="cstat-no" title="statement not covered" >      resolve(result);</span>
     })
@@ -1148,7 +1148,7 @@ exports.getActiveBySupervisor = (supervisorId, queryParam) =&gt; {
   return new Promise( (resolve, reject) =&gt; {
     db.all(sql, [queryParam, supervisorId], <span class="fstat-no" title="function not covered" >(e</span>rr, rows) =&gt; {
 <span class="cstat-no" title="statement not covered" >      if(err) {</span>
-<span class="cstat-no" title="statement not covered" >        return reject({error: err.message});</span>
+<span class="cstat-no" title="statement not covered" >        return reject(new Error(err.message));</span>
       }
       else <span class="cstat-no" title="statement not covered" >if(rows.length === 0) {</span>
 <span class="cstat-no" title="statement not covered" >        resolve([])</span>
@@ -1188,7 +1188,7 @@ exports.advancedResearch = <span class="fstat-no" title="function not covered" >
     
 <span class="cstat-no" title="statement not covered" >    db.all(sql, params, <span class="fstat-no" title="function not covered" >(e</span>rr, rows) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        return reject({error: err.message});</span>
+<span class="cstat-no" title="statement not covered" >        return reject(new Error(err.message));</span>
       }
       const res = <span class="cstat-no" title="statement not covered" >rows.map(<span class="fstat-no" title="function not covered" >(e</span>) =&gt; (<span class="cstat-no" title="statement not covered" >newThesis(e.id, e.title, e.supervisor, [], e.keywords, e.type, e.groups, e.description, e.knowledge, e.note, e.expiration_date, e.level, e.cds, e.creation_date, e.status))</span>);</span>
 <span class="cstat-no" title="statement not covered" >      resolve(res);</span>
@@ -1209,7 +1209,7 @@ exports.getIdByCoSupervisorId = <span class="fstat-no" title="function not cover
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      db.all(sqlIdThesis, [id], <span class="fstat-no" title="function not covered" >(e</span>rr, rows) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >          if (err) {</span>
-<span class="cstat-no" title="statement not covered" >              reject({error: err.message});</span>
+<span class="cstat-no" title="statement not covered" >              reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >              return;</span>
           }
 <span class="cstat-no" title="statement not covered" >          rows.map(<span class="fstat-no" title="function not covered" >(e</span>) =&gt; {</span>
@@ -1250,7 +1250,7 @@ exports.updateThesis = <span class="fstat-no" title="function not covered" >(i</
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.run(sql,[title,supervisor,keywords,type,groups,description,knowledge,note,expiration_date,level,cds,creation_date,status,id], <span class="fstat-no" title="function not covered" >fu</span>nction (err) {</span>
 <span class="cstat-no" title="statement not covered" >        if (err) {</span>
-<span class="cstat-no" title="statement not covered" >          return reject({error: err.message});</span>
+<span class="cstat-no" title="statement not covered" >          return reject(new Error(err.message));</span>
         }
 <span class="cstat-no" title="statement not covered" >        if (this.changes === 0) {</span>
 <span class="cstat-no" title="statement not covered" >          return reject({ error: "No rows updated. Thesis ID not found." });</span>
@@ -1277,7 +1277,7 @@ exports.setStatus = <span class="fstat-no" title="function not covered" >(i</spa
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject)=&gt;{</span>
 <span class="cstat-no" title="statement not covered" >    db.run(updateThesisSQL, [status, id], <span class="fstat-no" title="function not covered" >fu</span>nction (err) {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        return reject({error: err.message});</span>
+<span class="cstat-no" title="statement not covered" >        return reject(new Error(err.message));</span>
       }
 <span class="cstat-no" title="statement not covered" >      if (this.changes === 0) {</span>
 <span class="cstat-no" title="statement not covered" >        return reject({ error: "No rows updated. Thesis ID not found." });</span>
@@ -1304,7 +1304,7 @@ exports.numberOfPage = <span class="fstat-no" title="function not covered" >(s</
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.all(sql, params, <span class="fstat-no" title="function not covered" >(e</span>rr, rows) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        return reject({error: err.message});</span>
+<span class="cstat-no" title="statement not covered" >        return reject(new Error(err.message));</span>
       }
 <span class="cstat-no" title="statement not covered" >      resolve({ nRows: rows[0] ? rows[0].cnt : 0 });</span>
     });
@@ -1494,7 +1494,7 @@ exports.selectExpiredAccordingToDate = <span class="fstat-no" title="function no
 <span class="cstat-no" title="statement not covered" >  return new Promise( <span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.all(sql, [date], <span class="fstat-no" title="function not covered" >(e</span>rr, rows) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if(err)</span>
-<span class="cstat-no" title="statement not covered" >        return reject({error: err.message});</span>
+<span class="cstat-no" title="statement not covered" >        return reject(new Error(err.message));</span>
       else <span class="cstat-no" title="statement not covered" >if(rows.length == 0)</span>
 <span class="cstat-no" title="statement not covered" >        resolve([])</span>
 <span class="cstat-no" title="statement not covered" >      resolve(rows.map(<span class="fstat-no" title="function not covered" >a </span>=&gt; <span class="cstat-no" title="statement not covered" >a.id)</span>)</span>
@@ -1512,7 +1512,7 @@ exports.selectRestoredExpiredAccordingToDate = <span class="fstat-no" title="fun
 <span class="cstat-no" title="statement not covered" >  return new Promise( <span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.all(sql, [date], <span class="fstat-no" title="function not covered" >(e</span>rr, rows) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if(err)</span>
-<span class="cstat-no" title="statement not covered" >        return reject({error: err.message});</span>
+<span class="cstat-no" title="statement not covered" >        return reject(new Error(err.message));</span>
       else <span class="cstat-no" title="statement not covered" >if(rows.length == 0)</span>
 <span class="cstat-no" title="statement not covered" >        resolve([])</span>
 <span class="cstat-no" title="statement not covered" >      resolve(rows.map(<span class="fstat-no" title="function not covered" >a </span>=&gt; <span class="cstat-no" title="statement not covered" >a.id)</span>)</span>
@@ -1531,7 +1531,7 @@ exports.setExpiredAccordingToIds = <span class="fstat-no" title="function not co
 <span class="cstat-no" title="statement not covered" >  return new Promise( <span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.run(sql, ids, <span class="fstat-no" title="function not covered" >(e</span>rr) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if(err)</span>
-<span class="cstat-no" title="statement not covered" >      return reject({error: err.message});</span>
+<span class="cstat-no" title="statement not covered" >      return reject(new Error(err.message));</span>
       else {
 <span class="cstat-no" title="statement not covered" >        applicationRepository.setCancelledAccordingToThesis(ids)</span>
           .then( resolve(true) )
@@ -1552,7 +1552,7 @@ exports.restoreExpiredAccordingToIds = <span class="fstat-no" title="function no
 <span class="cstat-no" title="statement not covered" >  return new Promise( <span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.run(sql, ids, <span class="fstat-no" title="function not covered" >(e</span>rr) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if(err)</span>
-<span class="cstat-no" title="statement not covered" >        return reject({error: err.message});</span>
+<span class="cstat-no" title="statement not covered" >        return reject(new Error(err.message));</span>
       else {
 <span class="cstat-no" title="statement not covered" >        applicationRepository.setPendingAccordingToThesis(ids)</span>
           .then( resolve(true) )
@@ -1567,7 +1567,7 @@ exports.restoreExpiredAccordingToIds = <span class="fstat-no" title="function no
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-08T10:10:56.224Z
+                at 2023-12-08T16:22:57.207Z
             </div>
         <script src="../prettify.js"></script>
         <script>

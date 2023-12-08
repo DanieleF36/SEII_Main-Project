@@ -637,7 +637,7 @@ exports.addApplication = <span class="fstat-no" title="function not covered" >(s
     const sql = <span class="cstat-no" title="statement not covered" >'INSERT INTO Application (id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?)';</span>
 <span class="cstat-no" title="statement not covered" >    db.run(sql, [studentId, thesisId, currentDate, cvPath, 0, supervisorId], <span class="fstat-no" title="function not covered" >fu</span>nction (err) {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        return reject({ error: err.message });</span>
+<span class="cstat-no" title="statement not covered" >        return reject(new Error(err.message));</span>
       } else {
         // Access the auto-generated ID if needed.
         const insertedId = <span class="cstat-no" title="statement not covered" >this.lastID;</span>
@@ -691,7 +691,7 @@ exports.getByStudentId = <span class="fstat-no" title="function not covered" >(i
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.all(sqlApplication, [id_student], <span class="fstat-no" title="function not covered" >(e</span>rr, rows) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        return reject({ error: err.message });</span>
+<span class="cstat-no" title="statement not covered" >        return reject(new Error(err.message));</span>
       } else {
         const applications = <span class="cstat-no" title="statement not covered" >rows.map(<span class="fstat-no" title="function not covered" >(a</span>) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
           id_application: a.id_application,
@@ -730,7 +730,7 @@ exports.getById = <span class="fstat-no" title="function not covered" >(i</span>
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.get(fetchThesisStudentSQL, [id], <span class="fstat-no" title="function not covered" >(e</span>rr, row) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        reject({error: err.message});</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 <span class="cstat-no" title="statement not covered" >      resolve(row);</span>
@@ -750,7 +750,7 @@ exports.getActiveByStudentId = <span class="fstat-no" title="function not covere
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject)=&gt;{</span>
 <span class="cstat-no" title="statement not covered" >    db.get(sql, [studentId], <span class="fstat-no" title="function not covered" >(e</span>rr, result) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        return reject({error: err.message});</span>
+<span class="cstat-no" title="statement not covered" >        return reject(new Error(err.message));</span>
       }
 <span class="cstat-no" title="statement not covered" >      resolve(result);</span>
     })
@@ -780,7 +780,7 @@ exports.getByTeacherId = <span class="fstat-no" title="function not covered" >(i
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.all(sqlApplication, [id_teacher], <span class="fstat-no" title="function not covered" >(e</span>rr, rows) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        return reject({ error: err.message });</span>
+<span class="cstat-no" title="statement not covered" >        return reject(new Error(err.message));</span>
       }
       const application = <span class="cstat-no" title="statement not covered" >rows.map(<span class="fstat-no" title="function not covered" >(a</span>) =&gt; (<span class="cstat-no" title="statement not covered" >{</span></span>
         id_student: a.id_student,
@@ -816,7 +816,7 @@ exports.updateStatus = <span class="fstat-no" title="function not covered" >(i</
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject)=&gt;{</span>
 <span class="cstat-no" title="statement not covered" >    db.run(updateApplicationSQL, [status, id], <span class="fstat-no" title="function not covered" >fu</span>nction (err) {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        reject({error: err.message});</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 <span class="cstat-no" title="statement not covered" >      resolve("Done")</span>
@@ -842,7 +842,7 @@ exports.updateStatusToCancelledForOtherStudent = <span class="fstat-no" title="f
     const updateOtherApplicationsSQL = <span class="cstat-no" title="statement not covered" >'UPDATE Application SET status = 3 WHERE id_thesis = ? AND id_student != ?';</span>
 <span class="cstat-no" title="statement not covered" >    db.run(updateOtherApplicationsSQL, [id_thesis, id_student], <span class="fstat-no" title="function not covered" >fu</span>nction (err) {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
-<span class="cstat-no" title="statement not covered" >        reject({ error: err.message });</span>
+<span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 <span class="cstat-no" title="statement not covered" >      resolve("Done")</span>
@@ -892,7 +892,7 @@ exports.setPendingAccordingToThesis = <span class="fstat-no" title="function not
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-08T10:10:56.224Z
+                at 2023-12-08T16:22:57.207Z
             </div>
         <script src="../prettify.js"></script>
         <script>
