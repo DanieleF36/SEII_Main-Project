@@ -122,7 +122,6 @@ exports.getById = (id) => {
     db.get(fetchThesisStudentSQL, [id], (err, row) => {
       if (err) {
         reject(new Error(err.message));
-        reject(new Error(err.message));
         return;
       }
       resolve(row);
@@ -220,7 +219,6 @@ exports.updateStatus = (id, status) => {
     db.run(updateApplicationSQL, [status, id], (err) => {
       if (err) {
         reject(new Error(err.message));
-        reject(new Error(err.message));
         return;
       }
       resolve('Done');
@@ -250,7 +248,6 @@ exports.updateStatusToCancelledForOtherStudent = (id_thesis, id_student) => {
   return new Promise((resolve, reject) => {
     db.run(updateOtherApplicationsSQL, [id_thesis, id_student], (err) => {
       if (err) {
-        reject(new Error(err.message));
         reject(new Error(err.message));
         return;
       }
