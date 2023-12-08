@@ -44,7 +44,6 @@ exports.searchThesis = function searchThesis(req, res, validate) {
 
     thesisService.advancedResearchThesis(req.query.page, order, req.query.title, req.query.supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, req.user.cds, req.query.creation_date, req.user.cdsCode)
       .then(function (response) {
-        console.log(response);
         let nPage = response[1];
         response = response[0];
         response.forEach((e) => {
