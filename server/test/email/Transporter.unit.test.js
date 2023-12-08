@@ -19,7 +19,7 @@ describe('transporter', ()=>{
         catch(e){
             expect(e).toStrictEqual(new Error("to is missing"));
         }
-    }),
+    })
     test('case3: sendEmail fails', async()=>{
         to='you';
         const spy = jest.spyOn(t, 'sendMail').mockImplementation((mailOptions, cb)=>{

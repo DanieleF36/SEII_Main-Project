@@ -35,7 +35,7 @@ describe.skip('browserApplicationStudent', ()=>{
         const mockRes = await studentRepository.browserApplicationStudent(mockIdStudent);
         await Promise.resolve();
         expect(mockRes).toEqual([mockRow]);
-    }),
+    })
     test('case2: error', async () => {
         const mockError = new Error("sql error");
         db.all.mockImplementation((sql, params, callback) => {
@@ -50,18 +50,18 @@ describe.skip('browserApplicationStudent', ()=>{
 describe.skip('getStudentEmailCancelled', ()=>{
     test('case0: wrongedId', async ()=>{
         expect(()=>studentRepository.getStudentEmailCancelled()).toThrow(new Error("id_student must exists and be greater than 0"));
-    }),
+    })
     test('case0: wrongedId', async ()=>{
         const mockId = -1
         expect(()=>studentRepository.getStudentEmailCancelled(mockId)).toThrow(new Error("id_student must exists and be greater than 0"));
-    }),
+    })
     test('case1: error', async ()=>{
         const mockId = 1;
         db.all.mockImplementation((sql, params, callback) => {
             callback({message: "error SQLite"},null);
         });
         expect(studentRepository.getStudentEmailCancelled(mockId)).rejects.toEqual({error: "error SQLite"});
-    }),
+    })
     test('case2: success', async ()=>{
         const mockId = 1;
         db.all.mockImplementation((sql, params, callback) => {
@@ -74,18 +74,18 @@ describe.skip('getStudentEmailCancelled', ()=>{
 describe.skip('getStudentEmail', ()=>{
     test('case0: wrongedId', async ()=>{
         expect(()=>studentRepository.getStudentEmail()).toThrow(new Error("id_student must exists and be greater than 0"));
-    }),
+    })
     test('case0: wrongedId', async ()=>{
         const mockId = -1
         expect(()=>studentRepository.getStudentEmail(mockId)).toThrow(new Error("id_student must exists and be greater than 0"));
-    }),
+    })
     test('case1: error', async ()=>{
         const mockId = 1;
         db.all.mockImplementation((sql, params, callback) => {
             callback({message: "error SQLite"},null);
         });
         expect(studentRepository.getStudentEmail(mockId)).rejects.toEqual({error: "error SQLite"});
-    }),
+    })
     test('case2: success', async ()=>{
         const mockId = 1;
         db.all.mockImplementation((sql, params, callback) => {
