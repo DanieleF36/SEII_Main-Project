@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1701994190622" clover="3.2.0">
-  <project timestamp="1701994190622" name="All files">
-    <metrics statements="824" coveredstatements="345" conditionals="521" coveredconditionals="129" methods="189" coveredmethods="48" elements="1534" coveredelements="522" complexity="0" loc="824" ncloc="824" packages="4" files="16" classes="16"/>
+<coverage generated="1702024476712" clover="3.2.0">
+  <project timestamp="1702024476712" name="All files">
+    <metrics statements="824" coveredstatements="357" conditionals="521" coveredconditionals="135" methods="189" coveredmethods="51" elements="1534" coveredelements="543" complexity="0" loc="824" ncloc="824" packages="4" files="16" classes="16"/>
     <package name="controllers">
       <metrics statements="138" coveredstatements="138" conditionals="84" coveredconditionals="81" methods="25" coveredmethods="25"/>
       <file name="ApplicationController.js" path="C:\Users\danie\Documents\GitHub\SEII_Main-Project\server\controllers\ApplicationController.js">
@@ -153,27 +153,27 @@
       </file>
     </package>
     <package name="email">
-      <metrics statements="18" coveredstatements="6" conditionals="8" coveredconditionals="1" methods="3" coveredmethods="0"/>
+      <metrics statements="18" coveredstatements="18" conditionals="8" coveredconditionals="7" methods="3" coveredmethods="3"/>
       <file name="transporter.js" path="C:\Users\danie\Documents\GitHub\SEII_Main-Project\server\email\transporter.js">
-        <metrics statements="18" coveredstatements="6" conditionals="8" coveredconditionals="1" methods="3" coveredmethods="0"/>
-        <line num="2" count="2" type="stmt"/>
-        <line num="3" count="2" type="stmt"/>
-        <line num="4" count="2" type="stmt"/>
-        <line num="16" count="2" type="stmt"/>
-        <line num="17" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="18" count="0" type="stmt"/>
-        <line num="19" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="20" count="0" type="stmt"/>
-        <line num="21" count="0" type="stmt"/>
-        <line num="22" count="0" type="stmt"/>
-        <line num="23" count="0" type="stmt"/>
-        <line num="24" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="25" count="0" type="stmt"/>
-        <line num="26" count="0" type="stmt"/>
-        <line num="27" count="0" type="stmt"/>
-        <line num="29" count="0" type="stmt"/>
-        <line num="35" count="2" type="cond" truecount="1" falsecount="1"/>
-        <line num="36" count="2" type="stmt"/>
+        <metrics statements="18" coveredstatements="18" conditionals="8" coveredconditionals="7" methods="3" coveredmethods="3"/>
+        <line num="2" count="3" type="stmt"/>
+        <line num="3" count="3" type="stmt"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="16" count="3" type="stmt"/>
+        <line num="17" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="19" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="21" count="2" type="stmt"/>
+        <line num="22" count="2" type="stmt"/>
+        <line num="23" count="2" type="stmt"/>
+        <line num="24" count="2" type="stmt"/>
+        <line num="25" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="35" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="36" count="3" type="stmt"/>
       </file>
     </package>
     <package name="repositories">

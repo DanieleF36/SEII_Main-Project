@@ -20,7 +20,6 @@ exports.sendEmail = (from, to, subject, text) => {
         throw {error: "to is missing"}
     const mailOptions = {from, to, subject, text};
     return new Promise((resolve, reject) => {
-        console.log(mailOptions)
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
             reject({error: error.message});
