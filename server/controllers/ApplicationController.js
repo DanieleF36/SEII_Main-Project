@@ -2,7 +2,6 @@
 const applicationsService = require("../services/ApplicationService");
 const teacherService = require('../services/TeacherService');
 const studentService = require('../services/StudentService')
-const studentRepository = require("../repositories/StudentRepository");
 const teacherRepository = require("../repositories/TeacherRepository");
 const formidable = require('formidable');
 const applicationRepository = require('../repositories/ApplicationRepository')
@@ -123,7 +122,7 @@ exports.acceptApplication = function acceptApplication(req, res) {
  *     }
  *   }
  */
-exports.applyForProposal = async function (req, res) {
+exports.applyForProposal = async (req, res) => {
   if (req.user.role !== 'student') {
     res.status(401).json({ error: "You can not access to this route" })
     return;

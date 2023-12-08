@@ -115,10 +115,11 @@ exports.getActiveBySupervisor = (supervisorId, queryParam) => {
  * @param {*} level 0 (bachelor) | 1 (master)
  * @returns list of thesis objects
  */
-exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
+exports.advancedResearch = (input) => {
+  let {from, to, order, specific} = input;
   if(!from || !to || !order || !specific)
     throw {error: "from, to, order and specific must be defined"}
-  let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+  let sql = sqlQueryCreator(input);
   const params = sql[1];
   sql = sql[0];
   return new Promise((resolve, reject) => {
@@ -232,8 +233,9 @@ exports.setStatus = (id, status) => {
  * @returns SUCCESS: object defined as {nPage: 1}
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
-exports.numberOfPage = (specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
-  let sql = sqlQueryCreator( undefined, undefined, "titleD", specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+exports.numberOfPage = (input) => {
+  input.from = undefined; input.to = undefined; input.order = "titleD";
+  let sql = sqlQueryCreator(input);
   const params = sql[1];
   sql = sql[0];
   sql = sql.slice(8);
@@ -318,7 +320,8 @@ function transformOrder(order) {
  * @param {*} level 0 (bachelor) | 1 (master)
  * @returns list of thesis objects
  */
-function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) {
+function sqlQueryCreator(input) {
+  let {from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level} = input;
   let sql = "SELECT * FROM Thesis WHERE status=1 AND level=" + level + " ";
   let params = [];
   specific = !specific;
