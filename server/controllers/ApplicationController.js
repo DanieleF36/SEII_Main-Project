@@ -55,23 +55,23 @@ exports.listApplication = function listApplication(req, res) {
         teacherService
             .browseApplicationProfessor(req.user.id)
             .then(function (response) {
-                return res.status(200).json(response)
+                res.status(200).json(response)
             })
             .catch(function (response) {
-              return res.status(500).json(response);
+              res.status(500).json(response);
             });
     }else if (req.user.role == 'student') {
         if (!req.user.id) {
-            res.status(500).json({ error: "Given student's id is not valid" })
-            return
+          res.status(500).json({ error: "Given student's id is not valid" })
+          return
         }
         studentService
             .browserApplicationStudent(req.user.id)
             .then(function (response) {
-                return res.status(200).json(response)
+                res.status(200).json(response)
             })
             .catch(function (response) {
-                return res.status(500).json(response);
+                res.status(500).json(response);
             });
     }
 };
@@ -82,26 +82,29 @@ exports.acceptApplication = function acceptApplication(req, res) {
         return;
     }
     if (!req.params.id_application || req.params.id_application < 0) {
-        return res.status(400).json({ error: "Wronged id application" });
+        res.status(400).json({ error: "Wronged id application" });
+        return;
     }
     if (req.body === undefined) {
-        return res.status(400).json({ error: "Body is missing" });
+        res.status(400).json({ error: "Body is missing" });
+        return;
     }
     if (req.body.status == undefined) {
-        return res.status(400).json({ error: "Missing new status acceptApplication" });
+        res.status(400).json({ error: "Missing new status acceptApplication" });
+        return;
     }
     if (req.body.status == 1 || req.body.status == 2) {
         teacherService
             .acceptApplication(req.body.status, req.user.id, req.params.id_application)
             .then(function (response) {
-                return res.status(200).json(response);
+                res.status(200).json(response);
             })
             .catch(function (response) {
-                return res.status(500).json(response);
+                res.status(500).json(response);
             });
     }
     else {
-        return res.status(400).json({ error: "Invalid new status entered" })
+        res.status(400).json({ error: "Invalid new status entered" })
     }
 };
 
@@ -126,38 +129,46 @@ exports.applyForProposal = async function (req, res) {
     return;
   }
   if (!req.body) {
-    return res.status(400).json({ error: "Body is missing" });
+    res.status(400).json({ error: "Body is missing" });
+    return;
   }
   const checkApp = await applicationRepository.getActiveByStudentId(req.user.id);
   if (checkApp != undefined) {
-    return res.status(400).json({ error: "You already have an application for a thesis" });
+    res.status(400).json({ error: "You already have an application for a thesis" });
+    return;
   }
   const supervisorId = await teacherRepository.getIdByThesisId(req.params.id_thesis);
   if (supervisorId == undefined) {
-    return res.status(400).json({ error: "Supervisor not found" });
+    res.status(400).json({ error: "Supervisor not found" });
+    return;
   }
   if (req.params.id_thesis != null) {
     //Initializes an object that is used to handle the input file in the multipart/form-data format 
     const form = new formidable.IncomingForm();
     //Translate the file into a js object and call it files
     form.parse(req, function (err, fields, files) {
-      if (err)
-        return res.status(500).json({ error: "Internal Error" });
-      if (!files.cv || !files.cv[0])
-        return res.status(400).json({ error: "Missing file" });
+      if (err){
+        res.status(500).json({ error: "Internal Error" });
+        return;
+      }
+      if (!files.cv || !files.cv[0]){
+        res.status(400).json({ error: "Missing file" });
+        return;
+      }
       if (files.cv.length > 1) {
-        return res.status(400).json({ error: "Multiple Files" });
+        res.status(400).json({ error: "Multiple Files" });
+        return;
       }
       const file = files.cv[0];
       applicationsService.addApplication(req.user.id, req.params.id_thesis, file, supervisorId)
         .then(function (response) {
-          return res.status(201).json(response);
+          res.status(201).json(response);
         })
         .catch(function (response) {
           res.status(500).json(response);
         });
     })
   } else {
-    return res.status(400).json({ error: "Missing required parameters" });
+    res.status(400).json({ error: "Missing required parameters" });
   }
 };

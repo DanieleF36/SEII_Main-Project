@@ -37,8 +37,10 @@ exports.searchThesis = function searchThesis(req, res, validate) {
     let validationResult;
     validate(req, res, (a)=>{validationResult = a});
     //console.log(JSON.stringify(validationResult))
-    if (validationResult instanceof ValidationError)
-      return res.status(400).json({error: validationResult.validationErrors});
+    if (validationResult instanceof ValidationError){
+      res.status(400).json({error: validationResult.validationErrors});
+      return;
+    }
     //checks if order is defined or not, otherwise titleD is setted as defaul value
     const order = req.query.order ? req.query.order : "titleD";
 
@@ -85,20 +87,18 @@ exports.searchThesis = function searchThesis(req, res, validate) {
  */
 exports.addThesis = async function addThesis(req, res, validate) {
   if(req.user.role !== 'teacher'){
-    return res.status(401).json({error:"You can not access to this route"})
+    res.status(401).json({error:"You can not access to this route"});
+    return;
   }
-  let validationResult;
-  validate(req, res, (a)=>{validationResult = a});
-  //console.log(JSON.stringify(validationResult))
-  if (validationResult instanceof ValidationError)
-    return res.status(400).json({error: validationResult.validationErrors});
 
   if (req.body === undefined) {
-    return res.status(400).json({ error: "body is missing" });
+    res.status(400).json({ error: "body is missing" });
+    return;
   }
 
   if(!req.body.groups.includes(req.user.group)){
-    return res.status(400).json({error:"You are not allowed to add for this group"})
+    res.status(400).json({error:"You are not allowed to add for this group"});
+    return;
   }
 
   if( req.body.level === 'Master')
@@ -109,10 +109,12 @@ exports.addThesis = async function addThesis(req, res, validate) {
   req.body.supervisor = req.user.id
   const response = await thesisService.addThesis(req.body)
   if(response.error) {
-    return res.status(response.status).json()
+    res.status(response.status).json();
+    return;
   }
   else {
-    return res.status(200).json(response)
+    res.status(200).json(response);
+    return;
   }
 };
 
@@ -121,12 +123,6 @@ exports.updateThesis = async function updateThesis(req, res, validate) {
     res.status(401).json({error:"You can not access to this route"})
     return;
   }
-  let validationResult;
-  validate(req, res, (a)=>{validationResult = a});
-  //console.log(JSON.stringify(validationResult))
-  if (validationResult instanceof ValidationError)
-    return res.status(400).json({error: validationResult.validationErrors});
-
   if (!req.params.id) {
     res.status(400).json({error: "Thesis id is not valid"})
     return
@@ -139,16 +135,17 @@ exports.updateThesis = async function updateThesis(req, res, validate) {
   req.body.supervisor = req.user.id
 
   if(!req.body.groups.includes(req.user.group)){
-    return res.status(400).json({error:"You are not allowed to add for this group"})
+    res.status(400).json({error:"You are not allowed to add for this group"});
+    return;
   }
 
   // Call the updateThesis method from the thesisService
   const response = await thesisService.updateThesis(req.body, req.params.id);
 
   if (response.error) {
-    return res.status(response.status).json(response.error);
+    res.status(response.status).json(response.error);
   } else {
-    return res.status(200).json(response);
+    res.status(200).json(response);
   }
 };
 

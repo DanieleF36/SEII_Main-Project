@@ -39,7 +39,7 @@ const samlStrategy = new saml(samlConfig, async (profile, done) => {
     else
         user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID }
     
-    return done(null, user);
+    done(null, user);
 });
 passport.use("samlStrategy", samlStrategy);
 

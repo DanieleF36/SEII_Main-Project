@@ -150,7 +150,7 @@ exports.getIdByCoSupervisorId = (id) => {
               return;
           }
           rows.map((e) => {
-              idsThesis.push(e.id_thesis);
+              return idsThesis.push(e.id_thesis);
           });
           resolve(idsThesis);
       });

@@ -183,7 +183,7 @@ describe('Apply for proposal', () => {
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
         jest.spyOn(require("../../services/ApplicationService"), "addApplication").mockResolvedValue(true)
         await controller.applyForProposal(mockReq, mockRes);
-        expect(isSuccessful(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
+        expect(isSuccessful(mockRes.status.mock.calls)).toBe(true);
     });
     test('Case10: student and thesisId must be grater than 0', async () => {
         mockReq.user.role = 'student';
