@@ -40,7 +40,7 @@ function vc () {
  * }
  * @param {*} res body: { value: }
  */
-exports.vc_set = async function (req, res) {
+exports.vc_set = function (req, res) {
     if (req.body === undefined || req.body.value === undefined)
         return res.status(400).json({ error: "body is missing or wrong" })
 
@@ -55,20 +55,37 @@ exports.vc_set = async function (req, res) {
 
     offset = duration;
 
-    let result = await thesisRepository.selectExpiredAccordingToDate(act.format('YYYY-MM-DD').toString()) 
-    if(!Array.isArray(result)) {
-        offset=0
-        return res.status(500).json({error: 'server error'})
-    }
-    console.log(result)
-    result = await thesisRepository.setExpiredAccordingToIds(result)
-    if(!result) {
-        offset=0
-        return res.status(500).json({error: 'server error'})
-    }
-    else return res.status(200).json({value: req.body.value})
+    // let result = await thesisRepository.selectExpiredAccordingToDate(act.format('YYYY-MM-DD').toString()) 
+    // if(!Array.isArray(result)) {
+    //     offset=0
+    //     return res.status(500).json({error: 'server error'})
+    // }
+    // console.log(result)
+    // result = await thesisRepository.setExpiredAccordingToIds(result)
+    // if(!result) {
+    //     offset=0
+    //     return res.status(500).json({error: 'server error'})
+    // }
+    // else return res.status(200).json({value: req.body.value})
     
-        
+    thesisRepository.selectExpiredAccordingToDate(act.format('YYYY-MM-DD').toString())
+        .then((result) => {
+            if(!Array.isArray(result)) {
+                offset=0
+                return res.status(500).json({error: 'server error'})
+            }
+
+            thesisRepository.setExpiredAccordingToIds(result)
+                .then((result) => {
+                    if(!result) {
+                        offset=0
+                        return res.status(500).json({error: 'server error'})
+                    }
+                    else return res.status(200).json({value: req.body.value})
+                })
+                .catch(err => res.status(500).json({error: err}))
+        })
+        .catch(err => res.status(500).json({error: err}))
 }
 
 /**
@@ -78,7 +95,7 @@ exports.vc_set = async function (req, res) {
  * }
  * @param {*} res {value: Integer}
  */
-exports.vc_restore = async function (req, res) {
+exports.vc_restore = function (req, res) {
     if (req.body === undefined || req.body.value === undefined)
         return res.status(400).json({ error: "body is missing or wrong" })
     if (req.body.value != 1)
@@ -87,18 +104,38 @@ exports.vc_restore = async function (req, res) {
     offset = 0
     const act = vc().format('YYYY-MM-DD').toString()
     console.log(act)
-    let result = await thesisRepository.selectRestoredExpiredAccordingToDate(act)
-    if(!Array.isArray(result)) {
-        offset=0
-        return res.status(500).json({error: 'server error'})
-    }
-    console.log(result)
-    result = await thesisRepository.restoreExpiredAccordingToIds(result)
-    if(!result) {
-        offset=0
-        return res.status(500).json({error: 'server error'})
-    }
-    else return res.status(200).json({value: req.body.value})
+    // let result = await thesisRepository.selectRestoredExpiredAccordingToDate(act)
+    // if(!Array.isArray(result)) {
+    //     offset=0
+    //     return res.status(500).json({error: 'server error'})
+    // }
+    // console.log(result)
+    // result = await thesisRepository.restoreExpiredAccordingToIds(result)
+    // if(!result) {
+    //     offset=0
+    //     return res.status(500).json({error: 'server error'})
+    // }
+    // else return res.status(200).json({value: req.body.value})
+    
+    thesisRepository.selectRestoredExpiredAccordingToDate(act)
+        .then((result) => {
+            if(!Array.isArray(result)) {
+                offset=0
+                return res.status(500).json({error: 'server error'})
+            }
+            thesisRepository.restoreExpiredAccordingToIds(result)
+                .then((result) => {
+                    if(!result) {
+                        offset=0
+                        return res.status(500).json({error: 'server error'})
+                    }
+                    else return res.status(200).json({value: req.body.value})
+
+                })
+                .catch(err => res.status(500).json({error: err}))
+
+        })
+        .catch(err => res.status(500).json({error: err}))
 
 }
 
