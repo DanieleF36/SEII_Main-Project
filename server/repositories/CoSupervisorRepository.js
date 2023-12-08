@@ -18,7 +18,7 @@ exports.getById = (id) => {
   return new Promise((resolve, reject) => {
     db.get(sqlCoSupervisor, [id], (err, row) => {
       if (err) {
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       }
       if (!row)
         resolve({})
@@ -41,7 +41,7 @@ exports.getByThesisId = (id) => {
   return new Promise( (resolve, reject) => {
     db.all(sql, [id], (err, rows) => {
       if (err) {
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       }
       else if(rows.length == 0)
         resolve([])

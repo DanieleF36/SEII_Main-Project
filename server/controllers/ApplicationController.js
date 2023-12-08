@@ -112,16 +112,7 @@ exports.acceptApplication = function acceptApplication(req, res) {
  * wrapper function for apply to a thesis proposal with id = id_thesis 
  * @param {*} req in req.params.id_thesis there is an iteger for the thesis
  *                in req.body.cv there is the cv in a PDF form
- * @param {*} res the returned object is defined as follow:
- * {
- *   id: integer,
- *   id_student: integer,
- *   id_thesis: integer,
- *   date: string,
- *   cv: {
- *     cv: //TODO
- *     }
- *   }
+ * @returns object = {applicationID : integer, studentId: integer,date : date, status: 0, professorId: integer}
  */
 exports.applyForProposal = async function (req, res) {
   if (req.user.role !== 'student') {

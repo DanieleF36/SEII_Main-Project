@@ -3,10 +3,7 @@ const controller = require("../../controllers/ThesisController.js");
 const thesisService = require('../../services/ThesisService.js')
 
 let mockReq; 
-let mockRes = {
-  status: jest.fn().mockReturnThis(),
-  json: jest.fn(),
-}; 
+let mockRes;
 
 beforeEach(() => {
   mockRes = {
@@ -16,12 +13,11 @@ beforeEach(() => {
 });
 
 describe("INSERT PROPOSAL UNIT TEST", () => {
-  const { ValidationError } = require('express-json-validator-middleware');
   
   let mockReq
   let mockValidate
   beforeEach(() => {
-    const mockRes = {
+    mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
@@ -207,7 +203,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
   let mockReq
   let mockValidate
   beforeEach(() => {
-    const mockRes = {
+    mockRes = {
       status: jest.fn().mockReturnThis(),
       json: jest.fn(),
     };
@@ -327,7 +323,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockImplementation(() => {return {error: 'error', status: 500} });
+    jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockImplementation(() => {return {error: 'error', status: 500} });
     await controller.updateThesis(mockReq, mockRes, mockValidate)
     expect(mockRes.status).toHaveBeenCalledWith(400);
     expect(mockRes.json).toBeDefined()

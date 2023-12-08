@@ -62,7 +62,7 @@ exports.vc_set = async function (req, res) {
     }
     console.log(result)
     result = await thesisRepository.setExpiredAccordingToIds(result)
-    if(result != true) {
+    if(!result) {
         offset=0
         return res.status(500).json({error: 'server error'})
     }
@@ -94,7 +94,7 @@ exports.vc_restore = async function (req, res) {
     }
     console.log(result)
     result = await thesisRepository.restoreExpiredAccordingToIds(result)
-    if(result != true) {
+    if(!result) {
         offset=0
         return res.status(500).json({error: 'server error'})
     }

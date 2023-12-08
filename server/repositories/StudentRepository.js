@@ -29,7 +29,7 @@ exports.getById = (id) => {
   return new Promise((resolve, reject) => {
     db.get(studentMailSQl, [id], function (err, row) {
       if (err) {
-        reject({error: err.message});
+        reject(new Error(err.message));
       } else {
         resolve(newStudent(row.id, row.name, row.surname, row.email, row.gender, row.nationality, row.cod_degree, enrol_year));
       }
@@ -49,7 +49,7 @@ exports.getByEmail = (email) => {
   return new Promise((resolve, reject)=>{
       db.get(sqlCoSupervisor, [email], (err, row)=>{
           if (err) {
-            return reject({error: err.message});
+            return reject(new Error(err.message));
           }
           if(!row) 
               resolve({})
@@ -76,7 +76,7 @@ exports.getStudentEmailCancelled = (id_application, id_thesis) => {
   return new Promise((resolve, reject) => {
     db.all(studentMailCancelledSQL, [id_thesis, id_application], function (err, result) {
       if (err) {
-        reject({error: err.message});
+        reject(new Error(err.message));
       } else {
         const emails = result.map((row) => row.email);
         resolve(emails);
@@ -97,7 +97,7 @@ exports.getStudentAndCDSByEmail= (email) => {
   return new Promise((resolve, reject)=>{
     db.get(sqlCoSupervisor, [email], (err, row)=>{
         if (err) {
-            return reject({error: err.message});
+            return reject(new Error(err.message));
         }
         if(!row) 
           resolve({})
