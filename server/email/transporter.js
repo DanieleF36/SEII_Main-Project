@@ -15,14 +15,14 @@ const transporter = nodemailer.createTransport({
 
 exports.sendEmail = (from, to, subject, text) => {
     if(!from)
-        throw new Error("from is missing")
+        throw {error: "from is missing"}
     if(!to)
-        throw new Error("to is missing")
+        throw {error: "to is missing"}
     const mailOptions = {from, to, subject, text};
     return new Promise((resolve, reject) => {
+        console.log(mailOptions)
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-            console.error("Error sending email cancelled:", error.message);
             reject({error: error.message});
             return;
             }
