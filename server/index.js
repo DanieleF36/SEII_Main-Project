@@ -73,7 +73,7 @@ app.get("/applications", isLoggedIn, (req, res) => applicationController.listApp
 
 app.put("/applications/:id_applications", applicationController.acceptApplication);
 
-app.get("/cosupervisors/email", isLoggedIn, coSupervisorController.getAllCoSupervisorsEmails);
+app.get("/cosupervisors/email", isLoggedIn, (req, res) => coSupervisorController.getAllCoSupervisorsEmails(req, res));
 
 
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))

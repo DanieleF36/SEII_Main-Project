@@ -72,7 +72,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     expect(mockRes.json).toHaveBeenCalledWith({ error: "You can not access to this route" });
   });
 
-  test("U10: New thesis proposal is inserted correctly", async () => {
+  test("U3: New thesis proposal is inserted correctly", async () => {
 
     jest.spyOn(thesisService, "addThesis").mockResolvedValue(true);          
     controller.addThesis(mockReq, mockRes, mockValidate)
@@ -82,7 +82,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     expect(mockRes.json).toBeDefined()
   });
 
-  test("U11: not for this group", async () => {
+  test("U4: not for this group", async () => {
     mockReq.body.groups = 'ingInfGroup'
 
     controller.addThesis(mockReq, mockRes, mockValidate);
@@ -92,7 +92,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
   });
 
 
-  test("U12: New thesis proposal is inserted correctly for bachelor", async () => {
+  test("U5: New thesis proposal is inserted correctly for bachelor", async () => {
     mockReq.body.level = 'Bachelor'
 
     jest.spyOn(thesisService, "addThesis").mockResolvedValue(true);          
@@ -103,7 +103,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     expect(mockRes.json).toBeDefined()
   });
 
-  test("U12: New thesis proposal is not inserted due to errors in service", async () => {
+  test("U6: New thesis proposal is not inserted due to errors in service", async () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
@@ -199,7 +199,6 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
 })
 
 describe("UPDATE PROPOSAL UNIT TEST", () => {
-  const { ValidationError } = require('express-json-validator-middleware');
   
   let mockReq
   let mockValidate
@@ -275,18 +274,18 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
 
   
 
-  test("U11: ThesisId not found", async () => {
+  test("U4: ThesisId not found", async () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    jest.spyOn(thesisService, "updateThesis").mockImplementation(async () => {
-      return Promise.reject(new Error( "No rows updated. Thesis ID not found." ));
-    });
-    await expect(controller.updateThesis(mockReq, mockRes, mockValidate)).rejects.toEqual(new Error("No rows updated. Thesis ID not found."));
+    jest.spyOn(thesisService, "updateThesis").mockResolvedValue({ error: "No rows updated. Thesis ID not found." })
+    controller.updateThesis(mockReq, mockRes, mockValidate)
+    await Promise.resolve()
+    expect(mockRes.json).toHaveBeenCalledWith("No rows updated. Thesis ID not found." );
   });
 
 
-  test("U12: New thesis proposal is inserted correctly", async () => {
+  test("U5: New thesis proposal is inserted correctly", async () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
@@ -296,7 +295,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     expect(mockRes.json).toBeDefined()
   });
 
-  test("U13: New thesis proposal is inserted correctly for bachelor", async () => {
+  test("U6: New thesis proposal is inserted correctly for bachelor", async () => {
     mockReq.body.level = 'Bachelor'
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
@@ -308,17 +307,18 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     expect(mockRes.json).toBeDefined()
   });
 
-  test("U14: New thesis proposal is not inserted due to errors in service", async () => {
+  test("U7: New thesis proposal is not inserted due to errors in service", async () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockImplementation(() => {return {error: 'error', status: 500} });
-    await controller.updateThesis(mockReq, mockRes, mockValidate)
+    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockResolvedValue({error: 'error', status: 500});
+    controller.updateThesis(mockReq, mockRes, mockValidate)
+    await Promise.resolve()
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toBeDefined()
   });
 
-  test("U15: New thesis proposal is not inserted due to not being part of that group", async () => {
+  test("U8: New thesis proposal is not inserted due to not being part of that group", async () => {
     mockReq.body.groups = ['ingIngGroup']
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);

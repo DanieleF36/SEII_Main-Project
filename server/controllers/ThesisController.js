@@ -110,7 +110,6 @@ exports.addThesis = function addThesis(req, res, validate) {
   req.body.supervisor = req.user.id
   thesisService.addThesis(req.body)
     .then(response => {
-      console.log(response)
       if(response.error) {
         res.status(response.status).json(response.error);
         return;
@@ -120,9 +119,10 @@ exports.addThesis = function addThesis(req, res, validate) {
         return;
       }
     })
+    .catch((err) => res.status(500).json(err))
 };
 
-exports.updateThesis = async function updateThesis(req, res, validate) {
+exports.updateThesis = function updateThesis(req, res, validate) {
   if(req.user.role!=='teacher'){
     res.status(401).json({error:"You can not access to this route"})
     return;
@@ -144,12 +144,17 @@ exports.updateThesis = async function updateThesis(req, res, validate) {
   }
 
   // Call the updateThesis method from the thesisService
-  const response = await thesisService.updateThesis(req.body, req.params.id);
-
-  if (response.error) {
-    res.status(response.status).json(response.error);
-  } else {
-    res.status(200).json(response);
-  }
+  thesisService.updateThesis(req.body, req.params.id)
+    .then(response => {
+      if(response.error) {
+        res.status(response.status).json(response.error);
+        return;
+      }
+      else {
+        res.status(200).json(response);
+        return;
+      }
+    })
+    .catch((err) => res.status(500).json(err))
 };
 
