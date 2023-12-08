@@ -14,10 +14,12 @@ const db = require("./db");
  * @returns object = {applicationID : integer, studentId: integer,date : date, status: 0, professorId: integer}
  */
 exports.addApplication = (studentId, thesisId, cvPath, supervisorId) => {
-  if(!(studentId && thesisId && supervisorId) || studentId<0 || studentId<0 || supervisorId<0)
-    return reject({error: "student and theis's id must exist and be greater than 0"});
-  if(!path_cv)
-    return reject({error: "path_cv must exists"});
+  if (!(studentId && thesisId && supervisorId) || studentId < 0 || thesisId < 0 || supervisorId < 0) {
+    throw new Error('Student and thesis IDs must exist and be greater than 0');
+  }
+  if (!cvPath) {
+    throw new Error('CV path must exist');
+  }
   return new Promise((resolve, reject) => {
     //Create a current date to add at the new application 
     const currentDate = dayjs().format('YYYY-MM-DD').toString()
@@ -111,19 +113,21 @@ exports.getByStudentId = (id_student) => {
  * @returns object: {row : row of the application db} 
  */
 exports.getById = (id) => {
-  if(!id || id<0)
-    throw {error: "id must exists and be greater than 0"};
+  if (!(id && id >= 0)) {
+    throw new Error('Application ID must be greater than or equal to 0');
+  }
+
   const fetchThesisStudentSQL = 'SELECT * FROM Application WHERE id = ?';
   return new Promise((resolve, reject) => {
     db.get(fetchThesisStudentSQL, [id], (err, row) => {
       if (err) {
-        reject({error: err.message});
+        reject(new Error(err.message));
         return;
       }
       resolve(row);
     });
   });
-}
+};
 
 /**
  * Returns the "active" application of the student. Active = not rejected or cancelled
@@ -131,18 +135,20 @@ exports.getById = (id) => {
  * @returns objects that represents application if exisists, undefined otherwise
  * */
 exports.getActiveByStudentId = (studentId) => {
-  if(!studentId || studentId<0)
-    throw {error: "studentId must exists and be greater than 0"};
-  const sql = 'SELECT * FROM Application WHERE id_student = ? AND (status=1 OR status=0) ';
-  return new Promise((resolve, reject)=>{
-    db.get(sql, [studentId], (err, result) => {
+  if (!(studentId && studentId >= 0)) {
+    throw new Error('Student ID must be greater than or equal to 0');
+  }
+  const fetchActiveApplicationSQL = 'SELECT * FROM Application WHERE id_student = ? AND (status=1 OR status=0)';
+  return new Promise((resolve, reject) => {
+    db.get(fetchActiveApplicationSQL, [studentId], (err, result) => {
       if (err) {
-        return reject({error: err.message});
+        reject(new Error(err.message));
+        return;
       }
       resolve(result);
-    })
-  })
-}
+    });
+  });
+};
 
 /**
  * Performs queries to the database for retriving all the needed information given a supervisor's id
@@ -162,14 +168,19 @@ exports.getActiveByStudentId = (studentId) => {
  * }
  */
 exports.getByTeacherId = (id_teacher) => {
-  const sqlApplication =
-    "SELECT innerTable.id_thesis, innerTable.id, innerTable.id_student, title, S.name, S.surname, innerTable.data, innerTable.path_cv, innerTable.status FROM (SELECT id,id_student,path_cv,status,id_thesis,data FROM Application WHERE id_teacher=?) AS innerTable, Thesis AS T, Student AS S WHERE T.id = innerTable.id_thesis AND S.id = innerTable.id_student";
+  if (!(id_teacher && id_teacher >= 0)) {
+    throw new Error('Teacher ID must be greater than or equal to 0');
+  }
+
+  const fetchTeacherApplicationSQL = 'SELECT innerTable.id_thesis, innerTable.id, innerTable.id_student, title, S.name, S.surname, innerTable.data, innerTable.path_cv, innerTable.status FROM (SELECT id,id_student,path_cv,status,id_thesis,data FROM Application WHERE id_teacher = ?) AS innerTable, Thesis AS T, Student AS S WHERE T.id = innerTable.id_thesis AND S.id = innerTable.id_student';
+
   return new Promise((resolve, reject) => {
-    db.all(sqlApplication, [id_teacher], (err, rows) => {
+    db.all(fetchTeacherApplicationSQL, [id_teacher], (err, rows) => {
       if (err) {
-        return reject({ error: err.message });
+        reject(new Error(err.message));
+        return;
       }
-      const application = rows.map((a) => ({
+      const applications = rows.map((a) => ({
         id_student: a.id_student,
         id_application: a.id,
         id_thesis: a.id_thesis,
@@ -179,8 +190,8 @@ exports.getByTeacherId = (id_teacher) => {
         data: a.data,
         path_cv: a.path_cv,
         status: a.status
-      }))
-      resolve(application);
+      }));
+      resolve(applications);
     });
   });
 };
@@ -194,22 +205,26 @@ exports.getByTeacherId = (id_teacher) => {
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  * @returns "Done": the function is completed without problems 
  */
-exports.updateStatus = (id, status)=>{
-  if(!id || id<0)
-    throw {error:"id must exists and be greater than 0"};
-  if(status == undefined || status<0 || status>3)
-    throw {error:"status must exists and be one or two or three"};
+exports.updateStatus = (id, status) => {
+  if (!(id && id >= 0)) {
+    throw new Error('Application ID must be greater than or equal to 0');
+  }
+  if (!(status && status >= 0 && status <= 3)) {
+    throw new Error('Status must be an integer between 0 and 3 (rejected, pending, accepted, or cancelled)');
+  }
+
   const updateApplicationSQL = 'UPDATE Application SET status = ? WHERE id = ?';
-  return new Promise((resolve, reject)=>{
-    db.run(updateApplicationSQL, [status, id], function (err) {
+
+  return new Promise((resolve, reject) => {
+    db.run(updateApplicationSQL, [status, id], (err) => {
       if (err) {
-        reject({error: err.message});
+        reject(new Error(err.message));
         return;
       }
-      resolve("Done")
-    })
-  })
-}
+      resolve('Done');
+    });
+  });
+};
 
 /**
  * Support functions used to set the status of the application for a thesis of all the 
@@ -221,20 +236,24 @@ exports.updateStatus = (id, status)=>{
  * @returns "Done": the function is completed without problems 
  */
 exports.updateStatusToCancelledForOtherStudent = (id_thesis, id_student) => {
-  if (!id_thesis || id_thesis < 0)
-    throw {error: "id_thesis must exists and be greater than 0"};
-  if (!id_student || id_student < 0)
-    throw {error: "id_student must exists and be greater than 0"};
+  if (!(id_thesis && id_thesis >= 0)) {
+    throw new Error('Thesis ID must be greater than or equal to 0');
+  }
+  if (!(id_student && id_student >= 0)) {
+    throw new Error('Student ID must be greater than or equal to 0');
+  }
+
+  const updateOtherApplicationsSQL = 'UPDATE Application SET status = 3 WHERE id_thesis = ? AND id_student != ?';
+
   return new Promise((resolve, reject) => {
-    const updateOtherApplicationsSQL = 'UPDATE Application SET status = 3 WHERE id_thesis = ? AND id_student != ?';
-    db.run(updateOtherApplicationsSQL, [id_thesis, id_student], function (err) {
+    db.run(updateOtherApplicationsSQL, [id_thesis, id_student], (err) => {
       if (err) {
-        reject({ error: err.message });
+        reject(new Error(err.message));
         return;
       }
-      resolve("Done")
-    })
-  })
+      resolve('Done');
+    });
+  });
 };
 
 //==================================Virtual CLock==================================

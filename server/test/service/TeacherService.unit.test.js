@@ -291,7 +291,7 @@ describe('acceptApplication Service',()=>{
             await teacherService.acceptApplication(mockStatus, mockTeacherID, mockApplicationId);
         }
         catch(error) {
-            expect(error).toStrictEqual({error: "No application was found, application is missing or is of another teacher"})
+            expect(error).toStrictEqual(new Error("No application was found, application is missing or is of another teacher"))
         }
     })
     test('case1: Wrong application owner', async()=>{
@@ -300,7 +300,7 @@ describe('acceptApplication Service',()=>{
             await teacherService.acceptApplication(mockStatus, mockTeacherID, mockApplicationId);
         }
         catch(error) {
-            expect(error).toStrictEqual({error: "This application does not own to that teacher, he cant accept it"})
+            expect(error).toStrictEqual(new Error("This application does not own to that teacher, he cant accept it"))
         }
     })
     test('case2: applicationRepository.updateStatus fail', async()=>{

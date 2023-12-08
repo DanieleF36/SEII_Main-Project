@@ -66,7 +66,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     });
     await controller.addThesis(mockReq, mockRes, mockValidate);
     expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toHaveBeenCalledWith({ error: "body is missing" });
+    expect(mockRes.json).toHaveBeenCalledWith({ message: "body is missing" });
   });
 
   test("U2: user is not logged in or it's not a professor", async () => {
@@ -74,7 +74,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
 
     await controller.addThesis(mockReq, mockRes);
     expect(mockRes.status).toHaveBeenCalledWith(401);
-    expect(mockRes.json).toHaveBeenCalledWith({ error: "You can not access to this route" });
+    expect(mockRes.json).toHaveBeenCalledWith({ message: "You can not access to this route" });
   });
 
   test("U10: New thesis proposal is inserted correctly", async () => {
@@ -97,7 +97,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     });
     await controller.addThesis(mockReq, mockRes, mockValidate);
     expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toHaveBeenCalledWith({ error: "You are not allowed to add for this group" });
+    expect(mockRes.json).toHaveBeenCalledWith({ message: "You are not allowed to add for this group" });
   });
 
 
@@ -117,7 +117,7 @@ describe("INSERT PROPOSAL UNIT TEST", () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'addThesis').mockImplementation(() => {return {error: 'error', status: 500} });
+    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'addThesis').mockImplementation(() => {return {message: 'error', status: 500} });
     await controller.addThesis(mockReq, mockRes, mockValidate)
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toBeDefined()
@@ -141,9 +141,9 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
   let mockValidate = jest.fn();
   test('case 1: role not present', async () => {
     
-    await controller.searchThesis(mockReq, mockRes);
+    controller.searchThesis(mockReq, mockRes);
     expect(mockRes.status).toHaveBeenCalledWith(401);
-    expect(mockRes.json).toHaveBeenCalledWith({error: "Only student or teacher can access list of thesis"});
+    expect(mockRes.json).toHaveBeenCalledWith({message: "Only student or teacher can access list of thesis"});
   }),
   test('case2: role student: validate return error', async()=>{
     mockReq.user.role = 'student';
@@ -151,9 +151,9 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(new ValidationError('error'));
     });
-    await controller.searchThesis(mockReq, mockRes, mockValidate);
+    controller.searchThesis(mockReq, mockRes, mockValidate);
     expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toHaveBeenCalledWith({error: "error"});
+    expect(mockRes.json).toHaveBeenCalledWith({message: "error"});
   }),
   test('case3: role student: error in thesis service', async()=>{
     mockReq.query = {};
@@ -162,20 +162,20 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'advancedResearchThesis').mockRejectedValue({error: 'error'});
-    await controller.searchThesis(mockReq, mockRes, mockValidate);
-    await Promise.resolve();
+    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'advancedResearchThesis').mockRejectedValue({message: 'error'});
+    controller.searchThesis(mockReq, mockRes, mockValidate);
+    await new Promise(resolve => setImmediate(resolve));
     expect(spy).toHaveBeenCalledWith(1, "titleD", undefined, undefined,undefined,undefined,undefined,undefined,undefined,undefined,"ingInf",undefined,"LM");
     expect(mockRes.status).toHaveBeenCalledWith(500);
-    expect(mockRes.json).toHaveBeenCalledWith({error: "error"});
+    expect(mockRes.json).toHaveBeenCalledWith({message: "error"});
   }),
   test('case4: role student: success', async()=>{
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
     const spy = jest.spyOn(require('../../services/ThesisService.js'), 'advancedResearchThesis').mockResolvedValue([[{success: 'success', supervisor:{name:"name", surname:"surname"}, coSupervisors:[{name:"name", surname:"surname"}]}], 0]);
-    await controller.searchThesis(mockReq, mockRes, mockValidate);
-    await Promise.resolve();
+    controller.searchThesis(mockReq, mockRes, mockValidate);
+    await new Promise(resolve => setImmediate(resolve));
     expect(spy).toHaveBeenCalledWith(1, "titleD", undefined, undefined,undefined,undefined,undefined,undefined,undefined,undefined,"ingInf",undefined,"LM");
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toHaveBeenCalledWith({nPage:0, thesis:[{success: 'success', supervisor:"name surname", coSupervisors:["name surname"]}]});
@@ -183,24 +183,24 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
   test('case4_BIS: role teacher: status != 0 or 1', async()=>{
     mockReq.user.role = 'teacher';
     mockReq.query = {status: 3}
-    await controller.searchThesis(mockReq, mockRes);
-    await Promise.resolve();
+    controller.searchThesis(mockReq, mockRes);
+    await new Promise(resolve => setImmediate(resolve));
     expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toHaveBeenCalledWith({error: 'status not valid'});
+    expect(mockRes.json).toHaveBeenCalledWith({message: 'status not valid'});
   }),
   test('case5: role teacher: error', async()=>{
     mockReq.query.status = 0;
-    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'getActiveBySupervisor').mockRejectedValue({error: 'error'});
-    await controller.searchThesis(mockReq, mockRes);
-    await Promise.resolve();
+    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'getActiveBySupervisor').mockRejectedValue({message: 'error'});
+    controller.searchThesis(mockReq, mockRes);
+    await new Promise(resolve => setImmediate(resolve));
     expect(spy).toHaveBeenCalledWith(1,0);
     expect(mockRes.status).toHaveBeenCalledWith(500);
-    expect(mockRes.json).toHaveBeenCalledWith({error: 'error'});
+    expect(mockRes.json).toHaveBeenCalledWith({message: 'error'});
   }),
   test('case6: role teacher: success', async()=>{
     const spy = jest.spyOn(require('../../services/ThesisService.js'), 'getActiveBySupervisor').mockResolvedValue({success: 'success'});
-    await controller.searchThesis(mockReq, mockRes);
-    await Promise.resolve();
+    controller.searchThesis(mockReq, mockRes);
+    await new Promise(resolve => setImmediate(resolve));
     expect(spy).toHaveBeenCalledWith(1,0);
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toHaveBeenCalledWith({nPage:1, thesis:{success: 'success'}});
@@ -261,7 +261,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     });
     await controller.updateThesis(mockReq, mockRes, mockValidate);
     expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toHaveBeenCalledWith({ error: "Thesis id is not valid" });
+    expect(mockRes.json).toHaveBeenCalledWith({ message: "Thesis id is not valid" });
   });
   test("U2: Missing body", async () => {
     mockReq.body = undefined
@@ -271,7 +271,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     });
     await controller.addThesis(mockReq, mockRes, mockValidate);
     expect(mockRes.status).toHaveBeenCalledWith(400);
-    expect(mockRes.json).toHaveBeenCalledWith({ error: "body is missing" });
+    expect(mockRes.json).toHaveBeenCalledWith({ message: "body is missing" });
   });
 
   test("U3: Supervisor is missing", async () => {
@@ -279,7 +279,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     
     await controller.updateThesis(mockReq, mockRes);
     expect(mockRes.status).toHaveBeenCalledWith(401);
-    expect(mockRes.json).toHaveBeenCalledWith({ error: "You can not access to this route" });
+    expect(mockRes.json).toHaveBeenCalledWith({ message: "You can not access to this route" });
   });
 
   
@@ -289,9 +289,9 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
       callback(null);
     });
     jest.spyOn(thesisService, "updateThesis").mockImplementation(async () => {
-      return Promise.reject({ error: "No rows updated. Thesis ID not found." });
+      return Promise.reject({ message: "No rows updated. Thesis ID not found." });
     });
-    await expect(controller.updateThesis(mockReq, mockRes, mockValidate)).rejects.toEqual({ error: "No rows updated. Thesis ID not found." });
+    await expect(controller.updateThesis(mockReq, mockRes, mockValidate)).rejects.toEqual({ message: "No rows updated. Thesis ID not found." });
   });
 
 
@@ -317,11 +317,11 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     expect(mockRes.json).toBeDefined()
   });
 
-  test("U14: New thesis proposal is not inserted due to errors in service", async () => {
+  test("U14: New thesis proposal is not inserted due to messages in service", async () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockImplementation(() => {return {error: 'error', status: 500} });
+    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockImplementation(() => {return {message: 'error', status: 500} });
     await controller.updateThesis(mockReq, mockRes, mockValidate)
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toBeDefined()
@@ -332,7 +332,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockImplementation(() => {return {error: 'error', status: 500} });
+    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockImplementation(() => {return {message: 'error', status: 500} });
     await controller.updateThesis(mockReq, mockRes, mockValidate)
     expect(mockRes.status).toHaveBeenCalledWith(400);
     expect(mockRes.json).toBeDefined()

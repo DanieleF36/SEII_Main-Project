@@ -37,22 +37,22 @@ describe('List Application', () => {
     test('case1: role undefined', async () => {
         await controller.listApplication(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(401);
-        expect(mockRes.json).toHaveBeenCalledWith({ error: "You can't access to this route. You're not a student or a professor" });
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "You can't access to this route. You're not a student or a professor" });
     });
     test('case2: teacher: userId not valid', async () => {
         mockReq.user.role = 'teacher';
         await controller.listApplication(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(500);
-        expect(mockRes.json).toHaveBeenCalledWith({ error: "Given supervisor's id is not valid" });
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "Given supervisor's id is not valid" });
     });
     test('case3: teacher: browseApplicationProfessor err', async () => {
         mockReq.user.id = 1;
         mockReq.user.role = 'teacher';
-        const spy = jest.spyOn(require('../../services/TeacherService.js'), 'browseApplicationProfessor').mockRejectedValue({ error: "error" });
+        const spy = jest.spyOn(require('../../services/TeacherService.js'), 'browseApplicationProfessor').mockRejectedValue({ message: "error" });
         await controller.listApplication(mockReq, mockRes);
         await Promise.resolve();
         expect(mockRes.status).toHaveBeenCalledWith(500);
-        expect(mockRes.json).toHaveBeenCalledWith({ error: "error" });
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "error" });
         expect(spy).toHaveBeenCalledWith(1);
     });
     test('case4: teacher: browseApplicationProfessor success', async () => {
@@ -69,16 +69,16 @@ describe('List Application', () => {
         mockReq.user.id = undefined;
         await controller.listApplication(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(500);
-        expect(mockRes.json).toHaveBeenCalledWith({ error: "Given student's id is not valid" });
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "Given student's id is not valid" });
     });
     test('case6: student: browserApplicationStudent err', async () => {
         mockReq.user.role = 'student';
         mockReq.user.id = 1;
-        const spy = jest.spyOn(require('../../services/StudentService.js'), 'browserApplicationStudent').mockRejectedValue({ error: "error" });
+        const spy = jest.spyOn(require('../../services/StudentService.js'), 'browserApplicationStudent').mockRejectedValue({ message: "error" });
         await controller.listApplication(mockReq, mockRes);
         await Promise.resolve();
         expect(mockRes.status).toHaveBeenCalledWith(500);
-        expect(mockRes.json).toHaveBeenCalledWith({ error: "error" });
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "error" });
         expect(spy).toHaveBeenCalledWith(1);
     });
     test('case7: student: browserApplicationStudent success', async () => {
@@ -197,7 +197,7 @@ describe('Apply for proposal', () => {
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(undefined);
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
-        jest.spyOn(require("../../services/ApplicationService"), "addApplication").mockRejectedValue({ error: "student and theis's id must exist and be greater than 0" })
+        jest.spyOn(require("../../services/ApplicationService"), "addApplication").mockRejectedValue({ message: "student and theis's id must exist and be greater than 0" })
         await controller.applyForProposal(mockReq, mockRes);
         await Promise.resolve();
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
@@ -214,7 +214,7 @@ describe('Apply for proposal', () => {
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(undefined);
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
-        jest.spyOn(require("../../services/ApplicationService"), "addApplication").mockRejectedValue({ error: "path_cv must exists" })
+        jest.spyOn(require("../../services/ApplicationService"), "addApplication").mockRejectedValue({ message: "path_cv must exists" })
         await controller.applyForProposal(mockReq, mockRes);
         await Promise.resolve();
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
@@ -223,63 +223,64 @@ describe('Apply for proposal', () => {
 
 describe("Accept Application", () => {
     test('U0: user role different from teacher', async () => {
-        await controller.acceptApplication(mockReq, mockRes);
+        controller.acceptApplication(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(401);
-        expect(mockRes.json).toHaveBeenCalledWith({ error: "You can not access to this route" });
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "You can not access to this route" });
     });
     test('U1: application id missing', async () => {
         mockReq.user.role = 'teacher';
-        await controller.acceptApplication(mockReq, mockRes);
+        controller.acceptApplication(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(400);
-        expect(mockRes.json).toHaveBeenCalledWith({ error: "Wronged id application" });
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "Wronged id application" });
     });
     test('U3: application id wronged', async () => {
         mockReq.user.role = 'teacher';
         mockReq.params.id_application = -1;
-        await controller.acceptApplication(mockReq, mockRes);
+        controller.acceptApplication(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(400);
-        expect(mockRes.json).toHaveBeenCalledWith({ error: "Wronged id application" });
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "Wronged id application" });
     });
     test("U4: Missing body", async () => {
         mockReq.user.role = 'teacher';
         mockReq.params.id_application = 1;
         mockReq.body= undefined;
-        await controller.acceptApplication(mockReq, mockRes);
+        controller.acceptApplication(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(400);
-        expect(mockRes.json).toHaveBeenCalledWith({ error: "Body is missing" });
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "Body is missing" });
     });
     test("U5: Missing new status acceptApplication", async () => {
         mockReq.user.role = 'teacher';
         mockReq.params.id_application = 1;
         mockReq.body.status = undefined;
-        await controller.acceptApplication(mockReq, mockRes);
+        controller.acceptApplication(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(400);
-        expect(mockRes.json).toHaveBeenCalledWith({ error: "Missing new status acceptApplication" });
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "Missing new status acceptApplication" });
     });
     test("U6: Invalid new status", async () => {
         mockReq.user.role = 'teacher';
         mockReq.params.id_application = 1;
         mockReq.body.status = 5;
-        await controller.acceptApplication(mockReq, mockRes);
+        controller.acceptApplication(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(400);
-        expect(mockRes.json).toHaveBeenCalledWith({ error: "Invalid new status entered" });
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "Invalid new status entered" });
     });
     test("U7: Application accepted or rejected fails with error", async () => {
         mockReq.user.role = 'teacher';
         mockReq.params.id_application = 1;
         mockReq.body.status = 1;
-        jest.spyOn(require("../../services/TeacherService.js"), "acceptApplication").mockRejectedValue({ error: "error" });
-        await controller.acceptApplication(mockReq, mockRes);
-        await Promise.resolve();
+        jest.spyOn(require("../../services/TeacherService.js"), "acceptApplication").mockRejectedValue({ message: "error" });
+        controller.acceptApplication(mockReq, mockRes);
+        await new Promise(resolve => setImmediate(resolve));
         expect(mockRes.status).toHaveBeenCalledWith(500);
-        expect(mockRes.json).toHaveBeenCalledWith({ error: "error" })
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "error" })
     });
     test("U8: Application accepted or rejected correctly", async () => {
         mockReq.user.role = 'teacher';
         mockReq.params.id_application = 1;
         mockReq.body.status = 1;
         jest.spyOn(require("../../services/TeacherService.js"), "acceptApplication").mockResolvedValue(true);
-        await controller.acceptApplication(mockReq, mockRes)
+        controller.acceptApplication(mockReq, mockRes)
+        await new Promise(resolve => setImmediate(resolve));
         expect(mockRes.status).toHaveBeenCalledWith(200);
         expect(mockRes.json).toBeDefined()
     });

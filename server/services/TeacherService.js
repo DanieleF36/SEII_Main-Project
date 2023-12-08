@@ -38,12 +38,12 @@ exports.browseApplicationProfessor = async function (id_professor) {
 exports.acceptApplication = async function (status, teacherID, applicationID) {
     let row = await applicationRepository.getById(applicationID);
     if (!row) {
-        throw {error: "No application was found, application is missing or is of another teacher"};
+        throw new Error("No application was found, application is missing or is of another teacher");
     }
     const id_thesis = row.id_thesis;
     const id_student = row.id_student;
     if(row.id_teacher != teacherID)
-        throw {error: "This application does not own to that teacher, he cant accept it"};
+        throw new Error("This application does not own to that teacher, he cant accept it");
     await applicationRepository.updateStatus(applicationID, status);
     if (status === 1) {
         await applicationRepository.updateStatusToCancelledForOtherStudent(id_thesis, id_student);

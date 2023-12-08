@@ -23,16 +23,20 @@ function newStudent(id, name, surname, email, gender, nationality, cod_degree, e
  * @returns all the teacher's information
  */
 exports.getById = (id) => {
-  if(!id || id<0)
-    throw {error:"id must exists and be greater than 0"};
-  const studentMailSQl = 'SELECT * FROM Student WHERE id = ? '
+  if (!(id && id >= 0)) {
+    throw new Error('Student ID must be greater than or equal to 0');
+  }
+
+  const fetchStudentByIdSQL = 'SELECT * FROM Student WHERE id = ?';
+
   return new Promise((resolve, reject) => {
-    db.get(studentMailSQl, [id], function (err, row) {
+    db.get(fetchStudentByIdSQL, [id], (err, row) => {
       if (err) {
-        reject({error: err.message});
-      } else {
-        resolve(newStudent(row.id, row.name, row.surname, row.email, row.gender, row.nationality, row.cod_degree, enrol_year));
+        reject(new Error(err.message));
+        return;
       }
+
+      resolve(newStudent(row.id, row.name, row.surname, row.email, row.gender, row.nationality, row.cod_degree, row.enrol_year));
     });
   });
 };
@@ -43,22 +47,26 @@ exports.getById = (id) => {
  * @returns all the student's information
  */
 exports.getByEmail = (email) => {
-  if(!email)
-        throw {error:"email must exist"}
-  const sqlCoSupervisor = "SELECT * FROM Student WHERE email = ?";
-  return new Promise((resolve, reject)=>{
-      db.get(sqlCoSupervisor, [email], (err, row)=>{
-          if (err) {
-            return reject({error: err.message});
-          }
-          if(!row) 
-              resolve({})
-          else 
-              resolve(newStudent(row.id, row.name, row.surname, row.email, row.gender, row.nationality, row.cod_degree, enrol_year));
+  if (!email) {
+    throw new Error('Email must be provided');
+  }
+  const fetchStudentByEmailSQL = 'SELECT * FROM Student WHERE email = ?';
 
-      });
+  return new Promise((resolve, reject) => {
+    db.get(fetchStudentByEmailSQL, [email], (err, row) => {
+      if (err) {
+        reject(new Error(err.message));
+        return;
+      }
+
+      if (!row) {
+        resolve({});
+      } else {
+        resolve(newStudent(row.id, row.name, row.surname, row.email, row.gender, row.nationality, row.cod_degree, row.enrol_year));
+      }
+    });
   });
-}
+};
 
 /**
  * Given an application's id and a thesis'id, returns the list of student emails whose application has been deleted 
@@ -68,19 +76,24 @@ exports.getByEmail = (email) => {
  * @returns [email1, email2, .....]
  */
 exports.getStudentEmailCancelled = (id_application, id_thesis) => {
-  if(!id_application || id_application<0)
-    throw {error:"id_application must exists and be greater than 0"};
-  if(!id_thesis || id_thesis<0)
-    throw {error:"id_thesis must exists and be greater than 0"};
-  const studentMailCancelledSQL = 'SELECT email FROM Student WHERE id IN (SELECT id_student FROM Application WHERE id_thesis=? AND id!=?) '
+  if (!(id_application && id_application >= 0)) {
+    throw new Error('Application ID must be greater than or equal to 0');
+  }
+  if (!(id_thesis && id_thesis >= 0)) {
+    throw new Error('Thesis ID must be greater than or equal to 0');
+  }
+
+  const fetchStudentEmailsCancelledSQL = 'SELECT email FROM Student WHERE id IN (SELECT id_student FROM Application WHERE id_thesis=? AND id!=? )';
+
   return new Promise((resolve, reject) => {
-    db.all(studentMailCancelledSQL, [id_thesis, id_application], function (err, result) {
+    db.all(fetchStudentEmailsCancelledSQL, [id_thesis, id_application], (err, result) => {
       if (err) {
-        reject({error: err.message});
-      } else {
-        const emails = result.map((row) => row.email);
-        resolve(emails);
+        reject(new Error(err.message));
+        return;
       }
+
+      const emails = result.map((row) => row.email);
+      resolve(emails);
     });
   });
 };
@@ -90,24 +103,38 @@ exports.getStudentEmailCancelled = (id_application, id_thesis) => {
  * @param {*} email student's email
  * @returns all the student's information
  */
-exports.getStudentAndCDSByEmail= (email) => {
-  if(!email)
-    throw {error:"email must exist"}
-  const sqlCoSupervisor = "SELECT S.id, S.name, S.surname, S.email, S.gender, S.nationality, D.title, D.code, S.enrol_year  FROM Student S, Degree D WHERE S.cod_degree=D.cod AND S.email = ?";
-  return new Promise((resolve, reject)=>{
-    db.get(sqlCoSupervisor, [email], (err, row)=>{
-        if (err) {
-            return reject({error: err.message});
-        }
-        if(!row) 
-          resolve({})
-        else {
-          resolve({id:row.id, name:row.name, surname:row.surname, email:row.email, gender:row.gender, nationality:row.nationality, cdsCode:row.code, cds:row.title, enrol_year:row.enrol_year});
-        }
+exports.getStudentAndCDSByEmail = (email) => {
+  if (!email) {
+    throw new Error('Email must be provided');
+  }
 
+  const fetchStudentAndCDSByEmailSQL = 'SELECT S.id, S.name, S.surname, S.email, S.gender, S.nationality, D.title, D.code, S.enrol_year FROM Student S, Degree D WHERE S.cod_degree = D.cod AND S.email = ?';
+
+  return new Promise((resolve, reject) => {
+    db.get(fetchStudentAndCDSByEmailSQL, [email], (err, row) => {
+      if (err) {
+        reject(new Error(err.message));
+        return;
+      }
+
+      if (!row) {
+        resolve({});
+      } else {
+        resolve({
+          id: row.id,
+          name: row.name,
+          surname: row.surname,
+          email: row.email,
+          gender: row.gender,
+          nationality: row.nationality,
+          cdsCode: row.code,
+          cds: row.title,
+          enrol_year: row.enrol_year,
+        });
+      }
     });
-  })
-}
+  });
+};
 
 //==================================Set==================================
 

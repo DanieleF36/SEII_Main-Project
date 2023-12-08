@@ -8,7 +8,7 @@ describe('transporter', ()=>{
             await sendEmail(from, to, subject, text);
         }
         catch(e){
-            expect(e).toStrictEqual({error: "from is missing"});
+            expect(e).toStrictEqual(new Error("from is missing"));
         }
     });
     test('case2: to is missing', async()=>{
@@ -17,19 +17,19 @@ describe('transporter', ()=>{
             await sendEmail(from, to, subject, text);
         }
         catch(e){
-            expect(e).toStrictEqual({error: "to is missing"});
+            expect(e).toStrictEqual(new Error("to is missing"));
         }
     });
     test('case3: sendEmail fails', async()=>{
         to='you';
         const spy = jest.spyOn(t, 'sendMail').mockImplementation((mailOptions, cb)=>{
-            cb({message: "error"});
+            cb(new Error("error"));
         })
         try{
             await sendEmail(from, to, subject, text);
         }
         catch(e){
-            expect(e).toStrictEqual({error: "error"});
+            expect(e).toStrictEqual(new Error("error"));
         }
         expect(spy).toHaveBeenCalledWith({from, to, subject, text}, expect.any(Function));
     });

@@ -12,7 +12,7 @@ beforeEach(() => {
 describe.skip('browserApplicationStudent', ()=>{
     test('case1: success', async ()=>{
         const mockIdStudent = 1; 
-        mockRow = {
+        const mockRow = {
             title: "title",
             supervisor_name: "supervisor_name",
             supervisor_surname: "supervisor_surname",

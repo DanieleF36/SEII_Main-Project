@@ -45,11 +45,11 @@ const applicationRepository = require('../repositories/ApplicationRepository')
  */
 exports.listApplication = function listApplication(req, res) {
     if (req.user.role != "teacher" && req.user.role != "student") {
-        return res.status(401).json({ error: "You can't access to this route. You're not a student or a professor" });
+        return res.status(401).json({ message: "You can't access to this route. You're not a student or a professor" });
     }
     if (req.user.role == 'teacher') {
         if (!req.user.id) {
-            res.status(500).json({ error: "Given supervisor's id is not valid" })
+            res.status(500).json({ message: "Given supervisor's id is not valid" })
             return
         }
         teacherService
@@ -62,7 +62,7 @@ exports.listApplication = function listApplication(req, res) {
             });
     }else if (req.user.role == 'student') {
         if (!req.user.id) {
-          res.status(500).json({ error: "Given student's id is not valid" })
+          res.status(500).json({ message: "Given student's id is not valid" })
           return
         }
         studentService
@@ -78,19 +78,19 @@ exports.listApplication = function listApplication(req, res) {
 
 exports.acceptApplication = function acceptApplication(req, res) {
     if (req.user.role !== 'teacher') {
-        res.status(401).json({ error: "You can not access to this route" })
+        res.status(401).json({ message: "You can not access to this route" })
         return;
     }
     if (!req.params.id_application || req.params.id_application < 0) {
-        res.status(400).json({ error: "Wronged id application" });
+        res.status(400).json({ message: "Wronged id application" });
         return;
     }
     if (req.body === undefined) {
-        res.status(400).json({ error: "Body is missing" });
+        res.status(400).json({ message: "Body is missing" });
         return;
     }
     if (req.body.status == undefined) {
-        res.status(400).json({ error: "Missing new status acceptApplication" });
+        res.status(400).json({ message: "Missing new status acceptApplication" });
         return;
     }
     if (req.body.status == 1 || req.body.status == 2) {
@@ -104,7 +104,7 @@ exports.acceptApplication = function acceptApplication(req, res) {
             });
     }
     else {
-        res.status(400).json({ error: "Invalid new status entered" })
+        res.status(400).json({ message: "Invalid new status entered" })
     }
 };
 
@@ -125,21 +125,21 @@ exports.acceptApplication = function acceptApplication(req, res) {
  */
 exports.applyForProposal = async function (req, res) {
   if (req.user.role !== 'student') {
-    res.status(401).json({ error: "You can not access to this route" })
+    res.status(401).json({ message: "You can not access to this route" })
     return;
   }
   if (!req.body) {
-    res.status(400).json({ error: "Body is missing" });
+    res.status(400).json({ message: "Body is missing" });
     return;
   }
   const checkApp = await applicationRepository.getActiveByStudentId(req.user.id);
   if (checkApp != undefined) {
-    res.status(400).json({ error: "You already have an application for a thesis" });
+    res.status(400).json({ message: "You already have an application for a thesis" });
     return;
   }
   const supervisorId = await teacherRepository.getIdByThesisId(req.params.id_thesis);
   if (supervisorId == undefined) {
-    res.status(400).json({ error: "Supervisor not found" });
+    res.status(400).json({ message: "Supervisor not found" });
     return;
   }
   if (req.params.id_thesis != null) {
@@ -148,15 +148,11 @@ exports.applyForProposal = async function (req, res) {
     //Translate the file into a js object and call it files
     form.parse(req, function (err, fields, files) {
       if (err){
-        res.status(500).json({ error: "Internal Error" });
+        res.status(500).json({ message: "Internal Error" });
         return;
       }
-      if (!files.cv || !files.cv[0]){
-        res.status(400).json({ error: "Missing file" });
-        return;
-      }
-      if (files.cv.length > 1) {
-        res.status(400).json({ error: "Multiple Files" });
+      if (!files.cv || !files.cv[0] || files.cv.length > 1){
+        res.status(400).json({ message: "Missing file or multiple" });
         return;
       }
       const file = files.cv[0];
@@ -169,6 +165,6 @@ exports.applyForProposal = async function (req, res) {
         });
     })
   } else {
-    res.status(400).json({ error: "Missing required parameters" });
+    res.status(400).json({ message: "Missing required parameters" });
   }
 };
