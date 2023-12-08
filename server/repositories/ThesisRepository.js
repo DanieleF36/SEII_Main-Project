@@ -380,7 +380,7 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
         sql+=") ";
       } else {
         sql += `AND ${condition.column} ${condition.operator} ? `;
-        params.push(specific ? `%${value}%` : value);
+        params.push(cb(value));
       }
     }
   });
