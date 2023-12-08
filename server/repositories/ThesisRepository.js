@@ -43,7 +43,7 @@ exports.addThesis = (title, supervisor, keywords, type, groups, description, kno
   return new Promise((resolve, reject) => {
     db.run(sql, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status], (err) => {
       if (err) {
-        reject({ error: err.message });
+        reject(new Error(err.message));
         return;
       }
 
@@ -69,7 +69,7 @@ exports.getById = (idThesis) => {
   return new Promise((resolve, reject) => {
     db.get(fetchThesisByIdSQL, [idThesis], (err, result) => {
       if (err) {
-        reject({ error: err.message });
+        reject(new Error(err.message));
         return;
       }
 
@@ -94,7 +94,7 @@ exports.getActiveBySupervisor = (supervisorId, queryParam) => {
   return new Promise((resolve, reject) => {
     db.all(fetchActiveThesesBySupervisorSQL, [queryParam, supervisorId], (err, rows) => {
       if (err) {
-        reject({ error: err.message });
+        reject(new Error(err.message));
         return;
       }
 
@@ -139,7 +139,7 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {
       if (err) {
-        reject({ error: err.message });
+        reject(new Error(err.message));
         return;
       }
 
@@ -165,7 +165,7 @@ exports.getIdByCoSupervisorId = (id) => {
   return new Promise((resolve, reject) => {
     db.all(fetchThesisIdsByCoSupervisorIdSQL, [id], (err, rows) => {
       if (err) {
-        reject({ error: err.message });
+        reject(new Error(err.message));
         return;
       }
 
@@ -205,12 +205,12 @@ exports.updateThesis = (id, title, supervisor, keywords, type, groups, descripti
   return new Promise((resolve, reject) => {
     db.run(updateThesisSQL, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status, id], (err) => {
       if (err) {
-        reject({ error: err.message });
+        reject(new Error(err.message));
         return;
       }
 
       if (this.changes === 0) {
-        reject({ error: 'No rows updated. Thesis ID not found.' });
+        reject(new Error('No rows updated. Thesis ID not found.'));
         return;
       }
 
@@ -235,12 +235,12 @@ exports.setStatus = (id, status) => {
   return new Promise((resolve, reject) => {
     db.run(updateThesisSQL, [status, id], (err) => {
       if (err) {
-        reject({ error: err.message });
+        reject(new Error(err.message));
         return;
       }
 
       if (this.changes === 0) {
-        reject({ error: 'No rows updated. Thesis ID not found.' });
+        reject(new Error('No rows updated. Thesis ID not found.'));
         return;
       }
 
@@ -268,7 +268,7 @@ exports.numberOfPage = (specific, title, idSupervisors, idCoSupervisorsThesis, k
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {
       if (err) {
-        reject({ error: err.message });
+        reject(new Error(err.message));
         return;
       }
 
