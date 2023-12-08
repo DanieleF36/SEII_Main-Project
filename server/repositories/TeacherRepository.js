@@ -115,10 +115,9 @@ exports.getByNSorS = (surname, name) => {
     return new Promise((resolve, reject) => {
       db.all(sql, params, (err, rows) => {
         if (err) {
-          reject({ error: err.message });
+          reject(new Error(err.message));
           return;
         }
-  
         resolve(rows);
       });
     });
@@ -141,7 +140,7 @@ exports.getIdByThesisId = (thesisId) => {
     return new Promise((resolve, reject) => {
       db.get(fetchSupervisorByThesisIdSQL, [thesisId], (err, row) => {
         if (err) {
-          reject({ error: err.message });
+          reject(new Error(err.message));
           return;
         }
   
