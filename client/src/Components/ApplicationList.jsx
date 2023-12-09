@@ -47,7 +47,7 @@ function ApplicationList(props) {
         API.listApplication(props.user.id)
             .then((applications) => {
                 //API.getCarreer(props.user.id).then(...)
-                applications.map((e)=>{e.student_carreer= [{title: 'DataScience', grade:'28'}, {title: 'Reti di Calcolatori', grade:'30'}] })
+                applications.map((e)=>{e.student_carreer= [{id:0, title: 'DataScience', grade:'28'}, {id:1, title: 'Reti di Calcolatori', grade:'30'}] })
                 setApplications(applications);
                 setDirty(false);
             })
@@ -132,7 +132,7 @@ function ApplicationList(props) {
                                     <br />
                                     <strong>Application Date:</strong> {application.data}
                                     <br />
-                                    <strong>Student Carrer:</strong> {application.student_carreer.map((e, index)=>{return(<li key={index}><strong>course:</strong> {e.title}&nbsp;&nbsp;&nbsp;&nbsp;<strong>grade:</strong> {e.grade}</li>)})}
+                                    <strong>Student Carrer:</strong> {application.student_carreer.map((e)=>{return(<li key={e.id}><strong>course:</strong> {e.title}&nbsp;&nbsp;&nbsp;&nbsp;<strong>grade:</strong> {e.grade}</li>)})}
                                     <br />
                                     <strong>Student Cv: </strong> <br /><Button variant='danger' style={{marginTop:'2px'}} onClick={()=>handleGetCV(application.id_application)}><img src="./file-earmark-pdf-fill.svg"
                                     alt="Logo"

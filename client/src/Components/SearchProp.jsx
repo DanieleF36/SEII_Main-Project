@@ -1,5 +1,5 @@
 import { Form, Button, Container, Row, Col, Accordion, Badge, Card, Modal } from 'react-bootstrap';
-
+import PropTypes from 'prop-types';
 
 function SeacrhProp(props){
 
@@ -97,5 +97,17 @@ function SeacrhProp(props){
                         </div>
            )
 }
+
+SeacrhProp.propTypes = {
+    proposals : PropTypes.object.isRequired,
+    show : PropTypes.object.isRequired,
+    application : PropTypes.object.isRequired,
+    handleShow : PropTypes.func.isRequired,
+    setApplication : PropTypes.func.isRequired,
+    setProposals : PropTypes.func.isRequired,
+    handleClose : PropTypes.func.isRequired,
+    handleApplyChange : PropTypes.func.isRequired,
+    handleApplyProp: PropTypes.func.isRequired,
+  };
 
 export default SeacrhProp;
