@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, NavLink, Accordion, Badge, Card, Modal,OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col,  Accordion, Badge, Card, Modal,OverlayTrigger, Tooltip } from 'react-bootstrap';
 import toast, { Toaster } from 'react-hot-toast';
+import PropTypes from 'prop-types';
 import API from '../API';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -10,7 +11,7 @@ function MyProposal(props) {
   const [dirty, setDirty] = useState(true);
   const [archived, setArchived] = useState(1);
   const [selectedProposal, setSelectedProposal] = useState('');
-  const [proposals, setProposals] = useState([/*{ id: 0, title: 'AI system research', supervisor: 'Mario Rossi', cosupervisor: ['123456@polito.it', '654321@polito.it'], expiration_date: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creation_date: '10/1/2023', status: '1' }*/]);
+  const [proposals, setProposals] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
 
@@ -60,10 +61,10 @@ function MyProposal(props) {
     setSelectedProposal('');
   };
   
-  const [cosup_email, setCoSup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);
+  const [cosup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);
   const [filt_cosup, setFilt_cosup] = useState([]);
 
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm] = useState('');
 
   useEffect(() => {
     setFilt_cosup(cosup_email.filter((item) =>
@@ -117,11 +118,6 @@ function MyProposal(props) {
     return prop;
   }
 
-
-  const handleResetChange = () => {
-    setSelectedProposal('');
-  };
-
   const handleCheckboxChange = (selectedLevel) => {
     setSelectedProposal({ ...selectedProposal, level: selectedLevel });
   };
@@ -131,35 +127,6 @@ function MyProposal(props) {
     let cosup_arr = e.target.value.split(",");
     setSelectedProposal({ ...selectedProposal, [name]: cosup_arr});
   };
-
-  /*const handleCoSup = (e) => {
-    if (selectedProposal.cosupervisor === '') {
-      let co = [];
-      co.push(e);
-      setSelectedProposal({ ...selectedProposal, cosupervisor: co });
-      setSearchTerm('');
-    } else {
-      let co = [...selectedProposal.cosupervisor]; // Crea una copia dell'array
-      if (co.includes(e)) {
-        toast.error('CoSupervisor already inserted');
-        setSearchTerm('');
-      } else {
-        co.push(e);
-        setSelectedProposal({ ...selectedProposal, cosupervisor: co });
-        setSearchTerm('');
-      }
-    }
-  };*/
-  
-  /*const handleDeleteCoSup = () => {
-    const updatedCoSupervisors = [...selectedProposal.cosupervisor];
-    if (updatedCoSupervisors.length > 0) {
-      updatedCoSupervisors.pop();
-      setSelectedProposal({ ...selectedProposal, cosupervisor: updatedCoSupervisors });
-    } else {
-      toast.error('No co-supervisors to delete');
-    }
-  };*/
 
   const handleSaveChanges = () => {
     if (selectedProposal) {
@@ -257,7 +224,6 @@ function MyProposal(props) {
                   {proposal.status==1 ?
                     (<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Archive</Tooltip>  }><Button variant="secondary mx-2" onClick={() => {setShowModal2(true); setSelectedProposal(proposal);}}><i className="bi bi-archive"/></Button></OverlayTrigger>)
                    : ''
-                    /*(<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Active</Tooltip>  }><Button variant="success mx-2" onClick={() => {setShowModal2(true); setSelectedProposal(proposal);}}><i className="bi bi-archive"/></Button></OverlayTrigger>)*/
                   }
                   <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Copy</Tooltip>  }><Button variant="primary mx-2" onClick={() => props.handleCopy(proposal)} ><i className="bi bi-clipboard-plus-fill"/></Button></OverlayTrigger>
                   
@@ -286,46 +252,6 @@ function MyProposal(props) {
                 />
               </Form.Group>
 
-              {/* <Form.Group className="mb-3">
-                <Form.Label><strong>Cosupervisors mails</strong></Form.Label>
-                <Form.Control
-                  type="text"
-                  readOnly
-                  value={selectedProposal.cosupervisor !== '' ? selectedProposal.cosupervisor.map(element => {
-                    return ` ${element}`;
-
-                  }) : ''}
-                />
-                <Container>
-                  <Row className="mt-3">
-                    <Col sm="12" md="12" lg="6" className="d-flex align-items-center">
-                      <Dropdown style={{ marginTop: '5px' }}>
-                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                          {searchTerm === '' ? 'Select mail' : searchTerm}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu show={searchTerm !== ''}>
-                          <Form.Control
-                            type="text"
-                            placeholder="Search..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            style={{ borderBlockWidth: '2px' }}
-                          />
-                          {filt_cosup.map((item, id) => (
-                            <Dropdown.Item onClick={() => setSearchTerm(item)} key={id}>{item}</Dropdown.Item>
-                          )).slice(0, 3)}
-                        </Dropdown.Menu>
-                      </Dropdown>
-                      <Button onClick={() => { handleCoSup(searchTerm); }} variant="primary" style={{ width: '40px', height: '38px', marginTop: '5px', marginRight: '3px', marginLeft: '10px'  }}>
-                        +
-                      </Button>
-                      <Button onClick={handleDeleteCoSup} variant="danger" style={{ width: '40px', height: '38px', marginTop: '5px'}}>
-                        -
-                      </Button>
-                    </Col>
-                  </Row>
-                </Container>
-              </Form.Group> */}
 
               <Form.Group className="mb-3">
                 <Form.Label><strong>Expiration Date</strong></Form.Label>
@@ -459,5 +385,10 @@ function MyProposal(props) {
     </>
   );
 }
+
+MyProposal.propTypes = {
+  user : PropTypes.object.isRequired,
+  handleCopy: ropTypes.func.isRequired,
+};
 
 export default MyProposal;

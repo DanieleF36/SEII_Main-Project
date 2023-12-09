@@ -287,6 +287,7 @@ Homepage.propTypes = {
     setIsAuth : PropTypes.func.isRequired,
     setUser : PropTypes.func.isRequired,
     setProposals : PropTypes.func.isRequired,
+    setPage : PropTypes.func.isRequired,
     setPages : PropTypes.func.isRequired,
     setActive : PropTypes.func.isRequired,
     setCurrentTime : PropTypes.func.isRequired,

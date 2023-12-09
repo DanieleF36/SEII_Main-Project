@@ -142,6 +142,7 @@ FilterContainer.propTypes = {
   handleFilterChange : PropTypes.func.isRequired,
   handleFilterCoSupChange : PropTypes.func.isRequired,
   handleResetChange : PropTypes.func.isRequired,
+  handleApplyFilters : PropTypes.func.isRequired,
 };
 
 export { FilterContainer };
