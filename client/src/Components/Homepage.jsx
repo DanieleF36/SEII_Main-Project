@@ -1,4 +1,5 @@
 import { Container, Row, Col, Navbar, Nav, Pagination } from 'react-bootstrap';
+import PropTypes from 'prop-types';
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -53,7 +54,7 @@ function Homepage(props) {
   
     //useEffects
 
-    
+
     useEffect(() => {
         items.forEach(e => {
             if (e.key === props.active) {
@@ -276,5 +277,20 @@ function Homepage(props) {
 
     )
 }
+
+Homepage.propTypes = {
+    user : PropTypes.object.isRequired,
+    proposals : PropTypes.object.isRequired,
+    active : PropTypes.object.isRequired,
+    pages : PropTypes.object.isRequired,
+    currentTime : PropTypes.object.isRequired,
+    isAuth : PropTypes.object.isRequired,
+    setIsAuth : PropTypes.func.isRequired,
+    setUser : PropTypes.func.isRequired,
+    setProposals : PropTypes.func.isRequired,
+    setPage : PropTypes.func.isRequired,
+    setActive : PropTypes.func.isRequired,
+    setCurrentTime : PropTypes.func.isRequired,
+  };
 
 export { Homepage };
