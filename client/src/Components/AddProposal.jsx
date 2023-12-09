@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
 import { Container, Row, Col, Form, ListGroup, Dropdown } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
+import PropTypes from 'prop-types';
 import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
 
@@ -334,5 +335,16 @@ function AddProposalForm(props) {
         </Card>
     );
 }
+
+AddProposalForm.propTypes = {
+    user : PropTypes.object.isRequired,
+    mails : PropTypes.object.isRequired,
+    copy : PropTypes.object.isRequired,
+    copyD : PropTypes.object.isRequired,
+    copyT : PropTypes.object.isRequired,
+    setCopy : PropTypes.func.isRequired,
+    setCopyD : PropTypes.func.isRequired,
+    setCopyT : PropTypes.func.isRequired,
+  };
 
 export default AddProposalForm;
