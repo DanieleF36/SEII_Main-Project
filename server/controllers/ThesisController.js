@@ -111,11 +111,9 @@ exports.addThesis = function addThesis(req, res, validate) {
     .then(response => {
       if(response.message) {
         res.status(response.status).json(response.message);
-        return;
       }
       else {
         res.status(200).json(response);
-        return;
       }
     })
     .catch((err) => res.status(500).json(err))
@@ -147,11 +145,9 @@ exports.updateThesis = function updateThesis(req, res, validate) {
     .then(response => {
       if(response.message) {
         res.status(response.status).json(response.message);
-        return;
       }
       else {
         res.status(200).json(response);
-        return;
       }
     })
     .catch((err) => res.status(500).json(err))

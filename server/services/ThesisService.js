@@ -208,7 +208,7 @@ exports.addThesis = async function (thesis) {
   if (cosupervisor_ids.length > 0) {
     for (let id of cosupervisor_ids) {
       result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, null, id)
-      if (result != true) {
+      if (!result) {
         return result
       }
     }
@@ -216,7 +216,7 @@ exports.addThesis = async function (thesis) {
   if (supervisor_ids.length > 0) {
     for (let id of supervisor_ids) {
       result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, id, null)
-      if (result != true) 
+      if (!result) 
         return result
     }
   }
