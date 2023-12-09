@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, NavLink, Accordion, Badge, Card } from 'react-bootstrap';
 import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
-import { useNavigate } from 'react-router-dom';
 
 function StudentList(props) {
     

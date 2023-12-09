@@ -104,7 +104,6 @@ SeacrhProp.propTypes = {
     application : PropTypes.object.isRequired,
     handleShow : PropTypes.func.isRequired,
     setApplication : PropTypes.func.isRequired,
-    setProposals : PropTypes.func.isRequired,
     handleClose : PropTypes.func.isRequired,
     handleApplyChange : PropTypes.func.isRequired,
     handleApplyProp: PropTypes.func.isRequired,

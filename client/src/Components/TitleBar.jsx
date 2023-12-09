@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import PropTypes from 'prop-types';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import './TitleBar.css'
 import API from '../API';
@@ -132,4 +133,12 @@ function TitleBar(props) {
         </>
     );
 }
+
+TitleBar.propTypes = {
+    user : PropTypes.object.isRequired,
+    setIsAuth : PropTypes.func.isRequired,
+    setUser : PropTypes.func.isRequired,
+  };
+
+
 export { TitleBar };
