@@ -120,7 +120,10 @@ function Homepage(props) {
     };
 
     const filterCond = (filters) => {
-        return filters.order === '' && filters.orderby === '' || filters.order !== '' && filters.orderby !== '';
+        return filters.order === '' 
+        && filters.orderby === '' 
+        || filters.order !== '' 
+        && filters.orderby !== '';
 
     }
 
