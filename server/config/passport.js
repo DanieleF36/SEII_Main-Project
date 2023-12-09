@@ -18,18 +18,24 @@ const samlConfig = {
     signatureAlgorithm: 'sha256',
     options:{ failureRedirect: '/login', failureFlash: true }
 };
-const samlStrategy = new saml(samlConfig, async (profile, done) => {
+const samlStrategy = new saml(samlConfig, (profile) => {
     let user, role;
     if(profile.nameID.includes('studenti') ){
-        user = await studentRepository.getStudentAndCDSByEmail(profile.nameID);
+        studentRepository.getStudentAndCDSByEmail(profile.nameID)
+            .then((u) => user = u)
+            .catch((err) => user = undefined)
         role = "student";
     }
     else if(profile.nameID.includes('professori') ){
-        user = await teacherRepository.getByEmail(profile.nameID);
+        teacherRepository.getByEmail(profile.nameID)
+            .then((u) => user = u)
+            .catch((err) => user = undefined)
         role = "teacher";
     }
     else if(profile.nameID.includes('cosupervisor') ){
-        user = await coSupervisorRepository.getByEmail(profile.nameID);
+        coSupervisorRepository.getByEmail(profile.nameID)
+            .then((u) => user = u)
+            .catch((err) => user = undefined)
         role = "cosupervisor";
     }
     if(role==='student')
@@ -39,8 +45,6 @@ const samlStrategy = new saml(samlConfig, async (profile, done) => {
     else
         user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID }
     
-    done(null, user);
-    return;
 });
 passport.use("samlStrategy", samlStrategy);
 
