@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
-import { Container, Row, Col, Form, ListGroup, Dropdown } from 'react-bootstrap';
+import { Container, Row, Col, Form, Dropdown } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
 import PropTypes from 'prop-types';
 import toast, { Toaster } from 'react-hot-toast';
@@ -22,7 +22,7 @@ function AddProposalForm(props) {
         cds: ['LM-32'],
     });
     const [warned, setWarned] = useState();
-    const [cosup_email, setCoSup_email] = useState(props.mails);
+    const [cosup_email] = useState(props.mails);
     const [filt_cosup, setFilt_cosup] = useState([]);
 
     const [searchTerm, setSearchTerm] = useState('');
@@ -125,7 +125,6 @@ function AddProposalForm(props) {
       };
 
     const handleAddProposal = () => {
-        //console.log(proposalData);
         if (proposalData.title === '') {
             toast.error('Title field cannot be empty')
 

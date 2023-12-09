@@ -1,4 +1,4 @@
-import { alignPropType } from "react-bootstrap/esm/types";
+
 
 const URL = 'http://localhost:3001';
 

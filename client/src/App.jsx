@@ -1,10 +1,8 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { TitleBar } from './Components/TitleBar';
 import { Homepage } from './Components/Homepage';
 import InitialPage from './Components/InitialPage';
-import API from './API';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 function App() {
 
@@ -19,16 +17,14 @@ function App() {
 
 
     return (
-        <>
         <BrowserRouter>
           <Routes>
           <Route path='/'element={<InitialPage setIsAuth={setIsAuth} isAuth={isAuth} user={user} setUser={setUser}/>}/>
-          <Route path='/home' element={<><Homepage setIsAuth={setIsAuth} isAuth={isAuth} pages={page} user={user} setUser={setUser}
+          <Route path='/home' element={<Homepage setIsAuth={setIsAuth} isAuth={isAuth} pages={page} user={user} setUser={setUser}
           proposals={proposals} setProposals={setProposals} setPage={setPage} active={active} setActive={setActive} currentTime={currentTime}
-          setCurrentTime={setCurrentTime}/></>} />
+          setCurrentTime={setCurrentTime}/>} />
           </Routes>
         </BrowserRouter>
-      </>
     );
 }
 
