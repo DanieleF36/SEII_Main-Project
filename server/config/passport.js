@@ -18,24 +18,18 @@ const samlConfig = {
     signatureAlgorithm: 'sha256',
     options:{ failureRedirect: '/login', failureFlash: true }
 };
-const samlStrategy = new saml(samlConfig, (profile) => {
+const samlStrategy = new saml(samlConfig, async (profile) => {
     let user, role;
     if(profile.nameID.includes('studenti') ){
-        studentRepository.getStudentAndCDSByEmail(profile.nameID)
-            .then((u) => user = u)
-            .catch((err) => user = undefined)
+        user = await studentRepository.getStudentAndCDSByEmail(profile.nameID)
         role = "student";
     }
     else if(profile.nameID.includes('professori') ){
-        teacherRepository.getByEmail(profile.nameID)
-            .then((u) => user = u)
-            .catch((err) => user = undefined)
+        user = await teacherRepository.getByEmail(profile.nameID)
         role = "teacher";
     }
     else if(profile.nameID.includes('cosupervisor') ){
-        coSupervisorRepository.getByEmail(profile.nameID)
-            .then((u) => user = u)
-            .catch((err) => user = undefined)
+        user = await coSupervisorRepository.getByEmail(profile.nameID)
         role = "cosupervisor";
     }
     if(role==='student')
