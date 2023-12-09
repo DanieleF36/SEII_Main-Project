@@ -337,10 +337,10 @@ function AddProposalForm(props) {
 
 AddProposalForm.propTypes = {
     user : PropTypes.object.isRequired,
-    mails : PropTypes.object.isRequired,
-    copy : PropTypes.object.isRequired,
-    copyD : PropTypes.object.isRequired,
-    copyT : PropTypes.object.isRequired,
+    mails : PropTypes.array.isRequired,
+    copy : PropTypes.object,
+    copyD : PropTypes.object,
+    copyT : PropTypes.object,
     setCopy : PropTypes.func.isRequired,
     setCopyD : PropTypes.func.isRequired,
     setCopyT : PropTypes.func.isRequired,

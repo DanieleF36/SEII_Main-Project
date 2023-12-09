@@ -387,8 +387,9 @@ function MyProposal(props) {
 }
 
 MyProposal.propTypes = {
-  user : PropTypes.object.isRequired,
-  handleCopy: ropTypes.func.isRequired,
+  user : PropTypes.oneOfType([PropTypes.string,
+    PropTypes.object]).isRequired,
+  handleCopy: PropTypes.func.isRequired,
 };
 
 export default MyProposal;

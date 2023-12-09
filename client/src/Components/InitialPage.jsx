@@ -36,8 +36,9 @@ function InitialPage(props) {
 }
 
 InitialPage.propTypes = {
-    user : PropTypes.object.isRequired,
-    isAuth : PropTypes.object.isRequired,
+    user : PropTypes.oneOfType([PropTypes.string,
+        PropTypes.object]).isRequired,
+    isAuth : PropTypes.number.isRequired,
     setIsAuth : PropTypes.func.isRequired,
     setUser : PropTypes.func.isRequired,
   };

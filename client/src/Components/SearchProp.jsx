@@ -99,8 +99,8 @@ function SeacrhProp(props){
 }
 
 SeacrhProp.propTypes = {
-    proposals : PropTypes.object.isRequired,
-    show : PropTypes.object.isRequired,
+    proposals : PropTypes.array.isRequired,
+    show : PropTypes.bool.isRequired,
     application : PropTypes.object.isRequired,
     handleShow : PropTypes.func.isRequired,
     setApplication : PropTypes.func.isRequired,

@@ -124,7 +124,7 @@ function Homepage(props) {
             
             API.advancedSearchThesis({ ...filters, page: props.active}).then(res => {
                 props.setProposals(res[1]);
-                props.setPages(res[0]);
+                props.setPage(res[0]);
             });
         }
         else {
@@ -276,17 +276,17 @@ function Homepage(props) {
 }
 
 Homepage.propTypes = {
-    user : PropTypes.object.isRequired,
-    proposals : PropTypes.object.isRequired,
-    active : PropTypes.object.isRequired,
-    pages : PropTypes.object.isRequired,
+    user : PropTypes.oneOfType([PropTypes.string,
+        PropTypes.object]).isRequired,
+    proposals : PropTypes.array.isRequired,
+    active : PropTypes.number.isRequired,
+    pages : PropTypes.number.isRequired,
     currentTime : PropTypes.object.isRequired,
-    isAuth : PropTypes.object.isRequired,
+    isAuth : PropTypes.number.isRequired,
     setIsAuth : PropTypes.func.isRequired,
     setUser : PropTypes.func.isRequired,
     setProposals : PropTypes.func.isRequired,
     setPage : PropTypes.func.isRequired,
-    setPages : PropTypes.func.isRequired,
     setActive : PropTypes.func.isRequired,
     setCurrentTime : PropTypes.func.isRequired,
   };
