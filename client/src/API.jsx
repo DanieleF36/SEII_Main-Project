@@ -71,7 +71,10 @@ function updateProposal(id_thesis, thesis, status) {
   thesis.cosupervisor = []
   
   if(status==0 || status==1){
-    thesis.status == 1 ? thesis.status=0 : thesis.status=1;
+    if(thesis.status == 1)
+      thesis.status=0;
+    else 
+      thesis.status=1;
   }
   console.log(thesis)
 
