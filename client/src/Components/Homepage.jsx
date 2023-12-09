@@ -18,6 +18,7 @@ import API from '../API';
 
 function Homepage(props) {
     
+    
     // states def
     const [add, setAdd] = useState(false);
     const [listA, setListA] = useState(false);
@@ -28,16 +29,18 @@ function Homepage(props) {
     const [copyT, setCopyT] = useState(undefined);
     const [copyD, setCopyD] = useState(undefined);
     const [mails, setMails] = useState(undefined);
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-    const [filters, setFilters] = useState({title: '', supervisor: '', cosupervisor: '', expDate: '', status: '', keywords: '', type: '',
-        groups: '', know: '', level: '', cds: '', creatDate: '', order: '', orderby: '', page: 1
-    });
     const [application, setApplication] = useState({
         id_thesis: '',
         cv: ''
     });
+    const [show, setShow] = useState(false);
+    const handleClose = () => {setShow(false); setApplication({id_thesis: '',
+    cv: ''})};
+    const handleShow = () => setShow(true);
+    const [filters, setFilters] = useState({title: '', supervisor: '', cosupervisor: '', expDate: '', status: '', keywords: '', type: '',
+        groups: '', know: '', level: '', cds: '', creatDate: '', order: '', orderby: '', page: 1
+    });
+ 
     
     //pagination items def
     let items = [];
@@ -99,17 +102,20 @@ function Homepage(props) {
     const handleApplyChange = (e) => {
         let name = e.target.name;
         let file = e.target.files[0];
-        setApplication({ ...application, [name]: file });
+            setApplication({ ...application, [name]: file });
     };
 
     const handleApplyProp = () => {
-        if (application.cv !== '') {
+        if (application.cv !== '' && application.cv.type === 'application/pdf') {
             API.applyForProposal(application).then((res) => { toast.success('Application successfully sended'); setApplication({ ...application, cv: '' }) })
                 .catch((res) => toast.error(res.error));
         }
-        else (
-            toast.error('CV upload missing')
+        else if(application.cv !== '')(
+            toast.error('CV must be in PDF format')
         )
+        else{
+            toast.error('CV upload missing')
+        }
 
     };
 
