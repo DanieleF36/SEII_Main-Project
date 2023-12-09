@@ -61,10 +61,10 @@ function MyProposal(props) {
     setSelectedProposal('');
   };
   
-  const [cosup_email, _setCosup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);
-  const [_filt_cosup, setFilt_cosup] = useState([]);
+  const [cosup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);
+  const [filt_cosup, setFilt_cosup] = useState([]);
 
-  const [searchTerm, _setSearchTerm] = useState('');
+  const [searchTerm] = useState('');
 
   useEffect(() => {
     setFilt_cosup(cosup_email.filter((item) =>
