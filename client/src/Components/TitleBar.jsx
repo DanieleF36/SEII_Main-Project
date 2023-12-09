@@ -43,7 +43,7 @@ function TitleBar(props) {
         <>
             <Navbar style={titleBarStyle}>
                 <Container fluid>
-                    <Navbar.Brand href="http://www.polito.it" style={logoStyle}>
+                    <Navbar.Brand style={logoStyle}>
                         <img
                             src="./logo_poli_bianco_260.png"
                             alt="Logo"
