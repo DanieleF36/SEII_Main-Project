@@ -1,7 +1,6 @@
 import { Container, Row, Col, Navbar, Nav, Pagination } from 'react-bootstrap';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TitleBar } from './TitleBar';
 import SeacrhProp from './SearchProp';
@@ -288,7 +287,7 @@ Homepage.propTypes = {
     setIsAuth : PropTypes.func.isRequired,
     setUser : PropTypes.func.isRequired,
     setProposals : PropTypes.func.isRequired,
-    setPage : PropTypes.func.isRequired,
+    setPages : PropTypes.func.isRequired,
     setActive : PropTypes.func.isRequired,
     setCurrentTime : PropTypes.func.isRequired,
   };

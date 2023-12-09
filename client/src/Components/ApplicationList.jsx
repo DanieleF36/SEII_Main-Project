@@ -36,6 +36,8 @@ function ApplicationList(props) {
     };
 
     const handleGetCV = (id) => {
+
+        console.log(id);
    
        }
    
