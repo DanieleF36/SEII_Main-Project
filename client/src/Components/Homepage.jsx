@@ -119,9 +119,13 @@ function Homepage(props) {
         });
     };
 
+    const filterCond = (filters) => {
+        return filters.order === '' && filters.orderby === '' || filters.order !== '' && filters.orderby !== '';
+
+    }
+
     const handleApplyFilters = () => {
-        if (filters.order === '' && filters.orderby === '' || filters.order !== '' && filters.orderby !== '') {
-            
+        if (filterCond(filters)) {  
             API.advancedSearchThesis({ ...filters, page: props.active}).then(res => {
                 props.setProposals(res[1]);
                 props.setPage(res[0]);
