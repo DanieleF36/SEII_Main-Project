@@ -18,14 +18,14 @@ const samlConfig = {
     signatureAlgorithm: 'sha256',
     options:{ failureRedirect: '/login', failureFlash: true }
 };
-const samlStrategy = new saml(samlConfig, async (profile) => {
+const samlStrategy = new saml(samlConfig, async (profile, done) => {
     let user, role;
     if(profile.nameID.includes('studenti') ){
         user = await studentRepository.getStudentAndCDSByEmail(profile.nameID)
         role = "student";
     }
     else if(profile.nameID.includes('professori') ){
-        user = await teacherRepository.getByEmail(profile.nameID)
+        user = await teacherRepository.getByEmail(profile.nameID);
         role = "teacher";
     }
     else if(profile.nameID.includes('cosupervisor') ){
@@ -38,7 +38,7 @@ const samlStrategy = new saml(samlConfig, async (profile) => {
         user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, group:user.code_group }
     else
         user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID }
-    
+    done(null, user);
 });
 passport.use("samlStrategy", samlStrategy);
 
