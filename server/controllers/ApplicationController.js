@@ -142,7 +142,7 @@ exports.applyForProposal = async function (req, res) {
         res.status(500).json({ message: "Internal Error" });
         return;
       }
-      if (!files?.cv[0] || files.cv.length > 1){
+      if (!files?.cv?.[0] || files.cv.length > 1){
         res.status(400).json({ message: "Missing file or multiple" });
         return;
       }
