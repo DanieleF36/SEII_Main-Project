@@ -9,7 +9,7 @@ let offset = 0
  * @param {*} req none
  * @param {*} res date (even shifted one)
  */
-exports.vc_current = async function (req, res) {
+exports.vc_current = function (req, res) {
 
     let result
     if (offset >= 0)
