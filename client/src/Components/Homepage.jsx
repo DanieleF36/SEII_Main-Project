@@ -53,6 +53,7 @@ function Homepage(props) {
   
     //useEffects
 
+    
     useEffect(() => {
         items.forEach(e => {
             if (e.key === props.active) {
