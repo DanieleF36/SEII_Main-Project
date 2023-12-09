@@ -172,7 +172,5 @@ exports.deleteThesis = function deleteThesis(req, res){
       res.status(404);
     else
       res.status(500).json({message: err.message});
-    return;
   });
-  return;
 }
