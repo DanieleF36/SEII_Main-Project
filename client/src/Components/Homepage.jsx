@@ -1,7 +1,6 @@
 import { Container, Row, Col, Navbar, Nav, Pagination } from 'react-bootstrap';
 import PropTypes from 'prop-types';
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { TitleBar } from './TitleBar';
 import SeacrhProp from './SearchProp';
 import './Homepage.css';
@@ -29,7 +28,6 @@ function Homepage(props) {
     const [copyT, setCopyT] = useState(undefined);
     const [copyD, setCopyD] = useState(undefined);
     const [mails, setMails] = useState(undefined);
-    const navigate = useNavigate();
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);

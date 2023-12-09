@@ -1,17 +1,12 @@
-import { Navbar, Container, Row, Col, Nav, Button, Tab, Modal, ButtonGroup } from 'react-bootstrap'
-import { useNavigate } from 'react-router-dom';
+import { Navbar, Container, Row, Col, Nav, Button, Modal, ButtonGroup } from 'react-bootstrap'
 import Dropdown from 'react-bootstrap/Dropdown';
 import { useState } from 'react';
-import { useEffect } from 'react';
 import PropTypes from 'prop-types';
-import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import './TitleBar.css'
 import API from '../API';
-import { redirect } from "react-router-dom";
+
 
 function TitleBar(props) {
-
-    const navigate = useNavigate();
 
     const logIn = () => {
         API.login();
@@ -136,6 +131,7 @@ function TitleBar(props) {
 
 TitleBar.propTypes = {
     user : PropTypes.object.isRequired,
+    isAuth : PropTypes.object.isRequired,
     setIsAuth : PropTypes.func.isRequired,
     setUser : PropTypes.func.isRequired,
   };

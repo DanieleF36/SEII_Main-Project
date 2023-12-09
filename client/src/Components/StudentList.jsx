@@ -1,31 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, NavLink, Accordion, Badge, Card } from 'react-bootstrap';
+import { Button , Container, Row, Col, Accordion, Badge, Card } from 'react-bootstrap';
 import toast, { Toaster } from 'react-hot-toast';
+import PropTypes from 'prop-types';
 import API from '../API';
 
 function StudentList(props) {
     
     const [dirty, setDirty] = useState(true);
-    //const [id_student, setId_student] = useState(1);
    
-    const [list, setList] = useState([/*{id_application:1, 
-                                        groups: 'Smart Cities',
-                                        title: 'AI develop',
-                                        type: 'Development',
-                                        supervisor_name: 'Luca',
-                                        supervisor_surname: 'Azzurro',
-                                        description: "Designing adn implementing smart city solution",
-                                        knowledge: "Iot, Urban Design",
-                                        expiration_date: "2024-08-15",
-                                        cds: 'CDS005',
-                                        note: 'Addressing urban',
-                                        level: 1,
-                                        keywords: 'IoT, Urban Planning',
-                                        application_data: '2023-11-16',
-                                        path_cv: 'cv.pdf', 
-    status: '3'}*/]);
-
-    //adding API from backend to set list of applications of the student
+    const [list, setList] = useState([]);
     useEffect(() => {
 
         API.browserApplicationStudent(props.user.id)
@@ -37,23 +20,8 @@ function StudentList(props) {
 
     }, [dirty]);
 
-    /* in futuro se uno studente può modificare la sua canditatura
-    function modifyApp(id_student,id_application){
-        API.modifyApplication(id_student, id_application)
-            .then((res) => {
-                setDirty(true);
-                if (res == 1) {
-                    toast.success('Application successfully accepted')
-                } else if (res == 2) {
-                    toast.success('Application successfully rejected')
-                }
-            })
-            .catch((err) => { toast.error(err.error); });
-    }*/
-
     const handleGetCV = (id) => {
-     //API.getCV(id)
-
+      console.log(id);
     }
 
 
@@ -142,11 +110,8 @@ function StudentList(props) {
 
 }
 
-export default StudentList;
+StudentList.propTypes = {
+    user : PropTypes.object.isRequired,
+  };
 
-//
-/*
-{application.status == '0' ? <Button onClick={() => modifyApp(id_student,application.id_application)} variant='warning'>Modify</Button> : ''}
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-{application.status == '0' ? <Button onClick={() => modifyApp(id_student,application.id_application)} variant='danger'>Cancel</Button> : ''}
-*/
+export default StudentList;
