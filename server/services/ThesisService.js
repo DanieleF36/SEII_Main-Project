@@ -5,7 +5,8 @@ const thesisRepository = require("../repositories/ThesisRepository");
 const coSupervisorThesisRepository = require("../repositories/CoSupervisorThesisRepository");
 const teacherRepository = require("../repositories/TeacherRepository");
 const nItem = 10; //number of item per page
-const coSupervisorRepository = require('../repositories/CoSupervisorRepository')
+const coSupervisorRepository = require('../repositories/CoSupervisorRepository');
+const applicationRepository = require('../repositories/ApplicationRepository');
 /**
  * Return a list of thesis that respect all the parameters including name, surname and company for co-supervisor and the whole structure of supervisor
  *
@@ -248,3 +249,10 @@ exports.updateThesis = async function (thesis, thesis_id) {
   );
   return updatedThesis;
 };
+
+exports.delete = async function (id){
+  const app = await applicationRepository.getAcceptedByThesisId(id);
+  if(!app)
+    throw new Error("You can't delete this thesis, an application is already accepted");
+  await thesisRepository.setStatus(id, 2);
+} 

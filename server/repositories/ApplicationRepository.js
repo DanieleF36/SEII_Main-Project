@@ -113,7 +113,7 @@ exports.getByStudentId = (id_student) => {
  * @returns object: {row : row of the application db} 
  */
 exports.getById = (id) => {
-  if (!(id && id >= 0)) {
+  if (id == undefined || id <= 0) {
     throw new Error('Application ID must be greater than or equal to 0');
   }
 
@@ -195,7 +195,22 @@ exports.getByTeacherId = (id_teacher) => {
     });
   });
 };
-
+//Questa funzione può essere resa più generale
+exports.getAcceptedByThesisId = (id) => {
+  if (id == undefined || id <= 0){
+    throw new Error('Thesis ID must be greater than or equal to 0');
+  }
+  const sql = 'SELECT * FROM Application WHERE id_thesis = ? AND status = 1';
+  return new Promise((resolve, reject) => {
+    db.get(sql, [id], (err, row) => {
+      if (err) {
+        reject(new Error(err.message));
+        return;
+      }
+      resolve(row);
+    });
+  });
+}
 //==================================Set==================================
 
 /**
