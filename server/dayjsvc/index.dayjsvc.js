@@ -54,19 +54,6 @@ exports.vc_set = function (req, res) {
     console.log(duration)
 
     offset = duration;
-
-    // let result = await thesisRepository.selectExpiredAccordingToDate(act.format('YYYY-MM-DD').toString()) 
-    // if(!Array.isArray(result)) {
-    //     offset=0
-    //     return res.status(500).json({error: 'server error'})
-    // }
-    // console.log(result)
-    // result = await thesisRepository.setExpiredAccordingToIds(result)
-    // if(!result) {
-    //     offset=0
-    //     return res.status(500).json({error: 'server error'})
-    // }
-    // else return res.status(200).json({value: req.body.value})
     
     thesisRepository.selectExpiredAccordingToDate(act.format('YYYY-MM-DD').toString())
         .then((result) => {
@@ -104,18 +91,6 @@ exports.vc_restore = function (req, res) {
     offset = 0
     const act = vc().format('YYYY-MM-DD').toString()
     console.log(act)
-    // let result = await thesisRepository.selectRestoredExpiredAccordingToDate(act)
-    // if(!Array.isArray(result)) {
-    //     offset=0
-    //     return res.status(500).json({error: 'server error'})
-    // }
-    // console.log(result)
-    // result = await thesisRepository.restoreExpiredAccordingToIds(result)
-    // if(!result) {
-    //     offset=0
-    //     return res.status(500).json({error: 'server error'})
-    // }
-    // else return res.status(200).json({value: req.body.value})
     
     thesisRepository.selectRestoredExpiredAccordingToDate(act)
         .then((result) => {

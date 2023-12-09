@@ -201,7 +201,7 @@ exports.addThesis = async function (thesis) {
     thesis.status
   )
   if (thesis_res.error) {
-    throw { status: 500, error: thesis_res.error };
+    throw new Error(thesis_res.error);
   }
 
   let result

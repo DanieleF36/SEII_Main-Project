@@ -82,13 +82,6 @@ async function _sendCancelledEmails(teacherID, id_thesis,id_application, id_stud
     for(let i of studentEmailCancelledArray){
         await transporter.sendEmail(teacherEmail, i, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to cancelled.`);
     }
-        /*
-    const emailPromises = studentEmailCancelledArray.map(async (element) => {
-        await transporter.sendEmail(teacherEmail, element, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to cancelled.`);
-    })
-    // Wait for all email promises to resolve
-    return Promise.all(emailPromises);
-      */
     return true
 };
   
