@@ -136,6 +136,28 @@ exports.getStudentAndCDSByEmail = (email) => {
   });
 };
 
+/**
+ * Function that retrieve the student career information
+ * @param {*} id_student id of the student
+ * @returns array of object {title : string, grade : integer}
+ */
+exports.getCareerByStudentId = async function (id_student) {
+  const getCareerByStudentIdsql = 'SELECT title, grade FROM Career WHERE id = ?'
+  return new Promise((resolve, reject) => {
+    db.all(getCareerByStudentIdsql, [id_student], (err, rows) => {
+      if (err) {
+        reject(new Error(err.message));
+        return;
+      }
+      if (rows.length === 0) {
+        resolve({});
+      } else {
+        resolve(rows.map((r) => ({ title: r.title, grade: r.grade })));
+      }
+    });
+  });
+}
+
 //==================================Set==================================
 
 //==================================Delete==================================

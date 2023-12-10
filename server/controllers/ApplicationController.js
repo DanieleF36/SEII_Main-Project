@@ -159,3 +159,51 @@ exports.applyForProposal = async function (req, res) {
     res.status(400).json({ message: "Missing required parameters" });
   }
 };
+
+/**
+ * wrapper function to retrieve the cv of a student (professor side)
+ * @param {*} req req.body.student_id I have the student id (professor side)
+ */
+exports.getStudentCv = async function (req, res) {
+  if (!req.params.student_id) {
+    return res.status(401).json({ message: "Missing student id" })
+  }
+  if (req.user.role != 'teacher') {
+    return res.status(401).json({ message: "You can not access to this route" })
+  }
+  const studentInfo = await applicationRepository.getByStudentId(req.params.student_id)
+  const studentCv = studentInfo.path_cv;
+  let fileName = path.basename(studentCv);
+  try {
+    fs.access(studentCv, (err) => {
+      if (err) {
+        reject(new Error(err.message));
+      } else {
+        res.download(studentCv, fileName);
+      }
+    });
+  } catch (error) {
+    res.status(500).json(new Error(error.message));
+  }
+}
+
+/**
+ * Wrapper function to retrive the student career information
+ * @param {*} req req.params.id_student the student id 
+ * @returns array of object {title : string, grade: integer}
+ */
+exports.getCareerByStudentId = async function (req, res) {
+  if(req.user.role != "teacher"){
+    return res.status(401).json({message : "You can not access to this route"})
+  }
+  if(!req.params.id_student){
+    return res.status(401).json({message : "Missing student id"})
+  }
+  teacherService.getCareerByStudentId(req.params.id_student)
+  .then(function (response) {
+      res.status(200).json(response);
+  })
+  .catch(function (response) {
+      res.status(500).json(response);
+  });
+}

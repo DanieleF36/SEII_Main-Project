@@ -316,7 +316,33 @@ async function getCoSupervisorsEmails() {
     throw new Error(error.message, { cause: error });
   }
 }
-const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, browserApplicationStudent, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout };
+
+async function getStudentCv(path_cv,id_student){
+  const response = await fetch(URL + `/applications/student_cv/${id_student}`, {
+    credentials: "include",
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to download PDF file. Status: ${response.status}`);
+  }
+  let file_name = path_cv.split('//').pop();
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const downloadLink = document.createElement('a');
+  downloadLink.href = url;
+  downloadLink.download = `${file_name}.pdf`;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+  window.URL.revokeObjectURL(url);
+}
+
+async function getCareerByStudentId(id_student) {
+  return getJson(fetch(URL + `/applications/career/${id_student}`,{
+    credentials: "include",
+  })).then(json => { return json });
+}
+
+const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, browserApplicationStudent, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId };
 
 
 

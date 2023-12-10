@@ -108,6 +108,15 @@ exports.browseProposals = async function(supervisor) {
     return response
 }
 
+/**
+ * Function that retrieve the student career information
+ * @param {*} id_student id of the student
+ * @returns array of object {title : string, grade : integer}
+ */
+exports.getCareerByStudentId = async function (id_student) {
+    return response = await studentRepo.getCareerByStudentId(id_student)
+}
+
 // Esporta funzioni Private solo per i test
 if (process.env.NODE_ENV === 'test') {
     module.exports._sendRejectedEmail = _sendRejectedEmail;
