@@ -134,8 +134,7 @@ exports.getIdByThesisId = (thesisId) => {
     if (!(thesisId && thesisId >= 0)) {
       throw new Error('Thesis ID must be greater than or equal to 0');
     }
-  
-    const fetchSupervisorByThesisIdSQL = 'SELECT id_supervisor FROM Thesis WHERE id = ?';
+    const fetchSupervisorByThesisIdSQL = 'SELECT supervisor FROM Thesis WHERE id = ?';
   
     return new Promise((resolve, reject) => {
       db.get(fetchSupervisorByThesisIdSQL, [thesisId], (err, row) => {
@@ -144,7 +143,7 @@ exports.getIdByThesisId = (thesisId) => {
           return;
         }
   
-        resolve(row.id_supervisor);
+        resolve(row.supervisor);
       });
     });
   };

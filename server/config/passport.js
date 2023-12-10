@@ -22,6 +22,7 @@ const samlStrategy = new saml(samlConfig, async (profile, done) => {
     let user, role;
     if(profile.nameID.includes('studenti') ){
         user = await studentRepository.getStudentAndCDSByEmail(profile.nameID)
+        console.log(user)
         role = "student";
     }
     else if(profile.nameID.includes('professori') ){

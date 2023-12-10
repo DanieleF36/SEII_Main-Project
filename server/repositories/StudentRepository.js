@@ -108,7 +108,7 @@ exports.getStudentAndCDSByEmail = (email) => {
     throw new Error('Email must be provided');
   }
 
-  const fetchStudentAndCDSByEmailSQL = 'SELECT S.id, S.name, S.surname, S.email, S.gender, S.nationality, D.title, D.cod, S.enrol_year FROM Student S, Degree D WHERE S.cod_degree = D.cod AND S.email = ?';
+  const fetchStudentAndCDSByEmailSQL = 'SELECT S.id, S.name, S.surname, S.email, S.gender, S.nationality, D.title, D.code, S.enrol_year FROM Student S, Degree D WHERE S.cod_degree = D.id AND S.email = ?';
 
   return new Promise((resolve, reject) => {
     db.get(fetchStudentAndCDSByEmailSQL, [email], (err, row) => {
