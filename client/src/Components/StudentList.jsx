@@ -28,7 +28,7 @@ function StudentList(props) {
     //adding API from backend to set list of applications of the student
     useEffect(() => {
 
-        API.browserApplicationStudent(props.user.id)
+        API.listApplication(props.user.id)
             .then((list) => {
                 setList(list);
                 setDirty(false);

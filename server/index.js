@@ -73,13 +73,13 @@ app.post("/thesis/:id_thesis/applications", isLoggedIn, applicationController.ap
 
 app.get("/applications", isLoggedIn, (req, res) => applicationController.listApplication(req, res));
 
-app.put("/applications/:id_applications", applicationController.acceptApplication);
+app.put("/applications/:id_application", isLoggedIn, (req,res) => applicationController.acceptApplication(req, res));
 
 app.get("/cosupervisors/email", isLoggedIn, (req, res) => coSupervisorController.getAllCoSupervisorsEmails(req, res));
 
-app.get("/applications/student_cv/:id_student", applicationController.getStudentCv);
+app.get("/applications/student_cv/:id_student", applicationController.getStudentCv);//TO BE TESTED
 
-app.get("/applications/career/:id_student",applicationController.getCareerByStudentId)
+app.get("/applications/career/:id_student",applicationController.getCareerByStudentId)//TO BE TESTED
 
 
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))

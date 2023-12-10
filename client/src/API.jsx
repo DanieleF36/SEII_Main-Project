@@ -8,7 +8,6 @@ async function login(){
 async function userAuthenticated(){
   const res = await fetch(URL+ `/session/current`,{credentials:'include'});
   const user = await res.json();
-    console.log(user)
   if(res.ok){
     return user;
   }
@@ -21,8 +20,8 @@ async function logout(){
   window.location.assign(URL+"/logout", {credentials:'include'});
 }
 
-async function listApplication(id_professor) { 
-    const response = await fetch(URL+ `/professor/${id_professor}/applications`,{credentials:'include'});
+async function listApplication() { 
+    const response = await fetch(URL+ `/applications`,{credentials:'include'});
     const application = await response.json();
     if (response.ok) {
        return application.map((a) => ({
@@ -37,7 +36,7 @@ async function listApplication(id_professor) {
                 surname: a.surname
             }));
     } else {
-      throw application;  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
+      throw new Error(response);  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
     }
   }
 
@@ -178,13 +177,13 @@ async function advancedSearchThesis(params){
     }))]
   }
   else {
-    throw res;
+    throw new Error("error");
   }
 }
 
-async function acceptApplication(status,id_professor,id_application) { 
+async function acceptApplication(status,id_application) { 
   try {
-    const response = await fetch(URL + `/professor/${id_professor}/applications/${id_application}`,{
+    const response = await fetch(URL + `/applications/${id_application}`,{
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -213,38 +212,6 @@ async function applyForProposal(application) {
         credentials: "include",
         body: formData
     })).then(json => {return json});
-}
-
-async function browserApplicationStudent(id_student) {
-  try {
-    const response = await fetch(URL + `/student/${id_student}/applications`, {credentials:'include'});
-    const application = await response.json();
-    if (response.ok) {
-      return application.map((a) => ({
-        id_application: a.id_application,
-        title: a.title,
-        supervisor_name: a.supervisor_name,
-        supervisor_surname: a.supervisor_surname,
-        status: a.status,
-        type: a.type,
-        groups: a.groups,
-        description: a.description,
-        knowledge: a.knowledge,
-        note: a.note,
-        level: a.level,
-        keywords: a.keywords,
-        expiration_date: a.expiration_date,
-        cds: a.cds,
-        path_cv: a.path_cv,
-        application_data: a.application_data,
-      }));
-    } else {
-      const message = await response.text();
-      throw new Error(message);
-    }
-  } catch (error) {
-    throw new Error(error.message, { cause: error });
-  }
 }
 
 async function browseProposal(status) { 
@@ -342,7 +309,7 @@ async function getCareerByStudentId(id_student) {
   })).then(json => { return json });
 }
 
-const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, browserApplicationStudent, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId };
+const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId };
 
 
 
