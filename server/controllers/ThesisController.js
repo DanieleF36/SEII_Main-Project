@@ -96,7 +96,7 @@ exports.addThesis = function addThesis(req, res, validate) {
     return;
   }
 
-  if(!req.body.groups.includes(req.user.group)){
+  if(!req.body.groups.includes(String(req.user.group))){
     res.status(400).json({message:"You are not allowed to add for this group"});
     return;
   }

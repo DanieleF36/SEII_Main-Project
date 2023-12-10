@@ -55,7 +55,7 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   
   //find ids about co-supervisors
   await exports.coSupervisorInfo(res);
-  //console.log(res)
+  //
   return [res, npage];
 };
 
@@ -179,11 +179,17 @@ exports.addThesis = async function (thesis) {
   }
 
   const exp_date = dayjs(thesis.expiration_date, "MM-DD-YYYY")
-    .format("YYYY-MM-DD")
-    .toString();
+  .format("YYYY-MM-DD")
+  .toString();
   thesis.expiration_date = exp_date;
   const creat_date = dayjs().format("YYYY-MM-DD").toString();
   thesis.creation_date = creat_date;
+  
+  thesis.keywords = thesis.keywords.join()
+  thesis.type = thesis.type.join()
+  thesis.groups = thesis.groups.join()
+  thesis.knowledge = thesis.knowledge.join()
+  thesis.cds = thesis.cds.join()
 
   // add an entry into THESIS
   const thesis_res = await thesisRepository.addThesis(
@@ -200,16 +206,16 @@ exports.addThesis = async function (thesis) {
     thesis.cds,
     thesis.creation_date,
     thesis.status
-  )
+    )
   if (thesis_res.error) {
     throw new Error(thesis_res.error);
   }
-
+  
   let result
   if (cosupervisor_ids.length > 0) {
     for (let id of cosupervisor_ids) {
       result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, null, id)
-      if (!result) {
+      if (result instanceof Error) {
         return result
       }
     }
@@ -217,10 +223,11 @@ exports.addThesis = async function (thesis) {
   if (supervisor_ids.length > 0) {
     for (let id of supervisor_ids) {
       result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, id, null)
-      if (!result) 
+      if (result instanceof Error) 
         return result
-    }
   }
+}
+  
   return thesis;
 };
 

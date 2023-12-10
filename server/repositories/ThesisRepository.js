@@ -41,12 +41,12 @@ exports.addThesis = (title, supervisor, keywords, type, groups, description, kno
   const sql = 'INSERT INTO Thesis(title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
   return new Promise((resolve, reject) => {
-    db.run(sql, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status], (err) => {
+    db.run(sql, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status], function(err) {
       if (err) {
         reject(new Error(err.message));
         return;
       }
-
+      
       resolve(newThesis(this.lastID, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status));
     });
   });
