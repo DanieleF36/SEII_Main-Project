@@ -245,7 +245,6 @@ describe("SEARCH PROPOSAL INTEGRATION TEST", () => {
         }
 
         const res = await request(app).get('/thesis?page=1');
-        console.log(res.body)
         expect(res.body.nPage).toEqual(1)
         expect(res.body.thesis.length).toEqual(no_thesis)
     })

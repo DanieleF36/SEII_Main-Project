@@ -135,8 +135,6 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
   let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
   const params = sql[1];
   sql = sql[0];
-  console.log("query "+sql)
-  console.log("params "+params)
   
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {

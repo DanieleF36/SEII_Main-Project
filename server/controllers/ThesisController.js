@@ -33,7 +33,6 @@ const thesisService = require("../services/ThesisService");
  */
 const { ValidationError } = require('express-json-validator-middleware');
 exports.searchThesis = function searchThesis(req, res, validate) {
-  console.log("ciao")
   if(req.user.role == 'student'){
     let validationResult;
     validate(req, res, (a)=>{validationResult = a});
