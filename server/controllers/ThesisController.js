@@ -33,17 +33,16 @@ const thesisService = require("../services/ThesisService");
  */
 const { ValidationError } = require('express-json-validator-middleware');
 exports.searchThesis = function searchThesis(req, res, validate) {
+  console.log("ciao")
   if(req.user.role == 'student'){
     let validationResult;
     validate(req, res, (a)=>{validationResult = a});
-    //console.log(JSON.stringify(validationResult))
     if (validationResult instanceof ValidationError){
       res.status(400).json({message: validationResult.validationErrors});
       return;
     }
     //checks if order is defined or not, otherwise titleD is setted as defaul value
     const order = req.query.order ? req.query.order : "titleD";
-
     thesisService.advancedResearchThesis(req.query.page, order, req.query.title, req.query.supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, req.user.cds, req.query.creation_date, req.user.cdsCode)
       .then(function (response) {
         let nPage = response[1];
@@ -143,7 +142,6 @@ exports.updateThesis = function updateThesis(req, res, validate) {
   // Call the updateThesis method from the thesisService
   thesisService.updateThesis(req.body, req.params.id)
     .then(response => {
-      console.log(response)
       if(response.message) {
         res.status(response.status).json(response.message);
       }

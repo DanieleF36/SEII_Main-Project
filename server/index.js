@@ -44,9 +44,8 @@ app.use(express.urlencoded({ extended: false })); // Replaces Body Parser
 let login_as = {user: undefined}
 const isLoggedIn = (req, res, next)=>{
   
-  if(process.env.NODE_ENV === 'test') {
-    req.user = login_as.user
-
+  if(process.env.test) {
+    req.user = login_as.user;
   }
   else if (!req.isAuthenticated()) {
     return res.status(401).json({error: 'Unauthorized'});
@@ -109,7 +108,8 @@ app.use(function(err, req, res, next) {
 });
 
 const PORT = 3001;
-app.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`)
-);
+if(!process.env.test)
+  app.listen(PORT, () =>
+    console.log(`Server running on http://localhost:${PORT}`)
+  );
 module.exports = {app, login_as};
