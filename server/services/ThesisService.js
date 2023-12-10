@@ -237,7 +237,13 @@ exports.updateThesis = async function (thesis, thesis_id) {
     .toString();
   thesis.expiration_date = exp_date;
 
+  thesis.keywords = thesis.keywords.join()
+  thesis.type = thesis.type.join()
+  thesis.groups = thesis.groups.join()
+  thesis.knowledge = thesis.knowledge.join()
+  thesis.cds = thesis.cds.join()
   // Update the entry in THESIS
+  console.log(thesis)
   const updatedThesis = await thesisRepository.updateThesis(
     thesis_id,
     thesis.title,

@@ -46,7 +46,7 @@ exports.addThesis = (title, supervisor, keywords, type, groups, description, kno
         reject(new Error(err.message));
         return;
       }
-      
+
       resolve(newThesis(this.lastID, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status));
     });
   });
@@ -196,14 +196,11 @@ exports.getIdByCoSupervisorId = (id) => {
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.updateThesis = (id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) => {
-  if (!(title && supervisor && keywords && type && groups && description && knowledge && note && expiration_date && level && cds && creation_date && status)) {
-    throw new Error('Some parameters is missing');
-  }
 
   const updateThesisSQL = `UPDATE Thesis SET title = ?, supervisor = ?, keywords = ?, type = ?, groups = ?, description = ?, knowledge = ?, note = ?, expiration_date = ?, level = ?, cds = ?, creation_date = ?, status = ? WHERE id = ?`;
 
   return new Promise((resolve, reject) => {
-    db.run(updateThesisSQL, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status, id], (err) => {
+    db.run(updateThesisSQL, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status, id], function(err) {
       if (err) {
         reject(new Error(err.message));
         return;
@@ -213,7 +210,7 @@ exports.updateThesis = (id, title, supervisor, keywords, type, groups, descripti
         reject(new Error('No rows updated. Thesis ID not found.'));
         return;
       }
-
+      console.log(this.changes)
       resolve(this.changes);
     });
   });

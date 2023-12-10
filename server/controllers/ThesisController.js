@@ -135,7 +135,7 @@ exports.updateThesis = function updateThesis(req, res, validate) {
 
   req.body.supervisor = req.user.id
 
-  if(!req.body.groups.includes(req.user.group)){
+  if(!req.body.groups.includes(String(req.user.group))){
     res.status(400).json({message:"You are not allowed to add for this group"});
     return;
   }
@@ -143,6 +143,7 @@ exports.updateThesis = function updateThesis(req, res, validate) {
   // Call the updateThesis method from the thesisService
   thesisService.updateThesis(req.body, req.params.id)
     .then(response => {
+      console.log(response)
       if(response.message) {
         res.status(response.status).json(response.message);
       }
