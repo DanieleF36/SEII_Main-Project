@@ -246,7 +246,6 @@ exports.updateThesis = async function (thesis, thesis_id) {
   thesis.knowledge = thesis.knowledge.join()
   thesis.cds = thesis.cds.join()
   // Update the entry in THESIS
-  console.log(thesis)
   const updatedThesis = await thesisRepository.updateThesis(
     thesis_id,
     thesis.title,

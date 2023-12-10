@@ -108,8 +108,10 @@ app.use(function(err, req, res, next) {
 });
 
 const PORT = 3001;
-if(!process.env.test)
+if(!process.env.test){
+  console.log(process.env.test)
   app.listen(PORT, () =>
     console.log(`Server running on http://localhost:${PORT}`)
   );
+}
 module.exports = {app, login_as};
