@@ -74,7 +74,7 @@ exports.getByEmail = (email) => {
         if (!row) {
           resolve({});
         } else {
-          resolve(newTeacher(row.id, row.name, row.surname, row.email, row.cod_group, row.cod_dep));
+          resolve(newTeacher(row.id, row.name, row.surname, row.email, row.code_group, row.cod_dep));
         }
       });
     });
