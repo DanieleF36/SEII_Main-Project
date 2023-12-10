@@ -6,7 +6,7 @@ const teacherRepository = require('../../repositories/TeacherRepository.js')
 
 describe('addThesis unit tests', () => {
     let thesis
-    beforeAll(() => {
+    beforeEach(() => {
         thesis = {
             supervisor: 1,
             title: "New thesis is added",

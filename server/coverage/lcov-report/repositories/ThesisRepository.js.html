@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.29% </span>
+                <span class="strong">11.22% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/186</span>
+                <span class='fraction'>21/187</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">3.75% </span>
+                <span class="strong">4.27% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>5/133</span>
+                <span class='fraction'>5/117</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">11.79% </span>
+                <span class="strong">11.73% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>21/178</span>
+                <span class='fraction'>21/179</span>
             </div>
         
             
@@ -536,7 +536,8 @@
 <a name='L471'></a><a href='#L471'>471</a>
 <a name='L472'></a><a href='#L472'>472</a>
 <a name='L473'></a><a href='#L473'>473</a>
-<a name='L474'></a><a href='#L474'>474</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L474'></a><a href='#L474'>474</a>
+<a name='L475'></a><a href='#L475'>475</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -734,9 +735,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -751,7 +749,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -767,6 +765,10 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1052,7 +1054,7 @@ exports.addThesis = <span class="fstat-no" title="function not covered" >(t</spa
   const sql = <span class="cstat-no" title="statement not covered" >'INSERT INTO Thesis(title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    db.run(sql, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status], <span class="fstat-no" title="function not covered" >(e</span>rr) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    db.run(sql, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status], <span class="fstat-no" title="function not covered" >fu</span>nction(err) {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
 <span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
@@ -1143,7 +1145,7 @@ exports.advancedResearch = <span class="fstat-no" title="function not covered" >
 <span class="cstat-no" title="statement not covered" >    throw new Error('"from", "to", "order" and "specific" parameters must be defined');</span>
   }
 &nbsp;
-  const sql = <span class="cstat-no" title="statement not covered" >sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);</span>
+  let sql = <span class="cstat-no" title="statement not covered" >sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);</span>
   const params = <span class="cstat-no" title="statement not covered" >sql[1];</span>
 <span class="cstat-no" title="statement not covered" >  sql = sql[0];</span>
 &nbsp;
@@ -1180,7 +1182,7 @@ exports.getIdByCoSupervisorId = <span class="fstat-no" title="function not cover
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      rows.map(<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >thesisIds.push(e.id_thesis))</span>;</span>
+<span class="cstat-no" title="statement not covered" >      rows.forEach(<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >thesisIds.push(e.id_thesis))</span>;</span>
 <span class="cstat-no" title="statement not covered" >      resolve(thesisIds);</span>
     });
   });
@@ -1207,14 +1209,11 @@ exports.getIdByCoSupervisorId = <span class="fstat-no" title="function not cover
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.updateThesis = <span class="fstat-no" title="function not covered" >(i</span>d, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) =&gt; {
-<span class="cstat-no" title="statement not covered" >  if (!(title &amp;&amp; supervisor &amp;&amp; keywords &amp;&amp; type &amp;&amp; groups &amp;&amp; description &amp;&amp; knowledge &amp;&amp; note &amp;&amp; expiration_date &amp;&amp; level &amp;&amp; cds &amp;&amp; creation_date &amp;&amp; status)) {</span>
-<span class="cstat-no" title="statement not covered" >    throw new Error('All parameters must be provided');</span>
-  }
 &nbsp;
   const updateThesisSQL = <span class="cstat-no" title="statement not covered" >`UPDATE Thesis SET title = ?, supervisor = ?, keywords = ?, type = ?, groups = ?, description = ?, knowledge = ?, note = ?, expiration_date = ?, level = ?, cds = ?, creation_date = ?, status = ? WHERE id = ?`;</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    db.run(updateThesisSQL, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status, id], <span class="fstat-no" title="function not covered" >(e</span>rr) =&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    db.run(updateThesisSQL, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status, id], <span class="fstat-no" title="function not covered" >fu</span>nction(err) {</span>
 <span class="cstat-no" title="statement not covered" >      if (err) {</span>
 <span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
@@ -1224,7 +1223,7 @@ exports.updateThesis = <span class="fstat-no" title="function not covered" >(i</
 <span class="cstat-no" title="statement not covered" >        reject(new Error('No rows updated. Thesis ID not found.'));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
-&nbsp;
+<span class="cstat-no" title="statement not covered" >      console.log(this.changes)</span>
 <span class="cstat-no" title="statement not covered" >      resolve(this.changes);</span>
     });
   });
@@ -1237,11 +1236,15 @@ exports.updateThesis = <span class="fstat-no" title="function not covered" >(i</
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.setStatus = <span class="fstat-no" title="function not covered" >(i</span>d, status) =&gt; {
-<span class="cstat-no" title="statement not covered" >  if (!(id &amp;&amp; id &gt;= 0) || !status || (status &lt; 0 || status &gt; 1)) {</span>
-<span class="cstat-no" title="statement not covered" >    throw new Error('"id" must be greater than or equal to 0 and "status" must be 0 or 1');</span>
+<span class="cstat-no" title="statement not covered" >  if (!id || id &lt; 0 || !status || (status &lt; 0 || status &gt; 2)) {</span>
+<span class="cstat-no" title="statement not covered" >    throw new Error('"id" must be greater than or equal to 0 and "status" must be 0 or 1 or 2');</span>
   }
-&nbsp;
-  const updateThesisSQL = <span class="cstat-no" title="statement not covered" >'UPDATE Thesis SET status = ? WHERE id = ?';</span>
+  let updateThesisSQL;
+  //if new status is cancelled, 2, one check is added to see if thesis is also published 
+<span class="cstat-no" title="statement not covered" >  if(status==2)</span>
+<span class="cstat-no" title="statement not covered" >    updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ? AND status = 1';</span>
+  else
+<span class="cstat-no" title="statement not covered" >    updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ?';</span>
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
 <span class="cstat-no" title="statement not covered" >    db.run(updateThesisSQL, [status, id], <span class="fstat-no" title="function not covered" >(e</span>rr) =&gt; {</span>
@@ -1391,7 +1394,7 @@ function <span class="fstat-no" title="function not covered" >sqlQueryCreator(</
 <span class="cstat-no" title="statement not covered" >        sql+=") ";</span>
       } else {
 <span class="cstat-no" title="statement not covered" >        sql += `AND ${condition.column} ${condition.operator} ? `;</span>
-<span class="cstat-no" title="statement not covered" >        params.push(specific ? `%${value}%` : value);</span>
+<span class="cstat-no" title="statement not covered" >        params.push(cb(value));</span>
       }
     }
   });
@@ -1489,7 +1492,7 @@ exports.restoreExpiredAccordingToIds = <span class="fstat-no" title="function no
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-08T17:22:45.540Z
+                at 2023-12-10T14:44:11.231Z
             </div>
         <script src="../prettify.js"></script>
         <script>
