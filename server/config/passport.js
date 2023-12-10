@@ -34,8 +34,12 @@ const samlStrategy = new saml(samlConfig, async (profile, done) => {
     }
     if(role==='student')
         user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, cds:user.cds, cdsCode:user.cdsCode }
-    else if(role==='teacher')
-        user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, group:user.code_group }
+    else if(role==='teacher') {
+        console.log(user)
+
+        user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, group:user.codGroup }
+
+    }
     else
         user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID }
     done(null, user);
