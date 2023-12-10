@@ -5,9 +5,12 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
+        "id": {
+          "type": "integer"
+        },
         "title": { 
-            "type": "string", 
-            "minLength": 1 
+          "type": "string", 
+          "minLength": 1 
         },
         "supervisor": { 
           "type": "integer"
