@@ -33,7 +33,7 @@ const samlStrategy = new saml(samlConfig, async (profile, done) => {
         role = "cosupervisor";
     }
     if(role==='student')
-        user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, cds:user.cds, cdsCode:user.cdsCode }
+        user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, cds:user.cds, cdsCode:user.cdsCode.includes('LM')?1:0 }
     else if(role==='teacher') {
         console.log(user)
 

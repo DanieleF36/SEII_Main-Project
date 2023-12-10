@@ -241,10 +241,10 @@ describe('supervisorCheck', ()=>{
 })
 
 describe('coSupervisorCheck', ()=>{
-    let coSupervisor=[];
+    let coSupervisor;
     test('case2: coSupervisor missing', async () => {    
         const e = await service.coSupervisorCheck(coSupervisor);
-        expect(e).toStrictEqual([])
+        expect(e).toStrictEqual(undefined)
     });
     test('case3: ns.length>1 error && teacherRepo.get... success', async () => {
         coSupervisor = ["nome cognome"]
@@ -280,7 +280,7 @@ describe('coSupervisorCheck', ()=>{
         expect(getByNSorSC).toHaveBeenCalledWith("cognome");
         expect(getIdByCoSupervisorId).toHaveBeenCalledWith([1, 2]);
     });
-    test('case5: success', async () => {    
+    test('case6: success', async () => {    
         const getByNSorSC = jest.spyOn(require('../../repositories/CoSupervisorRepository.js'), 'getByNSorS').mockResolvedValue([{id:1}, {id:2}]);
         const getIdByCoSupervisorId = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'getIdByCoSupervisorId').mockResolvedValue(1);
         const e = await service.coSupervisorCheck(coSupervisor);

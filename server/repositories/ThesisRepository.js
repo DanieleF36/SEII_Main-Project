@@ -128,14 +128,16 @@ exports.getActiveBySupervisor = (supervisorId, queryParam) => {
  * @returns list of thesis objects
  */
 exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
-  if (!(from && to && order && specific)) {
+  if (from == undefined || to == undefined || specific == undefined) {
     throw new Error('"from", "to", "order" and "specific" parameters must be defined');
   }
 
   let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
   const params = sql[1];
   sql = sql[0];
-
+  console.log("query "+sql)
+  console.log("params "+params)
+  
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {
       if (err) {
@@ -354,6 +356,7 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   specific = !specific;
   
   let input = {from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level};
+
   const op = specific ? 'LIKE' : '=';
   const conditions = [
     { name: 'title', column: 'title', operator: op },
@@ -395,7 +398,8 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
 
 //==================================Virtual CLock==================================
 
-const applicationRepository = require('./ApplicationRepository.js')
+const applicationRepository = require('./ApplicationRepository.js');
+const { query } = require("express");
 /**
  * Designed for Virtual clock
  * @param {*} date 

@@ -35,7 +35,7 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   // find information about id of coSupervisors 
   let idCoSupervisorsThesis = await exports.coSupervisorCheck(coSupervisor);
   // if no. idCoSupervisorsThesis.length > 0 some data have been found
-  if (idCoSupervisorsThesis.length > 0) ok = true;
+  if (idCoSupervisorsThesis?.length > 0) ok = true;
     
   //idSupervisors: [id1, id2, ...] list of ids with common lastname/name pair
   //idCoSupervisorsThesis [idThesis1, idThesis2, ...] list of thesis ids managed by the cosupervisor
@@ -75,18 +75,21 @@ exports.supervisorCheck = async(supervisor)=>{
 }
 
 exports.coSupervisorCheck=async(coSupervisor)=>{
-  let idCoSupervisorsThesis = [];
-  for (let tmp of coSupervisor) {
-    const ns = tmp.split(" ");
-    let idsCo;
-    if (ns.length > 1)
-      idsCo = (await coSupervisorRepository.getByNSorS(ns[1], ns[0])).map(e=>e.id);
-    else
-      idsCo = (await coSupervisorRepository.getByNSorS(ns[0])).map(e=>e.id);
-    if (idsCo.length > 0)
-      // add the thesis managed by the chosen cosupervisor 
-      idCoSupervisorsThesis.push(await thesisRepository.getIdByCoSupervisorId(idsCo));
-  
+  let idCoSupervisorsThesis;
+  if(coSupervisor){
+    idCoSupervisorsThesis = [];
+    for (let tmp of coSupervisor) {
+      const ns = tmp.split(" ");
+      let idsCo;
+      if (ns.length > 1)
+        idsCo = (await coSupervisorRepository.getByNSorS(ns[1], ns[0])).map(e=>e.id);
+      else
+        idsCo = (await coSupervisorRepository.getByNSorS(ns[0])).map(e=>e.id);
+      if (idsCo.length > 0)
+        // add the thesis managed by the chosen cosupervisor 
+        idCoSupervisorsThesis.push(await thesisRepository.getIdByCoSupervisorId(idsCo));
+
+}
   }
   return idCoSupervisorsThesis;
 }

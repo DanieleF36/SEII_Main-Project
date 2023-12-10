@@ -61,7 +61,7 @@ const coSupervisorController = require("./controllers/CoSupervisorController");
 const applicationController = require("./controllers/ApplicationController");
 const vc = require('./dayjsvc/index.dayjsvc')
 
-app.get("/thesis", isLoggedIn, (req, res) => thesisController.searchThesis(req,res, validate({query: querySearch})));
+app.get("/thesis", (req, res) => thesisController.searchThesis(req,res, validate({query: querySearch})));
 
 app.post("/thesis", isLoggedIn, validate({body: thesisSchema}), (req, res) => thesisController.addThesis(req, res));
 

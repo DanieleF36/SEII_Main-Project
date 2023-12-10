@@ -57,7 +57,7 @@ exports.searchThesis = function searchThesis(req, res, validate) {
         });
         res.status(200).json({ nPage: nPage, thesis: response });
     }).catch(e=>{
-      res.status(500).json(e)
+      res.status(500).json({message: e.message})
     });
   }else if(req.user.role == 'teacher'){
     const queryParam= req.query.status;
