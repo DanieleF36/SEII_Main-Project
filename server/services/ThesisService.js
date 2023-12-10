@@ -5,7 +5,8 @@ const thesisRepository = require("../repositories/ThesisRepository");
 const coSupervisorThesisRepository = require("../repositories/CoSupervisorThesisRepository");
 const teacherRepository = require("../repositories/TeacherRepository");
 const nItem = 10; //number of item per page
-const coSupervisorRepository = require('../repositories/CoSupervisorRepository')
+const coSupervisorRepository = require('../repositories/CoSupervisorRepository');
+const applicationRepository = require('../repositories/ApplicationRepository');
 /**
  * Return a list of thesis that respect all the parameters including name, surname and company for co-supervisor and the whole structure of supervisor
  *
@@ -201,14 +202,14 @@ exports.addThesis = async function (thesis) {
     thesis.status
   )
   if (thesis_res.error) {
-    throw { status: 500, error: thesis_res.error };
+    throw new Error(thesis_res.error);
   }
 
   let result
   if (cosupervisor_ids.length > 0) {
     for (let id of cosupervisor_ids) {
       result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, null, id)
-      if (result != true) {
+      if (!result) {
         return result
       }
     }
@@ -216,7 +217,7 @@ exports.addThesis = async function (thesis) {
   if (supervisor_ids.length > 0) {
     for (let id of supervisor_ids) {
       result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, id, null)
-      if (result != true) 
+      if (!result) 
         return result
     }
   }
@@ -248,3 +249,10 @@ exports.updateThesis = async function (thesis, thesis_id) {
   );
   return updatedThesis;
 };
+
+exports.delete = async function (id){
+  const app = await applicationRepository.getAcceptedByThesisId(id);
+  if(!app)
+    throw new Error("You can't delete this thesis, an application is already accepted");
+  await thesisRepository.setStatus(id, 2);
+} 

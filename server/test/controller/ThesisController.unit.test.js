@@ -251,7 +251,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    await controller.updateThesis(mockReq, mockRes, mockValidate);
+    controller.updateThesis(mockReq, mockRes, mockValidate);
     expect(mockRes.status).toHaveBeenCalledWith(400);
     expect(mockRes.json).toHaveBeenCalledWith({ message: "Thesis id is not valid" });
   });
@@ -261,7 +261,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(new ValidationError('body is missing'));
     });
-    await controller.addThesis(mockReq, mockRes, mockValidate);
+    controller.addThesis(mockReq, mockRes, mockValidate);
     expect(mockRes.status).toHaveBeenCalledWith(400);
     expect(mockRes.json).toHaveBeenCalledWith({ message: "body is missing" });
   });
@@ -269,7 +269,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
   test("U3: Supervisor is missing", async () => {
     mockReq.user.role = undefined
     
-    await controller.updateThesis(mockReq, mockRes);
+    controller.updateThesis(mockReq, mockRes);
     expect(mockRes.status).toHaveBeenCalledWith(401);
     expect(mockRes.json).toHaveBeenCalledWith({ message: "You can not access to this route" });
   });
@@ -282,7 +282,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     });
     jest.spyOn(thesisService, "updateThesis").mockResolvedValue({ message: "No rows updated. Thesis ID not found." })
     controller.updateThesis(mockReq, mockRes, mockValidate)
-    await Promise.resolve()
+    await new Promise(resolve => setImmediate(resolve));
     expect(mockRes.json).toHaveBeenCalledWith("No rows updated. Thesis ID not found." );
   });
 
@@ -292,7 +292,8 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
       callback(null);
     });
     jest.spyOn(thesisService, "updateThesis").mockResolvedValue(true);
-    await controller.updateThesis(mockReq, mockRes, mockValidate)
+    controller.updateThesis(mockReq, mockRes, mockValidate);
+    await new Promise(resolve => setImmediate(resolve));
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toBeDefined()
   });
@@ -303,7 +304,8 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
       callback(null);
     });
     jest.spyOn(thesisService, "updateThesis").mockResolvedValue(true);          
-    await controller.updateThesis(mockReq, mockRes, mockValidate)
+    controller.updateThesis(mockReq, mockRes, mockValidate);
+    await new Promise(resolve => setImmediate(resolve));
     expect(mockReq.body.level).toBe(0)
     expect(mockRes.status).toHaveBeenCalledWith(200);
     expect(mockRes.json).toBeDefined()
@@ -313,9 +315,9 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
     mockValidate.mockImplementation((req, res, callback) => {
       callback(null);
     });
-    const spy = jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockResolvedValue({message: 'error', status: 500});
+    jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockResolvedValue({message: 'error', status: 500});
     controller.updateThesis(mockReq, mockRes, mockValidate)
-    await Promise.resolve()
+    await new Promise(resolve => setImmediate(resolve));
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toBeDefined()
   });
@@ -326,7 +328,7 @@ describe("UPDATE PROPOSAL UNIT TEST", () => {
       callback(null);
     });
     jest.spyOn(require('../../services/ThesisService.js'), 'updateThesis').mockImplementation(() => {return {message: 'error', status: 500} });
-    await controller.updateThesis(mockReq, mockRes, mockValidate)
+    controller.updateThesis(mockReq, mockRes, mockValidate)
     expect(mockRes.status).toHaveBeenCalledWith(400);
     expect(mockRes.json).toBeDefined()
   });

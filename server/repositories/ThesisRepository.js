@@ -197,7 +197,7 @@ exports.getIdByCoSupervisorId = (id) => {
  */
 exports.updateThesis = (id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) => {
   if (!(title && supervisor && keywords && type && groups && description && knowledge && note && expiration_date && level && cds && creation_date && status)) {
-    throw new Error('All parameters must be provided');
+    throw new Error('Some parameters is missing');
   }
 
   const updateThesisSQL = `UPDATE Thesis SET title = ?, supervisor = ?, keywords = ?, type = ?, groups = ?, description = ?, knowledge = ?, note = ?, expiration_date = ?, level = ?, cds = ?, creation_date = ?, status = ? WHERE id = ?`;
@@ -226,11 +226,15 @@ exports.updateThesis = (id, title, supervisor, keywords, type, groups, descripti
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.setStatus = (id, status) => {
-  if (!(id && id >= 0) || !status || (status < 0 || status > 1)) {
-    throw new Error('"id" must be greater than or equal to 0 and "status" must be 0 or 1');
+  if (!id || id < 0 || !status || (status < 0 || status > 2)) {
+    throw new Error('"id" must be greater than or equal to 0 and "status" must be 0 or 1 or 2');
   }
-
-  const updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ?';
+  let updateThesisSQL;
+  //if new status is cancelled, 2, one check is added to see if thesis is also published 
+  if(status==2)
+    updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ? AND status = 1';
+  else
+    updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ?';
 
   return new Promise((resolve, reject) => {
     db.run(updateThesisSQL, [status, id], (err) => {

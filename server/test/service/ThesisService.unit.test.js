@@ -82,14 +82,14 @@ describe('addThesis unit tests', () => {
             email: 'gigiverdi@mail.com'
         }})
         jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
-        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return {error: 'error'}})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return {message: 'error'}})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
 
         try{
             await service.addThesis(thesis)
         }
         catch(error) {
-            expect(error.error).toBe('error')
+            expect(error.message).toBe('error')
         }
     })
 
@@ -107,7 +107,7 @@ describe('addThesis unit tests', () => {
             await service.addThesis(thesis)
         }
         catch(error) {
-            expect(error.error).toBe("error")
+            expect(error.message).toBe("error")
         }        
     })
 
