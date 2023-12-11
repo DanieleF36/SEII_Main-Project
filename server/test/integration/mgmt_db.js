@@ -1,6 +1,7 @@
 'use strict';
 
 const sqlite = require('sqlite3');
+const dayjs = require('dayjs')
 const db = new sqlite.Database('dbtest.sqlite', (err) => {
     if (err) throw err;
 });
@@ -436,3 +437,46 @@ exports.insertIntoThesis = (title, supervisor, keywords, type, groups, descripti
     });
 }
 
+/**
+ * Insert into APPLICATION table 
+ * @param {*} studentId 
+ * @param {*} thesisId 
+ * @param {*} cvPath 
+ * @param {*} supervisorId
+ */
+exports.insertIntoApplication = (studentId, thesisId, cvPath, supervisorId) => {
+    const currentDate = dayjs().format('YYYY-MM-DD').toString()
+    const sql = 'INSERT INTO Application (id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?)';
+    return new Promise((resolve, reject) => {
+        db.run(sql, [studentId, thesisId, currentDate, cvPath, 0, supervisorId], function (err) {
+            if (err) {
+                return reject(err);
+            } else {
+                resolve(true);
+            }
+        });
+    })
+};
+
+/**
+ * Insert into STUDENT table
+ * @param {*} surname 
+ * @param {*} name 
+ * @param {*} gender 
+ * @param {*} nationality
+ * @param {*} email 
+ * @param {*} cod_degree 
+ * @param {*} enrol_year 
+ */
+exports.insertIntoStudent = (surname, name, gender, nationality, email, cod_degree, enrol_year) => {
+    const sql = 'INSERT INTO Student ("surname","name","gender","nationality","email","cod_degree","enrol_year") VALUES (?, ?, ?, ?, ?, ?, ?)';
+    return new Promise((resolve, reject) => {
+        db.run(sql, [surname, name, gender, nationality, email, cod_degree, enrol_year], function (err) {
+            if (err) {
+                return reject(err);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+};
