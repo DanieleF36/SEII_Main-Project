@@ -78,7 +78,7 @@ app.get("/cosupervisors/email", isLoggedIn, (req, res) => coSupervisorController
 
 app.get("/applications/student_cv/:student_id", isLoggedIn, applicationController.getStudentCv);
 
-app.get("/applications/career/:student_id", isLoggedIn, applicationController.getCareerByStudentId)//TO BE TESTED
+app.get("/applications/career/:student_id", isLoggedIn, applicationController.getCareerByStudentId)
 
 
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
