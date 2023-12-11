@@ -266,8 +266,9 @@ exports.updateThesis = async function (thesis, thesis_id) {
 };
 
 exports.delete = async function (id){
-  const app = await applicationRepository.getAcceptedByThesisId(id);
-  if(!app)
+  const app = await applicationRepository.getAcceptedByThesisId(id)
+  if(app instanceof Error)
     throw new Error("You can't delete this thesis, an application is already accepted");
   await thesisRepository.setStatus(id, 2);
+  return true
 } 

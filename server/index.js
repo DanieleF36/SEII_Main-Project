@@ -66,7 +66,7 @@ app.post("/thesis", isLoggedIn, validate({body: thesisSchema}), (req, res) => th
 
 app.put("/thesis/:id", isLoggedIn, validate({body: thesisSchema}), (req, res) => thesisController.updateThesis(req, res));
 
-app.delete("/thesis/id", isLoggedIn, thesisController.deleteThesis)
+app.delete("/thesis/:id", isLoggedIn, thesisController.deleteThesis)
 
 app.post("/thesis/:id_thesis/applications", isLoggedIn, applicationController.applyForProposal);
 

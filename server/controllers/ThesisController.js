@@ -153,10 +153,10 @@ exports.updateThesis = function updateThesis(req, res, validate) {
 
 exports.deleteThesis = function deleteThesis(req, res){
   if(req.user.role != 'teacher'){
-    res.status(403).json({message: 'only professor can delete a thesis'});
+    res.status(401).json({message: 'only professor can delete a thesis'});
     return;
   }
-  if(req.params?.id < '0'){
+  if(!req.params.id || parseInt(req.params.id) < 0){
     res.status(400).json({message: 'bad request: id is missing or minor than 0'});
     return;
   }
