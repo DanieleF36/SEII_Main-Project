@@ -207,7 +207,7 @@ exports.getCareerByStudentId = async function (req, res) {
     return res.status(401).json({message : "You can not access to this route"})
   }
   if(!req.params.id_student){
-    return res.status(401).json({message : "Missing student id"})
+    return res.status(400).json({message : "Missing student id"})
   }
   teacherService.getCareerByStudentId(req.params.id_student)
   .then(function (response) {
