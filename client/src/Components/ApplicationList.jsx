@@ -35,9 +35,9 @@ function ApplicationList(props) {
             .catch((err) => { toast.error(err.error); });
     };
 
-    const handleGetCV = (id) => {
+    const handleGetCV = (cv, id) => {
 
-        console.log(id);
+        console.log({path_cv: cv, student_id:id});
    
        }
    
@@ -97,7 +97,7 @@ function ApplicationList(props) {
                                     <br />
                                     <strong>Student Carrer:</strong> {application.student_carreer.map((e)=>{return(<li key={e.id}><strong>course:</strong> {e.title}&nbsp;&nbsp;&nbsp;&nbsp;<strong>grade:</strong> {e.grade}</li>)})}
                                     <br />
-                                    <strong>Student Cv: </strong> <br /><Button variant='danger' style={{marginTop:'2px'}} onClick={()=>handleGetCV(application.id_application)}><img src="./file-earmark-pdf-fill.svg"
+                                    <strong>Student Cv: </strong> <br /><Button variant='danger' style={{marginTop:'2px'}} onClick={()=>handleGetCV(application.path_cv,application.id_student)}><img src="./file-earmark-pdf-fill.svg"
                                     alt="Logo"
                                     className="mr-2" style={{marginBottom:'4px'}}></img></Button>
                                     <br />

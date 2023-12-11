@@ -20,8 +20,8 @@ function StudentList(props) {
 
     }, [dirty]);
 
-    const handleGetCV = (id) => {
-      console.log(id);
+    const handleGetCV = (cv, id) => {
+      console.log({path_cv: cv, student_id: id});
     }
 
 
@@ -93,7 +93,7 @@ function StudentList(props) {
                                     <br />
                                     <strong>Application Date:</strong> {application.application_data}
                                     <br />
-                                    <strong>Student Cv: </strong><br /><Button variant='danger' style={{marginTop:'2px'}} onClick={()=>handleGetCV(application.id_application)}><img src="./file-earmark-pdf-fill.svg"
+                                    <strong>Student Cv: </strong><br /><Button variant='danger' style={{marginTop:'2px'}} onClick={()=>handleGetCV(application.path_cv,props.student.id)}><img src="./file-earmark-pdf-fill.svg"
                                     alt="Logo"
                                     className="mr-2" style={{marginBottom:'4px'}}></img></Button>
                                     <br />
