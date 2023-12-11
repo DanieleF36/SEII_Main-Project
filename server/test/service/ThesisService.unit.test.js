@@ -3,7 +3,7 @@ const repository = require('../../repositories/ThesisRepository.js')
 const coSupervisorThesisRepository = require('../../repositories/CoSupervisorThesisRepository.js')
 const coSupervisorRepository = require('../../repositories/CoSupervisorRepository.js')
 const teacherRepository = require('../../repositories/TeacherRepository.js')
-
+const applicationRepository = require('../../repositories/ApplicationRepository.js')
 describe('addThesis unit tests', () => {
     let thesis
     beforeEach(() => {
@@ -535,3 +535,28 @@ describe('advancedResearchThesis', () => {
         expect(spyci).toHaveBeenCalledWith([{id:1, supervisor:1, coSupervisor:[]}]);
     });    
 });
+
+describe('delete thesis', () => {
+    test('U1: error occurs', async () => {
+        jest.spyOn(applicationRepository, 'getAcceptedByThesisId').mockImplementation(() => {
+            return new Error('error')
+        })
+        try {
+            const res = await service.delete(1)
+        }
+        catch(error) {
+            expect(error).toStrictEqual(Error("You can't delete this thesis, an application is already accepted"))
+        }
+    })
+
+    test('U2: success', async () => {
+        jest.spyOn(applicationRepository, 'getAcceptedByThesisId').mockImplementation(() => {
+            return {application_id: 1, thesis_id: 1, teacher_id: 1}
+        })
+        jest.spyOn(repository, 'setStatus').mockImplementation(() => {
+            return true
+        })
+        const res = await service.delete(1)
+        expect(res).toBe(true)
+    })
+})
