@@ -114,7 +114,7 @@ exports.browseProposals = async function(supervisor) {
  * @returns array of object {title : string, grade : integer}
  */
 exports.getCareerByStudentId = async function (id_student) {
-    return response = await studentRepo.getCareerByStudentId(id_student)
+    return await studentRepo.getCareerByStudentId(id_student)
 }
 
 // Esporta funzioni Private solo per i test

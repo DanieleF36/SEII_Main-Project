@@ -6,6 +6,8 @@ const studentRepository = require("../repositories/StudentRepository");
 const teacherRepository = require("../repositories/TeacherRepository");
 const formidable = require('formidable');
 const applicationRepository = require('../repositories/ApplicationRepository')
+const path = require('path');
+const fs = require('fs');
 /**
  * wrapper function for showing the list of application for the teacher or for the student based on the role
  * @param {*} req in params.id_professor or params.id_student is stored the id
@@ -166,24 +168,32 @@ exports.applyForProposal = async function (req, res) {
  */
 exports.getStudentCv = async function (req, res) {
   if (!req.params.student_id) {
-    return res.status(401).json({ message: "Missing student id" })
+    return res.status(400).json({ message: "Missing student id" })
   }
   if (req.user.role != 'teacher') {
     return res.status(401).json({ message: "You can not access to this route" })
   }
-  const studentInfo = await applicationRepository.getByStudentId(req.params.student_id)
-  const studentCv = studentInfo.path_cv;
-  let fileName = path.basename(studentCv);
   try {
+    const studentInfo = await applicationRepository.getByStudentId(req.params.student_id)
+    if(studentInfo instanceof Error) {
+      throw studentInfo
+    }
+    const studentCv = studentInfo[0].path_cv;
+    let fileName = path.basename(studentCv);
+
     fs.access(studentCv, (err) => {
       if (err) {
-        reject(new Error(err.message));
+        throw new Error(err.message);
       } else {
-        res.download(studentCv, fileName);
+        res.status(200).download(studentCv, fileName)
       }
     });
+    console.log('here')
   } catch (error) {
-    res.status(500).json(new Error(error.message));
+    if(error instanceof Error) {
+      return res.status(500).json(error)
+    }
+    return res.status(500).json(new Error(error.message));
   }
 }
 
@@ -197,7 +207,7 @@ exports.getCareerByStudentId = async function (req, res) {
     return res.status(401).json({message : "You can not access to this route"})
   }
   if(!req.params.id_student){
-    return res.status(401).json({message : "Missing student id"})
+    return res.status(400).json({message : "Missing student id"})
   }
   teacherService.getCareerByStudentId(req.params.id_student)
   .then(function (response) {
