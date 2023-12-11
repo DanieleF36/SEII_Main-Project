@@ -43,7 +43,6 @@ app.use(express.urlencoded({ extended: false })); // Replaces Body Parser
 // login_as TOBE discussed
 let login_as = {user: undefined}
 const isLoggedIn = (req, res, next)=>{
-  
   if(process.env.test) {
     req.user = login_as.user;
   }

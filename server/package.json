@@ -4,8 +4,8 @@
     "test": "jest",
     "test:coverage": "jest --runInBand --coverage --colors",
     "test:unit": "npx jest --runInBand --coverage --coverageDirectory=coverage/coverage_unit --colors auth.unit.test.js controller.unit.test.js users.unit.test.js utils.unit.test.js",
-    "test:integration": "set test=true && jest",
-    "test:integrationCoverage": "npx jest --runInBand --coverage --coverageDirectory=coverage/coverage_integration --colors auth.integration.test.js controller.integration.test.js users.integration.test.js utils.integration.test.js",
+    "test:integration": "set test=true && jest --runInBand --colors",
+    "test:integrationCoverage": "set test=true && jest --runInBand --coverage --coverageDirectory=coverage/coverage_integration --colors",
     "test:official": "npx jest --runInBand --coverage --colors --coverageDirectory=coverage/coverage_official --testPathPattern=test_official/.*\\.test\\.js$"
   },
   "dependencies": {

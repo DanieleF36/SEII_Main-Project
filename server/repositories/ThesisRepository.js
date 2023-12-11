@@ -210,7 +210,6 @@ exports.updateThesis = (id, title, supervisor, keywords, type, groups, descripti
         reject(new Error('No rows updated. Thesis ID not found.'));
         return;
       }
-      console.log(this.changes)
       resolve(this.changes);
     });
   });

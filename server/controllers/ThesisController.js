@@ -117,7 +117,7 @@ exports.addThesis = function addThesis(req, res, validate) {
     .catch((err) => res.status(500).json(err))
 };
 
-exports.updateThesis = function updateThesis(req, res, validate) {
+exports.updateThesis = function updateThesis(req, res) {
   if(req.user.role!=='teacher'){
     res.status(401).json({message:"You can not access to this route"})
     return;

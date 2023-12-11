@@ -172,7 +172,7 @@ exports.addThesis = async function (thesis) {
         if (Object.keys(tmp).length === 0) {
           return {
             status: 400,
-            error: `supervisor ${email} not found in COSUPERVISOR`,
+            message: `supervisor ${email} not found in COSUPERVISOR`,
           };
         }
         else supervisor_ids.push(tmp.id)

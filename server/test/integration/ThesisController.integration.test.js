@@ -11,39 +11,31 @@ afterAll((done) => {
     server.close(done);
 });
     
-
-
-login_as.user = {
-    id: 1,
-    name: 'Gianni',
-    lastname: 'Altobelli',
-    nameID: 'gianni.altobelli@email.it',
-    role: 'student',
-    cds: 'Computer Science',
-    cdsCode: 1
-}
+let thesis
 
 afterEach( async () => {
     await mgmt.cleanThesis()
     await mgmt.cleanCoSupervisor()
     await mgmt.cleanTeacher()
     await mgmt.cleanCoSupervisorThesis()
-    await mgmt.insertIntoTeacher(1, "Rossi", "Mario", "mariorossi@mail.com", "group1", "dep1")
+    //await mgmt.insertIntoTeacher(1, "Rossi", "Mario", "mariorossi@mail.com", "group1", "dep1")
 });  
 
-describe.skip("INSERT PROPOSAL INTEGRATION TEST", () => {
-    let thesis
+describe("INSERT PROPOSAL INTEGRATION TEST", () => {
     beforeEach( async () => {
         await mgmt.cleanThesis()
         await mgmt.cleanCoSupervisor()
         await mgmt.cleanTeacher()
         await mgmt.cleanCoSupervisorThesis()
+
         login_as.user = {
             id: 1,
             name: 'Gianni',
             lastname: 'Altobelli',
             nameID: 'gianni.altobelli@email.it',
             role: 'teacher',
+            cds: 'Computer Science',
+            cdsCode: 1,
             group: 'group1'
         }
 
@@ -63,14 +55,14 @@ describe.skip("INSERT PROPOSAL INTEGRATION TEST", () => {
         }
     })
 
-    afterAll( async () => {
+    afterEach( async () => {
         await mgmt.cleanThesis()
-        // await mgmt.cleanCoSupervisor()
+        await mgmt.cleanCoSupervisor()
         await mgmt.cleanTeacher()
         await mgmt.cleanCoSupervisorThesis()
     })
 
-    test.skip("I1: insert a thesis", async () => {
+    test("I1: insert a thesis", async () => {
 
         await mgmt.insertIntoTeacher(1, "Rossi", "Mario", "mariorossi@mail.com", "group1", "dep1")
         await mgmt.insertIntoCoSupervisor(1, "gigiverdi@mail.com", "Gigi", "Verdi", "Fake SRL")
@@ -80,15 +72,15 @@ describe.skip("INSERT PROPOSAL INTEGRATION TEST", () => {
             title: "New thesis is added",
             supervisor: 1,
             cosupervisor: ["gigiverdi@mail.com"],
-            keywords: ["SoftEng"],
-            type: ["abroad"],
-            groups: ["group1"],
+            keywords: "SoftEng",
+            type: "abroad",
+            groups: "group1",
             description: "new thesis description",
-            knowledge: ["none"],
+            knowledge: "none",
             note: "none",
             expiration_date: "2024-01-01",
             level: 1,
-            cds: ["ingInf"],
+            cds: "ingInf",
             status: 1,
             creation_date: dayjs().format('YYYY-MM-DD').toString()
         }
@@ -102,7 +94,7 @@ describe.skip("INSERT PROPOSAL INTEGRATION TEST", () => {
                 })
     })
 
-    test.skip("I2: insert a thesis, a cosupervisor is missing so 400 error is returned", async () => {
+    test("I2: insert a thesis, a cosupervisor is missing so 400 error is returned", async () => {
 
         await mgmt.insertIntoTeacher(1, "Rossi", "Mario", "asd@mail.com", "group1", "dep1")
 
@@ -220,23 +212,42 @@ describe.skip("INSERT PROPOSAL INTEGRATION TEST", () => {
 })
 
 
-describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
+describe("SEARCH PROPOSAL INTEGRATION TEST", () => {
     let i;
-    let no_thesis = 5;
-    let thesis = {
-        title: "New thesis is added",
-        supervisor: 1,
-        keywords: "SoftEng",
-        type: "abroad",
-        groups: "group1",
-        description: "new thesis description",
-        knowledge: "none",
-        note: "none",
-        expiration_date: "2024-01-01",
-        level: 1,
-        cds: "Computer Science",
-        status: 1
-    }
+    let no_thesis;
+    beforeEach(() => {
+        no_thesis = 5;
+        thesis = {
+            title: "New thesis is added",
+            supervisor: 1,
+            keywords: "SoftEng",
+            type: "abroad",
+            groups: "group1",
+            description: "new thesis description",
+            knowledge: "none",
+            note: "none",
+            expiration_date: "2024-01-01",
+            level: 1,
+            cds: "Computer Science",
+            status: 1
+        }
+        login_as.user = {
+            id: 1,
+            name: 'Gianni',
+            lastname: 'Altobelli',
+            nameID: 'gianni.altobelli@email.it',
+            role: 'student',
+            cds: 'Computer Science',
+            cdsCode: 1,
+            group: 'group1'
+        }
+    })
+    afterEach( async () => {
+        await mgmt.cleanThesis()
+        await mgmt.cleanCoSupervisor()
+        await mgmt.cleanTeacher()
+        await mgmt.cleanCoSupervisorThesis()
+    })
     test("I1: get thesis from page 1 (STUDENT)", async () => {
         for(i = 0; i < no_thesis; i++){
             let title = `title ${i}`
@@ -249,7 +260,7 @@ describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
         expect(res.body.thesis.length).toEqual(no_thesis)
     })
 
-    test.skip("I2: get thesis from page 2", async () => {
+    test("I2: get thesis from page 2", async () => {
         no_thesis = 11
 
         for(i = 0; i < no_thesis; i++){
@@ -260,7 +271,7 @@ describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
 
         const response = await request(app).get('/thesis?page=2')
         expect(response.body.nPage).toEqual(2)
-        expect(response.body.thesis.length).toEqual(no_thesis)
+        expect(response.body.thesis.length).toEqual(1)
     })
 
     test("I3: get thesis with a given title", async () => {
@@ -275,12 +286,12 @@ describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
         expect(resp.body.thesis[0].title).toEqual(thesis.title)       
     })
 
-    test.skip("I4: get thesis with a given keyword", async () => {
+    test("I4: get thesis with a given keyword", async () => {
         await mgmt.insertIntoThesis(thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, 
             thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)
 
 
-        const resp = await request(app).get('/thesis?page=1&keyword=SoftEng')
+        const resp = await request(app).get('/thesis?page=1&keywords=SoftEng')
         expect(resp.body.nPage).toEqual(1)
         expect(resp.body.thesis.length).toEqual(1)
         expect(resp.body.thesis[0].keywords).toEqual(thesis.keywords)
@@ -322,24 +333,13 @@ describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
     })
 })
 
-describe.skip("UPDATE PROPOSAL INTEGRATION TEST", () => {
-    let thesis
+describe("UPDATE PROPOSAL INTEGRATION TEST", () => {
     beforeEach( async () => {
         await mgmt.cleanThesis()
         await mgmt.cleanCoSupervisor()
         await mgmt.cleanTeacher()
         await mgmt.cleanCoSupervisorThesis()        
         
-        
-        login_as.user = {
-            id: 1,
-            name: 'Gianni',
-            lastname: 'Altobelli',
-            nameID: 'gianni.altobelli@email.it',
-            role: 'teacher',
-            group: 'group1'
-        }
-
         thesis = {
             title: "New thesis is added",
             supervisor: 1,
@@ -356,11 +356,21 @@ describe.skip("UPDATE PROPOSAL INTEGRATION TEST", () => {
             cds: ["ingInf"],
             status: 1
         }
+        login_as.user = {
+            id: 1,
+            name: 'Gianni',
+            lastname: 'Altobelli',
+            nameID: 'gianni.altobelli@email.it',
+            role: 'teacher',
+            cds: 'Computer Science',
+            cdsCode: 1,
+            group: 'group1'
+        }
 
         await mgmt.insertIntoThesis(1, thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)
     })
 
-    afterAll( async () => {
+    afterEach( async () => {
         await mgmt.cleanThesis()
         await mgmt.cleanCoSupervisor()
         await mgmt.cleanTeacher()
@@ -372,11 +382,11 @@ describe.skip("UPDATE PROPOSAL INTEGRATION TEST", () => {
         await mgmt.insertIntoTeacher(1, "Rossi", "Mario", "mariorossi@mail.com", "group1", "dep1")
         await mgmt.insertIntoCoSupervisor(1, "gigiverdi@mail.com", "Gigi", "Verdi", "Fake SRL")
 
-        thesis.title = 'updated title'
-        await request(app)
+        thesis.title = 'updated'
+        const resp = await request(app)
                 .put('/thesis/1')
                 .send(thesis)
-                .expect(200)
+        expect(resp.status).toBe(200)
     })
 
     test("I2: update a thesis, expiration date is not defined so 400 error is returned", async () => {
