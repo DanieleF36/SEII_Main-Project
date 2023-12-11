@@ -49,6 +49,7 @@ function MyProposal(props) {
   };
 
   const handleSwitch = () => {
+    toast.remove();
     if (archived === 0){
       
       setArchived(1);
