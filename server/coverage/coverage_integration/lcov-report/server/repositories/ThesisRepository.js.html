@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">39.57% </span>
+                <span class="strong">44.91% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>74/187</span>
+                <span class='fraction'>84/187</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">36.2% </span>
+                <span class="strong">44.82% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>42/116</span>
+                <span class='fraction'>52/116</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42% </span>
+                <span class="strong">48% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>21/50</span>
+                <span class='fraction'>24/50</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">39.66% </span>
+                <span class="strong">45.25% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>71/179</span>
+                <span class='fraction'>81/179</span>
             </div>
         
             
@@ -537,8 +537,7 @@
 <a name='L472'></a><a href='#L472'>472</a>
 <a name='L473'></a><a href='#L473'>473</a>
 <a name='L474'></a><a href='#L474'>474</a>
-<a name='L475'></a><a href='#L475'>475</a>
-<a name='L476'></a><a href='#L476'>476</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L475'></a><a href='#L475'>475</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -762,29 +761,28 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1236,30 +1234,29 @@ exports.updateThesis = (id, title, supervisor, keywords, type, groups, descripti
  * @returns the number of row modified, if different from 1 it is an error
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
-exports.setStatus = <span class="fstat-no" title="function not covered" >(i</span>d, status) =&gt; {
-<span class="cstat-no" title="statement not covered" >  if (!id || id &lt; 0 || !status || (status &lt; 0 || status &gt; 2)) {</span>
+exports.setStatus = (id, status) =&gt; {
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!id || id &lt; 0 || !status || (status &lt; 0 || status &gt; 2)) {
 <span class="cstat-no" title="statement not covered" >    throw new Error('"id" must be greater than or equal to 0 and "status" must be 0 or 1 or 2');</span>
   }
   let updateThesisSQL;
   //if new status is cancelled, 2, one check is added to see if thesis is also published 
-<span class="cstat-no" title="statement not covered" >  if(status==2)</span>
-<span class="cstat-no" title="statement not covered" >    updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ? AND status = 1';</span>
+  if(status==2)
+    updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ? AND status = 1';
   else
-<span class="cstat-no" title="statement not covered" >    updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ?';</span>
+<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="else path not taken" >E</span>updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ?';</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    db.run(updateThesisSQL, [status, id], <span class="fstat-no" title="function not covered" >(e</span>rr) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      if (err) {</span>
+  return new Promise((resolve, reject) =&gt; {
+    db.run(updateThesisSQL, [status, id], function (err) {
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (err) {
 <span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
-&nbsp;
-<span class="cstat-no" title="statement not covered" >      if (this.changes === 0) {</span>
-<span class="cstat-no" title="statement not covered" >        reject(new Error('No rows updated. Thesis ID not found.'));</span>
-<span class="cstat-no" title="statement not covered" >        return;</span>
+      if (this.changes === 0) {
+        reject(new Error('No rows updated. Thesis ID not found.'));
+        return;
       }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >      resolve(this.changes);</span>
+      resolve(this.changes);
     });
   });
 };
@@ -1495,7 +1492,7 @@ exports.restoreExpiredAccordingToIds = <span class="fstat-no" title="function no
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-11T15:38:54.259Z
+                at 2023-12-11T20:17:57.216Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

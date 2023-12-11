@@ -21,7 +21,7 @@ afterEach( async () => {
     //await mgmt.insertIntoTeacher(1, "Rossi", "Mario", "mariorossi@mail.com", "group1", "dep1")
 });  
 
-describe.skip("INSERT PROPOSAL INTEGRATION TEST", () => {
+describe("INSERT PROPOSAL INTEGRATION TEST", () => {
     beforeEach( async () => {
         await mgmt.cleanThesis()
         await mgmt.cleanCoSupervisor()
@@ -212,7 +212,7 @@ describe.skip("INSERT PROPOSAL INTEGRATION TEST", () => {
 })
 
 
-describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
+describe("SEARCH PROPOSAL INTEGRATION TEST", () => {
     let i;
     let no_thesis;
     beforeEach(() => {
@@ -251,7 +251,7 @@ describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
     test("I1: get thesis from page 1 (STUDENT)", async () => {
         for(i = 0; i < no_thesis; i++){
             let title = `title ${i}`
-            await mgmt.insertIntoThesis(title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, 
+            await mgmt.insertIntoThesis(i+1, title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, 
                 thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)
         }
 
@@ -265,7 +265,7 @@ describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
 
         for(i = 0; i < no_thesis; i++){
             let title = `title ${i}`
-            await mgmt.insertIntoThesis(title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, 
+            await mgmt.insertIntoThesis(i+1, title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, 
                 thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)
         }
 
@@ -276,7 +276,7 @@ describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
 
     test("I3: get thesis with a given title", async () => {
         thesis.title = "my"
-        await mgmt.insertIntoThesis(thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, 
+        await mgmt.insertIntoThesis(1,thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, 
             thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)
 
 
@@ -287,7 +287,7 @@ describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
     })
 
     test("I4: get thesis with a given keyword", async () => {
-        await mgmt.insertIntoThesis(thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, 
+        await mgmt.insertIntoThesis(1, thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, 
             thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)
 
 
@@ -299,7 +299,7 @@ describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
 
     test("I5: get thesis with a given type", async () => {
 
-        await mgmt.insertIntoThesis(thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description,
+        await mgmt.insertIntoThesis(1,thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description,
             thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)
 
 
@@ -311,7 +311,7 @@ describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
 
     test("I6: get thesis with a given group", async () => {
         thesis.groups = "group"
-        await mgmt.insertIntoThesis(thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description,
+        await mgmt.insertIntoThesis(1,thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description,
             thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)
 
         const resp = await request(app).get('/thesis?page=1&groups=group')
@@ -323,7 +323,7 @@ describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
 
     test("I7: get thesis with a given knowledge with entries", async () => {
 
-        await mgmt.insertIntoThesis(thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description,
+        await mgmt.insertIntoThesis(1,thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description,
             thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)
 
 
@@ -333,7 +333,7 @@ describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
     })
 })
 
-describe.skip("UPDATE PROPOSAL INTEGRATION TEST", () => {
+describe("UPDATE PROPOSAL INTEGRATION TEST", () => {
     beforeEach( async () => {
         await mgmt.cleanThesis()
         await mgmt.cleanCoSupervisor()

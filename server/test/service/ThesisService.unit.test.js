@@ -551,12 +551,12 @@ describe('delete thesis', () => {
 
     test('U2: success', async () => {
         jest.spyOn(applicationRepository, 'getAcceptedByThesisId').mockImplementation(() => {
-            return {application_id: 1, thesis_id: 1, teacher_id: 1}
+            return undefined
         })
         jest.spyOn(repository, 'setStatus').mockImplementation(() => {
-            return true
+            return 1
         })
         const res = await service.delete(1)
-        expect(res).toBe(true)
+        expect(res).toBe(1)
     })
 })

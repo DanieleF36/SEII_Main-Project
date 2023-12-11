@@ -55,6 +55,7 @@ exports.searchThesis = function searchThesis(req, res, validate) {
         });
         res.status(200).json({ nPage: nPage, thesis: response });
     }).catch(e=>{
+      console.log(e)
       res.status(500).json({message: e.message})
     });
   }else if(req.user.role == 'teacher'){
@@ -160,13 +161,11 @@ exports.deleteThesis = function deleteThesis(req, res) {
     res.status(400).json({ message: 'bad request: id is missing or minor than 0' });
     return;
   }
-  thesisService.delete(req.params.id,req.user.id).then(response => {
-    if (response.message) {
-      res.status(response.status).json(response.message);
-    }
-    else {
-      res.status(200).json(response);
-    }
-  })
-    .catch((err) => res.status(500).json(err.message));
+  thesisService.delete(req.params.id,req.user.id).then(response => res.status(200).json(response))
+    .catch((err) =>{
+      if(err.message == "You can't delete this thesis, an application is already accepted")
+        res.status(400).json(err);
+      else
+        res.status(500).json(err);
+    });
 }

@@ -135,6 +135,7 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
   test('case 1: role not present', async () => {
     
     controller.searchThesis(mockReq, mockRes);
+    await new Promise(resolve => setImmediate(resolve));
     expect(mockRes.status).toHaveBeenCalledWith(401);
     expect(mockRes.json).toHaveBeenCalledWith({message: "Only student or teacher can access list of thesis"});
   })
@@ -145,6 +146,7 @@ describe('SEARCH PROPOSAL UNIT TEST', () => {
       callback(new ValidationError('error'));
     });
     controller.searchThesis(mockReq, mockRes, mockValidate);
+    await new Promise(resolve => setImmediate(resolve));
     expect(mockRes.status).toHaveBeenCalledWith(400);
     expect(mockRes.json).toHaveBeenCalledWith({message: "error"});
   })
@@ -381,25 +383,25 @@ describe('DELETE THESIS UNIT TEST', () => {
 
   test('U3: internal error occurs 1', async () => {
     jest.spyOn(thesisService, 'delete').mockRejectedValue({message: "You can't delete this thesis, an application is already accepted"})
-    await controller.deleteThesis(mockReq, mockRes)
-    await Promise.resolve()
+    controller.deleteThesis(mockReq, mockRes)
+    await new Promise(resolve => setImmediate(resolve));
 
-    expect(mockRes.status).toHaveBeenCalledWith(403)
+    expect(mockRes.status).toHaveBeenCalledWith(400)
     expect(mockRes.json).toHaveBeenCalledWith({ message: "You can't delete this thesis, an application is already accepted" });
   })
 
   test('U4: internal error occurs 2', async () => {
     jest.spyOn(thesisService, 'delete').mockRejectedValue({message: "No rows updated. Thesis ID not found"})
-    await controller.deleteThesis(mockReq, mockRes)
-    await Promise.resolve()
+    controller.deleteThesis(mockReq, mockRes)
+    await new Promise(resolve => setImmediate(resolve));
 
-    expect(mockRes.status).toHaveBeenCalledWith(404)
+    expect(mockRes.status).toHaveBeenCalledWith(500)
   })
 
   test('U5: internal error occurs 3', async () => {
     jest.spyOn(thesisService, 'delete').mockRejectedValue({message: "Generic error"})
-    await controller.deleteThesis(mockReq, mockRes)
-    await Promise.resolve()
+    controller.deleteThesis(mockReq, mockRes)
+    await new Promise(resolve => setImmediate(resolve));
 
     expect(mockRes.status).toHaveBeenCalledWith(500)
     expect(mockRes.json).toHaveBeenCalledWith({ message: "Generic error" });
@@ -407,8 +409,8 @@ describe('DELETE THESIS UNIT TEST', () => {
 
   test('U6: success', async () => {
     jest.spyOn(thesisService, 'delete').mockResolvedValue(true)
-    await controller.deleteThesis(mockReq, mockRes)
-    await Promise.resolve()
+    controller.deleteThesis(mockReq, mockRes)
+    await new Promise(resolve => setImmediate(resolve));
 
     expect(mockRes.status).toHaveBeenCalledWith(200)
   })
