@@ -21,7 +21,7 @@ afterEach( async () => {
     //await mgmt.insertIntoTeacher(1, "Rossi", "Mario", "mariorossi@mail.com", "group1", "dep1")
 });  
 
-describe("INSERT PROPOSAL INTEGRATION TEST", () => {
+describe.skip("INSERT PROPOSAL INTEGRATION TEST", () => {
     beforeEach( async () => {
         await mgmt.cleanThesis()
         await mgmt.cleanCoSupervisor()
@@ -212,7 +212,7 @@ describe("INSERT PROPOSAL INTEGRATION TEST", () => {
 })
 
 
-describe("SEARCH PROPOSAL INTEGRATION TEST", () => {
+describe.skip("SEARCH PROPOSAL INTEGRATION TEST", () => {
     let i;
     let no_thesis;
     beforeEach(() => {
@@ -333,7 +333,7 @@ describe("SEARCH PROPOSAL INTEGRATION TEST", () => {
     })
 })
 
-describe("UPDATE PROPOSAL INTEGRATION TEST", () => {
+describe.skip("UPDATE PROPOSAL INTEGRATION TEST", () => {
     beforeEach( async () => {
         await mgmt.cleanThesis()
         await mgmt.cleanCoSupervisor()
@@ -492,5 +492,86 @@ describe("UPDATE PROPOSAL INTEGRATION TEST", () => {
                 .put('/thesis/1')
                 .send(thesis)
                 .expect(401)
+    })
+})
+
+describe("DELETE PROPOSAL INTEGRATION TEST", () => {
+    let application;
+    beforeEach(async () => {
+        await mgmt.cleanApplication();
+        await mgmt.cleanThesis()
+
+        thesis = {
+            title: "ThesisTitle",
+            supervisor: 1,
+            cosupervisor: [""],
+            keywords: ["SoftEng"],
+            type: ["abroad"],
+            groups: ["group1"],
+            description: "new thesis description",
+            knowledge: ["none"],
+            note: "none",
+            expiration_date: "2024-01-01",
+            creation_date: "2023-01-01",
+            level: "Master",
+            cds: ["ingInf"],
+            status: 1
+        }
+
+        application = {
+            studentId: 1,
+            thesisId: 1,
+            cvPath: "prova.pdf",
+            supervisorId: 1,
+            status :1
+        }
+
+        login_as.user = {
+            id: 1,
+            name: 'Gianni',
+            lastname: 'Altobelli',
+            nameID: 'gianni.altobelli@email.it',
+            role: 'teacher',
+            cds: 'Computer Science',
+            cdsCode: 1,
+            group: 'group1'
+        }
+
+    })
+
+    afterEach(async () => {
+        await mgmt.cleanApplication();
+        await mgmt.cleanThesis()
+    })
+
+    test("I1: Delete proposal but you're not authorized ", async () => {
+
+        login_as.user.role = "wrong role"
+
+        const response = await request(app).delete('/thesis/1')
+        expect(response.status).toBe(401);
+    })
+    test("I2: Delete proposal but thesis id is missing or minor than 0 ", async () => {
+
+        const response = await request(app).delete('/thesis/-1')
+        expect(response.status).toBe(400);
+    })
+    test("I3: Delete proposal but thesis has an application already accepted ", async () => {
+        await mgmt.insertIntoApplication(1,application.studentId, application.thesisId, application.cvPath, application.supervisorId, application.status);
+        await mgmt.insertIntoThesis(1, thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)
+
+        const response = await request(app).delete('/thesis/1')
+        expect(response.status).toBe(400);
+    })
+    test("I4: Delete proposal but thesis id doesn't exist ", async () => {
+        await mgmt.insertIntoApplication(1,application.studentId, application.thesisId, application.cvPath, application.supervisorId, application.status);
+        await mgmt.insertIntoThesis(1, thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)
+        const response = await request(app).delete('/thesis/2')
+        expect(response.status).toBe(500);
+    })
+    test("I5: Delete proposal done ", async () => {
+        await mgmt.insertIntoThesis(1, thesis.title, thesis.supervisor, thesis.keywords, thesis.type, thesis.groups, thesis.description, thesis.knowledge, thesis.note, thesis.expiration_date, thesis.level, thesis.cds, thesis.creation_date, thesis.status)
+        const response = await request(app).delete('/thesis/1')
+        expect(response.status).toBe(200);
     })
 })

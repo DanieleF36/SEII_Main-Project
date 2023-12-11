@@ -40,10 +40,12 @@ describe("LIST APPLICATION INTEGRATION TEST", () => {
         }
 
         application = {
+            id: 1,
             studentId: 1,
             thesisId: 1,
             cvPath: "prova.pdf",
             supervisorId: 1,
+            status: 1
         }
         student = {
             name: "Giuseppe",
@@ -71,7 +73,7 @@ describe("LIST APPLICATION INTEGRATION TEST", () => {
         expect(response.status).toBe(500)
     })
     test("I3: list Application done (teacher)", async () => {
-        await mgmt.insertIntoApplication(application.studentId, application.thesisId, application.cvPath, application.supervisorId);
+        await mgmt.insertIntoApplication(1,application.studentId, application.thesisId, application.cvPath, application.supervisorId, application.status);
         await mgmt.insertIntoStudent(student.surname, student.name, student.gender, student.nationality, student.email, student.cod_degree, student.enrol_year)
         const response = await request(app).get('/applications')
         expect(response.status).toBe(200)
@@ -89,7 +91,7 @@ describe("LIST APPLICATION INTEGRATION TEST", () => {
     })
     test("I6: list Application done (student)", async () => {
         login_as.user.role = "student"
-        await mgmt.insertIntoApplication(application.studentId, application.thesisId, application.cvPath, application.supervisorId);
+        await mgmt.insertIntoApplication(1,application.studentId, application.thesisId, application.cvPath, application.supervisorId, application.status);
         await mgmt.insertIntoStudent(student.surname, student.name, student.gender, student.nationality, student.email, student.cod_degree, student.enrol_year)
         const response = await request(app).get('/applications')
         expect(response.status).toBe(200)

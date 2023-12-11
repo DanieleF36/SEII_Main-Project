@@ -151,24 +151,22 @@ exports.updateThesis = function updateThesis(req, res) {
     .catch((err) => res.status(500).json(err))
 };
 
-exports.deleteThesis = function deleteThesis(req, res){
-  if(req.user.role != 'teacher'){
-    res.status(401).json({message: 'only professor can delete a thesis'});
+exports.deleteThesis = function deleteThesis(req, res) {
+  if (req.user.role != 'teacher') {
+    res.status(401).json({ message: 'only professor can delete a thesis' });
     return;
   }
-  if(!req.params.id || parseInt(req.params.id) < 0){
-    res.status(400).json({message: 'bad request: id is missing or minor than 0'});
+  if (!req.params.id || parseInt(req.params.id) < 0) {
+    res.status(400).json({ message: 'bad request: id is missing or minor than 0' });
     return;
   }
-  thesisService.delete(req.params.id).then(()=>{
-    res.status(200);
-    return;
-  }).catch((err)=>{
-    if(err.message == "You can't delete this thesis, an application is already accepted")
-      res.status(403).json({message: err.message});
-    else if(err.message == "No rows updated. Thesis ID not found")
-      res.status(404);
-    else
-      res.status(500).json({message: err.message});
-  });
+  thesisService.delete(req.params.id,req.user.id).then(response => {
+    if (response.message) {
+      res.status(response.status).json(response.message);
+    }
+    else {
+      res.status(200).json(response);
+    }
+  })
+    .catch((err) => res.status(500).json(err.message));
 }

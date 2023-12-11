@@ -420,14 +420,14 @@ exports.insertIntoCoSupervisor = (id, email, name, surname, company) => {
  * @param {*} company 
  * @returns 
  */
-exports.insertIntoThesis = (title, supervisor, keywords, type, groups, description, knowledge, note, expiration, level, cds, creation_date, status) => {
-    const query = `INSERT INTO Thesis ("title", "supervisor", "keywords", "type", 
+exports.insertIntoThesis = (id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration, level, cds, creation_date, status) => {
+    const query = `INSERT INTO Thesis ("id", "title", "supervisor", "keywords", "type", 
                     "groups", "description", "knowledge", "note", "expiration_date", "level", 
-                    "cds", "creation_date", "status") VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    "cds", "creation_date", "status") VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `
 
     return new Promise((resolve, reject) => {
-        db.run(query, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration, level, cds, creation_date, status], (err) => {
+        db.run(query, [id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration, level, cds, creation_date, status], (err) => {
             if (err) {
                 reject(err);
             } else {
@@ -443,12 +443,13 @@ exports.insertIntoThesis = (title, supervisor, keywords, type, groups, descripti
  * @param {*} thesisId 
  * @param {*} cvPath 
  * @param {*} supervisorId
+ * @param {*} status
  */
-exports.insertIntoApplication = (studentId, thesisId, cvPath, supervisorId) => {
+exports.insertIntoApplication = (id, studentId, thesisId, cvPath, supervisorId, status) => {
     const currentDate = dayjs().format('YYYY-MM-DD').toString()
-    const sql = 'INSERT INTO Application (id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?)';
+    const sql = 'INSERT INTO Application (id, id_student, id_thesis, data, path_cv, status, id_teacher) VALUES (?, ?, ?, ?, ?, ?, ?)';
     return new Promise((resolve, reject) => {
-        db.run(sql, [studentId, thesisId, currentDate, cvPath, 0, supervisorId], function (err) {
+        db.run(sql, [id, studentId, thesisId, currentDate, cvPath, status, supervisorId], function (err) {
             if (err) {
                 return reject(err);
             } else {

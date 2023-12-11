@@ -233,12 +233,11 @@ exports.setStatus = (id, status) => {
     updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ?';
 
   return new Promise((resolve, reject) => {
-    db.run(updateThesisSQL, [status, id], (err) => {
+    db.run(updateThesisSQL, [status, id], function (err) {
       if (err) {
         reject(new Error(err.message));
         return;
       }
-
       if (this.changes === 0) {
         reject(new Error('No rows updated. Thesis ID not found.'));
         return;
