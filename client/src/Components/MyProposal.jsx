@@ -14,12 +14,24 @@ function MyProposal(props) {
   const [proposals, setProposals] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
+  const [showModal3, setShowModal3] = useState(false);
+  const [deleteP, setDeleteP] = useState(false);
 
 
 
   const handleModify = (proposal) => {
     setSelectedProposal( {...proposal} );
     setShowModal(true);
+  };
+
+  const handleDelete = (proposal) => {
+    setDeleteP( {...proposal} );
+    setShowModal3(true);
+  };
+
+  const applyDelete = () => {
+    console.log({id_del: deleteP.id});
+    handleCloseModal3();
   };
 
   const handleStatus = (proposal) => {
@@ -59,6 +71,12 @@ function MyProposal(props) {
     setShowModal2(false);
 
     setSelectedProposal('');
+  };
+
+  const handleCloseModal3 = () => {
+    setShowModal3(false);
+
+    setDeleteP('');
   };
   
   const [cosup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);
@@ -226,7 +244,9 @@ function MyProposal(props) {
                    : ''
                   }
                   <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Copy</Tooltip>  }><Button variant="primary mx-2" onClick={() => props.handleCopy(proposal)} ><i className="bi bi-clipboard-plus-fill"/></Button></OverlayTrigger>
-                  
+                  {proposal.status==1?
+                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Delete</Tooltip>  }><Button variant="danger mx-2" onClick={() => handleDelete(proposal)} ><i className="bi bi-trash3-fill"></i></Button></OverlayTrigger>:''
+                  }
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
@@ -380,6 +400,20 @@ function MyProposal(props) {
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal2}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal show={showModal3} onHide={handleCloseModal3} backdrop="static"
+        keyboard={false}>
+      <Modal.Header closeButton>
+          <Modal.Title>Are you sure to delete this proposal?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Button variant="success mx-2" onClick={() => applyDelete()}>Yes</Button>
+          <Button variant="danger" onClick={handleCloseModal3}>No</Button>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal3}>Close</Button>
         </Modal.Footer>
       </Modal>
     </>
