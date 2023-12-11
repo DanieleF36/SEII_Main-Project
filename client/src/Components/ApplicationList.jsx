@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Container, Row, Col, Accordion, Badge, Card } from 'react-bootstrap';
+import { Button, Container, Row, Col, Accordion, Badge, Card, Table } from 'react-bootstrap';
 import toast, { Toaster } from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import API from '../API';
@@ -11,15 +11,15 @@ function ApplicationList(props) {
 
 
     useEffect(() => {
-        
+
         API.listApplication(props.user.id)
             .then((applications) => {
-                applications.map((e)=>{e.student_carreer= [{id:0, title: 'DataScience', grade:'28'}, {id:1, title: 'Reti di Calcolatori', grade:'30'}] })
+                applications.map((e) => { e.student_carreer = [{ id: 0, title: 'DataScience', grade: '28' }, { id: 1, title: 'Reti di Calcolatori', grade: '30' }] })
                 setApplications(applications);
                 setDirty(false);
             })
             .catch((err) => { toast.error(err.error); });
-        
+
     }, [dirty]);
     const acceptPropByProf = (status, id_app) => {
 
@@ -37,17 +37,17 @@ function ApplicationList(props) {
 
     const handleGetCV = (cv, id) => {
 
-        console.log({path_cv: cv, student_id:id});
-   
-       }
-   
+        console.log({ path_cv: cv, student_id: id });
+
+    }
+
 
 
 
 
     return (
         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-             <Toaster position="top-center" reverseOrder={false} />
+            <Toaster position="top-center" reverseOrder={false} />
             <div>
                 {applications.map((application) => (
                     <Card key={application.id_application} style={{ marginBottom: '10px' }}>
@@ -60,7 +60,7 @@ function ApplicationList(props) {
                                                 <strong>Title:</strong> {application.title}
                                             </Col>
                                             <Col md='4' sm='4' xs='12'>
-                                                <strong>Student:</strong> {application.name+ ' ' + application.surname}
+                                                <strong>Student:</strong> {application.name + ' ' + application.surname}
                                             </Col>
                                             <Col md='3' sm='3' xs='12'>
                                                 <strong>Status:</strong>{' '}
@@ -72,8 +72,8 @@ function ApplicationList(props) {
                                                     ) : (
                                                         application.status == '2' ? (
                                                             <Badge pill bg="danger">R</Badge>
-                                                        ) : 
-                                                        <Badge pill bg="secondary">C</Badge>
+                                                        ) :
+                                                            <Badge pill bg="secondary">C</Badge>
                                                     )
                                                 )}
                                             </Col>
@@ -95,11 +95,18 @@ function ApplicationList(props) {
                                     <br />
                                     <strong>Application Date:</strong> {application.data}
                                     <br />
-                                    <strong>Student Carrer:</strong> {application.student_carreer.map((e)=>{return(<li key={e.id}><strong>course:</strong> {e.title}&nbsp;&nbsp;&nbsp;&nbsp;<strong>grade:</strong> {e.grade}</li>)})}
-                                    <br />
-                                    <strong>Student Cv: </strong> <br /><Button variant='danger' style={{marginTop:'2px'}} onClick={()=>handleGetCV(application.path_cv,application.id_student)}><img src="./file-earmark-pdf-fill.svg"
-                                    alt="Logo"
-                                    className="mr-2" style={{marginBottom:'4px'}}></img></Button>
+                                    <strong>Student Carrer:</strong>
+                                    <Table striped bordered hover style={{marginTop:'10px'}}>
+                                    <thead>
+                                        <tr>
+                                            <th>Course</th>
+                                            <th>Grade</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>{application.student_carreer.map((e) => { return (<tr><td>{e.title}</td><td>{e.grade}</td></tr>) })}</tbody></Table>
+                                    <strong>Student Cv: </strong> <br /><Button variant='danger' style={{ marginTop: '2px' }} onClick={() => handleGetCV(application.path_cv, application.id_student)}><img src="./file-earmark-pdf-fill.svg"
+                                        alt="Logo"
+                                        className="mr-2" style={{ marginBottom: '4px' }}></img></Button>
                                     <br />
                                     <br />
                                     <br />
@@ -117,7 +124,7 @@ function ApplicationList(props) {
 }
 
 ApplicationList.propTypes = {
-    user : PropTypes.object.isRequired,
-  };
+    user: PropTypes.object.isRequired,
+};
 
 export default ApplicationList;
