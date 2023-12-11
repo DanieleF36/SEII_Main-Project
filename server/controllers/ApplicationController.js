@@ -178,15 +178,17 @@ exports.getStudentCv = async function (req, res) {
     if(studentInfo instanceof Error) {
       throw studentInfo
     }
-    const studentCv = studentInfo.path_cv;
+    const studentCv = studentInfo[0].path_cv;
     let fileName = path.basename(studentCv);
+
     fs.access(studentCv, (err) => {
       if (err) {
-        reject(new Error(err.message));
+        throw new Error(err.message);
       } else {
-        res.status(200).download(studentCv, fileName);
+        res.status(200).download(studentCv, fileName)
       }
     });
+    console.log('here')
   } catch (error) {
     if(error instanceof Error) {
       return res.status(500).json(error)
