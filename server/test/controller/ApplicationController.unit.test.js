@@ -1,4 +1,6 @@
 const controller = require("../../controllers/ApplicationController.js");
+const applicationRepository = require('../../repositories/ApplicationRepository.js')
+const fs = require('fs');
 let mockReq;
 let mockRes
 
@@ -284,4 +286,83 @@ describe("Accept Application", () => {
         expect(mockRes.status).toHaveBeenCalledWith(200);
         expect(mockRes.json).toBeDefined()
     });
+})
+
+describe('Get student CV', () => {
+    let mockReq
+    let mockValidate
+    beforeEach(() => {
+      mockRes = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+      mockReq = {
+        body:  {},
+        user: {
+              id: 1,
+              name: "Gianni",
+              surname: "Altobelli",
+              nameID: "gianni.altobelli@email.it",
+              role: "teacher",
+              group: "group1"
+        },
+        params: {
+            student_id: 1
+        }
+      };
+      mockValidate = jest.fn()
+    })
+  
+    afterEach(() => {
+      mockRes.status.mockClear();
+      mockRes.json.mockClear();
+      mockValidate.mockClear()
+    })
+    test('U1: student is not logged in', async () => {
+        mockReq.user.role = undefined
+        await controller.getStudentCv(mockReq, mockRes)
+        expect(mockRes.status).toHaveBeenCalledWith(401)
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "You can not access to this route" });
+    })
+
+    test('U2: missing student id', async () => {
+        mockReq.params.student_id = undefined
+        await controller.getStudentCv(mockReq, mockRes)
+        expect(mockRes.status).toHaveBeenCalledWith(400)
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "Missing student id" });
+    })
+
+
+    test('U3: student application not found', async () => {
+        jest.spyOn(applicationRepository, 'getByStudentId').mockImplementation(() => {
+            return new Error('Not found')
+        })
+        await controller.getStudentCv(mockReq, mockRes)
+        expect(mockRes.status).toHaveBeenCalledWith(500)
+    })
+
+    test('U4: error during the download', async () => {
+        jest.spyOn(applicationRepository, 'getByStudentId').mockImplementation(() => {
+            return {
+                path_cv: 'path/to/cv'
+            }
+        })
+        jest.spyOn(fs, 'access').mockImplementation(() => {
+            throw new Error('error during download')
+        })
+        await controller.getStudentCv(mockReq, mockRes)
+        expect(mockRes.status).toHaveBeenCalledWith(500)
+    })
+
+    test('U5: successful download of student CV', async () => {
+        const studentInfo = { path_cv: '/path/to/CV.pdf' };
+    
+        jest.spyOn(applicationRepository, 'getByStudentId').mockResolvedValue(studentInfo);
+        fs.access = jest.fn((path, callback) => {
+          callback(null);
+        });
+    
+        await controller.getStudentCv(mockReq, mockRes);
+        expect(mockRes.status).toHaveBeenCalledWith(200);
+      });
 })
