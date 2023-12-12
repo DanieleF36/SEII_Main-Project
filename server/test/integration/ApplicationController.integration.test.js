@@ -196,7 +196,7 @@ describe("ACCEPT APPLICATION INTEGRATION TEST", () => {
     });
 
     test("I11: success", async () => {
-        await mgmt.insertIntoStudent("","",0, "","c.b@email.it",0,0)
+        await mgmt.insertIntoStudent(1,"","",0, "","c.b@email.it",0,0)
         await mgmt.insertIntoTeacher(1, "", "", "a.b@email.it", 0, 0)
         await mgmt.insertIntoThesis(1, "title", 1, "", "", "", "", "", "", "", 0, "", "", 1);
         await mgmt.insertIntoApplication(1,1,1,"path",1,0)

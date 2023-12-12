@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">34.42% </span>
+                <span class="strong">47.54% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>21/61</span>
+                <span class='fraction'>29/61</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">34.37% </span>
+                <span class="strong">40% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>11/32</span>
+                <span class='fraction'>12/30</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.88% </span>
+                <span class="strong">61.11% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>7/18</span>
+                <span class='fraction'>11/18</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">35.59% </span>
+                <span class="strong">47.45% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>21/59</span>
+                <span class='fraction'>28/59</span>
             </div>
         
             
@@ -225,9 +225,7 @@
 <a name='L160'></a><a href='#L160'>160</a>
 <a name='L161'></a><a href='#L161'>161</a>
 <a name='L162'></a><a href='#L162'>162</a>
-<a name='L163'></a><a href='#L163'>163</a>
-<a name='L164'></a><a href='#L164'>164</a>
-<a name='L165'></a><a href='#L165'>165</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L163'></a><a href='#L163'>163</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -371,18 +369,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -534,19 +530,17 @@ exports.getStudentAndCDSByEmail = <span class="fstat-no" title="function not cov
  * @param {*} id_student id of the student
  * @returns array of object {title : string, grade : integer}
  */
-exports.getCareerByStudentId = <span class="fstat-no" title="function not covered" >as</span>ync function (id_student) {
-  const getCareerByStudentIdsql = <span class="cstat-no" title="statement not covered" >'SELECT title, grade FROM Career WHERE id = ?'</span>
-<span class="cstat-no" title="statement not covered" >  return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    db.all(getCareerByStudentIdsql, [id_student], <span class="fstat-no" title="function not covered" >(e</span>rr, rows) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      if (err) {</span>
+exports.getCareerByStudentId = async function (id_student) {
+  const getCareerByStudentIdsql = 'SELECT title_course, grade FROM Career WHERE id = ?'
+  console.log(id_student);
+  return new Promise((resolve, reject) =&gt; {
+    db.all(getCareerByStudentIdsql, [id_student], (err, result) =&gt; {
+      <span class="missing-if-branch" title="if path not taken" >I</span>if (err) {
 <span class="cstat-no" title="statement not covered" >        reject(new Error(err.message));</span>
 <span class="cstat-no" title="statement not covered" >        return;</span>
       }
-<span class="cstat-no" title="statement not covered" >      if (rows.length === 0) {</span>
-<span class="cstat-no" title="statement not covered" >        resolve({});</span>
-      } else {
-<span class="cstat-no" title="statement not covered" >        resolve(rows.map(<span class="fstat-no" title="function not covered" >(r</span>) =&gt; (<span class="cstat-no" title="statement not covered" >{ title: r.title, grade: r.grade })</span>));</span>
-      }
+      const career = result.map((r) =&gt; ({ title_course: r.title_course, grade: r.grade }));
+      resolve(career);
     });
   });
 }
@@ -562,7 +556,7 @@ exports.getCareerByStudentId = <span class="fstat-no" title="function not covere
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-12T10:44:16.872Z
+                at 2023-12-12T10:49:31.131Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
