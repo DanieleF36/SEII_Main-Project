@@ -36,7 +36,7 @@ afterEach(() => {
     mockRes = null;
 });
 
-describe.skip('List Application', () => {
+describe('List Application', () => {
     test('case1: role undefined', async () => {
         await controller.listApplication(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(401);
@@ -95,7 +95,7 @@ describe.skip('List Application', () => {
     });
 })
 
-describe.skip('Apply for proposal', () => {
+describe('Apply for proposal', () => {
     test('Case1: Wrong role', async () => {
         mockReq.user.role = 'wrong role';
         controller.applyForProposal(mockReq, mockRes);
@@ -111,7 +111,8 @@ describe.skip('Apply for proposal', () => {
         mockReq.user.role = 'student';
         mockReq.body = "cv.pdf";
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(["123"]);
-        await controller.applyForProposal(mockReq, mockRes);
+        controller.applyForProposal(mockReq, mockRes);
+        await new Promise(resolve => setImmediate(resolve));
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
     test('Case4: Supervisor not found', async () => {
@@ -232,7 +233,7 @@ describe.skip('Apply for proposal', () => {
     });
 });
 
-describe.skip("Accept Application", () => {
+describe("Accept Application", () => {
     test('U0: user role different from teacher', async () => {
         controller.acceptApplication(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(401);
@@ -373,7 +374,7 @@ describe('Get student CV', () => {
       });
 })
 
-describe.skip('Get student career', () => {
+describe('Get student career', () => {
     let mockReq
     let mockValidate
     beforeEach(() => {
@@ -406,22 +407,23 @@ describe.skip('Get student career', () => {
 
     test('U1: teacher is not logged in', async () => {
         mockReq.user.role = undefined
-        await controller.getCareerByStudentId(mockReq, mockRes)
+        controller.getCareerByStudentId(mockReq, mockRes)
         expect(mockRes.status).toHaveBeenCalledWith(401)
         expect(mockRes.json).toHaveBeenCalledWith({ message: "You can not access to this route" });
     })
 
     test('U2: missing student id', async () => {
         mockReq.params.student_id = undefined
-        await controller.getCareerByStudentId(mockReq, mockRes)
+        controller.getCareerByStudentId(mockReq, mockRes)
         expect(mockRes.status).toHaveBeenCalledWith(400)
         expect(mockRes.json).toHaveBeenCalledWith({ message: "Missing student id or negative id" });
     })
 
     test('U3: internal error occurs', async () => {
         jest.spyOn(teacherService, 'getCareerByStudentId').mockRejectedValue({message: 'error'})
-        await controller.getCareerByStudentId(mockReq, mockRes)
-        await Promise.resolve()
+        controller.getCareerByStudentId(mockReq, mockRes)
+        
+        await new Promise(resolve => setImmediate(resolve));
 
         expect(mockRes.status).toHaveBeenCalledWith(500)
         expect(mockRes.json).toHaveBeenCalledWith({ message: "error" });
@@ -429,7 +431,7 @@ describe.skip('Get student career', () => {
 
     test('U4: success', async () => {
         jest.spyOn(teacherService, 'getCareerByStudentId').mockResolvedValue([{title: 'exam1', grade: 18}])
-        await controller.getCareerByStudentId(mockReq, mockRes)
+        controller.getCareerByStudentId(mockReq, mockRes)
         await Promise.resolve()
 
         expect(mockRes.status).toHaveBeenCalledWith(200)

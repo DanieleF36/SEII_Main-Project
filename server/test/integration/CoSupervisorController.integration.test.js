@@ -48,7 +48,6 @@ describe("getAllCoSupervisorsEmails TEST", () => {
 
     test("I2: getAllCoSupervisorsEmailsService fails", async () => {
 
-        const db = require('../../repositories/db.js');
         jest.mock("../../repositories/db.js");
 
         //await mgmt.insertIntoCoSupervisor(1, login_as.user.email, login_as.user.name, login_as.user.surname, 'Polito')
