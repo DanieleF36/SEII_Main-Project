@@ -39,7 +39,7 @@ exports.getById = (id) => {
  * @returns [{name: string, surname: string, email: string, company: string}, ...................]
  */
 exports.getByThesisId = (id) => {
-  if (!(id && id >= 0)) {
+  if (id==undefined || id < 0) {
     throw new Error('Thesis ID must be greater than or equal to 0');
   }
 
