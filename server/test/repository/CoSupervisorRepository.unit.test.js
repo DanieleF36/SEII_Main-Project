@@ -19,6 +19,6 @@ describe('getByNSorS', ()=>{
     general(repo.getByNSorS, ["surname"], undefined, undefined, ["Surname must be provided"], 'all')
 })
 
-describe('getByNSorS', ()=>{
+describe('getAllEmails', ()=>{
     general(repo.getAllEmails, [], [{email:"email1"},{email:"email2"}], ["email1", "email2"], [], 'all')
 })
