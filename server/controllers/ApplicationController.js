@@ -129,13 +129,16 @@ exports.applyForProposal = function (req, res) {
       res.status(400).json({ message: "You already have an application for a thesis" });
       return;
     }
+    console.log(req.params.id_thesis)
+    if (req.params.id_thesis == null) {
+      res.status(400).json({ message: "Missing required parameters" });
+    }
 
     teacherRepository.getIdByThesisId(req.params.id_thesis).then(supervisorId=>{
       if (supervisorId == undefined) {
         res.status(400).json({ message: "Supervisor not found" });
         return;
       }
-      if (req.params.id_thesis != null) {
       //Initializes an object that is used to handle the input file in the multipart/form-data format 
       const form = new formidable.IncomingForm();
       //Translate the file into a js object and call it files
@@ -157,9 +160,7 @@ exports.applyForProposal = function (req, res) {
             res.status(500).json(response);
           });
         })
-      } else {
-        res.status(400).json({ message: "Missing required parameters" });
-      }
+      
     }).catch((e)=>res.status(500).json({message:e.message}))
   }).catch((e)=>res.status(500).json({message:e.message}))
 };
