@@ -388,7 +388,7 @@ describe('Get student career', () => {
               group: "group1"
         },
         params: {
-            id_student: 1
+            student_id: 1
         }
       };
       mockValidate = jest.fn()
@@ -408,10 +408,10 @@ describe('Get student career', () => {
     })
 
     test('U2: missing student id', async () => {
-        mockReq.params.id_student = undefined
+        mockReq.params.student_id = undefined
         await controller.getCareerByStudentId(mockReq, mockRes)
         expect(mockRes.status).toHaveBeenCalledWith(400)
-        expect(mockRes.json).toHaveBeenCalledWith({ message: "Missing student id" });
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "Missing student id or negative id" });
     })
 
     test('U3: internal error occurs', async () => {
