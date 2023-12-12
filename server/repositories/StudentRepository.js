@@ -142,18 +142,16 @@ exports.getStudentAndCDSByEmail = (email) => {
  * @returns array of object {title : string, grade : integer}
  */
 exports.getCareerByStudentId = async function (id_student) {
-  const getCareerByStudentIdsql = 'SELECT title, grade FROM Career WHERE id = ?'
+  const getCareerByStudentIdsql = 'SELECT title_course, grade FROM Career WHERE id = ?'
+  console.log(id_student);
   return new Promise((resolve, reject) => {
-    db.all(getCareerByStudentIdsql, [id_student], (err, rows) => {
+    db.all(getCareerByStudentIdsql, [id_student], (err, result) => {
       if (err) {
         reject(new Error(err.message));
         return;
       }
-      if (rows.length === 0) {
-        resolve({});
-      } else {
-        resolve(rows.map((r) => ({ title: r.title, grade: r.grade })));
-      }
+      const career = result.map((r) => ({ title_course: r.title_course, grade: r.grade }));
+      resolve(career);
     });
   });
 }

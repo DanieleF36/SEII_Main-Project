@@ -26,13 +26,14 @@ const createSchemaSQL = `
         PRIMARY KEY("id")
     );
     CREATE TABLE IF NOT EXISTS Career (
+        "idauto" INTEGER
         "id"	INTEGER,
         "cod_course"	INTEGER NOT NULL,
-        "title_course"	INTEGER NOT NULL,
+        "title_course"	TEXT NOT NULL,
         "cfu"	INTEGER NOT NULL,
         "grade"	INTEGER NOT NULL,
         "date"	DATE NOT NULL,
-        PRIMARY KEY("id")
+        PRIMARY KEY("idauto")
     );
     CREATE TABLE IF NOT EXISTS CoSupervisor (
         "id"	INTEGER,
@@ -136,12 +137,12 @@ const insertDataSQL = `
     (3, 3, 3, 3);
 
     INSERT INTO Career ("id", "cod_course", "title_course", "cfu", "grade", "date") VALUES
-    (1, 101, 'Software Engineering', 30, 90, '2023-07-15'),
-    (2, 102, 'Electrical Systems', 25, 85, '2023-08-20'),
-    (3, 103, 'Mechanical Design', 28, 88, '2023-06-10'),
-    (4, 104, 'Data Science', 32, 92, '2023-09-30'),
-    (5, 105, 'Civil Engineering', 27, 86, '2023-07-05'),
-    (6, 106, 'Biomedical Engineering', 30, 88, '2023-08-15');
+    (1, 1, 101, 'Software Engineering', 30, 90, '2023-07-15'),
+    (2, 2, 102, 'Electrical Systems', 25, 85, '2023-08-20'),
+    (3, 3, 103, 'Mechanical Design', 28, 88, '2023-06-10'),
+    (4, 4, 104, 'Data Science', 32, 92, '2023-09-30'),
+    (5, 5, 105, 'Civil Engineering', 27, 86, '2023-07-05'),
+    (6, 6, 106, 'Biomedical Engineering', 30, 88, '2023-08-15');
 
     INSERT INTO Application ("id", "id_student", "id_thesis", "data", "path_cv", "status", "id_teacher") VALUES
     (1, 1, 1, '2023-02-15', '/cv/alice_brown_cv.pdf', 1, 1),
@@ -476,6 +477,7 @@ exports.insertIntoApplication = (id, studentId, thesisId, cvPath, supervisorId, 
 
 /**
  * Insert into STUDENT table
+ * @param {*} id 
  * @param {*} surname 
  * @param {*} name 
  * @param {*} gender 
@@ -484,10 +486,10 @@ exports.insertIntoApplication = (id, studentId, thesisId, cvPath, supervisorId, 
  * @param {*} cod_degree 
  * @param {*} enrol_year 
  */
-exports.insertIntoStudent = (surname, name, gender, nationality, email, cod_degree, enrol_year) => {
-    const sql = 'INSERT INTO Student ("surname","name","gender","nationality","email","cod_degree","enrol_year") VALUES (?, ?, ?, ?, ?, ?, ?)';
+exports.insertIntoStudent = (id, surname, name, gender, nationality, email, cod_degree, enrol_year) => {
+    const sql = 'INSERT INTO Student ("id", "surname","name","gender","nationality","email","cod_degree","enrol_year") VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
     return new Promise((resolve, reject) => {
-        db.run(sql, [surname, name, gender, nationality, email, cod_degree, enrol_year], function (err) {
+        db.run(sql, [id, surname, name, gender, nationality, email, cod_degree, enrol_year], function (err) {
             if (err) {
                 return reject(err);
             } else {
@@ -496,6 +498,30 @@ exports.insertIntoStudent = (surname, name, gender, nationality, email, cod_degr
         });
     });
 };
+
+/**
+ * Insert into CAREER table
+ * @param {*} idauto 
+ * @param {*} id id of the student to insert intoCareer
+ * @param {*} cod_course 
+ * @param {*} title_course 
+ * @param {*} cfu 
+ * @param {*} grade 
+ * @param {*} date 
+ * @returns 
+ */
+exports.insertIntoCareer = (idauto, id, cod_course, title_course, cfu, grade, date) => {
+    const sql = 'INSERT INTO Career ("idauto", "id","cod_course","title_course","cfu","grade","date") VALUES (?, ?, ?, ?, ?, ?, ?)';
+    return new Promise((resolve, reject) => {
+        db.run(sql, [idauto, id, cod_course, title_course, cfu, grade, date], function (err) {
+            if (err) {
+                return reject(err);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+}
 
 //-------------------------------------------------GET--------------------------------------------
 

@@ -206,10 +206,10 @@ exports.getCareerByStudentId = async function (req, res) {
   if(req.user.role != "teacher"){
     return res.status(401).json({message : "You can not access to this route"})
   }
-  if(!req.params.id_student){
-    return res.status(400).json({message : "Missing student id"})
+  if(!req.params.student_id || req.params.student_id < 0) {
+    return res.status(400).json({message : "Missing student id or negative id"})
   }
-  teacherService.getCareerByStudentId(req.params.id_student)
+  teacherService.getCareerByStudentId(req.params.student_id)
   .then(function (response) {
       res.status(200).json(response);
   })
