@@ -30,7 +30,7 @@ function newTeacher(id, name, surname, email, codGroup, codDep){
  * @returns all the teacher's information
  */
 exports.getById = (id) => {
-    if (!(id && id >= 0)) {
+    if (id==undefined || id < 0) {
       throw new Error('Teacher ID must be greater than or equal to 0');
     }
   

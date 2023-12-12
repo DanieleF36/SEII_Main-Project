@@ -37,7 +37,7 @@ describe('getAllCoSupervisorsEmails', () => {
   });
   test("case3: getAllCoSupervisorsEmailsService success", async () => {
     mockReq.user.role = 'teacher';
-    jest.spyOn(require('../../services/CoSupervisorService.js'), "getAllCoSupervisorsEmailsService").mockResolvedValue({ data: "success" });
+    jest.spyOn(require('../../services/CoSupervisorService.js'), "getAllCoSupervisorsEmailsService").mockResolvedValue("success");
     controller.getAllCoSupervisorsEmails(mockReq, mockRes);
     await new Promise(resolve => setImmediate(resolve));
     expect(mockRes.status).toHaveBeenCalledWith(200);

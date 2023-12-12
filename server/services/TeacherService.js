@@ -77,7 +77,7 @@ async function _sendCancelledEmails(teacherID, id_thesis,id_application, id_stud
         teacherRepo.getById(teacherID),
         thesisRepository.getById(id_thesis),
         studentRepo.getStudentEmailCancelled(id_student,id_application, id_thesis)]);
-    teacherEmail = teacherEmail.map(e=>e.email);
+    teacherEmail = teacherEmail.email;
     thesisTitle = thesisTitle.title;
     for(let i of studentEmailCancelledArray){
         await transporter.sendEmail(teacherEmail, i, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to cancelled.`);
@@ -91,8 +91,9 @@ async function _sendAcceptedEmail(teacherID, id_thesis, id_student){
         teacherRepo.getById(teacherID),
         studentRepo.getById(id_student), 
         thesisRepository.getById(id_thesis)]);
-    teacherEmail = teacherEmail.map(e=>e.email);
-    studentEmail = studentEmail.map(e=>e.email);
+    
+    teacherEmail = teacherEmail.email;
+    studentEmail = studentEmail.email;
     thesisTitle = thesisTitle.title;
     await transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to accepted.`)
     return true;      

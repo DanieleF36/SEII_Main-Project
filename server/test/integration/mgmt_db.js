@@ -411,6 +411,21 @@ exports.insertIntoCoSupervisor = (id, email, name, surname, company) => {
     });
 }
 
+exports.insertIntoCoSupervisorThesis = (id_thesis, id_cosupervisor, id_teacher) => {
+    const query = `INSERT INTO CoSupervisorThesis ("id_thesis", "id_cosupervisor", "id_teacher") VALUES
+    (?, ?, ?)`
+
+    return new Promise((resolve, reject) => {
+        db.run(query, [id_thesis, id_cosupervisor, id_teacher], (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(true);
+            }
+        });
+    });
+}
+
 /**
  * Insert into THESIS table
  * @param {*} id 
@@ -453,7 +468,7 @@ exports.insertIntoApplication = (id, studentId, thesisId, cvPath, supervisorId, 
             if (err) {
                 return reject(err);
             } else {
-                resolve(true);
+                resolve(this.lastID);
             }
         });
     })
@@ -481,3 +496,18 @@ exports.insertIntoStudent = (surname, name, gender, nationality, email, cod_degr
         });
     });
 };
+
+//-------------------------------------------------GET--------------------------------------------
+
+exports.getFromThesis = () => {
+    const sql = 'SELECT * FROM Thesis';
+    return new Promise((resolve, reject) => {
+        db.all(sql, [], function (err, rows) {
+            if (err) {
+                return reject(err);
+            } else {
+                resolve(rows);
+            }
+        });
+    });
+}

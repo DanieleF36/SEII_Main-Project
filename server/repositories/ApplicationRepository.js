@@ -227,7 +227,6 @@ exports.updateStatus = (id, status) => {
   if (!(status && status >= 0 && status <= 3)) {
     throw new Error('Status must be an integer between 0 and 3 (rejected, pending, accepted, or cancelled)');
   }
-
   const updateApplicationSQL = 'UPDATE Application SET status = ? WHERE id = ?';
 
   return new Promise((resolve, reject) => {
@@ -305,4 +304,8 @@ exports.setPendingAccordingToThesis = (ids) => {
       resolve(true)
     })
   })
+}
+
+if(process.env.test){
+  module.exports.db = db;
 }

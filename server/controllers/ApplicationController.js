@@ -102,7 +102,7 @@ exports.acceptApplication = function acceptApplication(req, res) {
                 res.status(200).json(response);
             })
             .catch(function (response) {
-                res.status(500).json(response);
+              res.status(500).json({message: response.message});
             });
     }
     else {

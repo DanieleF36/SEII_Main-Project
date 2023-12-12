@@ -8,7 +8,7 @@ exports.getAllCoSupervisorsEmails = function (req, res) {
   }
   cosupervisorService.getAllCoSupervisorsEmailsService()
     .then((result) => {
-      res.status(200).json(result.data);
+      res.status(200).json(result);
 
     })
     .catch((err) => {

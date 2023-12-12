@@ -12,7 +12,7 @@ const db = require("./db");
  * @returns Object: {name: string, surname: string, email: string, company: string}
  */
 exports.getById = (id) => {
-  if (!(id && id >= 0)) {
+  if (id == undefined || id < 0) {
     throw new Error('Co-supervisor ID must be greater than or equal to 0');
   }
 

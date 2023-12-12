@@ -1,6 +1,6 @@
 "use strict";
 
-const db = require("./db");
+let db = require("./db");
 
 /**
  * create a new object that represent thesis 
@@ -60,7 +60,7 @@ exports.addThesis = (title, supervisor, keywords, type, groups, description, kno
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.getById = (idThesis) => {
-  if (!(idThesis && idThesis >= 0)) {
+  if (idThesis==undefined || idThesis < 0) {
     throw new Error('Thesis ID must be greater than or equal to 0');
   }
 
@@ -85,7 +85,7 @@ exports.getById = (idThesis) => {
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.getActiveBySupervisor = (supervisorId, queryParam) => {
-  if (!(supervisorId && supervisorId >= 0)) {
+  if (supervisorId == undefined || supervisorId < 0) {
     throw new Error('Supervisor ID must be greater than or equal to 0');
   }
 
@@ -155,7 +155,7 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
  * @returns [id1, id2, ....]
  */
 exports.getIdByCoSupervisorId = (id) => {
-  if (!(id && id >= 0)) {
+  if (id==undefined || id < 0) {
     throw new Error('Co-supervisor ID must be greater than or equal to 0');
   }
 
@@ -222,7 +222,7 @@ exports.updateThesis = (id, title, supervisor, keywords, type, groups, descripti
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.setStatus = (id, status) => {
-  if (!id || id < 0 || !status || (status < 0 || status > 2)) {
+  if (id == undefined || id < 0 || status == undefined || (status < 0 || status > 2)) {
     throw new Error('"id" must be greater than or equal to 0 and "status" must be 0 or 1 or 2');
   }
   let updateThesisSQL;
@@ -231,7 +231,6 @@ exports.setStatus = (id, status) => {
     updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ? AND status = 1';
   else
     updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ?';
-
   return new Promise((resolve, reject) => {
     db.run(updateThesisSQL, [status, id], function (err) {
       if (err) {
@@ -472,4 +471,10 @@ exports.restoreExpiredAccordingToIds = (ids) => {
       }
     })
   })
+}
+
+if(process.env.test){
+  module.exports.db = db;
+  module.exports.setdb = (a)=>{db = a};
+  module.exports.restoredb = ()=>{db = require("./db")}
 }
