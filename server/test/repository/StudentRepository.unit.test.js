@@ -12,7 +12,7 @@ beforeEach(() => {
 });
 
 describe('getById', () => {
-    let studentDb = {
+    let student = {
         id: 1,
         name: "Gianni",
         surname: "Altobelli",
@@ -22,21 +22,10 @@ describe('getById', () => {
         cod_degree: 1,
         enrol_year: 1
     }
-    let student = {
-        id: 1,
-        name: "Gianni",
-        surname: "Altobelli",
-        email: "gianni@gmail.com",
-        gender: 1,
-        nationality: "IT",
-        email: "gianni@gmail.com",
-        cod_degree: 1,
-        enrol_year: 1,
-    }
-    general(studentRepository.getById, [1], studentDb, student, ["Student ID must be greater than or equal to 0"], 'get');
+    general(studentRepository.getById, [1], student, student, ["Student ID must be greater than or equal to 0"], 'get');
 })
 describe('getByEmail', () => {
-    let studentDb = {
+    let student = {
         id: 1,
         name: "Gianni",
         surname: "Altobelli",
@@ -46,18 +35,7 @@ describe('getByEmail', () => {
         cod_degree: 1,
         enrol_year: 1
     }
-    let student = {
-        id: 1,
-        name: "Gianni",
-        surname: "Altobelli",
-        email: "gianni@gmail.com",
-        gender: 1,
-        nationality: "IT",
-        email: "gianni@gmail.com",
-        cod_degree: 1,
-        enrol_year: 1,
-    }
-    general(studentRepository.getByEmail, [1], studentDb, student, ["Email must be provided"], 'get');
+    general(studentRepository.getByEmail, [1], student, student, ["Email must be provided"], 'get');
 })
 describe('getStudentEmailCancelled', () => {
     let valuedb = [{ email : "protected@gmail.com" }];
@@ -83,7 +61,6 @@ describe('getStudentAndCDSByEmail', () => {
         email: "gianni@gmail.com",
         gender: 1,
         nationality: "IT",
-        email: "gianni@gmail.com",
         cdsCode: 1,
         cds: "Title",
         enrol_year: 1,
