@@ -13,6 +13,8 @@ jest.mock("../../repositories/db");
  * @param {*} errForNoRow 
  */
 exports.repoTest = (fun,rigthValue, valueReturnedByDb, returnResolvedOutput, returnValueInputError, dbFunction, isUpdate, errForNoRow)=>{
+    valueReturnedByDb = valueReturnedByDb?valueReturnedByDb:{success: "success"};
+    returnResolvedOutput = returnResolvedOutput?returnResolvedOutput:{success: "success"};
     for(let j=0;j<rigthValue.length;j++){
         test("case1."+j+": input error", async()=>{
             try{
@@ -39,24 +41,22 @@ exports.repoTest = (fun,rigthValue, valueReturnedByDb, returnResolvedOutput, ret
             db[dbFunction].mockImplementationOnce((sql, param, callback)=>{
                 callback.call({changes:0, lastID:0},null);
             });
-            try{
-                await fun(...rigthValue);
-            }catch(e){
+            await fun(...rigthValue).catch(e=>
                 expect(e.message).toEqual(errForNoRow)
-            }
+            )
         })
     test('case3: resolved', async()=>{
         db[dbFunction].mockImplementationOnce((sql, param, callback)=>{
-            if(dbFunction != "run")
-                callback(null, valueReturnedByDb?valueReturnedByDb:{success: "success"});
-            else{
-                callback.call({changes:1, lastID:1},null);
+            if(dbFunction != "run"){
+                callback(null, valueReturnedByDb);
+                return;
             }
+            callback.call({changes:1, lastID:1},null);
         });
         const res = await fun(...rigthValue);
         await new Promise(resolve => setImmediate(resolve));
         if(!isUpdate)
-            expect(res).toStrictEqual(returnResolvedOutput?returnResolvedOutput:{success: "success"})
+            expect(res).toStrictEqual(returnResolvedOutput)
         else
             expect(res).toStrictEqual(1)
     })

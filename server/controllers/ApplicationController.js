@@ -2,7 +2,6 @@
 const applicationsService = require("../services/ApplicationService");
 const teacherService = require('../services/TeacherService');
 const studentService = require('../services/StudentService')
-const studentRepository = require("../repositories/StudentRepository");
 const teacherRepository = require("../repositories/TeacherRepository");
 const formidable = require('formidable');
 const applicationRepository = require('../repositories/ApplicationRepository')

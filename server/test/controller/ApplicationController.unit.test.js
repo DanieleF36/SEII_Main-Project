@@ -98,13 +98,13 @@ describe.skip('List Application', () => {
 describe.skip('Apply for proposal', () => {
     test('Case1: Wrong role', async () => {
         mockReq.user.role = 'wrong role';
-        await controller.applyForProposal(mockReq, mockRes);
+        controller.applyForProposal(mockReq, mockRes);
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
     test('Case2: Body is missing', async () => {
         mockReq.user.role = 'student';
         mockReq.body = undefined;
-        await controller.applyForProposal(mockReq, mockRes);
+        controller.applyForProposal(mockReq, mockRes);
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
     test('Case3: Application for another thesis already send', async () => {
@@ -119,7 +119,7 @@ describe.skip('Apply for proposal', () => {
         mockReq.user.role = 'student';
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(undefined);
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(undefined);
-        await controller.applyForProposal(mockReq, mockRes);
+        controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(mockRes.status).toHaveBeenCalledWith(400);
         expect(mockRes.json).toHaveBeenCalledWith({ message: "Supervisor not found" });
@@ -129,7 +129,7 @@ describe.skip('Apply for proposal', () => {
         mockReq.user.role = 'student';
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(undefined);
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
-        await controller.applyForProposal(mockReq, mockRes);
+        controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(mockRes.status).toHaveBeenCalledWith(400);
         expect(mockRes.json).toHaveBeenCalledWith({ message: "Missing required parameters" });;
@@ -145,7 +145,7 @@ describe.skip('Apply for proposal', () => {
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(undefined);
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
-        await controller.applyForProposal(mockReq, mockRes);
+        controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
@@ -160,7 +160,7 @@ describe.skip('Apply for proposal', () => {
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(undefined);
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
-        await controller.applyForProposal(mockReq, mockRes);
+        controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
@@ -175,7 +175,7 @@ describe.skip('Apply for proposal', () => {
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(undefined);
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
-        await controller.applyForProposal(mockReq, mockRes);
+        controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
@@ -192,7 +192,7 @@ describe.skip('Apply for proposal', () => {
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
         jest.spyOn(require("../../services/ApplicationService"), "addApplication").mockResolvedValue(true)
-        await controller.applyForProposal(mockReq, mockRes);
+        controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(isSuccessful(mockRes.status.mock.calls)).toBe(true);
     });
@@ -209,7 +209,7 @@ describe.skip('Apply for proposal', () => {
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
         jest.spyOn(require("../../services/ApplicationService"), "addApplication").mockRejectedValue({ message: "student and theis's id must exist and be greater than 0" })
-        await controller.applyForProposal(mockReq, mockRes);
+        controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
@@ -226,7 +226,7 @@ describe.skip('Apply for proposal', () => {
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
         jest.spyOn(require("../../services/ApplicationService"), "addApplication").mockRejectedValue({ message: "path_cv must exists" })
-        await controller.applyForProposal(mockReq, mockRes);
+        controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
