@@ -107,14 +107,7 @@ describe('Apply for proposal', () => {
         controller.applyForProposal(mockReq, mockRes);
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
-    test('Case3: Application for another thesis already send', async () => {
-        mockReq.user.role = 'student';
-        mockReq.body = "cv.pdf";
-        jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(["123"]);
-        controller.applyForProposal(mockReq, mockRes);
-        await new Promise(resolve => setImmediate(resolve));
-        expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
-    });
+    
     test('Case4: Supervisor not found', async () => {
         mockReq.body = "cv.pdf";
         mockReq.user.role = 'student';
@@ -149,6 +142,16 @@ describe('Apply for proposal', () => {
         controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
+    });
+    test('Case3: Application for another thesis already send', async () => {
+        mockReq.user.role = 'student';
+        mockReq.body = "cv.pdf";
+        mockReq.params = { id_thesis: 1 };
+        const spy = jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(["123"]);
+        controller.applyForProposal(mockReq, mockRes);
+        await new Promise(resolve => setImmediate(resolve));
+        expect(mockRes.status).toHaveBeenCalledWith(400);
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "You already have an application for a thesis" });
     });
     test('Case7: Missing file error', async () => {
         mockReq.user.role = 'student';

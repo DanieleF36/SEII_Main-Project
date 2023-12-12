@@ -125,29 +125,24 @@ exports.applyForProposal = function (req, res) {
     return;
   }
   applicationRepository.getActiveByStudentId(req.user.id).then(checkApp=>{
-    if (checkApp != undefined) {
-      res.status(400).json({ message: "You already have an application for a thesis" });
-      return;
-    }
-    console.log(req.params.id_thesis)
-    if (req.params.id_thesis == null) {
-      res.status(400).json({ message: "Missing required parameters" });
-    }
-
+    const err = chceckError(checkApp, req);
+    if(err)
+      res.status(400).json(err)
     teacherRepository.getIdByThesisId(req.params.id_thesis).then(supervisorId=>{
+      console.log("CIAO")
       if (supervisorId == undefined) {
         res.status(400).json({ message: "Supervisor not found" });
         return;
       }
       //Initializes an object that is used to handle the input file in the multipart/form-data format 
-      const form = new formidable.IncomingForm();
+      const form = new formidable.IncomingForm({maxFileSize: 32*1024*1024});
       //Translate the file into a js object and call it files
       form.parse(req, function (err, fields, files) {
         if (err){
           res.status(500).json({ message: "Internal Error" });
           return;
         }
-        if (!files?.cv?.[0] || files.cv.length > 1){
+        if (!files?.cv?.length > 1){
           res.status(400).json({ message: "Missing file or multiple" });
           return;
         }
@@ -164,6 +159,16 @@ exports.applyForProposal = function (req, res) {
     }).catch((e)=>res.status(500).json({message:e.message}))
   }).catch((e)=>res.status(500).json({message:e.message}))
 };
+
+const chceckError = function(checkApp, req){
+  if (checkApp != undefined) {
+    return { message: "You already have an application for a thesis" };
+  }
+  
+  if (req.params.id_thesis == null) {
+    return {message: "Missing required parameters" };
+  }
+} 
 
 /**
  * wrapper function to retrieve the cv of a student (professor side)
