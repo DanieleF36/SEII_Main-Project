@@ -116,7 +116,7 @@ exports.acceptApplication = function acceptApplication(req, res) {
  *                in req.body.cv there is the cv in a PDF form
  * @returns object = {applicationID : integer, studentId: integer,date : date, status: 0, professorId: integer}
  */
-exports.applyForProposal = async function (req, res) {
+exports.applyForProposal = function (req, res) {
   if (req.user.role !== 'student') {
     res.status(401).json({ message: "You can not access to this route" })
     return;
@@ -169,7 +169,7 @@ exports.applyForProposal = async function (req, res) {
  * wrapper function to retrieve the cv of a student (professor side)
  * @param {*} req req.body.student_id I have the student id (professor side)
  */
-exports.getStudentCv = async function (req, res) {
+exports.getStudentCv = function (req, res) {
   if (!req.params.student_id) {
     return res.status(400).json({ message: "Missing student id" })
   }
@@ -204,7 +204,7 @@ exports.getStudentCv = async function (req, res) {
  * @param {*} req req.params.id_student the student id 
  * @returns array of object {title : string, grade: integer}
  */
-exports.getCareerByStudentId = async function (req, res) {
+exports.getCareerByStudentId = function (req, res) {
   if(req.user.role != "teacher"){
     res.status(401).json({message : "You can not access to this route"});
     return;
