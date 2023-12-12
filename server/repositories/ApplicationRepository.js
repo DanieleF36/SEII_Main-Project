@@ -14,11 +14,14 @@ const db = require("./db");
  * @returns object = {applicationID : integer, studentId: integer,date : date, status: 0, professorId: integer}
  */
 exports.addApplication = (studentId, thesisId, cvPath, supervisorId) => {
-  if (!(studentId && thesisId && supervisorId) || studentId < 0 || thesisId < 0 || supervisorId < 0) {
-    throw new Error('Student and thesis IDs must exist and be greater than 0');
+  if (studentId==undefined || thesisId==undefined || studentId < 0 || thesisId < 0) {
+    throw new Error('Student or thesis or supervisor IDs must exist and be greater than 0');
   }
   if (!cvPath) {
     throw new Error('CV path must exist');
+  }
+  if(supervisorId==undefined || supervisorId < 0){
+    throw new Error('Student or thesis or supervisor IDs must exist and be greater than 0');
   }
   return new Promise((resolve, reject) => {
     //Create a current date to add at the new application 
@@ -68,6 +71,9 @@ exports.addApplication = (studentId, thesisId, cvPath, supervisorId) => {
  * }
  */
 exports.getByStudentId = (id_student) => {
+  if (id_student == undefined || id_student < 0) {
+    throw new Error('Student ID must be greater than or equal to 0');
+  }
   const sqlApplication = `
       SELECT innerTable.id_application, T.title, P.name AS supervisor_name, P.surname AS supervisor_surname, innerTable.status, T.type, T.groups, T.description, T.knowledge, T.note, T.level, T.expiration_date, T.cds, T.keywords, innerTable.path_cv, innerTable.data AS application_data
       FROM (SELECT A.id AS id_application, id_student, path_cv, status, id_thesis, data, id_teacher 
@@ -221,21 +227,26 @@ exports.getAcceptedByThesisId = (id) => {
  * @returns "Done": the function is completed without problems 
  */
 exports.updateStatus = (id, status) => {
-  if (!(id && id >= 0)) {
+  if (id==undefined || id < 0) {
     throw new Error('Application ID must be greater than or equal to 0');
   }
-  if (!(status && status >= 0 && status <= 3)) {
+  if (status==undefined || status < 0 || status > 3) {
     throw new Error('Status must be an integer between 0 and 3 (rejected, pending, accepted, or cancelled)');
   }
   const updateApplicationSQL = 'UPDATE Application SET status = ? WHERE id = ?';
 
   return new Promise((resolve, reject) => {
-    db.run(updateApplicationSQL, [status, id], (err) => {
+    db.run(updateApplicationSQL, [status, id], function (err) {
       if (err) {
         reject(new Error(err.message));
         return;
       }
-      resolve('Done');
+      console.log(this)
+      if (this.changes === 0) {
+        reject(new Error('No rows updated. Thesis ID not found.'));
+        return;
+      }
+      resolve(this.changes);
     });
   });
 };
@@ -250,22 +261,22 @@ exports.updateStatus = (id, status) => {
  * @returns "Done": the function is completed without problems 
  */
 exports.updateStatusToCancelledForOtherStudent = (id_thesis, id_student) => {
-  if (!(id_thesis && id_thesis >= 0)) {
+  if (id_thesis==undefined || id_thesis < 0) {
     throw new Error('Thesis ID must be greater than or equal to 0');
   }
-  if (!(id_student && id_student >= 0)) {
+  if (id_student==undefined || id_student < 0) {
     throw new Error('Student ID must be greater than or equal to 0');
   }
 
   const updateOtherApplicationsSQL = 'UPDATE Application SET status = 3 WHERE id_thesis = ? AND id_student != ?';
 
   return new Promise((resolve, reject) => {
-    db.run(updateOtherApplicationsSQL, [id_thesis, id_student], (err) => {
+    db.run(updateOtherApplicationsSQL, [id_thesis, id_student], function(err) {
       if (err) {
         reject(new Error(err.message));
         return;
       }
-      resolve('Done');
+      resolve(this.changes);
     });
   });
 };
