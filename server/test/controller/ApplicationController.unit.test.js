@@ -121,8 +121,6 @@ describe('Apply for proposal', () => {
     test('Case5: Missing required parameters', async () => {
         mockReq.body = "cv.pdf";
         mockReq.user.role = 'student';
-        //jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(undefined);
-        //jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -147,7 +145,7 @@ describe('Apply for proposal', () => {
         mockReq.user.role = 'student';
         mockReq.body = "cv.pdf";
         mockReq.params = { id_thesis: 1 };
-        const spy = jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(["123"]);
+        jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(["123"]);
         controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(mockRes.status).toHaveBeenCalledWith(400);
