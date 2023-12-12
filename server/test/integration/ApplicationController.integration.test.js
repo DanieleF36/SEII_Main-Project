@@ -203,7 +203,7 @@ describe("ACCEPT APPLICATION INTEGRATION TEST", () => {
         
         const res = await request(app).put('/applications/1').send({status: 1}).set('Content-Type', 'application/json');
         
-        //expect(res.status).toEqual(200);
+        expect(res.status).toEqual(200);
         expect(res.body).toEqual(1);
          
         require('../../repositories/ThesisRepository.js').restoredb;
