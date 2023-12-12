@@ -86,13 +86,12 @@ exports.getStudentEmailCancelled = (id_application, id_thesis) => {
   const fetchStudentEmailsCancelledSQL = 'SELECT email FROM Student WHERE id IN (SELECT id_student FROM Application WHERE id_thesis=? AND id!=? )';
 
   return new Promise((resolve, reject) => {
-    db.all(fetchStudentEmailsCancelledSQL, [id_thesis, id_application], (err, result) => {
+    db.all(fetchStudentEmailsCancelledSQL, [id_thesis, id_application], (err, rows) => {
       if (err) {
         reject(new Error(err.message));
         return;
       }
-
-      const emails = result.map((row) => row.email);
+      const emails = rows.map((r) => r.email);
       resolve(emails);
     });
   });
@@ -142,16 +141,17 @@ exports.getStudentAndCDSByEmail = (email) => {
  * @returns array of object {title : string, grade : integer}
  */
 exports.getCareerByStudentId = async function (id_student) {
+  if (!id_student) {
+    throw new Error('Id student must be provided');
+  }
   const getCareerByStudentIdsql = 'SELECT title_course, grade FROM Career WHERE id = ?'
-  console.log(id_student);
   return new Promise((resolve, reject) => {
-    db.all(getCareerByStudentIdsql, [id_student], (err, result) => {
+    db.all(getCareerByStudentIdsql, [id_student], (err, rows) => {
       if (err) {
         reject(new Error(err.message));
         return;
       }
-      const career = result.map((r) => ({ title_course: r.title_course, grade: r.grade }));
-      resolve(career);
+      resolve({ title_course: rows.title_course, grade: rows.grade });
     });
   });
 }
