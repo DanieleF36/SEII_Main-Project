@@ -206,7 +206,7 @@ describe("ACCEPT APPLICATION INTEGRATION TEST", () => {
         expect(res.status).toEqual(200);
         expect(res.body).toEqual(1);
          
-        require('../../repositories/ThesisRepository.js').restoredb;
+        require('../../repositories/ThesisRepository.js').restoredb();
     });
 
     test("I8: updateStatusToCancelledForOtherStudent fails", async () => {
@@ -231,7 +231,7 @@ describe("ACCEPT APPLICATION INTEGRATION TEST", () => {
         const res = await request(app).put('/applications/1').send({status: 1}).set('Content-Type', 'application/json');
         expect(res.status).toEqual(500);
         expect(res.body).toEqual({ message: "aaa" })
-        require('../../repositories/ThesisRepository.js').restoredb;
+        require('../../repositories/ThesisRepository.js').restoredb();
     });
 
     test("I10: thesisRepository.setStatus no row updated", async () => {
@@ -244,7 +244,7 @@ describe("ACCEPT APPLICATION INTEGRATION TEST", () => {
         const res = await request(app).put('/applications/1').send({status: 1}).set('Content-Type', 'application/json');
         expect(res.status).toEqual(500);
         expect(res.body).toEqual({message: "No rows updated. Thesis ID not found."}); 
-        require('../../repositories/ThesisRepository.js').restoredb;
+        require('../../repositories/ThesisRepository.js').restoredb();
     });
 
 })

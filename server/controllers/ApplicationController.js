@@ -2,7 +2,6 @@
 const applicationsService = require("../services/ApplicationService");
 const teacherService = require('../services/TeacherService');
 const studentService = require('../services/StudentService')
-const studentRepository = require("../repositories/StudentRepository");
 const teacherRepository = require("../repositories/TeacherRepository");
 const formidable = require('formidable');
 const applicationRepository = require('../repositories/ApplicationRepository')
@@ -116,7 +115,7 @@ exports.acceptApplication = function acceptApplication(req, res) {
  *                in req.body.cv there is the cv in a PDF form
  * @returns object = {applicationID : integer, studentId: integer,date : date, status: 0, professorId: integer}
  */
-exports.applyForProposal = async function (req, res) {
+exports.applyForProposal = function (req, res) {
   if (req.user.role !== 'student') {
     res.status(401).json({ message: "You can not access to this route" })
     return;
@@ -125,76 +124,78 @@ exports.applyForProposal = async function (req, res) {
     res.status(400).json({ message: "Body is missing" });
     return;
   }
-  const checkApp = await applicationRepository.getActiveByStudentId(req.user.id);
-  if (checkApp != undefined) {
-    res.status(400).json({ message: "You already have an application for a thesis" });
-    return;
-  }
-  const supervisorId = await teacherRepository.getIdByThesisId(req.params.id_thesis);
-  if (supervisorId == undefined) {
-    res.status(400).json({ message: "Supervisor not found" });
-    return;
-  }
-  if (req.params.id_thesis != null) {
-    //Initializes an object that is used to handle the input file in the multipart/form-data format 
-    const form = new formidable.IncomingForm();
-    //Translate the file into a js object and call it files
-    form.parse(req, function (err, fields, files) {
-      if (err){
-        res.status(500).json({ message: "Internal Error" });
+  applicationRepository.getActiveByStudentId(req.user.id).then(checkApp=>{
+    if (checkApp != undefined) {
+      res.status(400).json({ message: "You already have an application for a thesis" });
+      return;
+    }
+
+    teacherRepository.getIdByThesisId(req.params.id_thesis).then(supervisorId=>{
+      if (supervisorId == undefined) {
+        res.status(400).json({ message: "Supervisor not found" });
         return;
       }
-      if (!files?.cv?.[0] || files.cv.length > 1){
-        res.status(400).json({ message: "Missing file or multiple" });
-        return;
-      }
-      const file = files.cv[0];
-      applicationsService.addApplication(req.user.id, req.params.id_thesis, file, supervisorId)
-        .then(function (response) {
-          res.status(201).json(response);
+      if (req.params.id_thesis != null) {
+      //Initializes an object that is used to handle the input file in the multipart/form-data format 
+      const form = new formidable.IncomingForm();
+      //Translate the file into a js object and call it files
+      form.parse(req, function (err, fields, files) {
+        if (err){
+          res.status(500).json({ message: "Internal Error" });
+          return;
+        }
+        if (!files?.cv?.[0] || files.cv.length > 1){
+          res.status(400).json({ message: "Missing file or multiple" });
+          return;
+        }
+        const file = files.cv[0];
+        applicationsService.addApplication(req.user.id, req.params.id_thesis, file, supervisorId)
+          .then(function (response) {
+            res.status(201).json(response);
+          })
+          .catch(function (response) {
+            res.status(500).json(response);
+          });
         })
-        .catch(function (response) {
-          res.status(500).json(response);
-        });
-    })
-  } else {
-    res.status(400).json({ message: "Missing required parameters" });
-  }
+      } else {
+        res.status(400).json({ message: "Missing required parameters" });
+      }
+    }).catch((e)=>res.status(500).json({message:e.message}))
+  }).catch((e)=>res.status(500).json({message:e.message}))
 };
 
 /**
  * wrapper function to retrieve the cv of a student (professor side)
  * @param {*} req req.body.student_id I have the student id (professor side)
  */
-exports.getStudentCv = async function (req, res) {
+exports.getStudentCv = function (req, res) {
   if (!req.params.student_id) {
     return res.status(400).json({ message: "Missing student id" })
   }
   if (req.user.role != 'teacher') {
     return res.status(401).json({ message: "You can not access to this route" })
   }
-  try {
-    const studentInfo = await applicationRepository.getByStudentId(req.params.student_id)
-    if(studentInfo instanceof Error) {
-      throw studentInfo
-    }
-    const studentCv = studentInfo[0].path_cv;
-    let fileName = path.basename(studentCv);
-
-    fs.access(studentCv, (err) => {
-      if (err) {
-        throw new Error(err.message);
-      } else {
-        res.status(200).download(studentCv, fileName)
+    applicationRepository.getByStudentId(req.params.student_id).then(studentInfo=>{
+      if(studentInfo instanceof Error) {
+        throw studentInfo
       }
-    });
-    console.log('here')
-  } catch (error) {
+      const studentCv = studentInfo[0].path_cv;
+      let fileName = path.basename(studentCv);
+
+      fs.access(studentCv, (err) => {
+        if (err) {
+          throw new Error(err.message);
+        } else {
+          res.status(200).download(studentCv, fileName)
+        }
+      });
+    })
+  .catch (error=>{
     if(error instanceof Error) {
       return res.status(500).json(error)
     }
     return res.status(500).json(new Error(error.message));
-  }
+  })
 }
 
 /**
@@ -202,12 +203,14 @@ exports.getStudentCv = async function (req, res) {
  * @param {*} req req.params.id_student the student id 
  * @returns array of object {title : string, grade: integer}
  */
-exports.getCareerByStudentId = async function (req, res) {
+exports.getCareerByStudentId = function (req, res) {
   if(req.user.role != "teacher"){
-    return res.status(401).json({message : "You can not access to this route"})
+    res.status(401).json({message : "You can not access to this route"});
+    return;
   }
   if(!req.params.student_id || req.params.student_id < 0) {
-    return res.status(400).json({message : "Missing student id or negative id"})
+    res.status(400).json({message : "Missing student id or negative id"});
+    return;
   }
   teacherService.getCareerByStudentId(req.params.student_id)
   .then(function (response) {
