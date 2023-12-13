@@ -542,7 +542,7 @@ describe('delete thesis', () => {
             return new Error('error')
         })
         try {
-            const res = await service.delete(1)
+            await service.delete(1)
         }
         catch(error) {
             expect(error).toStrictEqual(Error("You can't delete this thesis, an application is already accepted"))
