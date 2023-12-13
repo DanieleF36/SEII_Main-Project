@@ -1,0 +1,26 @@
+#background-div {
+    position: fixed;
+    overflow-x: auto; /* Enable horizontal scrolling when content overflows */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ff0000; /* Sostituisci con il tuo colore di sfondo desiderato */
+    z-index: -1; /* Assicura che sia dietro gli altri contenuti */
+  }
+
+  .pagination .page-item.active .page-link {
+    background-color: #003576; 
+    border-color: #003576;
+    color: #fff;
+  }
+
+  .pagination .page-link {
+    background-color: #fff; 
+    border-color: #d6d3d3;
+    color: #FF7C11;
+  }
+
+  .modal-backdrop {
+    opacity: 0.15 !important;
+}
