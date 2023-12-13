@@ -23,7 +23,7 @@ function ApplicationList(props) {
     }, [dirty]);
     const acceptPropByProf = (status, id_app) => {
 
-        API.acceptApplication(status, props.user.id, id_app)
+        API.acceptApplication(status,id_app)
             .then((res) => {
                 setDirty(true);
                 if (res == 1) {

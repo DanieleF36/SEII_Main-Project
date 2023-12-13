@@ -1,7 +1,6 @@
 'use strict';
 const nodemailer = require('nodemailer');
-require('dotenv').config({path: '../../docker.env'})
-
+require('dotenv').config({path: "../../docker.env"})
 const transporter = nodemailer.createTransport({
     host: process.env.INUSE === 'docker' ? '192.168.10.2' : '127.0.0.1',
     port: 25,
@@ -12,17 +11,16 @@ const transporter = nodemailer.createTransport({
 });
 
 exports.sendEmail = (from, to, subject, text) => {
-    if(!from)
-        throw new Error("from is missing")
-    if(!to)
-        throw new Error("to is missing")
-    const mailOptions = {from, to, subject, text};
+    if (!from)
+        throw new Error("from is missing");
+    if (!to)
+        throw new Error("to is missing");
+    const mailOptions = { from, to, subject, text };
     return new Promise((resolve, reject) => {
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
-            console.error("Error sending email cancelled:", error.message);
-            reject({error: error.message});
-            return;
+                reject(new Error(error.message));
+                return;
             }
             resolve(info);
         });

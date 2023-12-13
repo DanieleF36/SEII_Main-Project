@@ -11,7 +11,7 @@ function StudentList(props) {
     const [list, setList] = useState([]);
     useEffect(() => {
 
-        API.browserApplicationStudent(props.user.id)
+        API.listApplication(props.user.id)
             .then((list) => {
                 setList(list);
                 setDirty(false);

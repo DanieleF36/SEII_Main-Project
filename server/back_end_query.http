@@ -52,3 +52,7 @@ Content-Type: application/json
 ### 
 GET  {{APIURL}}/professor/thesis
 Content-Type: application/json
+
+###
+GET {{APIURL}}/applications/student_cv
+Content-Type: application/json

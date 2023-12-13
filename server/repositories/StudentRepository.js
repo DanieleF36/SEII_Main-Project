@@ -1,159 +1,163 @@
 'use strict';
-
-const { application } = require("express");
 const db = require("./db");
 
+function newStudent(id, name, surname, email, gender, nationality, cod_degree, enrol_year){
+  return {
+    id: id, 
+    name:name,
+    surname:surname, 
+    email:email,
+    gender:gender,
+    nationality:nationality, 
+    cod_degree:cod_degree,
+    enrol_year:enrol_year
+  }
+}
+
+//==================================Create==================================
+
+//==================================Get==================================
+/**
+ * Given a teacher's id, returns all the stored information
+ * @param {*} id teacher's id
+ * @returns all the teacher's information
+ */
+exports.getById = (id) => {
+  if (!(id && id >= 0)) {
+    throw new Error('Student ID must be greater than or equal to 0');
+  }
+
+  const fetchStudentByIdSQL = 'SELECT * FROM Student WHERE id = ?';
+
+  return new Promise((resolve, reject) => {
+    db.get(fetchStudentByIdSQL, [id], (err, row) => {
+      if (err) {
+        reject(new Error(err.message));
+        return;
+      }
+
+      resolve(newStudent(row.id, row.name, row.surname, row.email, row.gender, row.nationality, row.cod_degree, row.enrol_year));
+    });
+  });
+};
 
 /**
- * Performs queries to the database for retriving all the info about the applications and linked thesis and supervisor made by a student
- * 
- * @param {*} id_student 
- * @returns an array of objects defined as
- * {
- *  title: string,
- *  supervisor_name: string,
- *  supervisor_surname: string,
- *  keywords: array of string,
- *  type: array of string,
- *  groups: array of string,
- *  description: string,
- *  knowledge: array of string,
- *  note: string,
- *  expiration_date: string,
- *  level: integer,
- *  cds: array of string,
- *  application_data: string,
- *  path_cv: string,
- *  status: integer,(this is application status) 
- * }
+ * Given a student's email, returns all the stored information
+ * @param {*} email student's email
+ * @returns all the student's information
  */
+exports.getByEmail = (email) => {
+  if (!email) {
+    throw new Error('Email must be provided');
+  }
+  const fetchStudentByEmailSQL = 'SELECT * FROM Student WHERE email = ?';
 
-exports.browserApplicationStudent = (id_student) => {
-  const sqlApplication = `
-      SELECT innerTable.id_application, T.title, P.name AS supervisor_name, P.surname AS supervisor_surname, innerTable.status, T.type, T.groups, T.description, T.knowledge, T.note, T.level, T.expiration_date, T.cds, T.keywords, innerTable.path_cv, innerTable.data AS application_data
-      FROM (SELECT A.id AS id_application, id_student, path_cv, status, id_thesis, data, id_teacher 
-            FROM Application AS A
-            WHERE id_student = ?) AS innerTable
-      JOIN Thesis AS T ON T.id = innerTable.id_thesis
-      JOIN Student AS S ON S.id = innerTable.id_student
-      JOIN Teacher AS P ON P.id = innerTable.id_teacher;
-  `;
   return new Promise((resolve, reject) => {
-    db.all(sqlApplication, [id_student], (err, rows) => {
+    db.get(fetchStudentByEmailSQL, [email], (err, row) => {
       if (err) {
-        reject(err);
+        reject(new Error(err.message));
         return;
+      }
+
+      if (!row) {
+        resolve({});
       } else {
-        const applications = rows.map((a) => ({
-          id_application: a.id_application,
-          title: a.title,
-          supervisor_name: a.supervisor_name,
-          supervisor_surname: a.supervisor_surname,
-          status: a.status,
-          type: a.type,
-          groups: a.groups,
-          description: a.description,
-          knowledge: a.knowledge,
-          note: a.note,
-          level: a.level,
-          keywords: a.keywords,
-          expiration_date: a.expiration_date,
-          cds: a.cds,
-          path_cv: a.path_cv,
-          application_data: a.application_data,
-        }));
-        resolve(applications);
+        resolve(newStudent(row.id, row.name, row.surname, row.email, row.gender, row.nationality, row.cod_degree, row.enrol_year));
       }
     });
   });
 };
 
-exports.findByEmail = (email) => {
-  const sqlCoSupervisor = "SELECT * FROM Student WHERE email = ?";
+/**
+ * Given an application's id and a thesis'id, returns the list of student emails whose application has been deleted 
+ * i.e. all the student's application for that thesis with id != id_application
+ * @param {*} id_application 
+ * @param {*} id_thesis 
+ * @returns [email1, email2, .....]
+ */
+exports.getStudentEmailCancelled = (id_application, id_thesis) => {
+  if (!(id_application && id_application >= 0)) {
+    throw new Error('Application ID must be greater than or equal to 0');
+  }
+  if (!(id_thesis && id_thesis >= 0)) {
+    throw new Error('Thesis ID must be greater than or equal to 0');
+  }
 
-  return new Promise((resolve, reject)=>{
-      db.get(sqlCoSupervisor, [email], (err, row)=>{
-          if (err) {
-              reject(err);
-              return;
-          }
-          if(!row) 
-              resolve({})
-          else 
-              resolve({id:row.id, name:row.name, surname:row.surname, email:row.email, gender:row.gender, nationality:row.nationality, cod_degree:row.cod_degree, enrol_year:enrol_year});
+  const fetchStudentEmailsCancelledSQL = 'SELECT email FROM Student WHERE id IN (SELECT id_student FROM Application WHERE id_thesis=? AND id!=? )';
 
-      });
-  });
-}
-
-exports.getStudentEmail = (id_student) => {
-  if(!id_student || id_student<0)
-    throw new Error("id_student must exists and be greater than 0");
-  const studentMailSQl = 'SELECT email FROM Student WHERE id = ? '
   return new Promise((resolve, reject) => {
-    db.get(studentMailSQl, [id_student], function (err, result) {
+    db.all(fetchStudentEmailsCancelledSQL, [id_thesis, id_application], (err, rows) => {
       if (err) {
-        console.error("Error in SQLDatabase:", err.message);
-        reject({error: err.message});
-      } else {
-        resolve(result.email);
+        reject(new Error(err.message));
+        return;
       }
+      const emails = rows.map((r) => r.email);
+      resolve(emails);
     });
   });
 };
 
-exports.getStudentEmailCancelled = (id_student, id_application, id_thesis) => {
-  if(!id_student || id_student<0)
-    throw new Error("id_student must exists and be greater than 0");
-  const studentMailCancelledSQL = 'SELECT email FROM Student WHERE id IN (SELECT id_student FROM Application WHERE id_thesis=? AND id!=?) '
+/**
+ * Given a student's email, returns all the stored information plus the cds of that student
+ * @param {*} email student's email
+ * @returns all the student's information
+ */
+exports.getStudentAndCDSByEmail = (email) => {
+  if (!email) {
+    throw new Error('Email must be provided');
+  }
+
+  const fetchStudentAndCDSByEmailSQL = 'SELECT S.id, S.name, S.surname, S.email, S.gender, S.nationality, D.title, D.code, S.enrol_year FROM Student S, Degree D WHERE S.cod_degree = D.id AND S.email = ?';
+
   return new Promise((resolve, reject) => {
-    db.all(studentMailCancelledSQL, [id_thesis, id_application], function (err, result) {
+    db.get(fetchStudentAndCDSByEmailSQL, [email], (err, row) => {
       if (err) {
-        console.error("Error in SQLDatabase:", err.message);
-        reject({error: err.message});
+        reject(new Error(err.message));
+        return;
+      }
+
+      if (!row) {
+        resolve({});
       } else {
-        const emails = result.map((row) => row.email);
-        resolve(emails);
+        resolve({
+          id: row.id,
+          name: row.name,
+          surname: row.surname,
+          email: row.email,
+          gender: row.gender,
+          nationality: row.nationality,
+          cdsCode: row.code,
+          cds: row.title,
+          enrol_year: row.enrol_year,
+        });
       }
     });
   });
 };
 
-exports.getStudentAndCDSByEmail= (email) => {
-  const sqlCoSupervisor = "SELECT S.id, S.name, S.surname, S.email, S.gender, S.nationality, D.title, S.enrol_year  FROM Student S, Degree D WHERE S.cod_degree=D.cod AND S.email = ?";
-
-  return new Promise((resolve, reject)=>{
-      db.get(sqlCoSupervisor, [email], (err, row)=>{
-          if (err) {
-              reject(err);
-              return;
-          }
-          if(!row) 
-            resolve({})
-          else {
-            console.log(row)
-            resolve({id:row.id, name:row.name, surname:row.surname, email:row.email, gender:row.gender, nationality:row.nationality, cds:row.title, enrol_year:row.enrol_year});
-          }
-
-      });
-  })
-}
-
-exports.searchApplicationByStudentId = (studentId) => {
-  const sql = 'SELECT id_student FROM Application WHERE id_student = ? AND (status=1 OR status=0) ';
-  return new Promise((resolve, reject)=>{
-    db.get(sql, [studentId], (err, result) => {
+/**
+ * Function that retrieve the student career information
+ * @param {*} id_student id of the student
+ * @returns array of object {title : string, grade : integer}
+ */
+exports.getCareerByStudentId = async function (id_student) {
+  if (!id_student) {
+    throw new Error('Id student must be provided');
+  }
+  const getCareerByStudentIdsql = 'SELECT title_course, grade FROM Career WHERE id = ?'
+  return new Promise((resolve, reject) => {
+    db.all(getCareerByStudentIdsql, [id_student], (err, rows) => {
       if (err) {
-        console.error("Error in SQLDatabase:", err.message);
-        reject({error: err.message});
+        reject(new Error(err.message));
+        return;
       }
-      console.log(studentId);
-      if(result){
-        resolve(true);
-      }
-      else{
-        resolve(false);
-      }
-    })
-  })
+      resolve({ title_course: rows.title_course, grade: rows.grade });
+    });
+  });
 }
+
+//==================================Set==================================
+
+//==================================Delete==================================
+
+//==================================Support==================================
