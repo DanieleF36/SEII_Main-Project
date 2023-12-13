@@ -2,6 +2,8 @@
   "scripts": {
     "start": "npx nodemon index.js",
     "test": "set test=true && jest --runInBand --colors",
+    "test:unit": "jest --runInBand --colors test/controller/* test/email/* test/repository/* test/service/*",
+    "test:unitcoverage": "jest --runInBand --coverage --colors test/controller/* test/email/* test/repository/* test/service/*",
     "test:coverage": "set test=true && jest --runInBand --coverage --colors"
   },
   "dependencies": {
