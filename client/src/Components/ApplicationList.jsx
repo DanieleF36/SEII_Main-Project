@@ -1,63 +1,27 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, NavLink, Accordion, Badge, Card } from 'react-bootstrap';
+import { Button, Container, Row, Col, Accordion, Badge, Card } from 'react-bootstrap';
 import toast, { Toaster } from 'react-hot-toast';
+import PropTypes from 'prop-types';
 import API from '../API';
 
 function ApplicationList(props) {
 
-    const [errorMsg, setErrorMsg] = useState(undefined);
     const [dirty, setDirty] = useState(true);
-    const [id_professor, setId_professor] = useState(1);
+    const [applications, setApplications] = useState([]);
 
-    const [applications, setApplications] = useState([]/*{id_application:1, 
-                                                        id_thesis: '1',
-                                                        title: 'AI system research',
-                                                        id_student: 's12345',
-                                                        name: 'Luca',
-                                                        surname: 'Bianchi',
-                                                        cds: 'A2891',
-                                                        data: '12/10/2024',
-                                                        path_cv: 'cv.pdf', 
-                                                        status: '3'},
-                                                    {id_application:1,
-                                                        id_thesis: '1', 
-                                                        title: 'AI system research',
-                                                        id_student: 's25767',
-                                                        name: 'Aldo',
-                                                        surname: 'Moro',
-                                                        cds: 'A2891',
-                                                        data: '11/10/2024',
-                                                        path_cv: 'cv.pdf', 
-                                                        status: '2'},
-                                                    {id_application:2, 
-                                                        id_thesis: '2',
-                                                        title: 'AI develop',
-                                                        id_student: 's25734',
-                                                        name: 'Aldo',
-                                                        surname: 'Moro',
-                                                        cds: 'A2891',
-                                                        data: '11/10/2024',
-                                                        path_cv: 'cv.pdf', 
-                                                    status: '0'}]*/);
-
-    //adding API from backend to set list of applications
 
     useEffect(() => {
         
         API.listApplication(props.user.id)
             .then((applications) => {
+                applications.map((e)=>{e.student_carreer= [{id:0, title: 'DataScience', grade:'28'}, {id:1, title: 'Reti di Calcolatori', grade:'30'}] })
                 setApplications(applications);
                 setDirty(false);
             })
             .catch((err) => { toast.error(err.error); });
         
     }, [dirty]);
-
-    //applications.map((e)=>{console.log(e.id_application)});
-
-    //adding API from backend to post accept application
     const acceptPropByProf = (status, id_app) => {
-        //console.log(status,id_professor,id_app);
 
         API.acceptApplication(status,id_app)
             .then((res) => {
@@ -70,6 +34,13 @@ function ApplicationList(props) {
             })
             .catch((err) => { toast.error(err.error); });
     };
+
+    const handleGetCV = (id) => {
+
+        console.log(id);
+   
+       }
+   
 
 
 
@@ -124,7 +95,11 @@ function ApplicationList(props) {
                                     <br />
                                     <strong>Application Date:</strong> {application.data}
                                     <br />
-                                    <strong>Path Cv: </strong>  <a>CV.pdf</a>
+                                    <strong>Student Carrer:</strong> {application.student_carreer.map((e)=>{return(<li key={e.id}><strong>course:</strong> {e.title}&nbsp;&nbsp;&nbsp;&nbsp;<strong>grade:</strong> {e.grade}</li>)})}
+                                    <br />
+                                    <strong>Student Cv: </strong> <br /><Button variant='danger' style={{marginTop:'2px'}} onClick={()=>handleGetCV(application.id_application)}><img src="./file-earmark-pdf-fill.svg"
+                                    alt="Logo"
+                                    className="mr-2" style={{marginBottom:'4px'}}></img></Button>
                                     <br />
                                     <br />
                                     <br />
@@ -140,5 +115,9 @@ function ApplicationList(props) {
         </div>);
 
 }
+
+ApplicationList.propTypes = {
+    user : PropTypes.object.isRequired,
+  };
 
 export default ApplicationList;

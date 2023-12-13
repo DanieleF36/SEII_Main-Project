@@ -1,53 +1,17 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Button, Container, Row, Col, Form, ButtonGroup } from 'react-bootstrap';
 import API from '../API';
+import PropTypes from 'prop-types';
 import './TitleBar.css';
 import dayjs from 'dayjs';
 
 const Clock = (props) => {
 
     const updateClock = () => {
-        //API.getTime().then(...
-        //const dateString = "2023-11-23|13:51";
-        //const [datePart, timePart] = dateString.split("T");
-        //const [year, month, day] = datePart.split("-").map(Number);
-        //const [hours, minutes] = timePart.split(":").map(Number);
-        //const dateObject = new Date(year, month - 1, day, hours, minutes);
-        // props.setCurrentTime(dateObject)).catch(...)
-
         API.vc_get().then((time)=>{const [date, hour] = time.split('T'); const [year, month, day] = date.split('-').map(Number); const [hh, min] = hour.split(':').map(Number);
         props.setCurrentTime(new Date(year, month-1, day, hh, min)) });
     }; 
 
-    // const addTime = (unit, value) => {
-    //     const newTime = new Date(props.currentTime);
-
-    //     switch (unit) {
-    //         case 'minute':
-    //             newTime.setMinutes(newTime.getMinutes() + value);
-    //             break;
-    //         case 'hour':
-    //             newTime.setHours(newTime.getHours() + value);
-    //             break;
-    //         case 'day':
-    //             newTime.setDate(newTime.getDate() + value);
-    //             break;
-    //         case 'month':
-    //             newTime.setMonth(newTime.getMonth() + value);
-    //             break;
-    //         case 'year':
-    //             newTime.setFullYear(newTime.getFullYear() + value);
-    //             break;
-    //         default:
-    //             return;
-    //     }
-    //     API.vc_set(newTime.toISOString().slice(0, 10) + 'T' + newTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })).
-    //     then(()=> {props.setCurrentTime(newTime);})
-    //     .catch();
-       
-    // };
-
-    // vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv 
     const addTime = (unit, value) => {
         let newTime = dayjs(props.currentTime);
 
@@ -155,5 +119,10 @@ const Clock = (props) => {
         </div>
     );
 };
+
+Clock.propTypes = {
+    currentTime : PropTypes.object.isRequired,
+    setCurrentTime : PropTypes.func.isRequired,
+  };
 
 export default Clock;

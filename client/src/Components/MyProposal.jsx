@@ -5,59 +5,53 @@ import API from '../API';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-
 function MyProposal(props) {
 
   const [dirty, setDirty] = useState(true);
   const [archived, setArchived] = useState(1);
   const [selectedProposal, setSelectedProposal] = useState('');
-  const [proposals, setProposals] = useState([/*{ id: 0, title: 'AI system research', supervisor: 'Mario Rossi', cosupervisor: ['123456@polito.it', '654321@polito.it'], expiration_date: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creation_date: '10/1/2023', status: '1' }*/]);
+  const [proposals, setProposals] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
-
+  const [showDeleteConfirmation, setShowDeleteConfirmation] = useState(false);
 
   const handleModify = (proposal) => {
-    setSelectedProposal( {...proposal} );
+    setSelectedProposal({ ...proposal });
     setShowModal(true);
   };
 
   const handleStatus = (proposal) => {
-    /*API.updateStatus(proposal.id, proposal)
-         .then(() => {
-           setDirty(true);
-           toast.success('Thesis Proposal successfully archived');
-         })
-         .catch((error) => {
-           toast.error(error.message || 'An error occurred while updating the proposal');
-         });*/
     setShowModal2(false);
   };
 
   const handleSwitch = () => {
-    if (archived === 0){
+    if (archived === 0) {
       setArchived(1);
       setDirty(true);
-    }else{
+    } else {
       setArchived(0);
       setDirty(true);
     }
-
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
     setSelectedProposal('');
+    setShowDeleteConfirmation(false);
   };
 
   const handleCloseModal2 = () => {
     setShowModal2(false);
     setSelectedProposal('');
+    setShowDeleteConfirmation(false);
   };
-  
-  const [cosup_email, setCoSup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);
+
+
+
+  const [cosup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);
   const [filt_cosup, setFilt_cosup] = useState([]);
 
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm] = useState('');
 
   useEffect(() => {
     setFilt_cosup(cosup_email.filter((item) =>
@@ -65,19 +59,42 @@ function MyProposal(props) {
     );
   }, [searchTerm]);
 
-   
-    useEffect(() => {
-      if(props.user.role === 'teacher'){
-        API.browseProposal(archived)
-            .then((proposals) => {
-                setProposals(proposals);
-                setDirty(false);
-            })
-            .catch((err) => { toast.error(err.error); });
-          }
 
-    }, [dirty, props.user]);
+  useEffect(() => {
+    if (props.user.role === 'teacher') {
+      API.browseProposal(archived)
+        .then((proposals) => {
+          setProposals(proposals);
+          setDirty(false);
+        })
+        .catch((err) => { toast.error(err.error); });
+    }
 
+  }, [dirty, props.user]);
+  const handleDelete = (proposal) => {
+    API.deleteProposal(proposal.id)
+      .then(() => {
+        console.log('Delete request successful');
+        setDirty(true);
+        toast.success('Thesis Proposal successfully deleted');
+        setShowModal(false);
+      })
+      .catch((error) => {
+        console.error('Delete request failed:', error);
+        toast.error(error.message || 'An error occurred while deleting the proposal');
+      });
+  };
+
+  useEffect(() => {
+    if (props.user.role === 'teacher') {
+      API.browseProposal(archived)
+        .then((proposals) => {
+          setProposals(proposals);
+          setDirty(false);
+        })
+        .catch((err) => { toast.error(err.error); });
+    }
+  }, [dirty, props.user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -87,6 +104,29 @@ function MyProposal(props) {
     }));
   };
 
+  const correctSpace = (prop) => {
+    if (Array.isArray(prop.cds)) {
+      let c = prop.cds.map(e => e.trim());
+      prop.cds = c;
+    }
+    if (Array.isArray(prop.keywords)) {
+      let k = prop.keywords.map(e => e.trim());
+      prop.keywords = k;
+    }
+    if (Array.isArray(prop.type)) {
+      let t = prop.type.map(e => e.trim());
+      prop.type = t;
+    }
+    if (Array.isArray(prop.knowledge)) {
+      let kn = prop.knowledge.map(e => e.trim());
+      prop.knowledge = kn;
+    }
+    if (Array.isArray(prop.groups)) {
+      let g = prop.groups.map(e => e.trim());
+      prop.groups = g;
+    }
+    return prop;
+  };
 
   const handleResetChange = () => {
     setSelectedProposal('');
@@ -99,38 +139,8 @@ function MyProposal(props) {
   const handleList = (e) => {
     let name = e.target.name;
     let cosup_arr = e.target.value.split(",");
-    let co = cosup_arr.map(e => e.trim());
-    setSelectedProposal({ ...selectedProposal, [name]: co });
+    setSelectedProposal({ ...selectedProposal, [name]: cosup_arr });
   };
-
-  /*const handleCoSup = (e) => {
-    if (selectedProposal.cosupervisor === '') {
-      let co = [];
-      co.push(e);
-      setSelectedProposal({ ...selectedProposal, cosupervisor: co });
-      setSearchTerm('');
-    } else {
-      let co = [...selectedProposal.cosupervisor]; // Crea una copia dell'array
-      if (co.includes(e)) {
-        toast.error('CoSupervisor already inserted');
-        setSearchTerm('');
-      } else {
-        co.push(e);
-        setSelectedProposal({ ...selectedProposal, cosupervisor: co });
-        setSearchTerm('');
-      }
-    }
-  };*/
-  
-  /*const handleDeleteCoSup = () => {
-    const updatedCoSupervisors = [...selectedProposal.cosupervisor];
-    if (updatedCoSupervisors.length > 0) {
-      updatedCoSupervisors.pop();
-      setSelectedProposal({ ...selectedProposal, cosupervisor: updatedCoSupervisors });
-    } else {
-      toast.error('No co-supervisors to delete');
-    }
-  };*/
 
   const handleSaveChanges = () => {
     if (selectedProposal) {
@@ -154,21 +164,23 @@ function MyProposal(props) {
         toast.error('CdS field cannot be empty');
       } else {
         setShowModal(false);
-       API.updateProposal(selectedProposal.id, selectedProposal)
-         .then(() => {
-           setDirty(true);
-           toast.success('Thesis Proposal successfully updated');
-         })
-         .catch((error) => {
-           toast.error(error.message || 'An error occurred while updating the proposal');
-         });
+        let updatep = selectedProposal;
+        API.updateProposal(selectedProposal.id, correctSpace(updatep))
+          .then(() => {
+            setDirty(true);
+            toast.success('Thesis Proposal successfully updated');
+          })
+          .catch((error) => {
+            toast.error(error.message || 'An error occurred while updating the proposal');
+          });
       }
     }
   };
 
   return (
-     <>
-      <BootstrapSwitchButton onChange={() => handleSwitch()} checked={archived === 1} size="sm" onlabel='published' offlabel='archived' width={100} onstyle="success" offstyle="warning" style="border" />      <div style={{ marginTop: '10px' }}>
+    <>
+      <BootstrapSwitchButton onChange={() => handleSwitch()} checked={archived === 1} size="sm" onlabel='published' offlabel='archived' width={100} onstyle="success" offstyle="warning" style="border" />
+      <div style={{ marginTop: '10px' }}>
         {proposals.map((proposal) => (
           <Card key={proposal.id} style={{ marginBottom: '10px' }}>
             <Toaster position="top-center" reverseOrder={false} />
@@ -185,7 +197,7 @@ function MyProposal(props) {
                       </Col>
                       <Col md='3' sm='3' xs='12'>
                         <strong>Status:</strong>{' '}
-                      
+
                         {proposal.status == 1 ? (
                           <Badge pill bg="success">P</Badge>
                         ) : (
@@ -196,7 +208,6 @@ function MyProposal(props) {
                         <img src="./info-circle.svg"
                           alt="info"
                           className="img-responsive" />
-
                       </Col>
                     </Row>
                   </Container>
@@ -220,23 +231,66 @@ function MyProposal(props) {
                   <br />
                   <strong>Creation Date:</strong> {proposal.creation_date}
                   <br />
-                  <br />
-                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Modify</Tooltip>  }><Button variant="warning mx-2" onClick={() => handleModify(proposal)}><i className="bi bi-pencil-fill" style={{color:'white'}}/></Button></OverlayTrigger>
-                  {proposal.status==1 ?
-                    (<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Archive</Tooltip>  }><Button variant="secondary mx-2" onClick={() => setShowModal2(true)}><i className="bi bi-archive"/></Button></OverlayTrigger>)
-                   :
-                    (<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Active</Tooltip>  }><Button variant="success mx-2" onClick={() => setShowModal2(true)}><i className="bi bi-archive"/></Button></OverlayTrigger>)
-                  }
-                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Copy</Tooltip>  }><Button variant="primary mx-2" onClick={() => props.handleCopy(proposal)} ><i className="bi bi-clipboard-plus-fill"/></Button></OverlayTrigger>
+
+                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Modify</Tooltip>}>
+                    <Button variant="warning mx-2" onClick={() => handleModify(proposal)}>
+                      <i className="bi bi-pencil-fill" style={{ color: 'white' }} />
+                    </Button>
+                  </OverlayTrigger>
+
+                  {proposal.status === 1 ? (
+                    <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Archive</Tooltip>}>
+                      <Button variant="success mx-2" onClick={() => setShowModal2(true)}>
+                        <i className="bi bi-archive" />
+                      </Button>
+                    </OverlayTrigger>
+                  ) : (
+                    <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Active</Tooltip>}>
+                      <Button variant="success mx-2" onClick={() => setShowModal2(true)}>
+                        <i className="bi bi-archive" />
+                      </Button>
+                    </OverlayTrigger>
+                  )}
+
+                  {proposal.status === 1 && (
+                    <>
+                      <OverlayTrigger
+                        placement="top"
+                        delay={{ show: 250, hide: 300 }}
+                        overlay={<Tooltip>Delete</Tooltip>}
+                      >
+                        <Button
+                          variant="danger mx-2"
+                          onClick={() => setShowDeleteConfirmation(true)}
+                        >
+                          <i className="bi bi-trash"></i>
+                        </Button>
+                      </OverlayTrigger>
+
+                      {showDeleteConfirmation && (
+                        <Button
+                          variant="danger mx-2"
+                          onClick={() => handleDelete(selectedProposal)}
+                        >
+                          Delete
+                        </Button>
+                      )}
+                    </>
+                  )}
+
+
+                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Copy</Tooltip>}>
+                    <Button variant="primary mx-2" onClick={() => props.handleCopy(proposal)}>
+                      <i className="bi bi-clipboard-plus-fill" />
+                    </Button>
+                  </OverlayTrigger>
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
           </Card>
         ))}
       </div>
-
-      <Modal show={showModal} onHide={handleCloseModal}  backdrop="static"
-        keyboard={false}>
+      <Modal show={showModal} onHide={handleCloseModal} backdrop="static" keyboard={false}>
         <Toaster position="top-center" reverseOrder={false} />
         <Modal.Header closeButton>
           <Modal.Title>Edit Proposal</Modal.Title>
@@ -254,53 +308,12 @@ function MyProposal(props) {
                 />
               </Form.Group>
 
-              {/* <Form.Group className="mb-3">
-                <Form.Label><strong>Cosupervisors mails</strong></Form.Label>
-                <Form.Control
-                  type="text"
-                  readOnly
-                  value={selectedProposal.cosupervisor !== '' ? selectedProposal.cosupervisor.map(element => {
-                    return ` ${element}`;
-
-                  }) : ''}
-                />
-                <Container>
-                  <Row className="mt-3">
-                    <Col sm="12" md="12" lg="6" className="d-flex align-items-center">
-                      <Dropdown style={{ marginTop: '5px' }}>
-                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                          {searchTerm === '' ? 'Select mail' : searchTerm}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu show={searchTerm !== ''}>
-                          <Form.Control
-                            type="text"
-                            placeholder="Search..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            style={{ borderBlockWidth: '2px' }}
-                          />
-                          {filt_cosup.map((item, id) => (
-                            <Dropdown.Item onClick={() => setSearchTerm(item)} key={id}>{item}</Dropdown.Item>
-                          )).slice(0, 3)}
-                        </Dropdown.Menu>
-                      </Dropdown>
-                      <Button onClick={() => { handleCoSup(searchTerm); }} variant="primary" style={{ width: '40px', height: '38px', marginTop: '5px', marginRight: '3px', marginLeft: '10px'  }}>
-                        +
-                      </Button>
-                      <Button onClick={handleDeleteCoSup} variant="danger" style={{ width: '40px', height: '38px', marginTop: '5px'}}>
-                        -
-                      </Button>
-                    </Col>
-                  </Row>
-                </Container>
-              </Form.Group> */}
-
               <Form.Group className="mb-3">
                 <Form.Label><strong>Expiration Date</strong></Form.Label>
                 <Form.Control
                   type="date"
                   name="expiration_date"
-                  value={selectedProposal.expiration_date} // cambiare con proposal dinamica
+                  value={selectedProposal.expiration_date}
                   onChange={handleInputChange}
                 />
               </Form.Group>
@@ -396,8 +409,6 @@ function MyProposal(props) {
                   onChange={handleList}
                 />
               </Form.Group>
-
-              {/* Add other form fields for editing */}
             </Form>
           )}
         </Modal.Body>
@@ -411,21 +422,23 @@ function MyProposal(props) {
         </Modal.Footer>
       </Modal>
       <Modal show={showModal2} onHide={handleCloseModal2}>
-      <Modal.Header closeButton>
+        <Modal.Header closeButton>
           <Modal.Title>Are you sure to archive this proposal?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          
           <Button variant="success mx-2" onClick={handleStatus}>Yes</Button>
           <Button variant="danger" onClick={handleCloseModal2}>No</Button>
+
+          {showDeleteConfirmation && (
+            <Button variant="danger mx-2" onClick={() => handleDelete(selectedProposal)}> Delete  </Button>
+          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal2}>Close</Button>
         </Modal.Footer>
       </Modal>
-    </> 
-                 
-  )
+    </>
+  );
 }
 
 export default MyProposal;

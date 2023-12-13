@@ -1,4 +1,5 @@
 
+
 const URL = 'http://localhost:3001';
 
 async function login(){
@@ -59,7 +60,7 @@ function insertProposal(thesis) {
 
 }
 
-function updateProposal(id_thesis, thesis) {
+function updateProposal(id_thesis, thesis, status) {
   thesis.cds = Array.isArray(thesis.cds) ? thesis.cds : thesis.cds.split(',').map((k) =>k.trim());
   thesis.knowledge = Array.isArray(thesis.knowledge) ? thesis.knowledge : thesis.knowledge.split(',').map((k) =>k.trim());
   thesis.type = Array.isArray(thesis.type) ? thesis.type : thesis.type.split(',').map((k) =>k.trim());
@@ -67,6 +68,13 @@ function updateProposal(id_thesis, thesis) {
   thesis.keywords = Array.isArray(thesis.keywords) ? thesis.keywords : thesis.keywords.split(',').map((k) =>k.trim());
   thesis.level = thesis.level === 1 ? "Master" : "Bachelor"
   thesis.cosupervisor = []
+  
+  if(status==0 || status==1){
+    if(thesis.status == 1)
+      thesis.status=0;
+    else 
+      thesis.status=1;
+  }
   console.log(thesis)
 
   return getJson(fetch(URL + `/thesis/${id_thesis}`, {
@@ -270,7 +278,9 @@ function vc_restore() {
 
 async function getCoSupervisorsEmails() {
   try {
-    const response = await fetch(URL + '/thesis/supervisor/emails');
+    const response = await fetch(URL + '/thesis/supervisor/emails', {
+      credentials:'include'
+    });
     const coSupervisorsEmails = await response.json();
 
     if (response.ok) {

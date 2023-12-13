@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Accordion from 'react-bootstrap/Accordion';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
+import PropTypes from 'prop-types';
 import Form from 'react-bootstrap/Form';
 
 function FilterContainer(props) {
@@ -11,7 +12,7 @@ function FilterContainer(props) {
       <Accordion>
         <Accordion.Item eventKey="0">
           <Accordion.Header>
-            <img src='./search.svg' />&nbsp; Search
+            <img src='./search.svg' alt='search'/>&nbsp; Search
           </Accordion.Header>
           <Accordion.Body>
             <Form>
@@ -135,5 +136,13 @@ function FilterContainer(props) {
     </Card>
   );
 }
+
+FilterContainer.propTypes = {
+  filters : PropTypes.object.isRequired,
+  handleFilterChange : PropTypes.func.isRequired,
+  handleFilterCoSupChange : PropTypes.func.isRequired,
+  handleResetChange : PropTypes.func.isRequired,
+  handleApplyFilters : PropTypes.func.isRequired,
+};
 
 export { FilterContainer };
