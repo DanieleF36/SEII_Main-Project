@@ -28,7 +28,7 @@ function Homepage(props) {
     const [copy, setCopy] = useState(undefined);
     const [copyT, setCopyT] = useState(undefined);
     const [copyD, setCopyD] = useState(undefined);
-    const [mails, setMails] = useState(undefined);
+    const [mails, setMails] = useState([]);
     const [application, setApplication] = useState({
         id_thesis: '',
         cv: ''
@@ -85,7 +85,7 @@ function Homepage(props) {
     useEffect(()=>{
         if(props.user.role==='teacher')
             API.getCoSupervisorsEmails().then((res)=>{setMails(res);})
-    }, [props.currentTime]);
+    }, [props.user]);
 
     //handleFunctions
 
