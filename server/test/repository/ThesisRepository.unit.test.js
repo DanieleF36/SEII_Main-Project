@@ -217,3 +217,39 @@ describe('setStatus', () => {
         errors,
         'run');
 })
+
+describe('selectExpiredAccordingToDate', () => {
+    general(thesisRepository.selectExpiredAccordingToDate,
+        ['2023-10-10'],
+        [{id: 1}, {id: 2}, {id: 3}],
+        [1, 2, 3],
+        ['date is missing'],
+        'all');
+})
+
+describe('selectRestoredExpiredAccordingToDate', () => {
+    general(thesisRepository.selectRestoredExpiredAccordingToDate,
+        ['2023-10-10'],
+        [{id: 1}, {id: 2}, {id: 3}],
+        [1, 2, 3],
+        ['date is missing'],
+        'all');
+})
+
+describe('setExpiredAccordingToIds', () => {
+    general(thesisRepository.setExpiredAccordingToIds,
+        [[1, 2, 3]],
+        undefined,
+        true,
+        ['date is missing'],
+        'run');
+})
+
+describe('restoreExpiredAccordingToIds', () => {
+    general(thesisRepository.restoreExpiredAccordingToIds,
+        [[1, 2, 3]],
+        undefined,
+        true,
+        ['date is missing'],
+        'run');
+})

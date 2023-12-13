@@ -401,6 +401,9 @@ const { query } = require("express");
  * @param {*} date 
  */
 exports.selectExpiredAccordingToDate = (date) => {
+  if(date == undefined) {
+    throw new Error('date is missing');
+  }
   const sql = 'SELECT id FROM Thesis WHERE expiration_date <= ? AND status = 1'
 
   return new Promise( (resolve, reject) => {
@@ -419,6 +422,9 @@ exports.selectExpiredAccordingToDate = (date) => {
  * @param {*} date 
  */
 exports.selectRestoredExpiredAccordingToDate = (date) => {
+  if(date == undefined) {
+    throw new Error('date is missing');
+  }
   const sql = 'SELECT id FROM Thesis WHERE expiration_date > ? AND expiration_date != 0 AND status = 0'
 
   return new Promise( (resolve, reject) => {
@@ -437,6 +443,9 @@ exports.selectRestoredExpiredAccordingToDate = (date) => {
  * @param {*} ids of updatable thesis 
  */
 exports.setExpiredAccordingToIds = (ids) => {
+  if(ids == undefined) {
+    throw new Error('date is missing');
+  }
   const placeholders = ids.map(() => '?').join(',');
   const sql = `UPDATE Thesis SET status = 0 WHERE id IN (${placeholders})`
 
@@ -458,6 +467,9 @@ exports.setExpiredAccordingToIds = (ids) => {
  * @param {*} ids of updatable thesis  
  */
 exports.restoreExpiredAccordingToIds = (ids) => {
+  if(ids == undefined) {
+    throw new Error('date is missing');
+  }
   const placeholders = ids.map(() => '?').join(',');
   const sql = `UPDATE Thesis SET status = 1 WHERE id IN (${placeholders})`
 
