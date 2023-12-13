@@ -30,7 +30,8 @@ function MyProposal(props) {
   };
 
   const applyDelete = () => {
-    console.log({id_del: deleteP.id});
+    API.deleteThesis(deleteP.id);
+    setDirty(true);
     handleCloseModal3();
   };
 

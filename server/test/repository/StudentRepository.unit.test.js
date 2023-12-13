@@ -68,13 +68,13 @@ describe('getStudentAndCDSByEmail', () => {
     general(studentRepository.getStudentAndCDSByEmail, ["prova@gmail.com"], valueDb, value, ["Email must be provided"], 'get');
 })
 describe('getCareerByStudentId', () => {
-    let valueDb = {
+    let valueDb = [{
         title_course : "Grosso esame",
         grade : 30
-    }
-    let value = {
+    }]
+    let value = [{
         title_course : "Grosso esame",
         grade : 30
-    }
+    }]
     general(studentRepository.getCareerByStudentId, [1], valueDb, value, ["Id student must be provided"], 'all');
 })

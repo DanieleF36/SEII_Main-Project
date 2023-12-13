@@ -12,11 +12,13 @@ function ApplicationList(props) {
 
     useEffect(() => {
 
-        API.listApplication(props.user.id)
+        API.listApplication(props.user.role)
             .then((applications) => {
-                applications.map((e) => { e.student_carreer = [{ id: 0, title: 'DataScience', grade: '28' }, { id: 1, title: 'Reti di Calcolatori', grade: '30' }] })
-                setApplications(applications);
-                setDirty(false);
+                API.getCareerByStudentId(props.user.id).then((carrier)=>{
+                    applications.map((e) => { e.student_carreer = carrier })
+                    setApplications(applications);
+                    setDirty(false);
+                }).catch((err) => { toast.error(err.error); });
             })
             .catch((err) => { toast.error(err.error); });
 
@@ -37,7 +39,7 @@ function ApplicationList(props) {
 
     const handleGetCV = (cv, id) => {
 
-        console.log({ path_cv: cv, student_id: id });
+        API.getStudentCv(cv, id).catch((err) => { toast.error(err.message); });
 
     }
 

@@ -89,8 +89,8 @@ exports.addThesis = function addThesis(req, res, validate) {
     res.status(401).json({message:"You can not access to this route"});
     return;
   }
-
   if (req.body === undefined) {
+    console.log(req.body)
     res.status(400).json({ message: "body is missing" });
     return;
   }
@@ -149,7 +149,7 @@ exports.updateThesis = function updateThesis(req, res) {
         res.status(200).json(response);
       }
     })
-    .catch((err) => res.status(500).json(err))
+    .catch((err) =>{console.log(err);res.status(500).json(err)})
 };
 
 exports.deleteThesis = function deleteThesis(req, res) {

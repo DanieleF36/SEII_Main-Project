@@ -83,7 +83,9 @@ function Homepage(props) {
     }, [props.currentTime]);
 
     useEffect(()=>{
-        API.getCoSupervisorsEmails().then((res)=>{setMails(res);})}, [props.currentTime]);
+        if(props.user.role==='teacher')
+            API.getCoSupervisorsEmails().then((res)=>{setMails(res);})
+    }, [props.currentTime]);
 
     //handleFunctions
 
@@ -106,12 +108,15 @@ function Homepage(props) {
     };
 
     const handleApplyProp = () => {
-        if (application.cv !== '' && application.cv.type === 'application/pdf') {
+        if (application.cv !== '' && application.cv.type === 'application/pdf' && application.cv.size<=32*1024*1024) {
             API.applyForProposal(application).then((res) => { toast.success('Application successfully sended'); setApplication({ ...application, cv: '' }) })
                 .catch((res) => toast.error(res.error));
         }
-        else if(application.cv !== '')(
+        else if(application.cv.type !== 'application/pdf')(
             toast.error('CV must be in PDF format')
+        )
+        else if(application.cv.size>32*1024*1024)(
+            toast.error('CV size must be under 32MB')
         )
         else{
             toast.error('CV upload missing')

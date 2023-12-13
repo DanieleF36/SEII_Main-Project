@@ -11,7 +11,7 @@ function StudentList(props) {
     const [list, setList] = useState([]);
     useEffect(() => {
 
-        API.browserApplicationStudent(props.user.id)
+        API.listApplication(props.user.role)
             .then((list) => {
                 setList(list);
                 setDirty(false);
@@ -21,7 +21,7 @@ function StudentList(props) {
     }, [dirty]);
 
     const handleGetCV = (cv, id) => {
-      console.log({path_cv: cv, student_id: id});
+      API.getStudentCv(cv, id).catch((err) => { toast.error(err.message); });
     }
 
 
@@ -93,7 +93,7 @@ function StudentList(props) {
                                     <br />
                                     <strong>Application Date:</strong> {application.application_data}
                                     <br />
-                                    <strong>Student Cv: </strong><br /><Button variant='danger' style={{marginTop:'2px'}} onClick={()=>handleGetCV(application.path_cv,props.student.id)}><img src="./file-earmark-pdf-fill.svg"
+                                    <strong>Student Cv: </strong><br /><Button variant='danger' style={{marginTop:'2px'}} onClick={()=>handleGetCV(application.path_cv,props.user.id)}><img src="./file-earmark-pdf-fill.svg"
                                     alt="Logo"
                                     className="mr-2" style={{marginBottom:'4px'}}></img></Button>
                                     <br />

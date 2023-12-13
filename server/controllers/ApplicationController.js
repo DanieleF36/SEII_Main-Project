@@ -69,6 +69,7 @@ exports.listApplication = function listApplication(req, res) {
         studentService
             .browserApplicationStudent(req.user.id)
             .then(function (response) {
+              console.log(response)
                 res.status(200).json(response)
             })
             .catch(function (response) {
@@ -178,7 +179,8 @@ exports.getStudentCv = function (req, res) {
   if (!req.params.student_id) {
     return res.status(400).json({ message: "Missing student id" })
   }
-  if (req.user.role != 'teacher') {
+  console.log(req.user.role)
+  if (req.user.role != 'teacher' && req.user.role != 'student') {
     return res.status(401).json({ message: "You can not access to this route" })
   }
     applicationRepository.getByStudentId(req.params.student_id).then(studentInfo=>{
@@ -220,6 +222,7 @@ exports.getCareerByStudentId = function (req, res) {
   }
   teacherService.getCareerByStudentId(req.params.student_id)
   .then(function (response) {
+    console.log(response)
       res.status(200).json(response);
   })
   .catch(function (response) {
