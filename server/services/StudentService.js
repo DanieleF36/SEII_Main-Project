@@ -1,5 +1,6 @@
 "use strict";
-const applicationRepository = require('../repositories/ApplicationRepository')
+const fs=require('fs');
+const studentRepository = require("../repositories/StudentRepository");
 
 /**
  * Performs queries to the database for retriving all the info about the application made by a student
@@ -25,6 +26,6 @@ const applicationRepository = require('../repositories/ApplicationRepository')
  * }
  */
 exports.browserApplicationStudent = async function (id_student) {
-    const result = await applicationRepository.getByStudentId(id_student)
-    return result
-};
+
+    return studentRepository.browserApplicationStudent(id_student).then(res=>res).catch(err=>err);
+  };

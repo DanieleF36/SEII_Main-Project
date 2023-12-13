@@ -2,14 +2,14 @@
   "openapi": "3.0.2",
   "info": {
     "title": "Thesis Management API",
-    "version": "0.2.2"
+    "version": "0.2.3"
   },
   "security":[{"samlAuth":[]}],
   "paths": {
     "/thesis": {
       "get": {
         "tags": ["thesis"],
-        "description": "Return a list of thesis that respect all the parameters",
+        "description": "Student: Get a list of thesis that respect all the parameters. These thesis will be public and cds and level are the same of the student. Teacher: Get all the active thesis for professor",
         "operationId": "advancedResearchThesis",
         "parameters": [
           {
@@ -315,21 +315,10 @@
         }
       }
     },
-    "/professors/{id_professor}/applications": {
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id_professor",
-          "schema": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "required": true
-        }
-      ],
+    "/applications": {
       "get": {
-        "tags": ["professor"],
-        "description": "Get all the application for the professor",
+        "tags": ["application"],
+        "description": "Student:get all the applications of student. Teacher: Get all the application for the professor.",
         "operationId": "listApplication",
         "responses": {
           "200": {
@@ -367,29 +356,9 @@
         }
       }
     },
-    "/professors/{id_professor}/applications/{id_application}": {
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id_professor",
-          "schema": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "required": true
-        },
-        {
-          "in": "path",
-          "name": "id_application",
-          "schema": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "required": true
-        }
-      ],
+    "/applications/{id_application}": {
       "put": {
-        "tags": ["professor"],
+        "tags": ["application"],
         "description": "Theacher accept or reject an application",
         "operationId": "accRefApplication",
         "requestBody": {
@@ -430,64 +399,6 @@
         }
       }
     },
-    "/professors/thesis":{
-      "get":{
-        "tags":["professor"],
-        "description": "Get all the active thesis for professor id",
-        "operationId": "browseProposals",
-        "responses": {
-          "200":{
-            "description": "list of all proposal for the current logged in professor",
-            "content": {
-              "application/json":{
-                "schema":{
-                  "type": "object",
-                  "$ref": "#/components/schemas/thesis"
-                }
-              }
-            }
-          },
-          "401":{
-            "description": "not authorized"
-          },
-          "404":{
-            "description": "id professor not found"
-          },
-          "500":{
-            "description": "internal error"
-          }
-        }
-      }
-    },
-    "/students/{id}/applications":{
-      "get":{
-        "tags":["student"],
-        "description": "get all the applications of student id",
-        "operationId": "browseStudentApplication",
-        "responses": {
-          "200":{
-            "description": "list of all application",
-            "content": {
-              "application/json":{
-                "schema":{
-                  "type": "array",
-                  "items":{
-                    "type": "object",
-                    "$ref": "#/components/schemas/application"
-                  }
-                }
-              }
-            }
-          },
-          "401":{
-            "description": "not authorized"
-          },
-          "500":{
-            "description": "internal error"
-          }
-        }
-      }
-    },
     "/notifications":{
       "parameters": [
         {
@@ -502,7 +413,7 @@
       ],
       "get":{
         "tags":["notifications"],
-        "description": "get all the notifications of student id",
+        "description": "get all the notifications of student or professor",
         "operationId": "browseStudentNotifications",
         "responses": {
           "200":{
@@ -535,15 +446,6 @@
     },
     "/notifications/{id_notification}":{
       "parameters": [
-        {
-          "name":"id_student",
-          "in": "path",
-          "schema":{
-            "type": "integer",
-            "maximum": 0
-          },
-          "required": true
-        },
         {
           "name":"id_notification",
           "in": "path",
@@ -657,36 +559,6 @@
         }
       }
     },
-    "/session/current":{
-      "get":{
-        "tags": ["authentication"],
-        "security": [],
-        "description": "get user information",
-        "responses": {
-          "200":{
-            "description": "ok",
-            "content": {
-              "application/json":{
-                "schema":{
-                  "type": "object",
-                  "properties": {
-                    "id":{"type": "integer", "minimum": 0},
-                    "name":{"type": "string"},
-                    "surname":{"type": "string"},
-                    "role":{"enum": ["student", "teacher", "supervisor"]},
-                    "email":{"type": "string"},
-                    "cds":{"type": "string"}
-                  }
-                }
-              }
-            }
-          },
-          "401":{
-            "description": "Not authenticated"
-          }
-        }
-      }
-    },
     "/logout":{
       "get":{
         "tags": ["authentication"],
@@ -745,10 +617,7 @@
             "description":"0 bachelor, 1 master",
             "enum": [0,1]
           },
-          "cds": {
-            "type": "array",
-            "items": { "type": "string" }
-          },
+          "cds": { "type": "string" },
           "creation_date": { "type": "string" },
           "status": { "type": "integer" }
         },

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, NavLink, Accordion, Badge, Card, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col,  Accordion, Badge, Card, Modal,OverlayTrigger, Tooltip } from 'react-bootstrap';
 import toast, { Toaster } from 'react-hot-toast';
+import PropTypes from 'prop-types';
 import API from '../API';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
@@ -17,8 +18,9 @@ function MyProposal(props) {
   const [deleteP, setDeleteP] = useState(false);
 
 
+
   const handleModify = (proposal) => {
-    setSelectedProposal({ ...proposal });
+    setSelectedProposal( {...proposal} );
     setShowModal(true);
   };
 
@@ -34,31 +36,42 @@ function MyProposal(props) {
 
   const handleStatus = (proposal) => {
     setShowModal2(false);
+  
+    API.updateProposal(proposal.id, proposal, proposal.status)
+         .then(() => {
+           setDirty(true);
+            toast.success('Thesis Proposal successfully archived');
+         })
+         .catch((error) => {
+           toast.error(error.message || 'An error occurred while updating the proposal');
+         });
+    
   };
 
   const handleSwitch = () => {
-
     toast.remove();
     if (archived === 0){
-
+      
       setArchived(1);
       setDirty(true);
-    } else {
+      
+    }else{
       setArchived(0);
       setDirty(true);
     }
+
   };
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setSelectedProposal('');
-    setShowDeleteConfirmation(false);
-  };
 
+    setSelectedProposal('');
+    
+  };
   const handleCloseModal2 = () => {
     setShowModal2(false);
+
     setSelectedProposal('');
-    setShowDeleteConfirmation(false);
   };
 
   const handleCloseModal3 = () => {
@@ -78,42 +91,19 @@ function MyProposal(props) {
     );
   }, [searchTerm]);
 
+   
+    useEffect(() => {
+      if(props.user.role === 'teacher'){
+          API.browseProposal(archived)
+          .then((proposals) => {
+              setProposals(proposals);
+              setDirty(false);
+          })
+          .catch((err) => { toast.error(err.error); });
+        }
+       
+    }, [dirty, props.user]);
 
-  useEffect(() => {
-    if (props.user.role === 'teacher') {
-      API.browseProposal(archived)
-        .then((proposals) => {
-          setProposals(proposals);
-          setDirty(false);
-        })
-        .catch((err) => { toast.error(err.error); });
-    }
-
-  }, [dirty, props.user]);
-  const handleDelete = (proposal) => {
-    API.deleteProposal(proposal.id)
-      .then(() => {
-        console.log('Delete request successful');
-        setDirty(true);
-        toast.success('Thesis Proposal successfully deleted');
-        setShowModal(false);
-      })
-      .catch((error) => {
-        console.error('Delete request failed:', error);
-        toast.error(error.message || 'An error occurred while deleting the proposal');
-      });
-  };
-
-  useEffect(() => {
-    if (props.user.role === 'teacher') {
-      API.browseProposal(archived)
-        .then((proposals) => {
-          setProposals(proposals);
-          setDirty(false);
-        })
-        .catch((err) => { toast.error(err.error); });
-    }
-  }, [dirty, props.user]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -124,32 +114,28 @@ function MyProposal(props) {
   };
 
   const correctSpace = (prop) => {
-    if (Array.isArray(prop.cds)) {
-      let c = prop.cds.map(e => e.trim());
-      prop.cds = c;
+    if(Array.isArray(prop.cds)){
+    let c = prop.cds.map(e=>e.trim());
+    prop.cds = c;
     }
-    if (Array.isArray(prop.keywords)) {
-      let k = prop.keywords.map(e => e.trim());
-      prop.keywords = k;
+    if(Array.isArray(prop.keywords)){
+    let k = prop.keywords.map(e=>e.trim());
+    prop.keywords = k;
     }
-    if (Array.isArray(prop.type)) {
-      let t = prop.type.map(e => e.trim());
-      prop.type = t;
+    if(Array.isArray(prop.type)){
+    let t = prop.type.map(e=>e.trim());
+    prop.type = t;
     }
-    if (Array.isArray(prop.knowledge)) {
-      let kn = prop.knowledge.map(e => e.trim());
-      prop.knowledge = kn;
+    if(Array.isArray(prop.knowledge)){
+    let kn = prop.knowledge.map(e=>e.trim());
+    prop.knowledge = kn;
     }
-    if (Array.isArray(prop.groups)) {
-      let g = prop.groups.map(e => e.trim());
-      prop.groups = g;
+    if(Array.isArray(prop.groups)){
+    let g = prop.groups.map(e=>e.trim());
+    prop.groups = g;
     }
     return prop;
-  };
-
-  const handleResetChange = () => {
-    setSelectedProposal('');
-  };
+  }
 
   const handleCheckboxChange = (selectedLevel) => {
     setSelectedProposal({ ...selectedProposal, level: selectedLevel });
@@ -158,7 +144,7 @@ function MyProposal(props) {
   const handleList = (e) => {
     let name = e.target.name;
     let cosup_arr = e.target.value.split(",");
-    setSelectedProposal({ ...selectedProposal, [name]: cosup_arr });
+    setSelectedProposal({ ...selectedProposal, [name]: cosup_arr});
   };
 
   const handleSaveChanges = () => {
@@ -183,18 +169,19 @@ function MyProposal(props) {
         toast.error('CdS field cannot be empty');
       } else {
         setShowModal(false);
-        let updatep = selectedProposal;
-        API.updateProposal(selectedProposal.id, correctSpace(updatep))
-          .then(() => {
-            setDirty(true);
-            toast.success('Thesis Proposal successfully updated');
-          })
-          .catch((error) => {
-            toast.error(error.message || 'An error occurred while updating the proposal');
-          });
+        let updatep = selectedProposal
+       API.updateProposal(selectedProposal.id, correctSpace(updatep))
+         .then(() => {
+           setDirty(true);
+           toast.success('Thesis Proposal successfully updated');
+         })
+         .catch((error) => {
+           toast.error(error.message || 'An error occurred while updating the proposal');
+         });
       }
     }
   };
+
 
   return (
     <>
@@ -216,7 +203,7 @@ function MyProposal(props) {
                       </Col>
                       <Col md='3' sm='3' xs='12'>
                         <strong>Status:</strong>{' '}
-
+                      
                         {proposal.status == 1 ? (
                           <Badge pill bg="success">P</Badge>
                         ) : (
@@ -227,6 +214,7 @@ function MyProposal(props) {
                         <img src="./info-circle.svg"
                           alt="info"
                           className="img-responsive" />
+
                       </Col>
                     </Row>
                   </Container>
@@ -250,7 +238,6 @@ function MyProposal(props) {
                   <br />
                   <strong>Creation Date:</strong> {proposal.creation_date}
                   <br />
-
                   <br />
                   <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Modify</Tooltip>  }><Button variant="warning mx-2" onClick={() => handleModify(proposal)}><i className="bi bi-pencil-fill" style={{color:'white'}}/></Button></OverlayTrigger>
                   {proposal.status==1 ?
@@ -261,14 +248,14 @@ function MyProposal(props) {
                   {proposal.status==1?
                   <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Delete</Tooltip>  }><Button variant="danger mx-2" onClick={() => handleDelete(proposal)} ><i className="bi bi-trash3-fill"></i></Button></OverlayTrigger>:''
                   }
-
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
           </Card>
         ))}
       </div>
-      <Modal show={showModal} onHide={handleCloseModal} backdrop="static" keyboard={false}>
+      <Modal show={showModal} onHide={handleCloseModal}  backdrop="static"
+        keyboard={false}>
         <Toaster position="top-center" reverseOrder={false} />
         <Modal.Header closeButton>
           <Modal.Title>Edit Proposal</Modal.Title>
@@ -286,12 +273,13 @@ function MyProposal(props) {
                 />
               </Form.Group>
 
+
               <Form.Group className="mb-3">
                 <Form.Label><strong>Expiration Date</strong></Form.Label>
                 <Form.Control
                   type="date"
                   name="expiration_date"
-                  value={selectedProposal.expiration_date}
+                  value={selectedProposal.expiration_date} // cambiare con proposal dinamica
                   onChange={handleInputChange}
                 />
               </Form.Group>
@@ -387,6 +375,8 @@ function MyProposal(props) {
                   onChange={handleList}
                 />
               </Form.Group>
+
+              {/* Add other form fields for editing */}
             </Form>
           )}
         </Modal.Body>
@@ -399,17 +389,15 @@ function MyProposal(props) {
           </Button>
         </Modal.Footer>
       </Modal>
-      <Modal show={showModal2} onHide={handleCloseModal2}>
-        <Modal.Header closeButton>
+
+      <Modal show={showModal2} onHide={handleCloseModal2} backdrop="static"
+        keyboard={false}>
+      <Modal.Header closeButton>
           <Modal.Title>Are you sure to archive this proposal?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Button variant="success mx-2" onClick={handleStatus}>Yes</Button>
+          <Button variant="success mx-2" onClick={() => handleStatus(selectedProposal)}>Yes</Button>
           <Button variant="danger" onClick={handleCloseModal2}>No</Button>
-
-          {showDeleteConfirmation && (
-            <Button variant="danger mx-2" onClick={() => handleDelete(selectedProposal)}> Delete  </Button>
-          )}
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal2}>Close</Button>
@@ -432,5 +420,11 @@ function MyProposal(props) {
     </>
   );
 }
+
+MyProposal.propTypes = {
+  user : PropTypes.oneOfType([PropTypes.string,
+    PropTypes.object]).isRequired,
+  handleCopy: PropTypes.func.isRequired,
+};
 
 export default MyProposal;

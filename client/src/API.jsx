@@ -9,6 +9,7 @@ async function login(){
 async function userAuthenticated(){
   const res = await fetch(URL+ `/session/current`,{credentials:'include'});
   const user = await res.json();
+    console.log(user)
   if(res.ok){
     return user;
   }
@@ -21,8 +22,8 @@ async function logout(){
   window.location.assign(URL+"/logout", {credentials:'include'});
 }
 
-async function listApplication() { 
-    const response = await fetch(URL+ `/applications`,{credentials:'include'});
+async function listApplication(id_professor) { 
+    const response = await fetch(URL+ `/professor/${id_professor}/applications`,{credentials:'include'});
     const application = await response.json();
     if (response.ok) {
        return application.map((a) => ({
@@ -37,7 +38,7 @@ async function listApplication() {
                 surname: a.surname
             }));
     } else {
-      throw new Error(response);  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
+      throw application;  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
     }
   }
 
@@ -101,7 +102,7 @@ function getJson(httpResponsePromise) {
           // the server always returns a JSON, even empty {}. Never null or non json, otherwise the method will fail
           response.json()
             .then(json => resolve(json))
-            .catch(err => reject(new Error("Cannot parse server response")));
+            .catch(err => reject({ error: "Cannot parse server response" }))
 
         } else {
           // analyzing the cause of error
@@ -109,11 +110,11 @@ function getJson(httpResponsePromise) {
             .then(obj =>
               reject(obj)
             ) // error msg in the response body
-            .catch(err => reject(new Error("Cannot parse server response"))) // something else
+            .catch(err => reject({ error: "Cannot parse server response" })) // something else
         }
       })
       .catch(err =>
-        reject(new Error("Cannot communicate"))
+        reject({ error: "Cannot communicate" })
       ) // connection error
   });
 }
@@ -185,13 +186,13 @@ async function advancedSearchThesis(params){
     }))]
   }
   else {
-    throw new Error("error");
+    throw res;
   }
 }
 
-async function acceptApplication(status,id_application) { 
+async function acceptApplication(status,id_professor,id_application) { 
   try {
-    const response = await fetch(URL + `/applications/${id_application}`,{
+    const response = await fetch(URL + `/professor/${id_professor}/applications/${id_application}`,{
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -222,18 +223,46 @@ async function applyForProposal(application) {
     })).then(json => {return json});
 }
 
-async function browseProposal(status) { 
-  const res = await fetch(URL + `/thesis?status=${status}`, {
+async function browserApplicationStudent(id_student) {
+  try {
+    const response = await fetch(URL + `/student/${id_student}/applications`, {credentials:'include'});
+    const application = await response.json();
+    if (response.ok) {
+      return application.map((a) => ({
+        id_application: a.id_application,
+        title: a.title,
+        supervisor_name: a.supervisor_name,
+        supervisor_surname: a.supervisor_surname,
+        status: a.status,
+        type: a.type,
+        groups: a.groups,
+        description: a.description,
+        knowledge: a.knowledge,
+        note: a.note,
+        level: a.level,
+        keywords: a.keywords,
+        expiration_date: a.expiration_date,
+        cds: a.cds,
+        path_cv: a.path_cv,
+        application_data: a.application_data,
+      }));
+    } else {
+      const message = await response.text();
+      throw new Error(message);
+    }
+  } catch (error) {
+    throw new Error(error.message, { cause: error });
+  }
+}
+
+function browseProposal(status) {
+  console.log(status)
+  return getJson(fetch(URL + `/professor/thesis?status=${status}`, {
     credentials:'include'
-  });
-  if(res.status == 200){
-    const thesis = await res.json();
-    return thesis.thesis;
-  }
-  else{
-    const err = await res.json();
-    return err;
-  }
+  }))
+  .then(res => {
+    return res
+  })
 }
 
 // =================== Virtual clock API ===================
@@ -293,33 +322,7 @@ async function getCoSupervisorsEmails() {
     throw new Error(error.message, { cause: error });
   }
 }
-
-async function getStudentCv(path_cv,id_student){
-  const response = await fetch(URL + `/applications/student_cv/${id_student}`, {
-    credentials: "include",
-  });
-  if (!response.ok) {
-    throw new Error(`Failed to download PDF file. Status: ${response.status}`);
-  }
-  let file_name = path_cv.split('//').pop();
-  const blob = await response.blob();
-  const url = window.URL.createObjectURL(blob);
-  const downloadLink = document.createElement('a');
-  downloadLink.href = url;
-  downloadLink.download = `${file_name}.pdf`;
-  document.body.appendChild(downloadLink);
-  downloadLink.click();
-  document.body.removeChild(downloadLink);
-  window.URL.revokeObjectURL(url);
-}
-
-async function getCareerByStudentId(id_student) {
-  return getJson(fetch(URL + `/applications/career/${id_student}`,{
-    credentials: "include",
-  })).then(json => { return json });
-}
-
-const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId };
+const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, browserApplicationStudent, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout };
 
 
 

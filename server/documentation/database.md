@@ -48,10 +48,8 @@
 - id_teacher integer ***foreign key***
 
 ### *Degree*
-- id integer ***primary key***
-- cod integer ***not null*** ***unique***
-    - it is like LM-32
-- title string ***not null*** ***unique***
+- cod integer ***primary key***
+- title string ***not null***
 
 ### *Student*
 - id integer ***primary key***

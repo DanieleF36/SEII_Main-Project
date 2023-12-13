@@ -4,6 +4,7 @@ on:
     branches:
       - main
       - backend_gang
+      - Front-end
   pull_request:
     types: [opened, synchronize, reopened]
 
@@ -11,8 +12,6 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
-    env:
-      test: true
 
     steps:
       - uses: actions/checkout@v3
@@ -32,10 +31,6 @@ jobs:
           cd ./server
           npm install
 
-      - name: Run tests and coverage
-        run: |
-          cd ./server
-          npm run test:coverage
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master

@@ -21,28 +21,24 @@ const samlConfig = {
 const samlStrategy = new saml(samlConfig, async (profile, done) => {
     let user, role;
     if(profile.nameID.includes('studenti') ){
-        user = await studentRepository.getStudentAndCDSByEmail(profile.nameID)
+        user = await studentRepository.getStudentAndCDSByEmail(profile.nameID);
         role = "student";
     }
     else if(profile.nameID.includes('professori') ){
-        user = await teacherRepository.getByEmail(profile.nameID);
+        user = await teacherRepository.findByEmail(profile.nameID);
+        console.log(user);
         role = "teacher";
     }
     else if(profile.nameID.includes('cosupervisor') ){
-        user = await coSupervisorRepository.getByEmail(profile.nameID)
+        user = await coSupervisorRepository.findByEmail(profile.nameID);
         role = "cosupervisor";
     }
     if(role==='student')
-        user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, cds:user.cds, cdsCode:user.cdsCode.includes('LM')?1:0 }
-    else if(role==='teacher') {
-        console.log(user)
-
-        user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, group:user.codGroup }
-
-    }
+        user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, cds:user.cds }
     else
         user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID }
-    done(null, user);
+    
+    return done(null, user);
 });
 passport.use("samlStrategy", samlStrategy);
 
