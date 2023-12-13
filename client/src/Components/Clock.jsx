@@ -41,9 +41,6 @@ const Clock = (props) => {
             .then(() => {
                 props.setCurrentTime(newTime.toDate());
             })
-            .catch(error => {
-                // Handle error here
-            });
     };
 
     const handleRestore = () =>{

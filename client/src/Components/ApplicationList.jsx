@@ -18,9 +18,9 @@ function ApplicationList(props) {
                     applications.map((e) => { e.student_carreer = carrier })
                     setApplications(applications);
                     setDirty(false);
-                }).catch((err) => { toast.error(err.error); });
+                }).catch((err) => { toast.error((error)=>{error.message}); });
             })
-            .catch((err) => { toast.error(err.error); });
+            .catch((err) => { toast.error((error)=>{error.message}); });
 
     }, [dirty]);
     const acceptPropByProf = (status, id_app) => {
@@ -34,12 +34,12 @@ function ApplicationList(props) {
                     toast.success('Application successfully rejected')
                 }
             })
-            .catch((err) => { toast.error(err.error); });
+            .catch((err) => { toast.error((error)=>{error.message}); });
     };
 
     const handleGetCV = (cv, id) => {
 
-        API.getStudentCv(cv, id).catch((err) => { toast.error(err.message); });
+        API.getStudentCv(cv, id).catch((err) => { toast.error((error)=>{error.message}); });
 
     }
 

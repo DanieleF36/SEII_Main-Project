@@ -110,7 +110,7 @@ function Homepage(props) {
     const handleApplyProp = () => {
         if (application.cv !== '' && application.cv.type === 'application/pdf' && application.cv.size<=32*1024*1024) {
             API.applyForProposal(application).then((res) => { toast.success('Application successfully sended'); setApplication({ ...application, cv: '' }) })
-                .catch((res) => toast.error(res.error));
+                .catch((res) => toast.error(res.message));
         }
         else if(application.cv.type !== 'application/pdf')(
             toast.error('CV must be in PDF format')
