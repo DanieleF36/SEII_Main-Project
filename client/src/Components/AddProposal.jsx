@@ -14,7 +14,7 @@ function AddProposalForm(props) {
         expiration_date: '',
         keywords: ['D2', 'M2'],
         type: ['Demo'],
-        groups: [ 'Group14'],
+        groups: [ `${props.user.group}`],
         description: 'Demo Presentation',
         knowledge: ['Team Organization'],
         note: 'DEMO2',
@@ -259,11 +259,11 @@ function AddProposalForm(props) {
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
                         <Form.Label><strong>Groups</strong>&nbsp;(separated by ',')</Form.Label>
-                        <Form.Control
+                        <Form.Control 
+                            readOnly
                             type="text"
                             name="groups"
                             value={proposalData.groups}
-                            onChange={handleList}
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
