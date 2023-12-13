@@ -16,12 +16,12 @@ function StudentList(props) {
                 setList(list);
                 setDirty(false);
             })
-            .catch((err) => { toast.error((error)=>{error.message}); });
+            .catch((err)=>{toast.error(err.message)})
 
     }, [dirty]);
 
     const handleGetCV = (cv, id) => {
-      API.getStudentCv(cv, id).catch((err) => { toast.error((error)=>{error.message}); });
+      API.getStudentCv(cv, id).catch((err)=>{toast.error(err.message)})
     }
 
 
