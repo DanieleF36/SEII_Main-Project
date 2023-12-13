@@ -6,7 +6,7 @@ let db = require("./db");
  * create a new object that represent thesis 
  * @returns 
  */
-function newThesis(id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status){
+function newThesis(id, title, supervisor,[], keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status){
   return{
     id: id,
     title: title,
@@ -46,7 +46,7 @@ exports.addThesis = (title, supervisor, keywords, type, groups, description, kno
         return;
       }
 
-      resolve(newThesis(this.lastID, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status));
+      resolve(newThesis(this.lastID, title, supervisor,[], keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status));
     });
   });
 };

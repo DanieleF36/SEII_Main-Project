@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.44% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>102/118</span>
+                <span class='fraction'>118/118</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">93.15% </span>
+                <span class="strong">95.89% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>68/73</span>
+                <span class='fraction'>70/73</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.47% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>26/34</span>
+                <span class='fraction'>34/34</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.71% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>100/114</span>
+                <span class='fraction'>114/114</span>
             </div>
         
             
@@ -674,14 +674,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -691,14 +691,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -994,15 +994,15 @@ exports.updateStatusToCancelledForOtherStudent = (id_thesis, id_student) =&gt; {
  * Designed for Virtual clock
  * @param {*} ids of updated thesis  
  */
-exports.setCancelledAccordingToThesis = <span class="fstat-no" title="function not covered" >(i</span>ds) =&gt; {
-  const placeholders = <span class="cstat-no" title="statement not covered" >ids.map(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >'?')</span>.join(',');</span>
-  const sql = <span class="cstat-no" title="statement not covered" >`UPDATE Application SET status = 3 WHERE id_thesis IN (${placeholders}) AND status = 0`</span>
+exports.setCancelledAccordingToThesis = (ids) =&gt; {
+  const placeholders = ids.map(() =&gt; '?').join(',');
+  const sql = `UPDATE Application SET status = 3 WHERE id_thesis IN (${placeholders}) AND status = 0`
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return new Promise( <span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    db.run(sql, ids, <span class="fstat-no" title="function not covered" >(e</span>rr) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      if(err)</span>
-<span class="cstat-no" title="statement not covered" >        reject(err)</span>
-<span class="cstat-no" title="statement not covered" >      resolve(true)</span>
+  return new Promise( (resolve, reject) =&gt; {
+    db.run(sql, ids, (err) =&gt; {
+      <span class="missing-if-branch" title="else path not taken" >E</span>if(err)
+        reject(err)
+      resolve(true)
     })
   })
 }
@@ -1011,15 +1011,15 @@ exports.setCancelledAccordingToThesis = <span class="fstat-no" title="function n
  * Designed for Virtual clock
  * @param {*} ids of updated thesis  
  */
-exports.setPendingAccordingToThesis = <span class="fstat-no" title="function not covered" >(i</span>ds) =&gt; {
-  const placeholders = <span class="cstat-no" title="statement not covered" >ids.map(<span class="fstat-no" title="function not covered" >()</span> =&gt; <span class="cstat-no" title="statement not covered" >'?')</span>.join(',');</span>
-  const sql = <span class="cstat-no" title="statement not covered" >`UPDATE Application SET status = 0 WHERE id_thesis IN (${placeholders}) AND status = 3`</span>
+exports.setPendingAccordingToThesis = (ids) =&gt; {
+  const placeholders = ids.map(() =&gt; '?').join(',');
+  const sql = `UPDATE Application SET status = 0 WHERE id_thesis IN (${placeholders}) AND status = 3`
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return new Promise( <span class="fstat-no" title="function not covered" >(r</span>esolve, reject) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >    db.run(sql, ids, <span class="fstat-no" title="function not covered" >(e</span>rr) =&gt; {</span>
-<span class="cstat-no" title="statement not covered" >      if(err)</span>
-<span class="cstat-no" title="statement not covered" >        reject(err)</span>
-<span class="cstat-no" title="statement not covered" >      resolve(true)</span>
+  return new Promise( (resolve, reject) =&gt; {
+    db.run(sql, ids, (err) =&gt; {
+      <span class="missing-if-branch" title="else path not taken" >E</span>if(err)
+        reject(err)
+      resolve(true)
     })
   })
 }
@@ -1033,7 +1033,7 @@ exports.setPendingAccordingToThesis = <span class="fstat-no" title="function not
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-12T18:59:29.067Z
+                at 2023-12-13T12:23:36.267Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
