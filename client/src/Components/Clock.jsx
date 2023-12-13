@@ -47,7 +47,7 @@ const Clock = (props) => {
 
         API.vc_restore().then(props.setCurrentTime(new Date()));
     }
-    /*
+
     useEffect(() => {
 
         const interval = setInterval(updateClock, 10000);
@@ -55,7 +55,7 @@ const Clock = (props) => {
 
 
     }, [props.currentTime]);
-    */
+
 
     return (
         <div className='d-none d-lg-block' style={{ marginTop: '10px', backgroundColor: '#ffff' }}>
