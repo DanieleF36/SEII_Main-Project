@@ -5,75 +5,215 @@ const db = require('../../repositories/db');
 
 jest.mock("../../repositories/db");
 
+
+const general = require('./generalFuncrtion').repoTest;
+
 beforeEach(() => {
   jest.clearAllMocks();
 });
 
-describe.skip('setStatus', ()=>{
-    test('case0: wrongedId', async()=>{
-        const mockId = undefined, mockStatus = 0;
-        expect(()=>thesisRepository.setStatus(mockId, mockStatus)).toThrow(new Error("id must exists and be greater than 0"));
-    })
-    test('case1: wrongedId', async()=>{
-        const mockId = -1, mockStatus = 0;
-        expect(()=>thesisRepository.setStatus(mockId, mockStatus)).toThrow(new Error("id must exists and be greater than 0"));
-    })
-    test('case2: wrongedStatus', async()=>{
-        const mockId = 0, mockStatus = undefined;
-        expect(()=>thesisRepository.setStatus(mockId, mockStatus)).toThrow(new Error("id must exists and be greater than 0"));
-    })
-    test('case3: status < 0', async()=>{
-        const mockId = 1, mockStatus = -1;
-        expect(()=>thesisRepository.setStatus(mockId, mockStatus)).toThrow(new Error("status must exists and be one or two or three"));
-    })
-    test('case4: status > 3', async()=>{
-        const mockId = 1, mockStatus = 4;
-        expect(()=>thesisRepository.setStatus(mockId, mockStatus)).toThrow(new Error("status must exists and be one or two or three"));
-    })
-    test('case5: error', async ()=>{
-        const mockId = 1, mockStatus = 3;
-        db.run.mockImplementation((sql, params, callback) => {
-            callback({message: "error SQLite"});
-        });
-        expect(thesisRepository.setStatus(mockId, mockStatus)).rejects.toEqual({error: "error SQLite"});
-    })
-    test('case6: No changes', async ()=>{
-        const mockId = 1, mockStatus = 3;
-        db.run.mockImplementationOnce((sql, params, callback) => {
-            callback.call({changes:0}, null);
-        });
-        expect(thesisRepository.setStatus(mockId, mockStatus)).rejects.toEqual({ error: "No rows updated. Thesis ID not found." });
-    })
-    test('case7: success', async ()=>{
-        const mockId = 1, mockStatus = 3;
-        db.run.mockImplementation((sql, params, callback) => {
-            callback.call({changes:1}, null);
-        });
-        const updatedId = await thesisRepository.setStatus(mockId, mockStatus);
-        expect(updatedId).toBe("Done");
-    })
+describe('addThesis', () => {
+    const thesis = {
+        title: "New thesis is added",
+        supervisor: 1,
+        keywords: "SoftEng",
+        type: "abroad",
+        groups: "group1",
+        description: "new thesis description",
+        knowledge: "none",
+        note: "none",
+        expiration_date: "2024-01-01",
+        level: 1,
+        cds: "ingInf",
+        creation_date: "2023-01-01",
+        status: 1
+    }
+    const errors = [
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided"
+    ]
+
+    console.log([...Object.values(thesis)])
+    general(thesisRepository.addThesis,
+            [...Object.values(thesis)],
+            undefined,
+            {id: 1, ...thesis},
+            errors,
+            'run');
+
 })
 
-describe.skip('getThesisTitle', ()=>{
-    test('case0: wrongedId', async ()=>{
-        expect(()=>thesisRepository.getThesisTitle()).toThrow(new Error("id_thesis must exists and be greater than 0"));
-    })
-    test('case0: wrongedId', async ()=>{
-        const mockId = -1
-        expect(()=>thesisRepository.getThesisTitle(mockId)).toThrow(new Error("id_thesis must exists and be greater than 0"));
-    })
-    test('case1: error', async ()=>{
-        const mockId = 1;
-        db.get.mockImplementation((sql, params, callback) => {
-            callback({message: "error SQLite"},null);
-        });
-        expect(thesisRepository.getThesisTitle(mockId)).rejects.toEqual({error: "error SQLite"});
-    })
-    test('case2: success', async ()=>{
-        const mockId = 1;
-        db.get.mockImplementation((sql, params, callback) => {
-            callback(null, {title: "title"});
-        });
-        expect(thesisRepository.getThesisTitle(mockId)).resolves.toEqual( "title");
-    })
-});
+describe('getById', () => {
+    const thesis = {
+        title: "New thesis is added",
+        supervisor: 1,
+        keywords: "SoftEng",
+        type: "abroad",
+        groups: "group1",
+        description: "new thesis description",
+        knowledge: "none",
+        note: "none",
+        expiration_date: "2024-01-01",
+        level: 1,
+        cds: "ingInf",
+        creation_date: "2023-01-01",
+        status: 1
+    }
+
+    const errors = [
+        'Thesis ID must be greater than or equal to 0',
+        'Thesis ID must be greater than or equal to 0'
+    ]
+
+
+    general(thesisRepository.getById,
+        [0],
+        {success: "success"},
+        undefined,
+        errors,
+        'get');
+})
+
+describe('getActiveBySupervisor', () => {
+    const thesis = {
+        title: "New thesis is added",
+        supervisor: 1,
+        keywords: "SoftEng",
+        type: "abroad",
+        groups: "group1",
+        description: "new thesis description",
+        knowledge: "none",
+        note: "none",
+        expiration_date: "2024-01-01",
+        level: 1,
+        cds: "ingInf",
+        creation_date: "2023-01-01",
+        status: 1
+    }
+
+    const errors = [
+        'Supervisor ID must be greater than or equal to 0',
+        'Supervisor ID must be greater than or equal to 0'
+    ]
+
+    general(thesisRepository.getActiveBySupervisor,
+        [0],
+        [thesis],
+        [thesis],
+        errors,
+        'all');
+})
+
+describe('getIdByCoSupervisorId', () => {
+    const thesis = {
+        title: "New thesis is added",
+        supervisor: 1,
+        keywords: "SoftEng",
+        type: "abroad",
+        groups: "group1",
+        description: "new thesis description",
+        knowledge: "none",
+        note: "none",
+        expiration_date: "2024-01-01",
+        level: 1,
+        cds: "ingInf",
+        creation_date: "2023-01-01",
+        status: 1
+    }
+
+    const errors = [
+        'Co-supervisor ID must be greater than or equal to 0',
+        'Co-supervisor ID must be greater than or equal to 0'
+    ] 
+
+    general(thesisRepository.getIdByCoSupervisorId,
+        [1],
+        [thesis],
+        [undefined],
+        errors,
+        'all');
+})
+
+describe('updateThesis', () => {
+    const thesis = {
+        title: "New thesis is added",
+        supervisor: 1,
+        keywords: "SoftEng",
+        type: "abroad",
+        groups: "group1",
+        description: "new thesis description",
+        knowledge: "none",
+        note: "none",
+        expiration_date: "2024-01-01",
+        level: 1,
+        cds: "ingInf",
+        creation_date: "2023-01-01",
+        status: 1
+    }
+
+    const input  = [1, ...Object.values(thesis)]
+    const errors = [
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided",
+        "All parameters must be provided"
+    ]
+    general(thesisRepository.updateThesis,
+        input,
+        [undefined],
+        1,
+        errors,
+        'run');
+})
+
+describe('setStatus', () => {
+    const thesis = {
+        title: "New thesis is added",
+        supervisor: 1,
+        keywords: "SoftEng",
+        type: "abroad",
+        groups: "group1",
+        description: "new thesis description",
+        knowledge: "none",
+        note: "none",
+        expiration_date: "2024-01-01",
+        level: 1,
+        cds: "ingInf",
+        creation_date: "2023-01-01",
+        status: 1
+    }
+
+    const input  = [1, ...Object.values(thesis)]
+
+    const errors = [
+        '"id" must be greater than or equal to 0 and "status" must be 0 or 1 or 2',
+        '"id" must be greater than or equal to 0 and "status" must be 0 or 1 or 2'
+    ]
+    general(thesisRepository.setStatus,
+        [1, 0],
+        [undefined],
+        1,
+        errors,
+        'run');
+})

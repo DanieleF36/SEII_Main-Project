@@ -6,12 +6,11 @@ let db = require("./db");
  * create a new object that represent thesis 
  * @returns 
  */
-function newThesis(id, title, supervisor, coSupervisors, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status){
+function newThesis(id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status){
   return{
     id: id,
     title: title,
     supervisor: supervisor,
-    coSupervisor: coSupervisors,
     keywords: keywords,
     type: type,
     groups: groups,
@@ -196,7 +195,9 @@ exports.getIdByCoSupervisorId = (id) => {
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.updateThesis = (id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) => {
-
+  if (!(id && title && supervisor && keywords && type && groups && description && knowledge && note && expiration_date && level && cds && creation_date && status)) {
+    throw new Error('All parameters must be provided');
+  }
   const updateThesisSQL = `UPDATE Thesis SET title = ?, supervisor = ?, keywords = ?, type = ?, groups = ?, description = ?, knowledge = ?, note = ?, expiration_date = ?, level = ?, cds = ?, creation_date = ?, status = ? WHERE id = ?`;
 
   return new Promise((resolve, reject) => {
