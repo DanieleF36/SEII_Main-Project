@@ -6,6 +6,7 @@ const cors = require("cors");
 const passport = require('./config/passport').passport;
 const metadata = require('./config/passport').metadata;
 const app = express();
+app.disable("x-powered-by");
 require('dotenv').config({path: './variable.env'})
 
 /* json schema validator */
