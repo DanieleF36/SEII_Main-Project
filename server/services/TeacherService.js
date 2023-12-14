@@ -38,12 +38,12 @@ exports.browseApplicationProfessor = async function (id_professor) {
 exports.acceptApplication = async function (status, teacherID, applicationID) {
     let row = await applicationRepository.getById(applicationID);
     if (!row) {
-        throw {error: "No application was found, application is missing or is of another teacher"};
+        throw new Error("No application was found, application is missing or is of another teacher");
     }
     const id_thesis = row.id_thesis;
     const id_student = row.id_student;
     if(row.id_teacher != teacherID)
-        throw {error: "This application does not own to that teacher, he cant accept it"};
+        throw new Error("This application does not own to that teacher, he cant accept it");
     await applicationRepository.updateStatus(applicationID, status);
     if (status === 1) {
         await applicationRepository.updateStatusToCancelledForOtherStudent(id_thesis, id_student);
@@ -77,18 +77,11 @@ async function _sendCancelledEmails(teacherID, id_thesis,id_application, id_stud
         teacherRepo.getById(teacherID),
         thesisRepository.getById(id_thesis),
         studentRepo.getStudentEmailCancelled(id_student,id_application, id_thesis)]);
-    teacherEmail = teacherEmail.map(e=>e.email);
+    teacherEmail = teacherEmail.email;
     thesisTitle = thesisTitle.title;
     for(let i of studentEmailCancelledArray){
         await transporter.sendEmail(teacherEmail, i, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to cancelled.`);
     }
-        /*
-    const emailPromises = studentEmailCancelledArray.map(async (element) => {
-        await transporter.sendEmail(teacherEmail, element, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to cancelled.`);
-    })
-    // Wait for all email promises to resolve
-    return Promise.all(emailPromises);
-      */
     return true
 };
   
@@ -98,8 +91,9 @@ async function _sendAcceptedEmail(teacherID, id_thesis, id_student){
         teacherRepo.getById(teacherID),
         studentRepo.getById(id_student), 
         thesisRepository.getById(id_thesis)]);
-    teacherEmail = teacherEmail.map(e=>e.email);
-    studentEmail = studentEmail.map(e=>e.email);
+    
+    teacherEmail = teacherEmail.email;
+    studentEmail = studentEmail.email;
     thesisTitle = thesisTitle.title;
     await transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to accepted.`)
     return true;      
@@ -113,6 +107,15 @@ async function _sendAcceptedEmail(teacherID, id_thesis, id_student){
 exports.browseProposals = async function(supervisor) {
     const response = await thesisRepository.getActiveBySupervisor(supervisor)
     return response
+}
+
+/**
+ * Function that retrieve the student career information
+ * @param {*} id_student id of the student
+ * @returns array of object {title : string, grade : integer}
+ */
+exports.getCareerByStudentId = async function (id_student) {
+    return await studentRepo.getCareerByStudentId(id_student)
 }
 
 // Esporta funzioni Private solo per i test

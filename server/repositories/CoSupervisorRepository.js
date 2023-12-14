@@ -12,22 +12,26 @@ const db = require("./db");
  * @returns Object: {name: string, surname: string, email: string, company: string}
  */
 exports.getById = (id) => {
-  if(!id || id<0)
-        throw {error: "id must be greather than 0"}
-  const sqlCoSupervisor = "SELECT name, surname, email, company FROM CoSupervisor WHERE id = ?";
-  return new Promise((resolve, reject) => {
-    db.get(sqlCoSupervisor, [id], (err, row) => {
-      if (err) {
-        return reject({error: err.message});
-      }
-      if (!row)
-        resolve({})
-      else
-        resolve(row);
+  if (id == undefined || id < 0) {
+    throw new Error('Co-supervisor ID must be greater than or equal to 0');
+  }
 
+  const fetchCoSupervisorByIdSQL = 'SELECT name, surname, email, company FROM CoSupervisor WHERE id = ?';
+  return new Promise((resolve, reject) => {
+    db.get(fetchCoSupervisorByIdSQL, [id], (err, row) => {
+      if (err) {
+        reject(new Error(err.message));
+        return;
+      }
+
+      if (!row) {
+        resolve({});
+      } else {
+        resolve(row);
+      }
     });
   });
-}
+};
 
 /**
  * Returns all CoSupervisor (one or more) given of a certain thesis id
@@ -35,20 +39,26 @@ exports.getById = (id) => {
  * @returns [{name: string, surname: string, email: string, company: string}, ...................]
  */
 exports.getByThesisId = (id) => {
-  if(!id || id<0)
-        throw {error: "id must be greather than 0"}
-  const sql = 'SELECT email FROM CoSupervisor WHERE id IN (SELECT id_cosupervisor AS List FROM CoSupervisorThesis WHERE id_thesis=?)'
-  return new Promise( (resolve, reject) => {
-    db.all(sql, [id], (err, rows) => {
+  if (id==undefined || id < 0) {
+    throw new Error('Thesis ID must be greater than or equal to 0');
+  }
+
+  const fetchCoSupervisorsByThesisIdSQL = 'SELECT email FROM CoSupervisor WHERE id IN (SELECT id_cosupervisor AS List FROM CoSupervisorThesis WHERE id_thesis=?)';
+  return new Promise((resolve, reject) => {
+    db.all(fetchCoSupervisorsByThesisIdSQL, [id], (err, rows) => {
       if (err) {
-        return reject({error: err.message});
+        reject(new Error(err.message));
+        return;
       }
-      else if(rows.length == 0)
-        resolve([])
-      resolve(rows)
-    })
-  })
-}
+
+      if (rows.length === 0) {
+        resolve([]);
+      } else {
+        resolve(rows);
+      }
+    });
+  });
+};
 
 /**
  * Support function to retrive the info about a CoSupervisor having his email
@@ -56,23 +66,27 @@ exports.getByThesisId = (id) => {
  * @returns object : {id : string, name : string, surname : string, email : string, company: string} 
  */
 exports.getByEmail = (email) => {
-  if(!email)
-    throw {error: "email must exists"}
-  const sqlCoSupervisor = "SELECT id, name, surname, email, company FROM CoSupervisor WHERE email = ?";
+  if (!email) {
+    throw new Error('Email must be provided');
+  }
+
+  const fetchCoSupervisorByEmailSQL = 'SELECT id, name, surname, email, company FROM CoSupervisor WHERE email = ?';
+
   return new Promise((resolve, reject) => {
-    db.get(sqlCoSupervisor, [email], (err, row) => {
+    db.get(fetchCoSupervisorByEmailSQL, [email], (err, row) => {
       if (err) {
-        reject(err);
+        reject(new Error(err.message));
         return;
       }
-      if (!row)
-        resolve({})
-      else
-        resolve(row);
 
+      if (!row) {
+        resolve({});
+      } else {
+        resolve(row);
+      }
     });
   });
-}
+};
 
 /**
  * Perfoms a search according to the following possible combinations:
@@ -88,29 +102,35 @@ exports.getByEmail = (email) => {
  * @returns [id1, id2, ...]
  */
 exports.getByNSorS = (surname, name) => {
-  if(!surname || (!surname && name))
-    throw {error: "surname must exists"}
-  let sql = "SELECT id FROM CoSupervisor WHERE ";
+  if (!surname) {
+    throw new Error('Surname must be provided');
+  }
+
+  let sql = `SELECT * FROM CoSupervisor WHERE `;
   let params = [];
-  if (name != null && surname != null) {
-    sql += "name LIKE ? AND surname LIKE ?";
-    params.push("%" + name + "%");
-    params.push("%" + surname + "%");
+
+  if (name && surname) {
+    sql += `name LIKE ? AND surname LIKE ?`;
+    params.push('%' + name + '%');
+    params.push('%' + surname + '%');
+  } else if (name) {
+    sql += `name LIKE ?`;
+    params.push('%' + name + '%');
+  } else if (surname) {
+    sql += `surname LIKE ?`;
+    params.push('%' + surname + '%');
   }
-  else {
-    sql += "surname LIKE ?";
-    params.push("%" + surname + "%");
-  }
+
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {
       if (err) {
-        reject(err);
+        reject(new Error(err.message));
         return;
       }
       resolve(rows);
     });
   });
-}
+};
 
 //==================================Set==================================
 

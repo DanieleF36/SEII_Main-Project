@@ -13,6 +13,8 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
+    env:
+      test: true
 
     steps:
       - uses: actions/checkout@v3

@@ -5,9 +5,12 @@
     "type": "object",
     "additionalProperties": false,
     "properties": {
+        "id": {
+          "type": "integer"
+        },
         "title": { 
-            "type": "string", 
-            "minLength": 1 
+          "type": "string", 
+          "minLength": 1 
         },
         "supervisor": { 
           "type": "integer"
@@ -63,5 +66,5 @@
             "default": 1
          }
     },
-    "required": ["title", "cosupervisor","keywords","type","groups","cds","knowledge", "expiration_date", "level"]
+    "required": ["title", "cosupervisor","keywords","type","cds","knowledge", "expiration_date", "level"]
 }

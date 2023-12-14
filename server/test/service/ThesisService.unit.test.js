@@ -3,11 +3,10 @@ const repository = require('../../repositories/ThesisRepository.js')
 const coSupervisorThesisRepository = require('../../repositories/CoSupervisorThesisRepository.js')
 const coSupervisorRepository = require('../../repositories/CoSupervisorRepository.js')
 const teacherRepository = require('../../repositories/TeacherRepository.js')
-const dayjs = require('dayjs')
-
+const applicationRepository = require('../../repositories/ApplicationRepository.js')
 describe('addThesis unit tests', () => {
     let thesis
-    beforeAll(() => {
+    beforeEach(() => {
         thesis = {
             supervisor: 1,
             title: "New thesis is added",
@@ -63,7 +62,7 @@ describe('addThesis unit tests', () => {
     test('U3: adding a thesis but an error in repository occurs', async () => {
         thesis.cosupervisor = [""]
 
-        const res = jest.spyOn(Promise, 'all').mockResolvedValue({error: 'error'})
+        jest.spyOn(Promise, 'all').mockResolvedValue({error: 'error'})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
 
@@ -82,15 +81,15 @@ describe('addThesis unit tests', () => {
             surname: 'verdi',
             email: 'gigiverdi@mail.com'
         }})
-        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
-        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return {error: 'error'}})
+        jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
+        jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return {message: 'error'}})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
 
         try{
             await service.addThesis(thesis)
         }
         catch(error) {
-            expect(error.error).toBe('error')
+            expect(error.message).toBe('error')
         }
     })
 
@@ -100,7 +99,7 @@ describe('addThesis unit tests', () => {
             surname: 'verdi',
             email: 'gigiverdi@mail.com'
         }})
-        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
+        jest.spyOn(repository, 'addThesis').mockResolvedValue({error: 'error'})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return {error: 'error'}})
 
@@ -108,7 +107,7 @@ describe('addThesis unit tests', () => {
             await service.addThesis(thesis)
         }
         catch(error) {
-            expect(error.error).toBe("error")
+            expect(error.message).toBe("error")
         }        
     })
 
@@ -193,7 +192,7 @@ describe('addThesis unit tests', () => {
             surname: 'rossi',
             email: 'gigirossi@mail.com'
         }})
-        const res = jest.spyOn(repository, 'addThesis').mockResolvedValue({...thesis, id: 1})
+        jest.spyOn(repository, 'addThesis').mockResolvedValue({...thesis, id: 1})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return true})
         jest.spyOn(coSupervisorThesisRepository, 'addCoSupervisorThesis').mockImplementationOnce(() => {return {error: 'error'}})
 
@@ -205,161 +204,156 @@ describe('addThesis unit tests', () => {
         }        
     })
 })
-
-describe('advancedResearchThesis', () => {
-    let page = 1, order = 'titleD', title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level;
+describe('supervisorCheck', ()=>{
+    let supervisor;
+    test('case0: missing supervisor', async () => {
+        const res = await service.supervisorCheck(supervisor);
+        expect(res).toEqual(null)
+    });
     test('case1: ns.length>1 error', async () => {
         supervisor = "nome cognome";
         const spy = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getByNSorS').mockRejectedValue({ error: "error" })
         try {
-            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+            await service.supervisorCheck(supervisor);
         }
         catch (e) {
             expect(e).toStrictEqual({ error: "error" })
         }
         expect(spy).toHaveBeenCalledWith("cognome", "nome");
-    }),
-        test('case2: ns.length==1 error', async () => {
-            supervisor = "cognome";
-            const spy = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getByNSorS').mockRejectedValue({ error: "error" })
-            try {
-                await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
-            }
-            catch (e) {
-                expect(e).toStrictEqual({ error: "error" })
-            }
-            expect(spy).toHaveBeenCalledWith("cognome");
-        }),
-        test('case3: ns.length>1 error && teacherRepo.get... success', async () => {
-            coSupervisor = ["nome cognome"]
-            const getByNSorST = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getByNSorS').mockResolvedValue([{ id: 1 }, { id: 2 }]);
-            const getByNSorSC = jest.spyOn(require('../../repositories/CoSupervisorRepository.js'), 'getByNSorS').mockRejectedValue({ error: "error" });
-            try {
-                await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
-            }
-            catch (e) {
-                expect(e).toStrictEqual({ error: "error" })
-            }
-            expect(getByNSorST).toHaveBeenCalledWith("cognome");
-            expect(getByNSorSC).toHaveBeenCalledWith("cognome", "nome");
-        }),
-        test('case4: ns.length==1 error ', async () => {
-            coSupervisor = ["cognome"]
-            const getByNSorST = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getByNSorS').mockResolvedValue([{ id: 1 }, { id: 2 }]);
-            const getByNSorSC = jest.spyOn(require('../../repositories/CoSupervisorRepository.js'), 'getByNSorS').mockRejectedValue({ error: "error" });
-            try {
-                await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
-            }
-            catch (e) {
-                expect(e).toStrictEqual({ error: "error" })
-            }
-            expect(getByNSorST).toHaveBeenCalledWith("cognome");
-            expect(getByNSorSC).toHaveBeenCalledWith("cognome");
-        }),
-        test('case5: coSupervisor rep get success && getId... error ', async () => {
-            const getByNSorST = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getByNSorS').mockResolvedValue([{ id: 1 }, { id: 2 }]);
-            const getByNSorSC = jest.spyOn(require('../../repositories/CoSupervisorRepository.js'), 'getByNSorS').mockResolvedValue([1, 2]);
-            const getIdByCoSupervisorId = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'getIdByCoSupervisorId').mockRejectedValue({ error: "error" });
-            try {
-                await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
-            }
-            catch (e) {
-                expect(e).toStrictEqual({ error: "error" })
-            }
-            expect(getByNSorST).toHaveBeenCalledWith("cognome");
-            expect(getByNSorSC).toHaveBeenCalledWith("cognome");
-            expect(getIdByCoSupervisorId).toHaveBeenCalledWith([1, 2]);
-        }),
-        test('case6: ok = flase ', async () => {
-            coSupervisor = null;
-            const getByNSorST = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getByNSorS').mockResolvedValue([]);
-            expect(service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)).resolves.toStrictEqual([[], 0]);
-            expect(getByNSorST).toHaveBeenCalledWith("cognome");
-        }),
-        test('case7: advancedResearch error ', async () => {
-            supervisor = undefined;
-            title = "title";
-            const spy = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'advancedResearch').mockRejectedValue({ error: "error" });
-            try {
-                await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            } catch (e) {
-                expect(e).toStrictEqual({ error: "error" });
-            }
-            expect(spy).toHaveBeenCalledWith(10 * (page - 1), 10 * page, 'titleD', false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-        }),
-        test('case8: npage error ', async () => {
-            const advancedResearch = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'advancedResearch').mockResolvedValue([{ id: 1, supervisor: 1 }]);
-            const nPage = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'numberOfPage').mockRejectedValue({ error: "error" });
-            try {
-                await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            } catch (e) {
-                expect(e).toStrictEqual({ error: "error" });
-            }
-            expect(advancedResearch).toHaveBeenCalledWith(10 * (page - 1), 10 * page, 'titleD', false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            expect(nPage).toHaveBeenCalledWith(false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-        }),
-        test('case9: getById err ', async () => {
-            const advancedResearch = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'advancedResearch').mockResolvedValue([{ id: 1, supervisor: 1 }]);
-            const nPage = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'numberOfPage').mockResolvedValue(1);
-            const getById = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getById').mockRejectedValue({ error: "error" });
-            try {
-                await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            } catch (e) {
-                expect(e).toStrictEqual({ error: "error" });
-            }
-            expect(advancedResearch).toHaveBeenCalledWith(10 * (page - 1), 10 * page, 'titleD', false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            expect(nPage).toHaveBeenCalledWith(false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            expect(getById).toHaveBeenCalledWith(1);
-        }),
-        test('case10: getIdsByThesisId err ', async () => {
-            const advancedResearch = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'advancedResearch').mockResolvedValue([{ id: 1, supervisor: 1 }]);
-            const nPage = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'numberOfPage').mockResolvedValue(1);
-            const getById = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getById').mockResolvedValue({ name: "name" });
-            const getIdsByThesisId = jest.spyOn(require('../../repositories/CoSupervisorThesisRepository.js'), 'getIdsByThesisId').mockRejectedValue({ error: "error" });
-            try {
-                await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            } catch (e) {
-                expect(e).toStrictEqual({ error: "error" });
-            }
-            expect(advancedResearch).toHaveBeenCalledWith(10 * (page - 1), 10 * page, 'titleD', false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            expect(nPage).toHaveBeenCalledWith(false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            expect(getById).toHaveBeenCalledWith(1);
-            expect(getIdsByThesisId).toHaveBeenCalledWith(1);
-        }),
-        test('case11: coSupervisorRepository.getById err ', async () => {
-            const advancedResearch = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'advancedResearch').mockResolvedValue([{ id: 1, supervisor: 1, coSupervisors: [] }]);
-            const nPage = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'numberOfPage').mockResolvedValue(1);
-            const getById = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getById').mockResolvedValue({ name: "name" });
-            const getIdsByThesisId = jest.spyOn(require('../../repositories/CoSupervisorThesisRepository.js'), 'getIdsByThesisId').mockResolvedValue([{ idCoSupervisor: 1 }]);
-            const getByIdC = jest.spyOn(require('../../repositories/CoSupervisorRepository.js'), 'getById').mockRejectedValue({ error: "error" });
-            try {
-                await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            } catch (e) {
-                expect(e).toStrictEqual({ error: "error" });
-            }
-            expect(advancedResearch).toHaveBeenCalledWith(10 * (page - 1), 10 * page, 'titleD', false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            expect(nPage).toHaveBeenCalledWith(false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            expect(getById).toHaveBeenCalledWith(1);
-            expect(getIdsByThesisId).toHaveBeenCalledWith(1);
-            expect(getByIdC).toHaveBeenCalledWith(1);
-        }),
-        test('case12: getIdsByThesisId err ', async () => {
-            const advancedResearch = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'advancedResearch').mockResolvedValue([{ id: 1, supervisor: 1, coSupervisor: [] }]);
-            const nPage = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'numberOfPage').mockResolvedValue({ nRows: 1 });
-            const getById = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getById').mockResolvedValue({ name: "name" });
-            const getIdsByThesisId = jest.spyOn(require('../../repositories/CoSupervisorThesisRepository.js'), 'getIdsByThesisId').mockResolvedValue([{ idCoSupervisor: 1 }, { idTeacher: 1 }]);
-            const getByIdC = jest.spyOn(require('../../repositories/CoSupervisorRepository.js'), 'getById').mockResolvedValue({ name: "coSUpervisor" });
+    });
+    test('case2: ns.length==1 error', async () => {
+        supervisor = "cognome";
+        const spy = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getByNSorS').mockRejectedValue({ error: "error" })
+        try {
+            await service.supervisorCheck(supervisor);
+        }
+        catch (e) {
+            expect(e).toStrictEqual({ error: "error" })
+        }
+        expect(spy).toHaveBeenCalledWith("cognome");
+    });
+    test('case3: success', async () => {
+        const spy = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getByNSorS').mockResolvedValue([{ id: 0 }])
+        const res = await service.supervisorCheck(supervisor);       
+        expect(res).toEqual([0])
+        expect(spy).toHaveBeenCalledWith("cognome");
+    });
+})
 
-            expect(service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)).resolves
-                .toStrictEqual([[{ id: 1, supervisor: { name: "name" }, coSupervisor: [{ name: "coSUpervisor" }, { email: undefined, name: "name", surname: undefined, company: "PoliTo" }] }], 1]);
+describe('coSupervisorCheck', ()=>{
+    let coSupervisor;
+    test('case2: coSupervisor missing', async () => {    
+        const e = await service.coSupervisorCheck(coSupervisor);
+        expect(e).toStrictEqual(undefined)
+    });
+    test('case3: ns.length>1 error && teacherRepo.get... success', async () => {
+        coSupervisor = ["nome cognome"]
+        const getByNSorSC = jest.spyOn(require('../../repositories/CoSupervisorRepository.js'), 'getByNSorS').mockRejectedValue({ error: "error" });
+        try {
+            await service.coSupervisorCheck(coSupervisor);
+        }
+        catch (e) {
+            expect(e).toStrictEqual({ error: "error" })
+        }
+        expect(getByNSorSC).toHaveBeenCalledWith("cognome", "nome");
+    });
+    test('case4: ns.length==1 error ', async () => {
+        coSupervisor = ["cognome"]
+        const getByNSorSC = jest.spyOn(require('../../repositories/CoSupervisorRepository.js'), 'getByNSorS').mockRejectedValue({ error: "error" });
+        try {
+            await service.coSupervisorCheck(coSupervisor);
+        }
+        catch (e) {
+            expect(e).toStrictEqual({ error: "error" })
+        }
+        expect(getByNSorSC).toHaveBeenCalledWith("cognome");
+    });
+    test('case5: coSupervisor rep get success && getId... error ', async () => {
+        const getByNSorSC = jest.spyOn(require('../../repositories/CoSupervisorRepository.js'), 'getByNSorS').mockResolvedValue([{id:1}, {id:2}]);
+        const getIdByCoSupervisorId = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'getIdByCoSupervisorId').mockRejectedValue({ error: "error" });
+        try {
+            await service.coSupervisorCheck(coSupervisor);
+        }
+        catch (e) {
+            expect(e).toStrictEqual({ error: "error" })
+        }
+        expect(getByNSorSC).toHaveBeenCalledWith("cognome");
+        expect(getIdByCoSupervisorId).toHaveBeenCalledWith([1, 2]);
+    });
+    test('case6: success', async () => {    
+        const getByNSorSC = jest.spyOn(require('../../repositories/CoSupervisorRepository.js'), 'getByNSorS').mockResolvedValue([{id:1}, {id:2}]);
+        const getIdByCoSupervisorId = jest.spyOn(require('../../repositories/ThesisRepository.js'), 'getIdByCoSupervisorId').mockResolvedValue(1);
+        const e = await service.coSupervisorCheck(coSupervisor);
+        expect(e).toStrictEqual([1])
+        expect(getByNSorSC).toHaveBeenCalledWith("cognome");
+        expect(getIdByCoSupervisorId).toHaveBeenCalledWith([1, 2]);
+    });
+})
 
-            expect(advancedResearch).toHaveBeenCalledWith(10 * (page - 1), 10 * page, 'titleD', false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            expect(nPage).toHaveBeenCalledWith(false, title, null, [], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            expect(getById).toHaveBeenCalledWith(1);
-            expect(getIdsByThesisId).toHaveBeenCalledWith(1);
-            expect(getByIdC).toHaveBeenCalledWith(1);
-        })
-});
+describe('supervisorInfo', ()=>{
+    test('case9: getById err ', async () => {
+        const getById = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getById').mockRejectedValue({ error: "error" });
+        try {
+            await service.supervisorInfo([{supervisor:1}]);
+        } catch (e) {
+            expect(e).toStrictEqual({ error: "error" });
+        }
+        expect(getById).toHaveBeenCalledWith(1);
+    });
+    test('case10: success ', async () => {
+        const getById = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getById').mockResolvedValue({ name: "name" });
+        try {
+            await service.supervisorInfo([{supervisor:1}]);
+        } catch (e) {
+            expect(e).toStrictEqual([{supervisor:{name:"name"}}]);
+        }
+        expect(getById).toHaveBeenCalledWith(1);
+    });
+})
+
+describe('coSupervisorInfo', ()=>{
+    test('case10: getIdsByThesisId err ', async () => {
+        const getIdsByThesisId = jest.spyOn(require('../../repositories/CoSupervisorThesisRepository.js'), 'getIdsByThesisId').mockRejectedValue({ error: "error" });
+        try {
+            await service.coSupervisorInfo([{id:1}]);
+        } catch (e) {
+            expect(e).toStrictEqual({ error: "error" });
+        }
+        expect(getIdsByThesisId).toHaveBeenCalledWith(1);
+    });
+    test('case11: coSupervisorRepository.getById err ', async () => {
+        const getIdsByThesisId = jest.spyOn(require('../../repositories/CoSupervisorThesisRepository.js'), 'getIdsByThesisId').mockResolvedValue([{ idCoSupervisor: 1 }]);
+        const getByIdC = jest.spyOn(require('../../repositories/CoSupervisorRepository.js'), 'getById').mockRejectedValue({ error: "error" });
+        try {
+            await service.coSupervisorInfo([{id:1}]);
+        } catch (e) {
+            expect(e).toStrictEqual({ error: "error" });
+        }
+        expect(getIdsByThesisId).toHaveBeenCalledWith(1);
+        expect(getByIdC).toHaveBeenCalledWith(1);
+    });
+    test('case12: teacherRepository.getById err ', async () => {
+        const getIdsByThesisId = jest.spyOn(require('../../repositories/CoSupervisorThesisRepository.js'), 'getIdsByThesisId').mockResolvedValue([{ idTeacher: 1 }]);
+        const getByIdC = jest.spyOn(require('../../repositories/TeacherRepository.js'), 'getById').mockRejectedValue({ error: "error" });
+
+        try {
+            await service.coSupervisorInfo([{id:1}]);
+        } catch (e) {
+            expect(e).toStrictEqual({ error: "error" });
+        }
+        expect(getIdsByThesisId).toHaveBeenCalledWith(1);
+        expect(getByIdC).toHaveBeenCalledWith(1);
+    });
+    test('case13: success ', async () => {
+        const getIdsByThesisId = jest.spyOn(require('../../repositories/CoSupervisorThesisRepository.js'), 'getIdsByThesisId').mockResolvedValue([{ idCoSupervisor: 1 }]);
+        const getByIdC = jest.spyOn(require('../../repositories/CoSupervisorRepository.js'), 'getById').mockResolvedValue({ name: "name" });
+
+        await service.coSupervisorInfo([{id:1}]);
+
+        expect(getIdsByThesisId).toHaveBeenCalledWith(1);
+        expect(getByIdC).toHaveBeenCalledWith(1);
+    })
+})
 
 describe('updateThesis unit tests', () => {
     let thesis
@@ -412,5 +406,157 @@ describe('updateThesis unit tests', () => {
 
         const res = await service.updateThesis({...thesis, thesisId})
         expect(res.error).toBe('Internal DB error')
+    })
+})
+
+describe('advancedResearchThesis', () => {
+    let page = 1, order = 'titleD', title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level;
+
+    test('case1: supervisorCheck err ', async () => {
+        supervisor = "nameS"
+        const spy = jest.spyOn(require('../../services/ThesisService.js'),'supervisorCheck').mockRejectedValue({error:"error"})
+        try{
+            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+        }
+        catch(e){
+            expect(spy).toHaveBeenCalledWith('nameS')
+            expect(e).toStrictEqual({ error: "error" });
+        }
+    });
+    test('case1: coSupervisorCheck err ', async () => {
+        coSupervisor = "nameC"
+        const spysu = jest.spyOn(require('../../services/ThesisService.js'),'supervisorCheck').mockResolvedValue([1])
+        const spyco = jest.spyOn(require('../../services/ThesisService.js'),'coSupervisorCheck').mockRejectedValue({error:"error"})
+        try{
+            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+        }
+        catch(e){
+            expect(spysu).toHaveBeenCalledWith('nameS');
+            expect(spyco).toHaveBeenCalledWith('nameC');
+            expect(e).toStrictEqual({ error: "error" });
+        }
+    });
+    test('case2: ok=false ', async () => {
+        const spysu = jest.spyOn(require('../../services/ThesisService.js'),'supervisorCheck').mockResolvedValue()
+        const spyco = jest.spyOn(require('../../services/ThesisService.js'),'coSupervisorCheck').mockResolvedValue([])
+        
+        const res = await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+        expect(res).toStrictEqual([[],0])
+        expect(spysu).toHaveBeenCalledWith('nameS');
+        expect(spyco).toHaveBeenCalledWith('nameC');
+        
+    });
+    test('case3: advancedResearch err ', async () => {
+        const spysu = jest.spyOn(require('../../services/ThesisService.js'),'supervisorCheck').mockResolvedValue([1])
+        const spyco = jest.spyOn(require('../../services/ThesisService.js'),'coSupervisorCheck').mockResolvedValue([1])
+        const spyad = jest.spyOn(require('../../repositories/ThesisRepository.js'),'advancedResearch').mockRejectedValue({error:"error"})
+        try{
+            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+        }
+        catch(e){
+            expect(spysu).toHaveBeenCalledWith('nameS');
+            expect(spyco).toHaveBeenCalledWith('nameC');
+            expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false, title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+            expect(e).toStrictEqual({ error: "error" });
+        }
+        
+    });
+    test('case4: numberOfPage err ', async () => {
+        const spysu = jest.spyOn(require('../../services/ThesisService.js'),'supervisorCheck').mockResolvedValue([1])
+        const spyco = jest.spyOn(require('../../services/ThesisService.js'),'coSupervisorCheck').mockResolvedValue([1])
+        const spyad = jest.spyOn(require('../../repositories/ThesisRepository.js'),'advancedResearch').mockResolvedValue([{id:1, supervisor:1, coSupervisor:[]}])
+        const spynp = jest.spyOn(require('../../repositories/ThesisRepository.js'),'numberOfPage').mockRejectedValue({error:"error"})
+        try{
+            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+        }
+        catch(e){
+            expect(spysu).toHaveBeenCalledWith('nameS');
+        expect(spyco).toHaveBeenCalledWith('nameC');
+        expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false,title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+        expect(spynp).toHaveBeenCalledWith( false, title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+            expect(e).toStrictEqual({ error: "error" });
+        }
+    });
+    test('case5: supervisorInfo err ', async () => {
+        const spysu = jest.spyOn(require('../../services/ThesisService.js'),'supervisorCheck').mockResolvedValue([1])
+        const spyco = jest.spyOn(require('../../services/ThesisService.js'),'coSupervisorCheck').mockResolvedValue([1])
+        const spyad = jest.spyOn(require('../../repositories/ThesisRepository.js'),'advancedResearch').mockResolvedValue([{id:1, supervisor:1, coSupervisor:[]}])
+        const spynp = jest.spyOn(require('../../repositories/ThesisRepository.js'),'numberOfPage').mockResolvedValue({nRows:1})
+        const spysi = jest.spyOn(require('../../services/ThesisService.js'),'supervisorInfo').mockRejectedValue({error:"error"})
+        try{
+            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+        }
+        catch(e){
+            expect(spysu).toHaveBeenCalledWith('nameS');
+        expect(spyco).toHaveBeenCalledWith('nameC');
+        expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false,title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+        expect(spynp).toHaveBeenCalledWith( false, title,[1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+        expect(spysi).toHaveBeenCalledWith([{id:1, supervisor:1, coSupervisor:[]}]);
+            expect(e).toStrictEqual({ error: "error" });
+        }
+    });  
+    test('case6: coSupervisorCheck err ', async () => {
+        
+        const spysu = jest.spyOn(require('../../services/ThesisService.js'),'supervisorCheck').mockResolvedValue([1])
+        const spyco = jest.spyOn(require('../../services/ThesisService.js'),'coSupervisorCheck').mockResolvedValue([1])
+        const spyad = jest.spyOn(require('../../repositories/ThesisRepository.js'),'advancedResearch').mockResolvedValue([{id:1, supervisor:1, coSupervisor:[]}])
+        const spynp = jest.spyOn(require('../../repositories/ThesisRepository.js'),'numberOfPage').mockResolvedValue({nRows:1})
+        const spysi = jest.spyOn(require('../../services/ThesisService.js'),'supervisorInfo').mockResolvedValue()
+        const spyci = jest.spyOn(require('../../services/ThesisService.js'),'coSupervisorInfo').mockRejectedValue({error:"error"})
+        try{
+            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+            Promise.resolve();
+        }
+        catch(e){
+            expect(spysu).toHaveBeenCalledWith('nameS');
+            expect(spyco).toHaveBeenCalledWith('nameC');
+            expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false,title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+            expect(spynp).toHaveBeenCalledWith( false, title,[1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+            expect(spysi).toHaveBeenCalledWith([{id:1, supervisor:1, coSupervisor:[]}]);
+            expect(spyci).toHaveBeenCalledWith([{id:1, supervisor:1, coSupervisor:[]}]);
+            expect(e).toStrictEqual({ error: "error" });
+        }
+    });
+    test('case7: succ ', async () => {
+        const spysu = jest.spyOn(require('../../services/ThesisService.js'),'supervisorCheck').mockResolvedValue([1])
+        const spyco = jest.spyOn(require('../../services/ThesisService.js'),'coSupervisorCheck').mockResolvedValue([2])
+        const spyad = jest.spyOn(require('../../repositories/ThesisRepository.js'),'advancedResearch').mockResolvedValue([{id:1, supervisor:1, coSupervisor:[]}])
+        const spynp = jest.spyOn(require('../../repositories/ThesisRepository.js'),'numberOfPage').mockResolvedValue({nRows:1})
+        const spysi = jest.spyOn(require('../../services/ThesisService.js'),'supervisorInfo').mockResolvedValue()
+        const spyci = jest.spyOn(require('../../services/ThesisService.js'),'coSupervisorInfo').mockResolvedValue()
+        
+        const res = await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+        expect(res).toStrictEqual([[{id:1, supervisor:1, coSupervisor:[]}], 1])
+        expect(spysu).toHaveBeenCalledWith('nameS');
+        expect(spyco).toHaveBeenCalledWith('nameC');
+        expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false,title, [1], [2], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+        expect(spynp).toHaveBeenCalledWith( false, title,[1], [2], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+        expect(spysi).toHaveBeenCalledWith([{id:1, supervisor:1, coSupervisor:[]}]);
+        expect(spyci).toHaveBeenCalledWith([{id:1, supervisor:1, coSupervisor:[]}]);
+    });    
+});
+
+describe('delete thesis', () => {
+    test('U1: error occurs', async () => {
+        jest.spyOn(applicationRepository, 'getAcceptedByThesisId').mockImplementation(() => {
+            return new Error('error')
+        })
+        try {
+            await service.delete(1)
+        }
+        catch(error) {
+            expect(error).toStrictEqual(Error("You can't delete this thesis, an application is already accepted"))
+        }
+    })
+
+    test('U2: success', async () => {
+        jest.spyOn(applicationRepository, 'getAcceptedByThesisId').mockImplementation(() => {
+            return undefined
+        })
+        jest.spyOn(repository, 'setStatus').mockImplementation(() => {
+            return 1
+        })
+        const res = await service.delete(1)
+        expect(res).toBe(1)
     })
 })

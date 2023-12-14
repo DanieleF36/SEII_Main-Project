@@ -1,17 +1,16 @@
 "use strict";
 
-const db = require("./db");
+let db = require("./db");
 
 /**
  * create a new object that represent thesis 
  * @returns 
  */
-function newThesis(id, title, supervisor, coSupervisors, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status){
+function newThesis(id, title, supervisor,CoSupervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status){
   return{
     id: id,
     title: title,
     supervisor: supervisor,
-    coSupervisor: coSupervisors,
     keywords: keywords,
     type: type,
     groups: groups,
@@ -34,22 +33,23 @@ function newThesis(id, title, supervisor, coSupervisors, keywords, type, groups,
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.addThesis = (title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) => {
-  if(!(title && supervisor && keywords && type && groups && description && knowledge && note && expiration_date && level && cds && creation_date && status))
-    throw {error: "Parameters can not be null or undefined"}
-  const sql = `INSERT INTO Thesis(title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status)
-               VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
+  if (!(title && supervisor && keywords && type && groups && description && knowledge && note && expiration_date && level && cds && creation_date && status)) {
+    throw new Error('All parameters must be provided');
+  }
+
+  const sql = 'INSERT INTO Thesis(title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)';
 
   return new Promise((resolve, reject) => {
-    db.run(sql, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status], function (err) {
-        if (err) {
-          return reject({error: err.message});
-        }
-        resolve(newThesis(this.lastID, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status));
+    db.run(sql, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status], function(err) {
+      if (err) {
+        reject(new Error(err.message));
+        return;
       }
-    );
+
+      resolve(newThesis(this.lastID, title, supervisor,[], keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status));
+    });
   });
 };
-
 //==================================Get==================================
 
 /**
@@ -58,19 +58,24 @@ exports.addThesis = (title, supervisor, keywords, type, groups, description, kno
  * @returns an object that represent thesis or undefined if id does not exist
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
-exports.getById = (id_thesis) => {
-  if(!id_thesis || id_thesis<0)
-    throw {error:"id_thesis must exists and be greater than 0"};
-  const thesisTitlesSQL = 'SELECT * FROM Thesis WHERE id = ?'
+exports.getById = (idThesis) => {
+  if (idThesis==undefined || idThesis < 0) {
+    throw new Error('Thesis ID must be greater than or equal to 0');
+  }
+
+  const fetchThesisByIdSQL = 'SELECT * FROM Thesis WHERE id = ?';
+
   return new Promise((resolve, reject) => {
-    db.get(thesisTitlesSQL, [id_thesis], function (err, result) {
+    db.get(fetchThesisByIdSQL, [idThesis], (err, result) => {
       if (err) {
-        return reject({error: err.message});
+        reject(new Error(err.message));
+        return;
       }
+
       resolve(result);
-    })
+    });
   });
-}
+};
 
 /**
  * Find all the active thesis of onw specific supervisor 
@@ -79,21 +84,27 @@ exports.getById = (id_thesis) => {
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.getActiveBySupervisor = (supervisorId, queryParam) => {
-  if(!supervisorId || supervisorId<0)
-    throw {error:"supervisorId must exists and be greater than 0"};
-  const sql = `SELECT * FROM thesis WHERE status = ? AND supervisor = ?`
-  return new Promise( (resolve, reject) => {
-    db.all(sql, [queryParam, supervisorId], (err, rows) => {
-      if(err) {
-        return reject({error: err.message});
+  if (supervisorId == undefined || supervisorId < 0) {
+    throw new Error('Supervisor ID must be greater than or equal to 0');
+  }
+
+  const fetchActiveThesesBySupervisorSQL = 'SELECT * FROM Thesis WHERE status = ? AND supervisor = ?';
+
+  return new Promise((resolve, reject) => {
+    db.all(fetchActiveThesesBySupervisorSQL, [queryParam, supervisorId], (err, rows) => {
+      if (err) {
+        reject(new Error(err.message));
+        return;
       }
-      else if(rows.length === 0) {
-        resolve([])
+
+      if (rows.length === 0) {
+        resolve([]);
+      } else {
+        resolve(rows);
       }
-      else resolve(rows)
-    })
-  })
-}
+    });
+  });
+};
 
 /**
  * Composes the query and performs an advanced search
@@ -116,18 +127,22 @@ exports.getActiveBySupervisor = (supervisorId, queryParam) => {
  * @returns list of thesis objects
  */
 exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
-  if(!from || !to || !order || !specific)
-    throw {error: "from, to, order and specific must be defined"}
+  if (from == undefined || to == undefined || specific == undefined) {
+    throw new Error('"from", "to", "order" and "specific" parameters must be defined');
+  }
+
   let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
   const params = sql[1];
   sql = sql[0];
+  
   return new Promise((resolve, reject) => {
-    
     db.all(sql, params, (err, rows) => {
       if (err) {
-        return reject({error: err.message});
+        reject(new Error(err.message));
+        return;
       }
-      const res = rows.map((e) => (newThesis(e.id, e.title, e.supervisor, [], e.keywords, e.type, e.groups, e.description, e.knowledge, e.note, e.expiration_date, e.level, e.cds, e.creation_date, e.status)));
+
+      const res = rows.map((e) => newThesis(e.id, e.title, e.supervisor, [], e.keywords, e.type, e.groups, e.description, e.knowledge, e.note, e.expiration_date, e.level, e.cds, e.creation_date, e.status));
       resolve(res);
     });
   });
@@ -139,23 +154,25 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
  * @returns [id1, id2, ....]
  */
 exports.getIdByCoSupervisorId = (id) => {
-  if(!id || id<0)
-      throw {error: "id must be greather than 0"}
-  let idsThesis = [];
-  const sqlIdThesis = "SELECT id_thesis FROM CoSupervisorThesis WHERE id_cosupervisor = ?";
+  if (id==undefined || id < 0) {
+    throw new Error('Co-supervisor ID must be greater than or equal to 0');
+  }
+
+  let thesisIds = [];
+  const fetchThesisIdsByCoSupervisorIdSQL = 'SELECT id_thesis FROM CoSupervisorThesis WHERE id_cosupervisor = ?';
+
   return new Promise((resolve, reject) => {
-      db.all(sqlIdThesis, [id], (err, rows) => {
-          if (err) {
-              reject({error: err.message});
-              return;
-          }
-          rows.map((e) => {
-              idsThesis.push(e.id_thesis);
-          });
-          resolve(idsThesis);
-      });
+    db.all(fetchThesisIdsByCoSupervisorIdSQL, [id], (err, rows) => {
+      if (err) {
+        reject(new Error(err.message));
+        return;
+      }
+
+      rows.forEach((e) => thesisIds.push(e.id_thesis));
+      resolve(thesisIds);
+    });
   });
-}
+};
 
 //==================================Set==================================
 /**
@@ -177,25 +194,25 @@ exports.getIdByCoSupervisorId = (id) => {
  * @returns the number of row modified, if different from 1 it is an error
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
-exports.updateThesis = (id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status)=> {
-  if(!(title && supervisor && keywords && type && groups && description && knowledge && note && expiration_date && level && cds && creation_date && status))
-    throw {error: "Parameters can not be null or undefined"}
-  const sql = `UPDATE Thesis 
-               SET title = ?, supervisor = ?, keywords = ?, type = ?, groups = ?, description = ?, 
-                   knowledge = ?, note = ?, expiration_date = ?, level = ?, cds = ?, creation_date = ?, status = ?
-               WHERE id = ?`;
+exports.updateThesis = (id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) => {
+  if (id==undefined || title ==undefined || supervisor ==undefined || keywords ==undefined || type ==undefined || groups ==undefined || description ==undefined || knowledge ==undefined || note ==undefined || expiration_date ==undefined || level==undefined || cds ==undefined || creation_date ==undefined || status==undefined) {
+    throw new Error('All parameters must be provided');
+  }
+  const updateThesisSQL = `UPDATE Thesis SET title = ?, supervisor = ?, keywords = ?, type = ?, groups = ?, description = ?, knowledge = ?, note = ?, expiration_date = ?, level = ?, cds = ?, creation_date = ?, status = ? WHERE id = ?`;
+
   return new Promise((resolve, reject) => {
-    db.run(sql,[title,supervisor,keywords,type,groups,description,knowledge,note,expiration_date,level,cds,creation_date,status,id], function (err) {
-        if (err) {
-          return reject({error: err.message});
-        }
-        if (this.changes === 0) {
-          return reject({ error: "No rows updated. Thesis ID not found." });
-          
-        }
-        resolve(this.changes);
+    db.run(updateThesisSQL, [title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status, id], function(err) {
+      if (err) {
+        reject(new Error(err.message));
+        return;
       }
-    );
+
+      if (this.changes === 0) {
+        reject(new Error('No rows updated. Thesis ID not found.'));
+        return;
+      }
+      resolve(this.changes);
+    });
   });
 };
 /**
@@ -206,23 +223,30 @@ exports.updateThesis = (id, title, supervisor, keywords, type, groups, descripti
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.setStatus = (id, status) => {
-  if(!id || id<0)
-    throw {error: "id must exists and be greater than 0"};
-  if(status==undefined || status<0 || status>1)
-    throw {error: "status must exists and be zero or one"};
-  const updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ?';
-  return new Promise((resolve, reject)=>{
+  if (id == undefined || id < 0 || status == undefined || (status < 0 || status > 2)) {
+    throw new Error('"id" must be greater than or equal to 0 and "status" must be 0 or 1 or 2');
+  }
+  let updateThesisSQL;
+  //if new status is cancelled, 2, one check is added to see if thesis is also published 
+  if(status==2)
+    updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ? AND status = 1';
+  else
+    updateThesisSQL = 'UPDATE Thesis SET status = ? WHERE id = ?';
+  return new Promise((resolve, reject) => {
     db.run(updateThesisSQL, [status, id], function (err) {
       if (err) {
-        return reject({error: err.message});
+        reject(new Error(err.message));
+        return;
       }
       if (this.changes === 0) {
-        return reject({ error: "No rows updated. Thesis ID not found." });
+        reject(new Error('No rows updated. Thesis ID not found.'));
+        return;
       }
+
       resolve(this.changes);
     });
-  })
-}
+  });
+};
 
 //==================================Delete==================================
 
@@ -233,16 +257,20 @@ exports.setStatus = (id, status) => {
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.numberOfPage = (specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
-  let sql = sqlQueryCreator( undefined, undefined, "titleD", specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+  let sql = sqlQueryCreator(undefined, undefined, 'titleD', specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+
   const params = sql[1];
   sql = sql[0];
   sql = sql.slice(8);
-  sql = "SELECT COUNT(*) AS cnt"+sql;
+
+  sql = `SELECT COUNT(*) AS cnt${sql}`;
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {
       if (err) {
-        return reject({error: err.message});
+        reject(new Error(err.message));
+        return;
       }
+
       resolve({ nRows: rows[0] ? rows[0].cnt : 0 });
     });
   });
@@ -322,116 +350,66 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   let sql = "SELECT * FROM Thesis WHERE status=1 AND level=" + level + " ";
   let params = [];
   specific = !specific;
-  // checks for title if exists
-  if (title != null) {
-    sql += "AND title ";
-    sql += specific ? "LIKE ?" : "= ?";
-    params.push(specific ? `%${title}%` : title);
-  }
-  // checks for supervisors ids if the array is defined
-  if (idSupervisors != null && idSupervisors.length > 0) {
-    sql += 'AND (supervisor ';
-    sql+=specific ? 'LIKE ?' : '= ?';
-    params.push(specific ? `%${idSupervisors[0].id}%` : idSupervisors[0].id);
-    // adding to the query each id we got considering also homonyms, slice for skipping the first one (already handled)
-    idSupervisors.slice(1).forEach((e) => {
-      sql += "OR supervisor ";
-      sql += specific ? "LIKE ?" : "= ?";
-      params.push(specific ? `%${e.id}%` : e.id);
-    });
-    sql += ") ";
-  }
+  
+  let input = {from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level};
 
-  // checks for cosupervisors ids if the array is defined
-  if (idCoSupervisorsThesis != null && idCoSupervisorsThesis.length > 0) {
-    sql += "AND (id ";
-    sql += "= ?";
-    params.push(
-      specific ? `%${idCoSupervisorsThesis[0]}%` : idCoSupervisorsThesis[0]
-    );
-    // adding to the query each id we got considering also homonyms, slice for skipping the first one (already handled)
-    idCoSupervisorsThesis.slice(1).forEach((e) => {
-      sql += "OR id ";
-      sql += "= ?";
-      params.push(specific ? `%${e.id}%` : e.id);
-    });
-    sql += ") ";
-  }
+  const op = specific ? 'LIKE' : '=';
+  const conditions = [
+    { name: 'title', column: 'title', operator: op },
+    { name: 'idSupervisors', column: 'supervisor', operator: op },
+    { name: 'idCoSupervisorsThesis', column: 'id', operator: '=' },
+    { name: 'keyword', column: 'keywords', operator: op },
+    { name: 'type', column: 'type', operator: op },
+    { name: 'groups', column: 'groups', operator: op },
+    { name: 'knowledge', column: 'knowledge', operator: op },
+    { name: 'expiration_date', column: 'expiration_date', operator: specific ? '<=' : '=' },
+    { name: 'cds', column: 'cds', operator: op },
+    { name: 'creation_date', column: 'creation_date', operator: specific ? '>=' : '=' },
+  ];
+  const cb = (arg)=>{return specific ? `%${arg}%` : arg}
+  conditions.forEach((condition) => {
+    const value = input[condition.name];
+    if (value != null) {
+      if (Array.isArray(value) && value.length>0) {
+        sql += 'AND ('+condition.column+" "+condition.operator+"? ";
+        params.push(cb(value[0]));
+        value.slice(1).forEach((item) => {
+          sql += `OR ${condition.column} ${condition.operator} ? `;
+          params.push(cb(item));
+        });
+        sql+=") ";
+      } else {
+        sql += `AND ${condition.column} ${condition.operator} ? `;
+        params.push(cb(value));
+      }
+    }
+  });
 
-  if (keyword != null) {
-    sql += "AND keywords ";
-    sql += specific ? "LIKE ?" : "= ?";
-    let k = Array.isArray(keyword) ? "" : keyword;
-    if (Array.isArray(keyword))
-      keyword.forEach((e) => {
-        k += e + ", ";
-      });
-    params.push(specific ? `%${k}%` : k);
-  }
-  if (type != null) {
-    sql += "AND type ";
-    sql += specific ? "LIKE ? " : "= ? ";
-    let t = Array.isArray(type) ? "" : type;
-    if (Array.isArray(type))
-      type.forEach((e) => {
-        t += e + ", ";
-      });
-    params.push(specific ? `%${t}%` : e);
-  }
-  if (groups != null) {
-    sql += "AND groups ";
-    sql += specific ? "LIKE ? " : "= ? ";
-    let t = Array.isArray(groups) ? "" : groups;
-    if (Array.isArray(groups))
-      type.forEach((e) => {
-        t += e + ", ";
-      });
-    params.push(specific ? `%${t}%` : e);
-  }
-  if (knowledge != null) {
-    sql += "AND knowledge ";
-    sql += specific ? "LIKE ?" : "= ?";
-    params.push(specific ? `%${knowledge}%` : knowledge);
-  }
-  if (expiration_date != null) {
-    sql += "AND expiration_date ";
-    sql += specific ? "<= ? " : "= ? ";
-    params.push(expiration_date);
-  }
-  if (cds != null) {
-    sql += "AND cds ";
-    sql += specific ? "LIKE ? " : "= ? ";
-    let t = Array.isArray(cds) ? "" : cds;
-    if (Array.isArray(cds))
-      type.forEach((e) => {
-        t += e + ", ";
-      });
-    params.push(specific ? `%${t}%` : e);
-  }
-  if (creation_date != null) {
-    sql += "AND creation_date ";
-    sql += specific ? ">= ? " : "= ? ";
-    params.push(creation_date);
-  }
+
   sql += "ORDER BY " + transformOrder(order);
-  if (to != undefined && from != undefined) sql += " LIMIT " + (to - from) + " OFFSET " + from;
+  if (to !== undefined && from !== undefined) sql += ` LIMIT ${to - from} OFFSET ${from}`;
+
   return [sql, params];
 }
 
 //==================================Virtual CLock==================================
 
-const applicationRepository = require('./ApplicationRepository.js')
+const applicationRepository = require('./ApplicationRepository.js');
+const { query } = require("express");
 /**
  * Designed for Virtual clock
  * @param {*} date 
  */
 exports.selectExpiredAccordingToDate = (date) => {
+  if(date == undefined) {
+    throw new Error('date is missing');
+  }
   const sql = 'SELECT id FROM Thesis WHERE expiration_date <= ? AND status = 1'
 
   return new Promise( (resolve, reject) => {
     db.all(sql, [date], (err, rows) => {
       if(err)
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       else if(rows.length == 0)
         resolve([])
       resolve(rows.map(a => a.id))
@@ -444,12 +422,15 @@ exports.selectExpiredAccordingToDate = (date) => {
  * @param {*} date 
  */
 exports.selectRestoredExpiredAccordingToDate = (date) => {
+  if(date == undefined) {
+    throw new Error('date is missing');
+  }
   const sql = 'SELECT id FROM Thesis WHERE expiration_date > ? AND expiration_date != 0 AND status = 0'
 
   return new Promise( (resolve, reject) => {
     db.all(sql, [date], (err, rows) => {
       if(err)
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       else if(rows.length == 0)
         resolve([])
       resolve(rows.map(a => a.id))
@@ -462,13 +443,16 @@ exports.selectRestoredExpiredAccordingToDate = (date) => {
  * @param {*} ids of updatable thesis 
  */
 exports.setExpiredAccordingToIds = (ids) => {
+  if(ids == undefined) {
+    throw new Error('date is missing');
+  }
   const placeholders = ids.map(() => '?').join(',');
   const sql = `UPDATE Thesis SET status = 0 WHERE id IN (${placeholders})`
 
   return new Promise( (resolve, reject) => {
     db.run(sql, ids, (err) => {
       if(err)
-      return reject({error: err.message});
+      return reject(new Error(err.message));
       else {
         applicationRepository.setCancelledAccordingToThesis(ids)
           .then( resolve(true) )
@@ -483,13 +467,16 @@ exports.setExpiredAccordingToIds = (ids) => {
  * @param {*} ids of updatable thesis  
  */
 exports.restoreExpiredAccordingToIds = (ids) => {
+  if(ids == undefined) {
+    throw new Error('date is missing');
+  }
   const placeholders = ids.map(() => '?').join(',');
   const sql = `UPDATE Thesis SET status = 1 WHERE id IN (${placeholders})`
 
   return new Promise( (resolve, reject) => {
     db.run(sql, ids, (err) => {
       if(err)
-        return reject({error: err.message});
+        return reject(new Error(err.message));
       else {
         applicationRepository.setPendingAccordingToThesis(ids)
           .then( resolve(true) )
@@ -497,4 +484,10 @@ exports.restoreExpiredAccordingToIds = (ids) => {
       }
     })
   })
+}
+
+if(process.env.test){
+  module.exports.db = db;
+  module.exports.setdb = (a)=>{db = a};
+  module.exports.restoredb = ()=>{db = require("./db")}
 }

@@ -1,6 +1,7 @@
 const request = require("supertest");
 const teacherService = require("../../services/TeacherService");
-
+const applicationRepository = require('../../repositories/ApplicationRepository')
+const studentRepository = require('../../repositories/StudentRepository')
 beforeEach(() => {
   jest.clearAllMocks();
 });
@@ -290,7 +291,7 @@ describe('acceptApplication Service',()=>{
             await teacherService.acceptApplication(mockStatus, mockTeacherID, mockApplicationId);
         }
         catch(error) {
-            expect(error).toStrictEqual({error: "No application was found, application is missing or is of another teacher"})
+            expect(error).toStrictEqual(new Error("No application was found, application is missing or is of another teacher"))
         }
     })
     test('case1: Wrong application owner', async()=>{
@@ -299,7 +300,7 @@ describe('acceptApplication Service',()=>{
             await teacherService.acceptApplication(mockStatus, mockTeacherID, mockApplicationId);
         }
         catch(error) {
-            expect(error).toStrictEqual({error: "This application does not own to that teacher, he cant accept it"})
+            expect(error).toStrictEqual(new Error("This application does not own to that teacher, he cant accept it"))
         }
     })
     test('case2: applicationRepository.updateStatus fail', async()=>{
@@ -334,5 +335,52 @@ describe('acceptApplication Service',()=>{
         catch(error) {
             expect(error).toStrictEqual({error: "error"});
         }
+    })
+})
+
+describe('browseApplicationProfessor unit tests', () => {
+    const applications = [
+        {
+            id_student: 1,
+            id_application: 1,
+            id_thesis: 1,
+            title: 'title',
+            name: 'name',
+            surname: 'surname',
+            data: '2024-10-10',
+            path: '/path/to/the/file',
+            status: 1
+        }
+    ]
+    const id_professor = 1
+    test('U1: get all the applications by id', async () => {
+        jest.spyOn(applicationRepository, 'getByTeacherId').mockImplementation(() => {
+            return applications
+        })
+        const res = await teacherService.browseApplicationProfessor(id_professor)
+        expect(res).toBe(applications)
+    })
+    test('U2: get all the applications but there are none', async () => {
+        jest.spyOn(applicationRepository, 'getByTeacherId').mockImplementation(() => {
+            return []
+        })
+        const res = await teacherService.browseApplicationProfessor(id_professor)
+        expect(res.length).toBe(0)
+    })
+    test('U3: get all the applications but an error occurs', async () => {
+        jest.spyOn(applicationRepository, 'getByTeacherId').mockImplementation(() => {
+            return {error: 'error'}
+        })
+        const res = await teacherService.browseApplicationProfessor(id_professor)
+        expect(res.error).toBe('error')
+    })
+})
+
+describe('browseApplicationProfessor unit tests', () => {
+    test('U1: success', async () => {
+        jest.spyOn(studentRepository, 'getCareerByStudentId').mockResolvedValue([{title: 'exam1', grade: 18}])
+        const res = await teacherService.getCareerByStudentId(1)
+        expect(res).toStrictEqual([{title: 'exam1', grade: 18}])
+
     })
 })

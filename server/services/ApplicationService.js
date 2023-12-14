@@ -25,17 +25,14 @@ exports.addApplication = function (studentId, thesisId, cv, supervisorId) {
       let oldPath = cv.filepath;
       let newPath = './/file//'+ cv.originalFilename;
       //move the file from the old path to the new 
-      fs.rename(oldPath, newPath, async (err) => {
+      fs.rename(oldPath, newPath, (err) => {
         if (err) {
-          reject({ error: err.message });
+          reject(new Error(err.message));
         } 
         else {
-          try {
-            let res = await applicationRepository.addApplication(studentId, thesisId, newPath, supervisorId);
-            resolve(res);
-          } catch (error) {
-            reject({ error: err.message });
-          }
+          applicationRepository.addApplication(studentId, thesisId, newPath, supervisorId)
+            .then(res => resolve(res))
+            .catch(err => reject(new Error(err.message)))
         }
       });
     });

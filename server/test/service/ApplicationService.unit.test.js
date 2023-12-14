@@ -22,7 +22,7 @@ describe("Add Application Service", ()=>{
     })
     test("case1: error during moving file", async ()=>{
         const spyRename = jest.spyOn(require("fs"), 'rename').mockImplementation((oldPath, newPath, cb)=> cb(new Error("bho")));
-        await expect(applicationsService.addApplication(mockStudentId, mockThesisId, mockCv, mockSupervisor)).rejects.toEqual({error: "bho"});
+        await expect(applicationsService.addApplication(mockStudentId, mockThesisId, mockCv, mockSupervisor)).rejects.toEqual(new Error("bho"));
         expect(spyRename).toHaveBeenCalledWith(mockCv.filepath, expect.any(String), expect.any(Function));     
     });
     test("case2: error during applicationRepository.addApplication", async ()=>{

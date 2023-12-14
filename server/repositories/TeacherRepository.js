@@ -29,42 +29,56 @@ function newTeacher(id, name, surname, email, codGroup, codDep){
  * @param {*} id teacher's id
  * @returns all the teacher's information
  */
-exports.getById = (id)=>{
-    if(!id || id<0)
-        throw {error: "id must be greather than 0"}
-    const sqlTeacher = "SELECT * FROM Teacher WHERE id = ?";
-    return new Promise((resolve, reject)=>{
-        db.get(sqlTeacher, [id], (err, row)=>{
-            if (err) 
-                return reject({error: err.message});
-            if(row==undefined)
-                return resolve({});
-            resolve(newTeacher(row.id, row.name, row.surname, row.email, row.cod_group, row.cod_dep));
-        });
+exports.getById = (id) => {
+    if (id==undefined || id < 0) {
+      throw new Error('Teacher ID must be greater than or equal to 0');
+    }
+  
+    const fetchTeacherByIdSQL = 'SELECT * FROM Teacher WHERE id = ?';
+  
+    return new Promise((resolve, reject) => {
+      db.get(fetchTeacherByIdSQL, [id], (err, row) => {
+        if (err) {
+          reject(new Error(err.message));
+          return;
+        }
+  
+        if (!row) {
+          resolve({});
+        } else {
+          resolve(newTeacher(row.id, row.name, row.surname, row.email, row.cod_group, row.cod_dep));
+        }
+      });
     });
-}
+  };
 
 /**
  * Given a teacher's email, returns all the stored information
  * @param {*} email teacher's email
  * @returns all the teacher's information
  */
-exports.getByEmail = (email)=>{
-    if(!email)
-        throw {error:"email must exist"}
-    const sqlTeacher = "SELECT * FROM Teacher WHERE email = ?";
-    return new Promise((resolve, reject)=>{
-        db.get(sqlTeacher, [email], (err, row)=>{
-            if (err) {
-                reject({error: err.message});
-                return;
-            }
-            if(row==undefined)
-                return resolve({});
-            resolve(newTeacher(row.id, row.name, row.surname, row.email, row.cod_group, row.cod_dep));
-        });
+exports.getByEmail = (email) => {
+    if (!email) {
+      throw new Error('Email must be provided');
+    }
+  
+    const fetchTeacherByEmailSQL = 'SELECT * FROM Teacher WHERE email = ?';
+  
+    return new Promise((resolve, reject) => {
+      db.get(fetchTeacherByEmailSQL, [email], (err, row) => {
+        if (err) {
+          reject(new Error(err.message));
+          return;
+        }
+  
+        if (!row) {
+          resolve({});
+        } else {
+          resolve(newTeacher(row.id, row.name, row.surname, row.email, row.code_group, row.cod_dep));
+        }
+      });
     });
-}
+  };
 
 /**
  * Perfoms a search according to the following possible combinations:
@@ -79,32 +93,35 @@ exports.getByEmail = (email)=>{
  * @param {String} name, could be undefined
  * @returns [id1, id2, ...]
  */
-exports.getByNSorS = (surname, name)=>{
-    if(!surname || (name && !surname))
-        throw {error: "surname must exists"}
-    let sql = "SELECT * FROM Teacher WHERE ";
+exports.getByNSorS = (surname, name) => {
+    if (!surname) {
+      throw new Error('Surname must be provided');
+    }
+  
+    let sql = 'SELECT * FROM Teacher WHERE ';
     let params = [];
-    if(name != null && surname != null){
-        sql+="name LIKE ? AND surname LIKE ?";
-        params.push("%"+name+"%");
-        params.push("%"+surname+"%");
+  
+    if (name && surname) {
+      sql += 'name LIKE ? AND surname LIKE ?';
+      params.push('%' + name + '%');
+      params.push('%' + surname + '%');
+    } else if (surname) {
+      sql += 'surname LIKE ?';
+      params.push('%' + surname + '%');
+    } else {
+      throw new Error('At least surname must be provided');
     }
-    else if(surname != null){
-        sql+="surname LIKE ?";
-        params.push("%"+surname+"%");
-    }
-    else
-        throw {error: "at least surname have to be provided"}
-    return new Promise((resolve, reject)=>{
-        db.all(sql, params, (err, rows)=>{
-            if (err) {
-                reject({ error: err.message });
-                return;
-            }
-            resolve(rows);
-        });
+  
+    return new Promise((resolve, reject) => {
+      db.all(sql, params, (err, rows) => {
+        if (err) {
+          reject(new Error(err.message));
+          return;
+        }
+        resolve(rows);
+      });
     });
-}
+  };
 
 /**
  * Support function to retrive the supervisorId given the thesisId
@@ -114,18 +131,22 @@ exports.getByNSorS = (surname, name)=>{
  * @returns "Not found" : if there is no match
  */
 exports.getIdByThesisId = (thesisId) => {
-    if(!thesisId || thesisId<0)
-        throw {error: "thesisId must be greather than 0"}
-    const getSupervisorSql = 'SELECT supervisor FROM Thesis WHERE id = ?';
+    if (!(thesisId && thesisId >= 0)) {
+      throw new Error('Thesis ID must be greater than or equal to 0');
+    }
+    const fetchSupervisorByThesisIdSQL = 'SELECT supervisor FROM Thesis WHERE id = ?';
+  
     return new Promise((resolve, reject) => {
-        db.get(getSupervisorSql, [thesisId], (err, result) => {
-            if (err) {
-                return reject({ error: err.message });
-            }
-            resolve(result.supervisor);
-        });
-    })
-}
+      db.get(fetchSupervisorByThesisIdSQL, [thesisId], (err, row) => {
+        if (err) {
+          reject(new Error(err.message));
+          return;
+        }
+  
+        resolve(row.supervisor);
+      });
+    });
+  };
 
 //==================================Set==================================
 

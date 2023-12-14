@@ -53,29 +53,61 @@
 ### Story 6, Browse Application Decisions
 
 ###### Front-end
-![Frontend](./img/CatturaBrowseStudent.png)
+![Frontend](./img/CatturaBrowseStudent.PNG)
 ###### Response
-![Response](./img/CatturaBrowseStudent_response.png)
+![Response](./img/CatturaBrowseStudent_response.PNG)
 ###### Status code 200
-![Success](./img/CatturaBrowseStudent_request.png)
+![Success](./img/CatturaBrowseStudent_request.PNG)
 
 ### Story 7, Browse Proposals
 
 ###### Front-end
-![Frontend](./img/CatturaBrowseProposals_client.png)
+![Frontend](./img/CatturaBrowseProposals_client.PNG)
 ###### Response
-![Response](./img/CatturaBrowseProposals_response.png)
+![Response](./img/CatturaBrowseProposals_response.PNG)
 ###### Status code 200
-![Success](./img/CatturaBrowseProposals.png)
+![Success](./img/CatturaBrowseProposals.PNG)
 
 ### Story 8, Update Proposal
 
 ###### Front-end
-![Frontend](./img/CatturaEditProposal.png)
+![Frontend](./img/CatturaEditProposal.PNG)
 ###### Response
-![Response](./img/CatturaUpdate.png)
+![Response](./img/CatturaUpdate.PNG)
 
 ### Story 9, Notify Application Decision
 
 ###### Front-end
 ![Frontend](./img/photo_2023-11-30_14-48-30.jpg)
+
+### Story 10, Delete Proposal
+
+###### Front-end
+![Frontend](./img/delete_proposal.png)
+###### Response
+![Response](./img/delete_status.png)
+
+### Story 11, Copy Proposal
+
+###### Front-end
+![Frontend](./img/copy_proposal_1.png)
+![Frontend](./img/copy_proposal_2.png)
+###### Response
+![Response](./img/copy_status.PNG)
+![Response](./img/copy_response.PNG)
+
+### Story 12, Archive Proposal
+
+###### Front-end
+![Frontend](./img/archive_proposal.png)
+
+###### Response
+![Response](./img/archive_status.PNG)
+
+### Story 13, Access Applicant CV
+
+###### Front-end
+![Frontend](./img/access_student_cv.png)
+
+###### Response
+![Response](./img/studentcv_status.png)

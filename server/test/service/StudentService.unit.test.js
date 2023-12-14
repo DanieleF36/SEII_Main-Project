@@ -33,14 +33,14 @@ describe('browserApplicationStudent', () => {
     const mockRes = await studentService.browserApplicationStudent(mockIdStudent);
     expect(mockRes).toBe(applications);
   })
-    
-  test('case2: error', async () => {
-    jest.spyOn(applicationRepository, "getByStudentId").mockRejectedValue({error: 'error in DB'})
 
-    try{
-      const mockRes = await studentService.browserApplicationStudent(mockIdStudent);
+  test('case2: error', async () => {
+    jest.spyOn(applicationRepository, "getByStudentId").mockRejectedValue({ error: 'error in DB' })
+
+    try {
+      await studentService.browserApplicationStudent(mockIdStudent);
     }
-    catch(error) {
+    catch (error) {
       expect(error).toEqual({ error: "error in DB" });
 
     }

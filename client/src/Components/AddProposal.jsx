@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Button from 'react-bootstrap/Button';
-import { Container, Row, Col, Form, ListGroup, Dropdown } from 'react-bootstrap';
+import { Container, Row, Col, Form, Dropdown } from 'react-bootstrap';
 import Card from 'react-bootstrap/Card';
+import PropTypes from 'prop-types';
 import toast, { Toaster } from 'react-hot-toast';
 import API from '../API';
 
@@ -13,30 +14,56 @@ function AddProposalForm(props) {
         expiration_date: '',
         keywords: ['D2', 'M2'],
         type: ['Demo'],
-        groups: [ 'Group14'],
+        groups: [ `${props.user.group}`],
         description: 'Demo Presentation',
         knowledge: ['Team Organization'],
         note: 'DEMO2',
         level: 'Master',
         cds: ['LM-32'],
     });
-
-    const [cosup_email, setCoSup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);
+    const [warned, setWarned] = useState();
+    const [cosup_email] = useState(props.mails);
     const [filt_cosup, setFilt_cosup] = useState([]);
 
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
         setFilt_cosup(cosup_email.filter((item) =>
-            item.toLowerCase().includes(searchTerm.toLowerCase()))
-        );
-        //proposals.map(e=>console.log(e));
-    }, [searchTerm]);
+        item.toLowerCase().includes(searchTerm.toLowerCase()))
+    )
+        if(props.copy!==undefined)
+         setProposalData(props.copy);
+    }, [searchTerm, props.copy]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setProposalData({ ...proposalData, [name]: value });
     };
+
+    const correctSpace = (prop) => {
+        if(Array.isArray(prop.cds)){
+        let c = prop.cds.map(e=>e.trim());
+        prop.cds = c;
+        }
+        if(Array.isArray(prop.keywords)){
+        let k = prop.keywords.map(e=>e.trim());
+        prop.keywords = k;
+        }
+        if(Array.isArray(prop.type)){
+        let t = prop.type.map(e=>e.trim());
+        prop.type = t;
+        }
+        if(Array.isArray(prop.knowledge)){
+        let kn = prop.knowledge.map(e=>e.trim());
+        prop.knowledge = kn;
+        }
+        if(Array.isArray(prop.groups)){
+        let g = prop.groups.map(e=>e.trim());
+        prop.groups = g;
+        }
+        return prop;
+      }
+    
 
     const handleResetChange = () => {
         setProposalData({
@@ -62,8 +89,7 @@ function AddProposalForm(props) {
     const handleList = (e) => {
         let name = e.target.name;
         let cosup_arr = e.target.value.split(",");
-        let co = cosup_arr.map(e => e.trim());
-        setProposalData({ ...proposalData, [name]: co });
+        setProposalData({ ...proposalData, [name]: cosup_arr });
     };
 
     const handleCoSup = (e) => {
@@ -99,7 +125,6 @@ function AddProposalForm(props) {
       };
 
     const handleAddProposal = () => {
-        //console.log(proposalData);
         if (proposalData.title === '') {
             toast.error('Title field cannot be empty')
 
@@ -128,12 +153,20 @@ function AddProposalForm(props) {
         else if (proposalData.cds === '') {
             toast.error('CdS field cannot be empty')
         }
+        else if(warned !== 1 && props.copyT !== undefined && props.copyD !== undefined && ( props.copyT === proposalData.title && props.copyD === proposalData.description)){
+            toast('Title/Description fields are unchanged', {
+                icon: '⚠️',
+              })
+              setWarned(1);
+        }
         else {
             // Implement the logic to add the proposal using the proposalData state- API
-            console.log(proposalData);
-            API.insertProposal(proposalData)
-                .then(() => { toast.success('Thesis Proposal successfully added'); handleResetChange() })
-                .catch((error) => toast.error(error));
+            let addP = proposalData;
+            if(addP.cosupervisor.length === 0)
+                addP.cosupervisor='';
+            API.insertProposal(correctSpace(addP))
+                .then(() => { toast.success('Thesis Proposal successfully added'); handleResetChange(); props.setCopy(undefined); props.setCopyT(undefined); props.setCopyD(undefined); setWarned(0);})
+                .catch((error) => toast.error(error.message));
         }
     };
 
@@ -226,11 +259,11 @@ function AddProposalForm(props) {
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
                         <Form.Label><strong>Groups</strong>&nbsp;(separated by ',')</Form.Label>
-                        <Form.Control
+                        <Form.Control 
+                            readOnly
                             type="text"
                             name="groups"
                             value={proposalData.groups}
-                            onChange={handleList}
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
@@ -301,5 +334,19 @@ function AddProposalForm(props) {
         </Card>
     );
 }
+
+AddProposalForm.propTypes = {
+    user : PropTypes.object.isRequired,
+    mails : PropTypes.array.isRequired,
+    copy : PropTypes.oneOfType([PropTypes.string,
+        PropTypes.object]),
+    copyD : PropTypes.oneOfType([PropTypes.string,
+        PropTypes.object]),
+    copyT : PropTypes.oneOfType([PropTypes.string,
+        PropTypes.object]),
+    setCopy : PropTypes.func.isRequired,
+    setCopyD : PropTypes.func.isRequired,
+    setCopyT : PropTypes.func.isRequired,
+  };
 
 export default AddProposalForm;

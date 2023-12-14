@@ -1,4 +1,3 @@
-import { alignPropType } from "react-bootstrap/esm/types";
 
 const URL = 'http://localhost:3001';
 
@@ -9,12 +8,11 @@ async function login(){
 async function userAuthenticated(){
   const res = await fetch(URL+ `/session/current`,{credentials:'include'});
   const user = await res.json();
-    console.log(user)
   if(res.ok){
     return user;
   }
   else{
-    return {error: "Unauthorized"}
+    throw new Error("Unauthorized");
   }
 }
 
@@ -22,31 +20,51 @@ async function logout(){
   window.location.assign(URL+"/logout", {credentials:'include'});
 }
 
-async function listApplication(id_professor) { 
-    const response = await fetch(URL+ `/professor/${id_professor}/applications`,{credentials:'include'});
-    const application = await response.json();
-    if (response.ok) {
-       return application.map((a) => ({
-                id_application: a.id_application,
-                id_student: a.id_student,
-                id_thesis: a.id_thesis,
-                data: a.data,
-                path_cv: a.path_cv,
-                status: a.status,
-                title: a.title,
-                name: a.name,
-                surname: a.surname
-            }));
-    } else {
-      throw application;  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
-    }
+async function listApplication(role) {
+  const response = await fetch(URL + `/applications`, { credentials: 'include' });
+  const application = await response.json();
+  console.log(application);
+  if (response.ok && role === "teacher") {
+    return application.map((a) => ({
+      id_application: a.id_application,
+      id_student: a.id_student,
+      id_thesis: a.id_thesis,
+      data: a.data,
+      path_cv: a.path_cv,
+      status: a.status,
+      title: a.title,
+      name: a.name,
+      surname: a.surname
+    }));
   }
-
+  else if (response.ok && role === "student") {
+    return application.map((a) => ({
+      id_application: a.id_application,
+      title: a.title,
+      supervisor_name: a.supervisor_name,
+      supervisor_surname: a.supervisor_surname,
+      status: a.status,
+      type: a.type,
+      groups: a.groups,
+      description: a.description,
+      knowledge: a.knowledge,
+      note: a.note,
+      level: a.level,
+      keywords: a.keywords,
+      expiration_date: a.expiration_date,
+      cds: a.cds,
+      path_cv: a.path_cv,
+      application_data: a.application_data,
+    }));
+  }
+  else {
+    throw new Error(response.message);  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
+  }
+}
 function insertProposal(thesis) {
   
   thesis.status = 1;
   thesis.cosupervisor = thesis.cosupervisor === '' ? [''] : thesis.cosupervisor
-  console.log(thesis)
   return getJson(fetch(URL + '/thesis', {
     method: "POST",
     headers: {
@@ -57,11 +75,11 @@ function insertProposal(thesis) {
 
   })).then(json => {
     return json
-  })
+  }).catch(err=> {throw new Error(err.message)})
 
 }
 
-function updateProposal(id_thesis, thesis) {
+function updateProposal(id_thesis, thesis, status) {
   thesis.cds = Array.isArray(thesis.cds) ? thesis.cds : thesis.cds.split(',').map((k) =>k.trim());
   thesis.knowledge = Array.isArray(thesis.knowledge) ? thesis.knowledge : thesis.knowledge.split(',').map((k) =>k.trim());
   thesis.type = Array.isArray(thesis.type) ? thesis.type : thesis.type.split(',').map((k) =>k.trim());
@@ -69,8 +87,13 @@ function updateProposal(id_thesis, thesis) {
   thesis.keywords = Array.isArray(thesis.keywords) ? thesis.keywords : thesis.keywords.split(',').map((k) =>k.trim());
   thesis.level = thesis.level === 1 ? "Master" : "Bachelor"
   thesis.cosupervisor = []
-  console.log(thesis)
-
+  
+  if(status==0 || status==1){
+    if(thesis.status==1)
+      thesis.status=0;
+    else
+    thesis.status=1;
+  }
   return getJson(fetch(URL + `/thesis/${id_thesis}`, {
     method: "PUT",
     headers: {
@@ -81,7 +104,7 @@ function updateProposal(id_thesis, thesis) {
 
   })).then(json => {
     return json
-  })
+  }).catch(err=> {throw new Error(err.message)})
 
 }
 
@@ -95,7 +118,7 @@ function getJson(httpResponsePromise) {
           // the server always returns a JSON, even empty {}. Never null or non json, otherwise the method will fail
           response.json()
             .then(json => resolve(json))
-            .catch(err => reject({ error: "Cannot parse server response" }))
+            .catch(err => reject(new Error("Cannot parse server response")));
 
         } else {
           // analyzing the cause of error
@@ -103,11 +126,11 @@ function getJson(httpResponsePromise) {
             .then(obj =>
               reject(obj)
             ) // error msg in the response body
-            .catch(err => reject({ error: "Cannot parse server response" })) // something else
+            .catch(err => reject(new Error("Cannot parse server response"))) // something else
         }
       })
       .catch(err =>
-        reject({ error: "Cannot communicate" })
+        reject(new Error("Cannot communicate"))
       ) // connection error
   });
 }
@@ -119,7 +142,6 @@ async function advancedSearchThesis(params){
   else
   ur+="page=1";
   if(params.title && params.title !== ""){
-    //console.log("API title "+params.title);
     ur+="&title="+params.title;
   }
   if(params.supervisor && params.supervisor != "")
@@ -156,9 +178,8 @@ async function advancedSearchThesis(params){
   const response = await fetch(URL+ur, {
     credentials:'include'
   });
+  const res = await response.json();
   if(response.status==200){
-    const res = await response.json();
-    console.log(res.thesis);
     return [res.nPage, res.thesis.map((e)=>({
       id:e.id,
       title:e.title,
@@ -179,13 +200,13 @@ async function advancedSearchThesis(params){
     }))]
   }
   else {
-    throw res;
+    throw new Error(res.message);
   }
 }
 
-async function acceptApplication(status,id_professor,id_application) { 
+async function acceptApplication(status,id_application) { 
   try {
-    const response = await fetch(URL + `/professor/${id_professor}/applications/${id_application}`,{
+    const response = await fetch(URL + `/applications/${id_application}`,{
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -201,7 +222,7 @@ async function acceptApplication(status,id_professor,id_application) {
       throw new Error(message);
     }
   }catch (error) {
-    throw new Error(error.message, { cause: error });
+    throw new Error(error.message);
   }
 }
 
@@ -213,39 +234,8 @@ async function applyForProposal(application) {
         method: "POST",
         credentials: "include",
         body: formData
-    })).then(json => {return json});
-}
-
-async function browserApplicationStudent(id_student) {
-  try {
-    const response = await fetch(URL + `/student/${id_student}/applications`, {credentials:'include'});
-    const application = await response.json();
-    if (response.ok) {
-      return application.map((a) => ({
-        id_application: a.id_application,
-        title: a.title,
-        supervisor_name: a.supervisor_name,
-        supervisor_surname: a.supervisor_surname,
-        status: a.status,
-        type: a.type,
-        groups: a.groups,
-        description: a.description,
-        knowledge: a.knowledge,
-        note: a.note,
-        level: a.level,
-        keywords: a.keywords,
-        expiration_date: a.expiration_date,
-        cds: a.cds,
-        path_cv: a.path_cv,
-        application_data: a.application_data,
-      }));
-    } else {
-      const message = await response.text();
-      throw new Error(message);
-    }
-  } catch (error) {
-    throw new Error(error.message, { cause: error });
-  }
+    })).then(json => {return json})
+    .catch(err=> {throw new Error(err.message)})
 }
 
 async function browseProposal(status) { 
@@ -258,14 +248,61 @@ async function browseProposal(status) {
   }
   else{
     const err = await res.json();
-    return err;
+    throw new Error(err.message)
   }
+}
+
+async function getCoSupervisorsEmails() {
+  try {
+    const response = await fetch(URL + '/cosupervisors/email', {credentials:'include'});
+    const coSupervisorsEmails = await response.json();
+    if (response.ok) {
+      return coSupervisorsEmails;
+    } else {
+      throw new Error(response.message);
+    }
+  } catch (error) {
+    throw new Error(error.message, { cause: error });
+  }
+}
+
+async function getStudentCv(path_cv,id_student){
+  const response = await fetch(URL + `/applications/student_cv/${id_student}`, {
+    credentials: "include",
+  });
+  if (!response.ok) {
+    throw new Error(`Failed to download PDF file. Status: ${response.status}`);
+  }
+  let file_name = path_cv.split('//').pop();
+  const blob = await response.blob();
+  const url = window.URL.createObjectURL(blob);
+  const downloadLink = document.createElement('a');
+  downloadLink.href = url;
+  downloadLink.download = `${file_name}`;
+  document.body.appendChild(downloadLink);
+  downloadLink.click();
+  document.body.removeChild(downloadLink);
+  window.URL.revokeObjectURL(url);
+}
+
+async function getCareerByStudentId(id_student) {
+  return getJson(fetch(URL + `/applications/career/${id_student}`,{
+    credentials: "include",
+  })).then(json => { return json })
+  .catch(err=> {throw new Error(err.message)})
+}
+
+async function deleteThesis(id){
+  return getJson(fetch(URL + `/thesis/${id}`,{
+    method: 'delete',
+    credentials: "include",
+  })).then(json => { return json })
+  .catch(err=> {throw new Error(err.message)})
 }
 
 // =================== Virtual clock API ===================
 
 function vc_set(date) {
-  console.log(date);
   return getJson(fetch(URL + '/testing/vc/set', {
     headers: {
       "Content-Type": "application/json",
@@ -302,22 +339,7 @@ function vc_restore() {
   })
 }
 
-async function getCoSupervisorsEmails() {
-  try {
-    const response = await fetch(URL + '/thesis/supervisor/emails');
-    const coSupervisorsEmails = await response.json();
-
-    if (response.ok) {
-      return coSupervisorsEmails;
-    } else {
-      const message = await response.text();
-      throw new Error(message);
-    }
-  } catch (error) {
-    throw new Error(error.message, { cause: error });
-  }
-}
-const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, browserApplicationStudent, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout };
+const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis };
 
 
 
