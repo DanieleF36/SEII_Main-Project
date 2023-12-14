@@ -260,7 +260,49 @@
         }
       }
     },
-    "/thesis/{id}/applications": {
+    "/thesis/{id_thesis}":{
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
+      "delete":{
+        "tags":["thesis"],
+        "description": "Delete thesis",
+        "operationId": "deleteThesis",
+        "responses": {
+          "200":{
+            "description": "Deleted"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404":{
+            "description": "id professor not found"
+          },
+          "401":{
+            "description": "not authorized"
+          },
+          "500":{
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/thesis/{id_thesis}/applications": {
       "parameters": [
         {
           "in": "path",
@@ -315,6 +357,51 @@
         }
       }
     },
+    "/cosupervisors/email":{
+      "get":{
+        "tags":["cosupervisor"],
+        "description": "Get all co-supervisors' emails",
+        "operationId": "getAllCoSupervisorsEmails",
+        "responses": {
+          "200":{
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type":"object",
+                  "properties": {
+                    "co_supervisors": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  },
+                  "required": ["nPage"]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404":{
+            "description": "id professor not found"
+          },
+          "401":{
+            "description": "not authorized"
+          },
+          "500":{
+            "description": "internal error"
+          }
+        }
+      }
+    },
     "/applications": {
       "get": {
         "tags": ["application"],
@@ -357,6 +444,17 @@
       }
     },
     "/applications/{id_application}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id_application",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
       "put": {
         "tags": ["application"],
         "description": "Theacher accept or reject an application",
@@ -376,6 +474,90 @@
         "responses": {
           "204":{
             "description": "Updated"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401":{
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500":{
+            "description": "Internel error"
+          }
+        }
+      }
+    },
+    "/applications/student_cv/{student_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "student_id",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": ["application"],
+        "description": "Retrieve CV of the student",
+        "operationId": "getStudentCV",
+        "responses": {
+          "200":{
+            "description": "Download student CV"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "401":{
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500":{
+            "description": "Internel error"
+          }
+        }
+      }
+    },
+    "/applications/career/{student_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "student_id",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": ["application"],
+        "description": "Get career information by student ID",
+        "operationId": "getCareerByStudentId",
+        "responses": {
+          "200":{
+            "description": "Download student CV"
           },
           "400": {
             "description": "Bad request",

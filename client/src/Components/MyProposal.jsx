@@ -30,7 +30,7 @@ function MyProposal(props) {
   };
 
   const applyDelete = () => {
-    API.deleteThesis(deleteP.id).then(toast.success('Thesis Proposal successfully deleted')).catch((err)=>{toast.error(err.message)});
+    API.deleteThesis(deleteP.id).then(()=>toast.success('Thesis Proposal successfully deleted')).catch((err)=>{toast.error(err.message)});
     setDirty(true);
     handleCloseModal3();
   };
