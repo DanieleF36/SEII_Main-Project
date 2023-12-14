@@ -69,7 +69,6 @@ exports.listApplication = function listApplication(req, res) {
         studentService
             .browserApplicationStudent(req.user.id)
             .then(function (response) {
-              console.log(response)
                 res.status(200).json(response)
             })
             .catch(function (response) {
@@ -130,7 +129,6 @@ exports.applyForProposal = function (req, res) {
     if(err)
       res.status(400).json(err)
     teacherRepository.getIdByThesisId(req.params.id_thesis).then(supervisorId=>{
-      console.log("CIAO")
       if (supervisorId == undefined) {
         res.status(400).json({ message: "Supervisor not found" });
         return;
@@ -179,7 +177,6 @@ exports.getStudentCv = function (req, res) {
   if (!req.params.student_id) {
     return res.status(400).json({ message: "Missing student id" })
   }
-  console.log(req.user.role)
   if (req.user.role != 'teacher' && req.user.role != 'student') {
     return res.status(401).json({ message: "You can not access to this route" })
   }
@@ -222,7 +219,6 @@ exports.getCareerByStudentId = function (req, res) {
   }
   teacherService.getCareerByStudentId(req.params.student_id)
   .then(function (response) {
-    console.log(response)
       res.status(200).json(response);
   })
   .catch(function (response) {

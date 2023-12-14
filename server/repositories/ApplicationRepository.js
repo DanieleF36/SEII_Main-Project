@@ -241,7 +241,6 @@ exports.updateStatus = (id, status) => {
         reject(new Error(err.message));
         return;
       }
-      console.log(this)
       if (this.changes === 0) {
         reject(new Error('No rows updated. Thesis ID not found.'));
         return;

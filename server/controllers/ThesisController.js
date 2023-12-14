@@ -55,7 +55,6 @@ exports.searchThesis = function searchThesis(req, res, validate) {
         });
         res.status(200).json({ nPage: nPage, thesis: response });
     }).catch(e=>{
-      console.log(e)
       res.status(500).json({message: e.message})
     });
   }else if(req.user.role == 'teacher'){
@@ -90,7 +89,6 @@ exports.addThesis = function addThesis(req, res, validate) {
     return;
   }
   if (req.body === undefined) {
-    console.log(req.body)
     res.status(400).json({ message: "body is missing" });
     return;
   }
@@ -149,7 +147,7 @@ exports.updateThesis = function updateThesis(req, res) {
         res.status(200).json(response);
       }
     })
-    .catch((err) =>{console.log(err);res.status(500).json(err)})
+    .catch((err) =>{res.status(500).json(err)})
 };
 
 exports.deleteThesis = function deleteThesis(req, res) {

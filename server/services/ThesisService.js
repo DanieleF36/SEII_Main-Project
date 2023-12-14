@@ -210,9 +210,6 @@ exports.addThesis = async function (thesis) {
     thesis.creation_date,
     thesis.status
     )
-  if (thesis_res.error) {
-    throw new Error(thesis_res.error);
-  }
   
   let result
   if (cosupervisor_ids.length > 0) {
