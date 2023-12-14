@@ -2,17 +2,15 @@
 const cosupervisorService = require("../services/CoSupervisorService");
 
 exports.getAllCoSupervisorsEmails = function (req, res) {
-  console.log(req.user.role)
   if(req.user.role !== 'teacher'){
-    res.status(401).json({error: "Only teacher can access to this API"});
+    res.status(401).json({message: "Only teacher can access to this API"});
     return;
   }
   cosupervisorService.getAllCoSupervisorsEmailsService()
     .then((result) => {
       res.status(200).json(result);
-
     })
     .catch((err) => {
-      res.status(500).json({error:'Internal server error'});
+      res.status(500).json({message:'Internal server error'});
     })
   };

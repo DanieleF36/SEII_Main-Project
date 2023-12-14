@@ -43,8 +43,6 @@ describe('addThesis', () => {
         "All parameters must be provided",
         "All parameters must be provided"
     ]
-
-    console.log([...Object.values(thesis)])
     general(thesisRepository.addThesis,
             [...Object.values(thesis)],
             undefined,

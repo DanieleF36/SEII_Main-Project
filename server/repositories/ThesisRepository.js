@@ -6,7 +6,7 @@ let db = require("./db");
  * create a new object that represent thesis 
  * @returns 
  */
-function newThesis(id, title, supervisor,[], keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status){
+function newThesis(id, title, supervisor,CoSupervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status){
   return{
     id: id,
     title: title,
@@ -195,7 +195,6 @@ exports.getIdByCoSupervisorId = (id) => {
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
 exports.updateThesis = (id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status) => {
-  console.log(id, title, supervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status)
   if (id==undefined || title ==undefined || supervisor ==undefined || keywords ==undefined || type ==undefined || groups ==undefined || description ==undefined || knowledge ==undefined || note ==undefined || expiration_date ==undefined || level==undefined || cds ==undefined || creation_date ==undefined || status==undefined) {
     throw new Error('All parameters must be provided');
   }

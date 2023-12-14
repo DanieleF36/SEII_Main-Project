@@ -102,7 +102,6 @@ app.get("/metadata", (req, res)=>res.type("application/xml").status(200).send(me
 app.get("/session/current", isLoggedIn, (req, res)=>{let u = {name: req.user.name, surname: req.user.surname, id: req.user.id, email:req.user.nameID, cds: req.user.cds, role: req.user.role, group: req.user.group}; res.status(200).send(u)})
 
 app.use(function(err, req, res, next) {
-  console.log(err);
   if (err instanceof ValidationError) {
       res.status(400).send({error: err.validationErrors});
   } else next(err);

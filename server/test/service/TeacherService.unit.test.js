@@ -380,7 +380,6 @@ describe('browseApplicationProfessor unit tests', () => {
     test('U1: success', async () => {
         jest.spyOn(studentRepository, 'getCareerByStudentId').mockResolvedValue([{title: 'exam1', grade: 18}])
         const res = await teacherService.getCareerByStudentId(1)
-        console.log(res)
         expect(res).toStrictEqual([{title: 'exam1', grade: 18}])
 
     })

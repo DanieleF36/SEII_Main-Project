@@ -12,7 +12,7 @@ async function userAuthenticated(){
     return user;
   }
   else{
-    return {error: "Unauthorized"}
+    throw new Error("Unauthorized");
   }
 }
 
@@ -37,31 +37,29 @@ async function listApplication(role) {
       surname: a.surname
     }));
   }
-  else
-    if (response.ok && role === "student") {
-      return application.map((a) => ({
-        id_application: a.id_application,
-        title: a.title,
-        supervisor_name: a.supervisor_name,
-        supervisor_surname: a.supervisor_surname,
-        status: a.status,
-        type: a.type,
-        groups: a.groups,
-        description: a.description,
-        knowledge: a.knowledge,
-        note: a.note,
-        level: a.level,
-        keywords: a.keywords,
-        expiration_date: a.expiration_date,
-        cds: a.cds,
-        path_cv: a.path_cv,
-        application_data: a.application_data,
-      }));
-    }
-
-    else {
-      throw new Error(response);  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
-    }
+  else if (response.ok && role === "student") {
+    return application.map((a) => ({
+      id_application: a.id_application,
+      title: a.title,
+      supervisor_name: a.supervisor_name,
+      supervisor_surname: a.supervisor_surname,
+      status: a.status,
+      type: a.type,
+      groups: a.groups,
+      description: a.description,
+      knowledge: a.knowledge,
+      note: a.note,
+      level: a.level,
+      keywords: a.keywords,
+      expiration_date: a.expiration_date,
+      cds: a.cds,
+      path_cv: a.path_cv,
+      application_data: a.application_data,
+    }));
+  }
+  else {
+    throw new Error(response.message);  // mi aspetto che sia un oggetto json fornito dal server che contiene l'errore
+  }
 }
 function insertProposal(thesis) {
   
@@ -77,7 +75,7 @@ function insertProposal(thesis) {
 
   })).then(json => {
     return json
-  })
+  }).catch(err=> {throw new Error(err.message)})
 
 }
 
@@ -106,7 +104,7 @@ function updateProposal(id_thesis, thesis, status) {
 
   })).then(json => {
     return json
-  })
+  }).catch(err=> {throw new Error(err.message)})
 
 }
 
@@ -180,8 +178,8 @@ async function advancedSearchThesis(params){
   const response = await fetch(URL+ur, {
     credentials:'include'
   });
+  const res = await response.json();
   if(response.status==200){
-    const res = await response.json();
     return [res.nPage, res.thesis.map((e)=>({
       id:e.id,
       title:e.title,
@@ -202,7 +200,7 @@ async function advancedSearchThesis(params){
     }))]
   }
   else {
-    throw new Error("error");
+    throw new Error(res.message);
   }
 }
 
@@ -224,7 +222,7 @@ async function acceptApplication(status,id_application) {
       throw new Error(message);
     }
   }catch (error) {
-    throw new Error(error.message, { cause: error });
+    throw new Error(error.message);
   }
 }
 
@@ -236,7 +234,8 @@ async function applyForProposal(application) {
         method: "POST",
         credentials: "include",
         body: formData
-    })).then(json => {return json});
+    })).then(json => {return json})
+    .catch(err=> {throw new Error(err.message)})
 }
 
 async function browseProposal(status) { 
@@ -249,7 +248,7 @@ async function browseProposal(status) {
   }
   else{
     const err = await res.json();
-    return err;
+    throw new Error(err.message)
   }
 }
 
@@ -260,7 +259,7 @@ async function getCoSupervisorsEmails() {
     if (response.ok) {
       return coSupervisorsEmails;
     } else {
-      throw new Error(response.error);
+      throw new Error(response.message);
     }
   } catch (error) {
     throw new Error(error.message, { cause: error });
@@ -289,14 +288,16 @@ async function getStudentCv(path_cv,id_student){
 async function getCareerByStudentId(id_student) {
   return getJson(fetch(URL + `/applications/career/${id_student}`,{
     credentials: "include",
-  })).then(json => { return json });
+  })).then(json => { return json })
+  .catch(err=> {throw new Error(err.message)})
 }
 
 async function deleteThesis(id){
   return getJson(fetch(URL + `/thesis/${id}`,{
     method: 'delete',
     credentials: "include",
-  })).then(json => { return json });
+  })).then(json => { return json })
+  .catch(err=> {throw new Error(err.message)})
 }
 
 // =================== Virtual clock API ===================

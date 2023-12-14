@@ -25,7 +25,7 @@ describe('getAllCoSupervisorsEmails', () => {
     mockReq.user.role = 'student';
     controller.getAllCoSupervisorsEmails(mockReq, mockRes);
     expect(mockRes.status).toHaveBeenCalledWith(401);
-    expect(mockRes.json).toHaveBeenCalledWith({ error: "Only teacher can access to this API" });
+    expect(mockRes.json).toHaveBeenCalledWith({ message: "Only teacher can access to this API" });
   });
   test("case2: getAllCoSupervisorsEmailsService err", async () => {
     mockReq.user.role = 'teacher';
@@ -33,7 +33,7 @@ describe('getAllCoSupervisorsEmails', () => {
     controller.getAllCoSupervisorsEmails(mockReq, mockRes);
     await new Promise(resolve => setImmediate(resolve));
     expect(mockRes.status).toHaveBeenCalledWith(500);
-    expect(mockRes.json).toHaveBeenCalledWith({ error: "Internal server error" });
+    expect(mockRes.json).toHaveBeenCalledWith({ message: "Internal server error" });
   });
   test("case3: getAllCoSupervisorsEmailsService success", async () => {
     mockReq.user.role = 'teacher';
