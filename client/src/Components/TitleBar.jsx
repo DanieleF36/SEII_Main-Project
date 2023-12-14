@@ -93,12 +93,12 @@ function TitleBar(props) {
 
                             <Dropdown.Menu style={{ width: '100%' }}>
                             <Dropdown.Item className="custom-disabled-item" disabled style={customDropdownItemStyle}><strong>User Info</strong></Dropdown.Item>
-                                <Dropdown.Item className="custom-disabled-item" disabled><strong>name:</strong> {props.user.name}</Dropdown.Item>
-                                {props.user.role === 'student' ? <><Dropdown.Item className="custom-disabled-item" disabled><strong>surname:</strong> {props.user.surname}</Dropdown.Item>
-                                <Dropdown.Item className="custom-disabled-item" disabled style={customDropdownItemStyle}><strong>cds:</strong> {props.user.cds}</Dropdown.Item></> :
+                                <Dropdown.Item className="custom-disabled-item" disabled><strong>Name:</strong> {props.user.name}</Dropdown.Item>
+                                {props.user.role === 'student' ? <><Dropdown.Item className="custom-disabled-item" disabled><strong>Surname:</strong> {props.user.surname}</Dropdown.Item>
+                                <Dropdown.Item className="custom-disabled-item" disabled style={customDropdownItemStyle}><strong>Cds:</strong> {props.user.cds}</Dropdown.Item></> :
                                 <>
-                                <Dropdown.Item className="custom-disabled-item" disabled><strong>surname:</strong> {props.user.surname}</Dropdown.Item>
-                                <Dropdown.Item className="custom-disabled-item" disabled style={customDropdownItemStyle}><strong>group:</strong> {props.user.group}</Dropdown.Item></>}
+                                <Dropdown.Item className="custom-disabled-item" disabled><strong>Surname:</strong> {props.user.surname}</Dropdown.Item>
+                                <Dropdown.Item className="custom-disabled-item" disabled style={customDropdownItemStyle}><strong>Group:</strong> {props.user.group}</Dropdown.Item></>}
                                 <Dropdown.Item className='custom-dropdown d-flex align-items-center' onClick={() => handleShow()}><img src="./box-arrow-left.svg"
                                     alt="Logo"
                                     className="mr-2" style={{marginTop:'7px'}}></img></Dropdown.Item>

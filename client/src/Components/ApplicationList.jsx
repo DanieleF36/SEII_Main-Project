@@ -105,7 +105,7 @@ function ApplicationList(props) {
                                             <th>Grade</th>
                                         </tr>
                                     </thead>
-                                    <tbody>{application.student_carreer.map((e) => { return (<tr><td>{e.title}</td><td>{e.grade}</td></tr>) })}</tbody></Table>
+                                    <tbody>{application.student_carreer.map((e) => { return (<tr><td>{e.title_course}</td><td>{e.grade}</td></tr>) })}</tbody></Table>
                                     <strong>Student Cv: </strong> <br /><Button variant='danger' style={{ marginTop: '2px' }} onClick={() => handleGetCV(application.path_cv, application.id_student)}><img src="./file-earmark-pdf-fill.svg"
                                         alt="Logo"
                                         className="mr-2" style={{ marginBottom: '4px' }}></img></Button>
