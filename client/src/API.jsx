@@ -23,7 +23,7 @@ async function logout(){
 async function listApplication(role) {
   const response = await fetch(URL + `/applications`, { credentials: 'include' });
   const application = await response.json();
-  console.log(application);
+  //console.log(application);
   if (response.ok && role === "teacher") {
     return application.map((a) => ({
       id_application: a.id_application,
