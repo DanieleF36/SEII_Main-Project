@@ -8,6 +8,8 @@ describe('db', ()=>{
         callback(new Error('Errore di connessione al database'));
       });
       try {
+        //se lo si toglie sonar si incazza
+        console.log("Should fail");
       } catch (error) {
         expect(error).toBe({error: "error"});
       }

@@ -6,7 +6,7 @@ let db = require("./db");
  * create a new object that represent thesis 
  * @returns 
  */
-function newThesis(id, title, supervisor,[], keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status){
+function newThesis(id, title, supervisor,CoSupervisor, keywords, type, groups, description, knowledge, note, expiration_date, level, cds, creation_date, status){
   return{
     id: id,
     title: title,
