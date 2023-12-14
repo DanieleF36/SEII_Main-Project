@@ -14,11 +14,12 @@ function ApplicationList(props) {
 
         API.listApplication(props.user.role)
             .then((applications) => {
-                API.getCareerByStudentId(props.user.id).then((carrier)=>{
-                    applications.map((e) => { e.student_carreer = carrier })
+                applications.map((e)=>{e.student_carreer=[]; API.getCareerByStudentId(e.id_student).then((carrier)=>{
+                    e.student_carreer=carrier; 
                     setApplications(applications);
-                    setDirty(false);
-                }).catch((err) => { toast.error(err.message); });
+                    console.log(e);})});
+                setDirty(false);
+               
             })
             .catch((err) => { toast.error(err.message); });
 
