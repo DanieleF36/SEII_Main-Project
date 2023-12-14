@@ -97,6 +97,7 @@ exports.addThesis = function addThesis(req, res, validate) {
     res.status(400).json({message:"You are not allowed to add for this group"});
     return;
   }
+  req.body.groups = [req.user.group]
 
   if( req.body.level === 'Master')
     req.body.level = 1;
@@ -136,6 +137,7 @@ exports.updateThesis = function updateThesis(req, res) {
     res.status(400).json({message:"You are not allowed to add for this group"});
     return;
   }
+  req.body.groups = [req.user.group]
 
   // Call the updateThesis method from the thesisService
   thesisService.updateThesis(req.body, req.params.id)
