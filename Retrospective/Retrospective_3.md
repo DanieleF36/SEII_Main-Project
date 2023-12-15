@@ -1,4 +1,4 @@
-TEMPLATE FOR RETROSPECTIVE (Team ##)
+TEMPLATE FOR RETROSPECTIVE (Team 14)
 =====================================
 
 The retrospective should include _at least_ the following
@@ -30,10 +30,10 @@ sections:
 | Story  | # Tasks | Points | Hours est. | Hours actual |
 |--------|---------|--------|------------|--------------|
 | _#0_   |   14    |    -   |    76h     |   82h 30m    |
-| _#1_   |    4    |    5   |    7h      |    6h 50m    |
-| _#2_   |    4    |    3   |    7h      |    7h 40m    |
-| _#3_   |    4    |    3   |    5h      |    6h        |
-| _#4_   |    4    |    8   |    7h      |    7h 30m    |
+| _#10_   |    4    |    5   |    7h      |    6h 50m    |
+| _#11_   |    4    |    3   |    7h      |    7h 40m    |
+| _#12_   |    4    |    3   |    5h      |    6h        |
+| _#13_   |    4    |    8   |    7h      |    7h 30m    |
    
 
 > place technical tasks corresponding to story `#0` and leave out story points (not applicable in this case)
@@ -60,10 +60,10 @@ sections:
   - Total hours estimated: 5h  
   - Total hours spent: 5h
 - Technical Debt Management:
-  - Total hours estimated: 41h
-  - Total hours spent: 42h
+  - Total hours estimated: 41h (Sonar Estimation + TD team management = 39h + 2h)
+  - Total hours spent: 42h  (Sonar Estimation + TD team management = 39h + 3h)
   - Hours estimated for remediation by SonarQube: 39h
-  - Hours estimated for remediation by SonarQube only for the selected and planned issues: 41h
+  - Hours estimated for remediation by SonarQube only for the selected and planned issues: 39h
   - Hours spent on remediation: 42h
   - debt ratio (as reported by SonarQube under "Measures-Maintainability"): 1.6% -> 0.4%
   - rating for each quality characteristic reported in SonarQube under "Measures" (namely reliability, security, maintainability): 
