@@ -6,6 +6,7 @@ const cors = require("cors");
 const passport = require('./config/passport').passport;
 const metadata = require('./config/passport').metadata;
 const app = express();
+app.disable("x-powered-by");
 require('dotenv').config({path: './variable.env'})
 
 /* json schema validator */
@@ -98,7 +99,7 @@ app.post('/logout/callback', passport.logoutSamlCallback);
 
 app.get("/metadata", (req, res)=>res.type("application/xml").status(200).send(metadata()));
 
-app.get("/session/current", isLoggedIn, (req, res)=>{let u = {name: req.user.name, surname: req.user.surname, id: req.user.id, email:req.user.nameID, cds: req.user.cds, role: req.user.role}; res.status(200).send(u)})
+app.get("/session/current", isLoggedIn, (req, res)=>{let u = {name: req.user.name, surname: req.user.surname, id: req.user.id, email:req.user.nameID, cds: req.user.cds, role: req.user.role, group: req.user.group}; res.status(200).send(u)})
 
 app.use(function(err, req, res, next) {
   if (err instanceof ValidationError) {

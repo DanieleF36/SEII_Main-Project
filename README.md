@@ -1,3 +1,4 @@
+
 # SE-II---Main-Project
 
 ### Docker
@@ -30,7 +31,7 @@ having defined, respectively, port 5173 for the react application on the client 
 ## LIKE A PROFESSOR
 
 ### My Proposals
-I can see the list of my proposals both published and archived. I have also the possibility to edit them.
+I can see the list of my proposals both published and archived using the switch button. I have also the possibility to edit them. And then we can see the proposals component, which four buttons: copy(blue), edit(yellow), archive(grey), and delete(red).
 
 ### Add Proposal
 I can add a new proposal choosing possible cosupervisor from a list or adding them with the plus button.
@@ -43,5 +44,7 @@ It's also possible to download a student's CV to evaluate his application.
 
 ### Proposal List
 I can see the list of proposals related to my course of study. Once I've clicked on a proposal I can apply for it with the apply button and upload a PDF of my CV.
+
 ### My Application
-I can see the list of my applications and information about the linked proposal. The status of applications can be accepted (in green), pending (in yellow), rejected (in red) or canceled (in grey).
+I can see the list of my applications and information about the linked proposal. The status of applications can be accepted (in green), pending (in yellow), rejected (in red) or canceled (in grey). I can see my academic career and my CV linked to the application.
+

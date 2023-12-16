@@ -55,7 +55,6 @@ exports.searchThesis = function searchThesis(req, res, validate) {
         });
         res.status(200).json({ nPage: nPage, thesis: response });
     }).catch(e=>{
-      console.log(e)
       res.status(500).json({message: e.message})
     });
   }else if(req.user.role == 'teacher'){
@@ -89,7 +88,6 @@ exports.addThesis = function addThesis(req, res, validate) {
     res.status(401).json({message:"You can not access to this route"});
     return;
   }
-
   if (req.body === undefined) {
     res.status(400).json({ message: "body is missing" });
     return;
@@ -99,6 +97,7 @@ exports.addThesis = function addThesis(req, res, validate) {
     res.status(400).json({message:"You are not allowed to add for this group"});
     return;
   }
+  req.body.groups = [req.user.group]
 
   if( req.body.level === 'Master')
     req.body.level = 1;
@@ -138,6 +137,7 @@ exports.updateThesis = function updateThesis(req, res) {
     res.status(400).json({message:"You are not allowed to add for this group"});
     return;
   }
+  req.body.groups = [req.user.group]
 
   // Call the updateThesis method from the thesisService
   thesisService.updateThesis(req.body, req.params.id)
@@ -149,7 +149,7 @@ exports.updateThesis = function updateThesis(req, res) {
         res.status(200).json(response);
       }
     })
-    .catch((err) => res.status(500).json(err))
+    .catch((err) =>{res.status(500).json(err)})
 };
 
 exports.deleteThesis = function deleteThesis(req, res) {

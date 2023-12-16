@@ -1,19 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { Form, Button, Alert, Container, Row, Col, Dropdown, DropdownButton, Navbar, NavLink, Accordion, Badge, Card, Modal, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Form, Button, Container, Row, Col,  Accordion, Badge, Card, Modal,OverlayTrigger, Tooltip } from 'react-bootstrap';
 import toast, { Toaster } from 'react-hot-toast';
+import PropTypes from 'prop-types';
 import API from '../API';
 import BootstrapSwitchButton from 'bootstrap-switch-button-react';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-
 
 function MyProposal(props) {
 
   const [dirty, setDirty] = useState(true);
   const [archived, setArchived] = useState(1);
   const [selectedProposal, setSelectedProposal] = useState('');
-  const [proposals, setProposals] = useState([/*{ id: 0, title: 'AI system research', supervisor: 'Mario Rossi', cosupervisor: ['123456@polito.it', '654321@polito.it'], expiration_date: '10/01/2024', keywords: 'AI', type: 'Sperimental', groups: 'A32', description: 'AI thesis about...', know: 'Machine learning', level: 'Master', cds: 'LM_31', note: 'thesis for AI', creation_date: '10/1/2023', status: '1' }*/]);
+  const [proposals, setProposals] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
+  const [showModal3, setShowModal3] = useState(false);
+  const [deleteP, setDeleteP] = useState(false);
+
 
 
   const handleModify = (proposal) => {
@@ -21,22 +24,38 @@ function MyProposal(props) {
     setShowModal(true);
   };
 
+  const handleDelete = (proposal) => {
+    setDeleteP( {...proposal} );
+    setShowModal3(true);
+  };
+
+  const applyDelete = () => {
+    API.deleteThesis(deleteP.id).then(()=>toast.success('Thesis Proposal successfully deleted')).catch((err)=>{toast.error(err.message)});
+    setDirty(true);
+    handleCloseModal3();
+  };
+
   const handleStatus = (proposal) => {
-    /*API.updateStatus(proposal.id, proposal)
+    setShowModal2(false);
+  
+    API.updateProposal(proposal.id, proposal, proposal.status)
          .then(() => {
            setDirty(true);
-           toast.success('Thesis Proposal successfully archived');
+            toast.success('Thesis Proposal successfully archived');
          })
          .catch((error) => {
            toast.error(error.message || 'An error occurred while updating the proposal');
-         });*/
-    setShowModal2(false);
+         });
+    
   };
 
   const handleSwitch = () => {
+    toast.remove();
     if (archived === 0){
+      
       setArchived(1);
       setDirty(true);
+      
     }else{
       setArchived(0);
       setDirty(true);
@@ -46,18 +65,26 @@ function MyProposal(props) {
 
   const handleCloseModal = () => {
     setShowModal(false);
-    setSelectedProposal('');
-  };
 
+    setSelectedProposal('');
+    
+  };
   const handleCloseModal2 = () => {
     setShowModal2(false);
+
     setSelectedProposal('');
   };
+
+  const handleCloseModal3 = () => {
+    setShowModal3(false);
+
+    setDeleteP('');
+  };
   
-  const [cosup_email, setCoSup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);
+  const [cosup_email] = useState(['marco.colli@mail.com', 'marco.collo@mail.com']);
   const [filt_cosup, setFilt_cosup] = useState([]);
 
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm] = useState('');
 
   useEffect(() => {
     setFilt_cosup(cosup_email.filter((item) =>
@@ -68,14 +95,14 @@ function MyProposal(props) {
    
     useEffect(() => {
       if(props.user.role === 'teacher'){
-        API.browseProposal(archived)
-            .then((proposals) => {
-                setProposals(proposals);
-                setDirty(false);
-            })
-            .catch((err) => { toast.error(err.error); });
-          }
-
+          API.browseProposal(archived)
+          .then((proposals) => {
+              setProposals(proposals);
+              setDirty(false);
+          })
+          .catch((err)=>{toast.error(err.message)})
+        }
+       
     }, [dirty, props.user]);
 
 
@@ -87,10 +114,29 @@ function MyProposal(props) {
     }));
   };
 
-
-  const handleResetChange = () => {
-    setSelectedProposal('');
-  };
+  const correctSpace = (prop) => {
+    if(Array.isArray(prop.cds)){
+    let c = prop.cds.map(e=>e.trim());
+    prop.cds = c;
+    }
+    if(Array.isArray(prop.keywords)){
+    let k = prop.keywords.map(e=>e.trim());
+    prop.keywords = k;
+    }
+    if(Array.isArray(prop.type)){
+    let t = prop.type.map(e=>e.trim());
+    prop.type = t;
+    }
+    if(Array.isArray(prop.knowledge)){
+    let kn = prop.knowledge.map(e=>e.trim());
+    prop.knowledge = kn;
+    }
+    if(Array.isArray(prop.groups)){
+    let g = prop.groups.map(e=>e.trim());
+    prop.groups = g;
+    }
+    return prop;
+  }
 
   const handleCheckboxChange = (selectedLevel) => {
     setSelectedProposal({ ...selectedProposal, level: selectedLevel });
@@ -99,38 +145,8 @@ function MyProposal(props) {
   const handleList = (e) => {
     let name = e.target.name;
     let cosup_arr = e.target.value.split(",");
-    let co = cosup_arr.map(e => e.trim());
-    setSelectedProposal({ ...selectedProposal, [name]: co });
+    setSelectedProposal({ ...selectedProposal, [name]: cosup_arr});
   };
-
-  /*const handleCoSup = (e) => {
-    if (selectedProposal.cosupervisor === '') {
-      let co = [];
-      co.push(e);
-      setSelectedProposal({ ...selectedProposal, cosupervisor: co });
-      setSearchTerm('');
-    } else {
-      let co = [...selectedProposal.cosupervisor]; // Crea una copia dell'array
-      if (co.includes(e)) {
-        toast.error('CoSupervisor already inserted');
-        setSearchTerm('');
-      } else {
-        co.push(e);
-        setSelectedProposal({ ...selectedProposal, cosupervisor: co });
-        setSearchTerm('');
-      }
-    }
-  };*/
-  
-  /*const handleDeleteCoSup = () => {
-    const updatedCoSupervisors = [...selectedProposal.cosupervisor];
-    if (updatedCoSupervisors.length > 0) {
-      updatedCoSupervisors.pop();
-      setSelectedProposal({ ...selectedProposal, cosupervisor: updatedCoSupervisors });
-    } else {
-      toast.error('No co-supervisors to delete');
-    }
-  };*/
 
   const handleSaveChanges = () => {
     if (selectedProposal) {
@@ -154,7 +170,8 @@ function MyProposal(props) {
         toast.error('CdS field cannot be empty');
       } else {
         setShowModal(false);
-       API.updateProposal(selectedProposal.id, selectedProposal)
+        let updatep = selectedProposal
+       API.updateProposal(selectedProposal.id, correctSpace(updatep))
          .then(() => {
            setDirty(true);
            toast.success('Thesis Proposal successfully updated');
@@ -166,9 +183,11 @@ function MyProposal(props) {
     }
   };
 
+
   return (
-     <>
-      <BootstrapSwitchButton onChange={() => handleSwitch()} checked={archived === 1} size="sm" onlabel='published' offlabel='archived' width={100} onstyle="success" offstyle="warning" style="border" />      <div style={{ marginTop: '10px' }}>
+    <>
+      <BootstrapSwitchButton onChange={() => handleSwitch()} checked={archived === 1} size="sm" onlabel='published' offlabel='archived' width={100} onstyle="success" offstyle="warning" style="border" />
+      <div style={{ marginTop: '10px' }}>
         {proposals.map((proposal) => (
           <Card key={proposal.id} style={{ marginBottom: '10px' }}>
             <Toaster position="top-center" reverseOrder={false} />
@@ -223,18 +242,19 @@ function MyProposal(props) {
                   <br />
                   <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Modify</Tooltip>  }><Button variant="warning mx-2" onClick={() => handleModify(proposal)}><i className="bi bi-pencil-fill" style={{color:'white'}}/></Button></OverlayTrigger>
                   {proposal.status==1 ?
-                    (<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Archive</Tooltip>  }><Button variant="secondary mx-2" onClick={() => setShowModal2(true)}><i className="bi bi-archive"/></Button></OverlayTrigger>)
-                   :
-                    (<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Active</Tooltip>  }><Button variant="success mx-2" onClick={() => setShowModal2(true)}><i className="bi bi-archive"/></Button></OverlayTrigger>)
+                    (<OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Archive</Tooltip>  }><Button variant="secondary mx-2" onClick={() => {setShowModal2(true); setSelectedProposal(proposal);}}><i className="bi bi-archive"/></Button></OverlayTrigger>)
+                   : ''
                   }
                   <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Copy</Tooltip>  }><Button variant="primary mx-2" onClick={() => props.handleCopy(proposal)} ><i className="bi bi-clipboard-plus-fill"/></Button></OverlayTrigger>
+                  {proposal.status==1?
+                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Delete</Tooltip>  }><Button variant="danger mx-2" onClick={() => handleDelete(proposal)} ><i className="bi bi-trash3-fill"></i></Button></OverlayTrigger>:''
+                  }
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
           </Card>
         ))}
       </div>
-
       <Modal show={showModal} onHide={handleCloseModal}  backdrop="static"
         keyboard={false}>
         <Toaster position="top-center" reverseOrder={false} />
@@ -254,46 +274,6 @@ function MyProposal(props) {
                 />
               </Form.Group>
 
-              {/* <Form.Group className="mb-3">
-                <Form.Label><strong>Cosupervisors mails</strong></Form.Label>
-                <Form.Control
-                  type="text"
-                  readOnly
-                  value={selectedProposal.cosupervisor !== '' ? selectedProposal.cosupervisor.map(element => {
-                    return ` ${element}`;
-
-                  }) : ''}
-                />
-                <Container>
-                  <Row className="mt-3">
-                    <Col sm="12" md="12" lg="6" className="d-flex align-items-center">
-                      <Dropdown style={{ marginTop: '5px' }}>
-                        <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                          {searchTerm === '' ? 'Select mail' : searchTerm}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu show={searchTerm !== ''}>
-                          <Form.Control
-                            type="text"
-                            placeholder="Search..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            style={{ borderBlockWidth: '2px' }}
-                          />
-                          {filt_cosup.map((item, id) => (
-                            <Dropdown.Item onClick={() => setSearchTerm(item)} key={id}>{item}</Dropdown.Item>
-                          )).slice(0, 3)}
-                        </Dropdown.Menu>
-                      </Dropdown>
-                      <Button onClick={() => { handleCoSup(searchTerm); }} variant="primary" style={{ width: '40px', height: '38px', marginTop: '5px', marginRight: '3px', marginLeft: '10px'  }}>
-                        +
-                      </Button>
-                      <Button onClick={handleDeleteCoSup} variant="danger" style={{ width: '40px', height: '38px', marginTop: '5px'}}>
-                        -
-                      </Button>
-                    </Col>
-                  </Row>
-                </Container>
-              </Form.Group> */}
 
               <Form.Group className="mb-3">
                 <Form.Label><strong>Expiration Date</strong></Form.Label>
@@ -410,22 +390,42 @@ function MyProposal(props) {
           </Button>
         </Modal.Footer>
       </Modal>
-      <Modal show={showModal2} onHide={handleCloseModal2}>
+
+      <Modal show={showModal2} onHide={handleCloseModal2} backdrop="static"
+        keyboard={false}>
       <Modal.Header closeButton>
           <Modal.Title>Are you sure to archive this proposal?</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          
-          <Button variant="success mx-2" onClick={handleStatus}>Yes</Button>
+          <Button variant="success mx-2" onClick={() => handleStatus(selectedProposal)}>Yes</Button>
           <Button variant="danger" onClick={handleCloseModal2}>No</Button>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleCloseModal2}>Close</Button>
         </Modal.Footer>
       </Modal>
-    </> 
-                 
-  )
+
+      <Modal show={showModal3} onHide={handleCloseModal3} backdrop="static"
+        keyboard={false}>
+      <Modal.Header closeButton>
+          <Modal.Title>Are you sure to delete this proposal?</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Button variant="success mx-2" onClick={() => applyDelete()}>Yes</Button>
+          <Button variant="danger" onClick={handleCloseModal3}>No</Button>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseModal3}>Close</Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
 }
+
+MyProposal.propTypes = {
+  user : PropTypes.oneOfType([PropTypes.string,
+    PropTypes.object]).isRequired,
+  handleCopy: PropTypes.func.isRequired,
+};
 
 export default MyProposal;

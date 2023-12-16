@@ -129,7 +129,6 @@ exports.applyForProposal = function (req, res) {
     if(err)
       res.status(400).json(err)
     teacherRepository.getIdByThesisId(req.params.id_thesis).then(supervisorId=>{
-      console.log("CIAO")
       if (supervisorId == undefined) {
         res.status(400).json({ message: "Supervisor not found" });
         return;
@@ -178,7 +177,7 @@ exports.getStudentCv = function (req, res) {
   if (!req.params.student_id) {
     return res.status(400).json({ message: "Missing student id" })
   }
-  if (req.user.role != 'teacher') {
+  if (req.user.role != 'teacher' && req.user.role != 'student') {
     return res.status(401).json({ message: "You can not access to this route" })
   }
     applicationRepository.getByStudentId(req.params.student_id).then(studentInfo=>{

@@ -168,10 +168,8 @@ exports.loadData = () => {
         return new Promise((resolve, reject) => {
             db.run(query, (err) => {
                 if (err) {
-                    console.error('Error inserting data:', err);
                     reject(err);
                 } else {
-                    console.log('Data inserted for query:', query);
                     resolve(true);
                 }
             });
@@ -180,11 +178,9 @@ exports.loadData = () => {
 
     return Promise.all(promises)
         .then(() => {
-            console.log('All data inserted');
             return true;
         })
         .catch(error => {
-            console.error('Error inserting data:', error);
             throw error;
         });
 }
@@ -197,10 +193,8 @@ exports.loadSchema = () => {
         return new Promise((resolve, reject) => {
             db.run(query, (err) => {
                 if (err) {
-                    console.error('Error creating schema:', err);
                     reject(err);
                 } else {
-                    console.log('Data schema created:', query);
                     resolve(true);
                 }
             });
@@ -209,11 +203,9 @@ exports.loadSchema = () => {
 
     return Promise.all(promises)
         .then(() => {
-            console.log('Schema created');
             return true;
         })
         .catch(error => {
-            console.error('Error creating schema:', error);
             throw error;
         });
 
@@ -227,10 +219,8 @@ exports.cleanTable = () => {
         return new Promise((resolve, reject) => {
             db.run(query, (err) => {
                 if (err) {
-                    console.error('Error deleting data:', err);
                     reject(err);
                 } else {
-                    console.log('Data deleted for query:', query);
                     resolve(true);
                 }
             });
@@ -239,11 +229,9 @@ exports.cleanTable = () => {
 
     return Promise.all(promises)
         .then(() => {
-            console.log('All data deleted');
             return true;
         })
         .catch(error => {
-            console.error('Error deleting data:', error);
             throw error;
         });
 }

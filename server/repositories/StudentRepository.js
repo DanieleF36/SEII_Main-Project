@@ -151,7 +151,12 @@ exports.getCareerByStudentId = async function (id_student) {
         reject(new Error(err.message));
         return;
       }
-      resolve({ title_course: rows.title_course, grade: rows.grade });
+      if(rows.lenght ==0){
+        resolve([{}])
+      }
+      else {
+        resolve(rows.map((r) => ({ title_course: r.title_course, grade: r.grade })));
+      }
     });
   });
 }

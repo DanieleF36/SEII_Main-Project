@@ -41,7 +41,7 @@ describe("getAllCoSupervisorsEmails TEST", () => {
         login_as.user.role = "student";
 
         const res = await request(app).get('/cosupervisors/email');
-        expect(res.body).toStrictEqual({error: "Only teacher can access to this API"})
+        expect(res.body).toStrictEqual({message: "Only teacher can access to this API"})
         expect(res.status).toBe(401);
 
     });
@@ -57,7 +57,7 @@ describe("getAllCoSupervisorsEmails TEST", () => {
             callback(new Error("some"), null);
         });
         const res = await request(app).get('/cosupervisors/email')
-        expect(res.body).toStrictEqual({error: "Internal server error"})
+        expect(res.body).toStrictEqual({message: "Internal server error"})
         expect(res.status).toBe(500)
         spyAll.mockRestore();    
     });

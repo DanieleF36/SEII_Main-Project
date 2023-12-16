@@ -66,5 +66,5 @@
             "default": 1
          }
     },
-    "required": ["title", "cosupervisor","keywords","type","groups","cds","knowledge", "expiration_date", "level"]
+    "required": ["title", "cosupervisor","keywords","type","cds","knowledge", "expiration_date", "level"]
 }
