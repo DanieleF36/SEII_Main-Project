@@ -1,6 +1,7 @@
 "use strict";
 const fs = require('fs');
 const applicationRepository = require("../repositories/ApplicationRepository");
+const teacherService = require("../services/TeacherService");
 
 /**
  * Add a new application
@@ -25,14 +26,15 @@ exports.addApplication = function (studentId, thesisId, cv, supervisorId) {
       let oldPath = cv.filepath;
       let newPath = './/file//'+ cv.originalFilename;
       //move the file from the old path to the new 
-      fs.rename(oldPath, newPath, (err) => {
+      fs.rename(oldPath, newPath, async (err) => {
         if (err) {
           reject(new Error(err.message));
         } 
         else {
-          applicationRepository.addApplication(studentId, thesisId, newPath, supervisorId)
+          await applicationRepository.addApplication(studentId, thesisId, newPath, supervisorId)
             .then(res => resolve(res))
             .catch(err => reject(new Error(err.message)))
+          await teacherService._sendTeacherEmail(supervisorId, thesisId, studentId)
         }
       });
     });

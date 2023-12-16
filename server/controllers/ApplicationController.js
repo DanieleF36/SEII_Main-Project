@@ -125,9 +125,9 @@ exports.applyForProposal = function (req, res) {
     return;
   }
   applicationRepository.getActiveByStudentId(req.user.id).then(checkApp=>{
-    const err = chceckError(checkApp, req);
+    const err = checkError(checkApp, req);
     if(err)
-      res.status(400).json(err)
+      return res.status(400).json(err)
     teacherRepository.getIdByThesisId(req.params.id_thesis).then(supervisorId=>{
       if (supervisorId == undefined) {
         res.status(400).json({ message: "Supervisor not found" });
@@ -159,7 +159,7 @@ exports.applyForProposal = function (req, res) {
   }).catch((e)=>res.status(500).json({message:e.message}))
 };
 
-const chceckError = function(checkApp, req){
+const checkError = function(checkApp, req){
   if (checkApp != undefined) {
     return { message: "You already have an application for a thesis" };
   }

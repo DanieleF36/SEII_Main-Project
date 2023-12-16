@@ -98,6 +98,25 @@ async function _sendAcceptedEmail(teacherID, id_thesis, id_student){
     await transporter.sendEmail(teacherEmail, studentEmail, 'Application Status Update', `Your application status for ${thesisTitle} has been updated to accepted.`)
     return true;      
 };
+/**
+ * Send a mail to the teacher when an application is made for his thesis
+ * @param {*} teacherID 
+ * @param {*} id_thesis 
+ * @param {*} id_student 
+ * @returns 
+ */
+exports._sendTeacherEmail = async function (teacherID, id_thesis, id_student){
+    let [teacherEmail, studentEmail, thesisTitle] = await Promise.all([
+        teacherRepo.getById(teacherID),
+        studentRepo.getById(id_student), 
+        thesisRepository.getById(id_thesis)]);
+    
+    teacherEmail = teacherEmail.email;
+    studentEmail = studentEmail.email;
+    thesisTitle = thesisTitle.title;
+    await transporter.sendEmail(teacherEmail, studentEmail, 'New Application request received', `The thesis ${thesisTitle} has a new application request.`)
+    return true;    
+}
 
 /**
  * TOBE changed and used for either the active and not active thesis
