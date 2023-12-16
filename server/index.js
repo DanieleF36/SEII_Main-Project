@@ -80,6 +80,8 @@ app.get("/applications/student_cv/:student_id", isLoggedIn, applicationControlle
 
 app.get("/applications/career/:student_id", isLoggedIn, applicationController.getCareerByStudentId)
 
+app.put("/thesis/secretary/:id_thesis", isLoggedIn, (req, res) => thesisController.thesisRequestHandling(req, res));
+
 
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
 

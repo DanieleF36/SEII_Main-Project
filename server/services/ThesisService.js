@@ -28,7 +28,7 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   // If we don't find any supervisor or cosupervisors or any thesis linked to these the research can stop
   let ok = !(supervisor || coSupervisor);
   //find information about id of supervisor
-  
+
   let idSupervisors = await exports.supervisorCheck(supervisor);
   if (idSupervisors != null && idSupervisors.length > 0)
     ok = true;
@@ -36,7 +36,7 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   let idCoSupervisorsThesis = await exports.coSupervisorCheck(coSupervisor);
   // if no. idCoSupervisorsThesis.length > 0 some data have been found
   if (idCoSupervisorsThesis?.length > 0) ok = true;
-    
+
   //idSupervisors: [id1, id2, ...] list of ids with common lastname/name pair
   //idCoSupervisorsThesis [idThesis1, idThesis2, ...] list of thesis ids managed by the cosupervisor
   //Check if has sense make others queries
@@ -44,57 +44,57 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
     return [[], 0];
   //find all thesis
   let res = await thesisRepository.advancedResearch(nItem * (page - 1), nItem * page, order, false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-  
+
   // res contains a list of thesis objects which are okay with given filters
   //find number of page
   let npage = await thesisRepository.numberOfPage(false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
   npage = Math.ceil(npage.nRows / nItem);
   //find information about teacher
-  
+
   await exports.supervisorInfo(res);
-  
+
   //find ids about co-supervisors
   await exports.coSupervisorInfo(res);
   //
   return [res, npage];
 };
 
-exports.supervisorCheck = async(supervisor)=>{
-  if(!supervisor)
-  return null;
+exports.supervisorCheck = async (supervisor) => {
+  if (!supervisor)
+    return null;
   let idSupervisors;
   const ns = supervisor.split(" ");
-    // ns[1] is going to be undefined in case we did not put a name
+  // ns[1] is going to be undefined in case we did not put a name
 
-    // performs a search by name and/or lastname and returns an array of ids
-    if (ns.length > 1)
-      idSupervisors = (await teacherRepository.getByNSorS(ns[1], ns[0])).map(e => e.id);
-    else
-      idSupervisors = (await teacherRepository.getByNSorS(ns[0])).map(e => e.id);
-    return idSupervisors
+  // performs a search by name and/or lastname and returns an array of ids
+  if (ns.length > 1)
+    idSupervisors = (await teacherRepository.getByNSorS(ns[1], ns[0])).map(e => e.id);
+  else
+    idSupervisors = (await teacherRepository.getByNSorS(ns[0])).map(e => e.id);
+  return idSupervisors
 }
 
-exports.coSupervisorCheck=async(coSupervisor)=>{
+exports.coSupervisorCheck = async (coSupervisor) => {
   let idCoSupervisorsThesis;
-  if(coSupervisor){
+  if (coSupervisor) {
     idCoSupervisorsThesis = [];
     for (let tmp of coSupervisor) {
       const ns = tmp.split(" ");
       let idsCo;
       if (ns.length > 1)
-        idsCo = (await coSupervisorRepository.getByNSorS(ns[1], ns[0])).map(e=>e.id);
+        idsCo = (await coSupervisorRepository.getByNSorS(ns[1], ns[0])).map(e => e.id);
       else
-        idsCo = (await coSupervisorRepository.getByNSorS(ns[0])).map(e=>e.id);
+        idsCo = (await coSupervisorRepository.getByNSorS(ns[0])).map(e => e.id);
       if (idsCo.length > 0)
         // add the thesis managed by the chosen cosupervisor 
         idCoSupervisorsThesis.push(await thesisRepository.getIdByCoSupervisorId(idsCo));
 
-}
+    }
   }
   return idCoSupervisorsThesis;
 }
 
-exports.supervisorInfo=async(res)=>{
+exports.supervisorInfo = async (res) => {
   for (let info of res) {
     // get all the superior's information given an id
     const t = await teacherRepository.getById(info.supervisor);
@@ -103,7 +103,7 @@ exports.supervisorInfo=async(res)=>{
   }
 }
 
-exports.coSupervisorInfo=async(res)=>{
+exports.coSupervisorInfo = async (res) => {
   for (let ids of res) {
     const idList = await coSupervisorThesisRepository.getIdsByThesisId(ids.id);
     ids.coSupervisor = [];
@@ -122,7 +122,7 @@ exports.coSupervisorInfo=async(res)=>{
   }
 }
 
-exports.getActiveBySupervisor = async function(supervisorId,queryParam){
+exports.getActiveBySupervisor = async function (supervisorId, queryParam) {
   return await thesisRepository.getActiveBySupervisor(supervisorId, queryParam);
 }
 
@@ -182,12 +182,12 @@ exports.addThesis = async function (thesis) {
   }
 
   const exp_date = dayjs(thesis.expiration_date, "MM-DD-YYYY")
-  .format("YYYY-MM-DD")
-  .toString();
+    .format("YYYY-MM-DD")
+    .toString();
   thesis.expiration_date = exp_date;
   const creat_date = dayjs().format("YYYY-MM-DD").toString();
   thesis.creation_date = creat_date;
-  
+
   thesis.keywords = thesis.keywords.join()
   thesis.type = thesis.type.join()
   thesis.groups = thesis.groups.join()
@@ -209,8 +209,8 @@ exports.addThesis = async function (thesis) {
     thesis.cds,
     thesis.creation_date,
     thesis.status
-    )
-  
+  )
+
   let result
   if (cosupervisor_ids.length > 0) {
     for (let id of cosupervisor_ids) {
@@ -223,11 +223,11 @@ exports.addThesis = async function (thesis) {
   if (supervisor_ids.length > 0) {
     for (let id of supervisor_ids) {
       result = await coSupervisorThesisRepository.addCoSupervisorThesis(thesis_res.id, id, null)
-      if (result instanceof Error) 
+      if (result instanceof Error)
         return result
+    }
   }
-}
-  
+
   return thesis;
 };
 
@@ -268,4 +268,5 @@ exports.delete = async function (id) {
     throw new Error("You can't delete this thesis, an application is already accepted");
   const res = await thesisRepository.setStatus(id, 2)
   return res;
-} 
+}
+
