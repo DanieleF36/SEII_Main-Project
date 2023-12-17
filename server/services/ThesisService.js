@@ -242,6 +242,9 @@ exports.updateThesis = async function (thesis, thesis_id) {
   thesis.groups = thesis.groups.join()
   thesis.knowledge = thesis.knowledge.join()
   thesis.cds = thesis.cds.join()
+  if(thesis.status == 0)
+    //All student ids must be different from 1 because autoinc of db start from 1
+    await applicationRepository.updateStatusToCancelledForOtherStudent(thesis_id, 0);
   // Update the entry in THESIS
   const updatedThesis = await thesisRepository.updateThesis(
     thesis_id,
@@ -266,6 +269,8 @@ exports.delete = async function (id) {
   const app = await applicationRepository.getAcceptedByThesisId(id)
   if (app)
     throw new Error("You can't delete this thesis, an application is already accepted");
+  //All student ids must be different from 1 because autoinc of db start from 1
+  await applicationRepository.updateStatusToCancelledForOtherStudent(id, 0);
   const res = await thesisRepository.setStatus(id, 2)
   return res;
 } 

@@ -373,7 +373,7 @@ describe('updateThesis unit tests', () => {
             level: "Master",
             cds: ["ingInf"],
             creation_date: '2023-12-07',
-            status: 1
+            status: 0
         }
         thesisId = 1
     })
@@ -388,6 +388,7 @@ describe('updateThesis unit tests', () => {
     });
 
     test('U1: updateThesis is done', async () => {
+        jest.spyOn(require('../../repositories/ApplicationRepository.js'), 'updateStatusToCancelledForOtherStudent').mockResolvedValue(1)
         jest.spyOn(repository, 'updateThesis').mockResolvedValue(1)
         const res = await service.updateThesis({...thesis, thesisId})
         expect(res).toBe(1)
@@ -396,17 +397,29 @@ describe('updateThesis unit tests', () => {
     test('U2: updateThesis is not done, no thesis ID found', async () => {
         thesisId = 31
         jest.spyOn(repository, 'updateThesis').mockImplementationOnce(() => {return {error: 'No rows updated. Thesis ID not found.'}})
-
+        jest.spyOn(require('../../repositories/ApplicationRepository.js'), 'updateStatusToCancelledForOtherStudent').mockResolvedValue(1)
         const res = await service.updateThesis({...thesis, thesisId})
         expect(res.error).toBe('No rows updated. Thesis ID not found.')
     })
 
     test('U3: updateThesis is not done, internal DB error', async () => {
+        jest.spyOn(require('../../repositories/ApplicationRepository.js'), 'updateStatusToCancelledForOtherStudent').mockResolvedValue(1)
         jest.spyOn(repository, 'updateThesis').mockImplementationOnce(() => {return {error: 'Internal DB error'}})
 
         const res = await service.updateThesis({...thesis, thesisId})
         expect(res.error).toBe('Internal DB error')
     })
+    test('U4: updateThesis is not done, internal DB error on updateStatusToCancelledForOtherStudent', async () => {
+        jest.spyOn(require('../../repositories/ApplicationRepository.js'), 'updateStatusToCancelledForOtherStudent').mockRejectedValue({message: "error"})
+
+        try{
+            await service.updateThesis({...thesis, thesisId})
+        }catch(e){
+            expect(e.message).toBe('error')
+        }
+        
+    })
+
 })
 
 describe('advancedResearchThesis', () => {
@@ -537,7 +550,17 @@ describe('advancedResearchThesis', () => {
 });
 
 describe('delete thesis', () => {
+    test('U0: error occurs', async () => {
+        jest.spyOn(require('../../repositories/ApplicationRepository.js'), 'updateStatusToCancelledForOtherStudent').mockRejectedValue({message: "error"})
+        try {
+            await service.delete(1)
+        }
+        catch(error) {
+            expect(error.message).toStrictEqual("error")
+        }
+    })
     test('U1: error occurs', async () => {
+        jest.spyOn(require('../../repositories/ApplicationRepository.js'), 'updateStatusToCancelledForOtherStudent').mockResolvedValue(1)
         jest.spyOn(applicationRepository, 'getAcceptedByThesisId').mockImplementation(() => {
             return new Error('error')
         })
@@ -550,6 +573,7 @@ describe('delete thesis', () => {
     })
 
     test('U2: success', async () => {
+        jest.spyOn(require('../../repositories/ApplicationRepository.js'), 'updateStatusToCancelledForOtherStudent').mockResolvedValue(1)
         jest.spyOn(applicationRepository, 'getAcceptedByThesisId').mockImplementation(() => {
             return undefined
         })
