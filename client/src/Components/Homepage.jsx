@@ -10,6 +10,7 @@ import AddRequestForm from './AddRequest';
 import ApplicationList from './ApplicationList';
 import StudentList from './StudentList';
 import MyProposal from './MyProposal';
+import HandleRequest from './HandleRequest';
 import toast, { Toaster } from 'react-hot-toast';
 import Clock from './Clock';
 import API from '../API';
@@ -25,6 +26,7 @@ function Homepage(props) {
     const [addRequest, setAddRequest] = useState(false);
     const [listA, setListA] = useState(false);
     const [propList, setPropList] = useState(true);
+    const [requestClerk, setRequestClerk] = useState(true);
     const [listApplicationStud, setListApplicationStud] = useState(false);
     const [myProp, setMyProp] = useState(true);
     const [copy, setCopy] = useState(undefined);
@@ -250,7 +252,7 @@ function Homepage(props) {
             </Row>
         </Container>
         </div>
-        : add === true && listA === false && myProp === false? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
+        : props.user.role === 'teacher' ? add === true && listA === false && myProp === false? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
             <TitleBar setIsAuth={props.setIsAuth} user={props.user} setUser={props.setUser} isAuth={props.isAuth} />
             <Container fluid style={{ marginTop: '20px' }}>
                 <Row>
@@ -310,6 +312,24 @@ function Homepage(props) {
                 </Col>
                 <Col xs={9}>
                  <MyProposal user={props.user} handleCopy={handleCopy}/>
+                </Col>
+            </Row>
+        </Container>
+        </div>
+        : <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
+        <TitleBar setIsAuth={props.setIsAuth} user={props.user} setUser={props.setUser} isAuth={props.isAuth} />
+        <Container fluid style={{ marginTop: '20px' }}>
+            <Row>
+                <Col xs={3}>
+                    <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
+                        <Nav className="flex-column">
+                            <Nav.Link active={requestClerk} onClick={() => {toast.remove(); setRequestClerk(true) }}> Request from student</Nav.Link>
+                        </Nav>
+                    </Navbar>
+                    <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
+                </Col>
+                <Col xs={9}>
+                 <HandleRequest user={props.user}/>
                 </Col>
             </Row>
         </Container>
