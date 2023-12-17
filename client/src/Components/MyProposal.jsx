@@ -30,7 +30,8 @@ function MyProposal(props) {
   };
 
   const applyDelete = () => {
-    console.log({id_del: deleteP.id});
+    API.deleteThesis(deleteP.id).then(()=>toast.success('Thesis Proposal successfully deleted')).catch((err)=>{toast.error(err.message)});
+    setDirty(true);
     handleCloseModal3();
   };
 
@@ -99,7 +100,7 @@ function MyProposal(props) {
               setProposals(proposals);
               setDirty(false);
           })
-          .catch((err) => { toast.error(err.error); });
+          .catch((err)=>{toast.error(err.message)})
         }
        
     }, [dirty, props.user]);

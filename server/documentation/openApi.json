@@ -2,14 +2,14 @@
   "openapi": "3.0.2",
   "info": {
     "title": "Thesis Management API",
-    "version": "0.2.2"
+    "version": "0.3.0"
   },
   "security":[{"samlAuth":[]}],
   "paths": {
     "/thesis": {
       "get": {
         "tags": ["thesis"],
-        "description": "Return a list of thesis that respect all the parameters",
+        "description": "Student: Get a list of thesis that respect all the parameters. These thesis will be public and cds and level are the same of the student. Teacher: Get all the active thesis for professor",
         "operationId": "advancedResearchThesis",
         "parameters": [
           {
@@ -260,7 +260,49 @@
         }
       }
     },
-    "/thesis/{id}/applications": {
+    "/thesis/{id_thesis}":{
+      "parameters": [
+        {
+          "in": "path",
+          "name": "id",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
+      "delete":{
+        "tags":["thesis"],
+        "description": "Delete thesis",
+        "operationId": "deleteThesis",
+        "responses": {
+          "200":{
+            "description": "Deleted"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404":{
+            "description": "id professor not found"
+          },
+          "401":{
+            "description": "not authorized"
+          },
+          "500":{
+            "description": "internal error"
+          }
+        }
+      }
+    },
+    "/thesis/{id_thesis}/applications": {
       "parameters": [
         {
           "in": "path",
@@ -315,21 +357,55 @@
         }
       }
     },
-    "/professors/{id_professor}/applications": {
-      "parameters": [
-        {
-          "in": "path",
-          "name": "id_professor",
-          "schema": {
-            "type": "integer",
-            "minimum": 0
+    "/cosupervisors/email":{
+      "get":{
+        "tags":["cosupervisor"],
+        "description": "Get all co-supervisors' emails",
+        "operationId": "getAllCoSupervisorsEmails",
+        "responses": {
+          "200":{
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type":"object",
+                  "properties": {
+                    "co_supervisors": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  },
+                  "required": ["nPage"]
+                }
+              }
+            }
           },
-          "required": true
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
+                }
+              }
+            }
+          },
+          "404":{
+            "description": "id professor not found"
+          },
+          "401":{
+            "description": "not authorized"
+          },
+          "500":{
+            "description": "internal error"
+          }
         }
-      ],
+      }
+    },
+    "/applications": {
       "get": {
-        "tags": ["professor"],
-        "description": "Get all the application for the professor",
+        "tags": ["application"],
+        "description": "Student:get all the applications of student. Teacher: Get all the application for the professor.",
         "operationId": "listApplication",
         "responses": {
           "200": {
@@ -367,17 +443,8 @@
         }
       }
     },
-    "/professors/{id_professor}/applications/{id_application}": {
+    "/applications/{id_application}": {
       "parameters": [
-        {
-          "in": "path",
-          "name": "id_professor",
-          "schema": {
-            "type": "integer",
-            "minimum": 0
-          },
-          "required": true
-        },
         {
           "in": "path",
           "name": "id_application",
@@ -389,7 +456,7 @@
         }
       ],
       "put": {
-        "tags": ["professor"],
+        "tags": ["application"],
         "description": "Theacher accept or reject an application",
         "operationId": "accRefApplication",
         "requestBody": {
@@ -430,60 +497,86 @@
         }
       }
     },
-    "/professors/thesis":{
-      "get":{
-        "tags":["professor"],
-        "description": "Get all the active thesis for professor id",
-        "operationId": "browseProposals",
+    "/applications/student_cv/{student_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "student_id",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": ["application"],
+        "description": "Retrieve CV of the student",
+        "operationId": "getStudentCV",
         "responses": {
           "200":{
-            "description": "list of all proposal for the current logged in professor",
+            "description": "Download student CV"
+          },
+          "400": {
+            "description": "Bad request",
             "content": {
-              "application/json":{
-                "schema":{
-                  "type": "object",
-                  "$ref": "#/components/schemas/thesis"
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
                 }
               }
             }
           },
           "401":{
-            "description": "not authorized"
+            "description": "Not authorized"
           },
-          "404":{
-            "description": "id professor not found"
+          "404": {
+            "description": "Not found"
           },
           "500":{
-            "description": "internal error"
+            "description": "Internel error"
           }
         }
       }
     },
-    "/students/{id}/applications":{
-      "get":{
-        "tags":["student"],
-        "description": "get all the applications of student id",
-        "operationId": "browseStudentApplication",
+    "/applications/career/{student_id}": {
+      "parameters": [
+        {
+          "in": "path",
+          "name": "student_id",
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "required": true
+        }
+      ],
+      "get": {
+        "tags": ["application"],
+        "description": "Get career information by student ID",
+        "operationId": "getCareerByStudentId",
         "responses": {
           "200":{
-            "description": "list of all application",
+            "description": "Download student CV"
+          },
+          "400": {
+            "description": "Bad request",
             "content": {
-              "application/json":{
-                "schema":{
-                  "type": "array",
-                  "items":{
-                    "type": "object",
-                    "$ref": "#/components/schemas/application"
-                  }
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/error"
                 }
               }
             }
           },
           "401":{
-            "description": "not authorized"
+            "description": "Not authorized"
+          },
+          "404": {
+            "description": "Not found"
           },
           "500":{
-            "description": "internal error"
+            "description": "Internel error"
           }
         }
       }
@@ -502,7 +595,7 @@
       ],
       "get":{
         "tags":["notifications"],
-        "description": "get all the notifications of student id",
+        "description": "get all the notifications of student or professor",
         "operationId": "browseStudentNotifications",
         "responses": {
           "200":{
@@ -535,15 +628,6 @@
     },
     "/notifications/{id_notification}":{
       "parameters": [
-        {
-          "name":"id_student",
-          "in": "path",
-          "schema":{
-            "type": "integer",
-            "maximum": 0
-          },
-          "required": true
-        },
         {
           "name":"id_notification",
           "in": "path",
@@ -682,7 +766,7 @@
             }
           },
           "401":{
-            "description": "Not authenticated"
+            "description": "Not authorized"
           }
         }
       }
@@ -745,10 +829,7 @@
             "description":"0 bachelor, 1 master",
             "enum": [0,1]
           },
-          "cds": {
-            "type": "array",
-            "items": { "type": "string" }
-          },
+          "cds": { "type": "string" },
           "creation_date": { "type": "string" },
           "status": { "type": "integer" }
         },

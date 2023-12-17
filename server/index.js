@@ -6,8 +6,21 @@ const cors = require("cors");
 const passport = require('./config/passport').passport;
 const metadata = require('./config/passport').metadata;
 const app = express();
+app.disable("x-powered-by");
 require('dotenv').config({path: './variable.env'})
 
+/* json schema validator */
+const { Validator, ValidationError } = require('express-json-validator-middleware');
+const fs = require('fs');
+
+const addFormats = require('ajv-formats').default;
+const thesisSchema = JSON.parse(fs.readFileSync('./json_schema/thesisSchema.json').toString());
+const querySearch = JSON.parse(fs.readFileSync('./json_schema/querySearch.json').toString());
+const validator = new Validator({ allErrors: true });
+validator.ajv.addSchema(thesisSchema);
+addFormats(validator.ajv);
+const validate = validator.validate;
+/* end json schema validator*/
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.static("public"));
@@ -31,10 +44,8 @@ app.use(express.urlencoded({ extended: false })); // Replaces Body Parser
 // login_as TOBE discussed
 let login_as = {user: undefined}
 const isLoggedIn = (req, res, next)=>{
-  
-  if(process.env.NODE_ENV === 'test') {
-    req.user = login_as.user
-
+  if(process.env.test) {
+    req.user = login_as.user;
   }
   else if (!req.isAuthenticated()) {
     return res.status(401).json({error: 'Unauthorized'});
@@ -45,30 +56,30 @@ const isLoggedIn = (req, res, next)=>{
 /******************************************************************Route*********************************************************************************************/
 
 const thesisController = require("./controllers/ThesisController");
-const teacherController = require("./controllers/TeacherController");
-const studentController = require("./controllers/StudentController");
+const coSupervisorController = require("./controllers/CoSupervisorController");
+const applicationController = require("./controllers/ApplicationController");
 const vc = require('./dayjsvc/index.dayjsvc')
 
-app.get("/thesis", isLoggedIn, (req, res) => thesisController.advancedResearchThesis(req,res));
+app.get("/thesis", isLoggedIn, (req, res) => thesisController.searchThesis(req,res, validate({query: querySearch})));
 
-app.get("/thesis/supervisor/emails", isLoggedIn, (req, res) => thesisController.getAllCoSupervisorsEmails(req, res));
+app.post("/thesis", isLoggedIn, validate({body: thesisSchema}), (req, res) => thesisController.addThesis(req, res));
 
-app.get("/professor/:id_professor/applications",isLoggedIn, (req, res) =>
-  teacherController.listApplication(req, res)
-);
+app.put("/thesis/:id", isLoggedIn, validate({body: thesisSchema}), (req, res) => thesisController.updateThesis(req, res));
 
-app.post("/thesis", isLoggedIn, (req, res) => thesisController.addThesis(req, res));
+app.delete("/thesis/:id", isLoggedIn, thesisController.deleteThesis)
 
-app.put("/thesis/:id", isLoggedIn, (req, res) => thesisController.updateThesis(req, res));
+app.post("/thesis/:id_thesis/applications", isLoggedIn, applicationController.applyForProposal);
 
-app.put("/professor/:id_professor/applications/:id_application", teacherController.acceptApplication);
+app.get("/applications", isLoggedIn, (req, res) => applicationController.listApplication(req, res));
 
-app.post("/thesis/:id_thesis/applications", isLoggedIn, (req, res) => studentController.applyForProposal(req, res));
+app.put("/applications/:id_application", isLoggedIn, (req,res) => applicationController.acceptApplication(req, res));
 
+app.get("/cosupervisors/email", isLoggedIn, (req, res) => coSupervisorController.getAllCoSupervisorsEmails(req, res));
 
-app.get("/student/:id_student/applications", isLoggedIn, (req,res) => studentController.browserApplicationStudent(req, res));
+app.get("/applications/student_cv/:student_id", isLoggedIn, applicationController.getStudentCv);
 
-app.get('/professor/thesis', isLoggedIn, (req, res) => teacherController.browseProposals(req, res))
+app.get("/applications/career/:student_id", isLoggedIn, applicationController.getCareerByStudentId)
+
 
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
 
@@ -88,10 +99,18 @@ app.post('/logout/callback', passport.logoutSamlCallback);
 
 app.get("/metadata", (req, res)=>res.type("application/xml").status(200).send(metadata()));
 
-app.get("/session/current", isLoggedIn, (req, res)=>{let u = {name: req.user.name, surname: req.user.surname, id: req.user.id, email:req.user.nameID, cds: req.user.cds, role: req.user.role}; res.status(200).send(u)})
+app.get("/session/current", isLoggedIn, (req, res)=>{let u = {name: req.user.name, surname: req.user.surname, id: req.user.id, email:req.user.nameID, cds: req.user.cds, role: req.user.role, group: req.user.group}; res.status(200).send(u)})
+
+app.use(function(err, req, res, next) {
+  if (err instanceof ValidationError) {
+      res.status(400).send({error: err.validationErrors});
+  } else next(err);
+});
 
 const PORT = 3001;
-app.listen(PORT, () =>
-  console.log(`Server running on http://localhost:${PORT}`)
-);
+if(!process.env.test){
+  app.listen(PORT, () =>
+    console.log(`Server running on http://localhost:${PORT}`)
+  );
+}
 module.exports = {app, login_as};

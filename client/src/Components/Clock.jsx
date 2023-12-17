@@ -41,9 +41,6 @@ const Clock = (props) => {
             .then(() => {
                 props.setCurrentTime(newTime.toDate());
             })
-            .catch(error => {
-                // Handle error here
-            });
     };
 
     const handleRestore = () =>{
@@ -79,13 +76,13 @@ const Clock = (props) => {
 
                         <ButtonGroup aria-label="Basic example">
 
-                            <Button onClick={() => addTime('year', 1)} className="my-2 btn-col">
+                            <Button onClick={() => addTime('year', 1)} variant='success' className="my-2">
                                 + YYYY
                             </Button>
-                            <Button onClick={() => addTime('month', 1)} className="my-2 btn-col">
+                            <Button onClick={() => addTime('month', 1)} variant='success' className="my-2">
                                 + MM
                             </Button>
-                            <Button onClick={() => addTime('day', 1)} className="my-2 btn-col">
+                            <Button onClick={() => addTime('day', 1)} variant='success' className="my-2">
                                 + DD
                             </Button>
 
@@ -94,10 +91,10 @@ const Clock = (props) => {
                         <br />
 
                         <ButtonGroup aria-label="Basic example">
-                            <Button onClick={() => addTime('hour', 1)} className="my-2 btn-col">
+                            <Button onClick={() => addTime('hour', 1)} variant='success' className="my-2">
                                 + hh
                             </Button>
-                            <Button onClick={() => addTime('minute', 1)} className="my-2 btn-col">
+                            <Button onClick={() => addTime('minute', 1)} variant='success' className="my-2">
                                 + mm
                             </Button>
 

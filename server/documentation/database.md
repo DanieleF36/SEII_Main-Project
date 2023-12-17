@@ -20,8 +20,8 @@
     
 ### *Career*
     This table represents one passed exem for that student
-- id integer ***primary key***
-- id_student integer ***foreign key***
+- idauto integer ***primary key***
+- id integer ***foreign key***
 - cod_course integer ***not null***
 - title_course integer ***not null***
 - cfu integer ***not null***
@@ -48,8 +48,10 @@
 - id_teacher integer ***foreign key***
 
 ### *Degree*
-- cod integer ***primary key***
-- title string ***not null***
+- id integer ***primary key***
+- code integer ***not null*** ***unique***
+    - it is like LM-32
+- title string ***not null*** ***unique***
 
 ### *Student*
 - id integer ***primary key***
@@ -69,7 +71,7 @@
 - name string
 - surname string
 - code_group integer ***not null***
-- code_dep integer ***not null***
+- cod_dep integer ***not null***
 
 ### *Thesis*
     Replication are permitted

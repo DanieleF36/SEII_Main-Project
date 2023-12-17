@@ -12,18 +12,21 @@ function ApplicationList(props) {
 
     useEffect(() => {
 
-        API.listApplication(props.user.id)
+        API.listApplication(props.user.role)
             .then((applications) => {
-                applications.map((e) => { e.student_carreer = [{ id: 0, title: 'DataScience', grade: '28' }, { id: 1, title: 'Reti di Calcolatori', grade: '30' }] })
-                setApplications(applications);
+                applications.map((e)=>{e.student_carreer=[]; API.getCareerByStudentId(e.id_student).then((carrier)=>{
+                    e.student_carreer=carrier; 
+                    setApplications(applications);
+                    console.log(e);})});
                 setDirty(false);
+               
             })
-            .catch((err) => { toast.error(err.error); });
+            .catch((err) => { toast.error(err.message); });
 
     }, [dirty]);
     const acceptPropByProf = (status, id_app) => {
 
-        API.acceptApplication(status, props.user.id, id_app)
+        API.acceptApplication(status, id_app)
             .then((res) => {
                 setDirty(true);
                 if (res == 1) {
@@ -32,12 +35,12 @@ function ApplicationList(props) {
                     toast.success('Application successfully rejected')
                 }
             })
-            .catch((err) => { toast.error(err.error); });
+            .catch((err) => { toast.error(err.message); });
     };
 
     const handleGetCV = (cv, id) => {
 
-        console.log({ path_cv: cv, student_id: id });
+        API.getStudentCv(cv, id).catch((err) => { toast.error(err.message); });
 
     }
 
@@ -103,7 +106,7 @@ function ApplicationList(props) {
                                             <th>Grade</th>
                                         </tr>
                                     </thead>
-                                    <tbody>{application.student_carreer.map((e) => { return (<tr><td>{e.title}</td><td>{e.grade}</td></tr>) })}</tbody></Table>
+                                    <tbody>{application.student_carreer.map((e, index) => { return (<tr key={index}><td>{e.title_course}</td><td>{e.grade}</td></tr>) })}</tbody></Table>
                                     <strong>Student Cv: </strong> <br /><Button variant='danger' style={{ marginTop: '2px' }} onClick={() => handleGetCV(application.path_cv, application.id_student)}><img src="./file-earmark-pdf-fill.svg"
                                         alt="Logo"
                                         className="mr-2" style={{ marginBottom: '4px' }}></img></Button>

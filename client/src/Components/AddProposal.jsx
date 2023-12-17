@@ -14,7 +14,7 @@ function AddProposalForm(props) {
         expiration_date: '',
         keywords: ['D2', 'M2'],
         type: ['Demo'],
-        groups: [ 'Group14'],
+        groups: [ `${props.user.group}`],
         description: 'Demo Presentation',
         knowledge: ['Team Organization'],
         note: 'DEMO2',
@@ -166,7 +166,7 @@ function AddProposalForm(props) {
                 addP.cosupervisor='';
             API.insertProposal(correctSpace(addP))
                 .then(() => { toast.success('Thesis Proposal successfully added'); handleResetChange(); props.setCopy(undefined); props.setCopyT(undefined); props.setCopyD(undefined); setWarned(0);})
-                .catch((error) => toast.error(error));
+                .catch((error) => toast.error(error.message));
         }
     };
 
@@ -259,11 +259,11 @@ function AddProposalForm(props) {
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>
                         <Form.Label><strong>Groups</strong>&nbsp;(separated by ',')</Form.Label>
-                        <Form.Control
+                        <Form.Control 
+                            readOnly
                             type="text"
                             name="groups"
                             value={proposalData.groups}
-                            onChange={handleList}
                         />
                     </Form.Group>
                     <Form.Group style={{ marginBottom: '10px' }}>

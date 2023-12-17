@@ -79,3 +79,35 @@
 
 ###### Front-end
 ![Frontend](./img/photo_2023-11-30_14-48-30.jpg)
+
+### Story 10, Delete Proposal
+
+###### Front-end
+![Frontend](./img/delete_proposal.png)
+###### Response
+![Response](./img/delete_status.png)
+
+### Story 11, Copy Proposal
+
+###### Front-end
+![Frontend](./img/copy_proposal_1.png)
+![Frontend](./img/copy_proposal_2.png)
+###### Response
+![Response](./img/copy_status.PNG)
+![Response](./img/copy_response.PNG)
+
+### Story 12, Archive Proposal
+
+###### Front-end
+![Frontend](./img/archive_proposal.png)
+
+###### Response
+![Response](./img/archive_status.PNG)
+
+### Story 13, Access Applicant CV
+
+###### Front-end
+![Frontend](./img/access_student_cv.png)
+
+###### Response
+![Response](./img/studentcv_status.png)
