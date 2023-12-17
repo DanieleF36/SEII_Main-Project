@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-      - Integration
+      - Front-end
   pull_request:
     types: [opened, synchronize, reopened]
 
