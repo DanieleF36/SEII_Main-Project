@@ -55,6 +55,7 @@ function Homepage(props) {
             </Pagination.Item>
         );
     }
+    
   
     //useEffects
 
@@ -143,11 +144,18 @@ function Homepage(props) {
     }
 
     const handleApplyFilters = () => {
-        if (filterCond(filters)) {  
-            API.advancedSearchThesis({ ...filters, page: props.active}).then(res => {
+        if (filterCond(filters)) {
+            if(props.user.role === 'teacher')
+                API.advancedSearchThesis({ ...filters, page: 1}).then(res => {
                 props.setProposals(res[1]);
                 props.setPage(res[0]);
-            });
+                });
+            else    
+                API.advancedSearchThesis({ ...filters, page: props.active}).then(res => {
+                props.setProposals(res[1]);
+                props.setPage(res[0]);
+                });
+                
         }
         else {
             toast.error('Some Order fields are not filled');
@@ -319,6 +327,7 @@ function Homepage(props) {
                     <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
                 </Col>
                 <Col xs={9}>
+                 <FilterContainer handleApplyFilters={handleApplyFilters} filters={filters} handleFilterChange={handleFilterChange} handleFilterCoSupChange={handleFilterCoSupChange} handleResetChange={handleResetChange}></FilterContainer>
                  <MyProposal user={props.user} handleCopy={handleCopy}/>
                 </Col>
             </Row>
