@@ -347,6 +347,7 @@ AddProposalForm.propTypes = {
     setCopy : PropTypes.func.isRequired,
     setCopyD : PropTypes.func.isRequired,
     setCopyT : PropTypes.func.isRequired,
+    navigateH : PropTypes.func.isRequired,
   };
 
 export default AddProposalForm;
