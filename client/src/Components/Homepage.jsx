@@ -172,6 +172,14 @@ function Homepage(props) {
 
     };
 
+    const navigateH = () =>{
+        
+            setTimeout(()=>{ setAdd(false);
+            setListA(false);
+            setMyProp(true);}, 2000);
+
+    };
+
 
 
     return (
@@ -268,7 +276,7 @@ function Homepage(props) {
                     </Col>
                     <Col xs={9}>
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <AddProposalForm user={props.user} copy={copy} setCopy={setCopy} setCopyD={setCopyD} setCopyT={setCopyT} copyD={copyD} copyT={copyT} mails={mails}/>
+                            <AddProposalForm navigateH={navigateH} user={props.user} copy={copy} setCopy={setCopy} setCopyD={setCopyD} setCopyT={setCopyT} copyD={copyD} copyT={copyT} mails={mails}/>
                         </div>
                     </Col>
                 </Row>

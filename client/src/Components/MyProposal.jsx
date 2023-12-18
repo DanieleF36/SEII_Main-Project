@@ -206,9 +206,9 @@ function MyProposal(props) {
                         <strong>Status:</strong>{' '}
                       
                         {proposal.status == 1 ? (
-                          <Badge pill bg="success">P</Badge>
+                          <Badge pill bg="success">PUB</Badge>
                         ) : (
-                          <Badge pill bg="warning">A</Badge>
+                          <Badge pill bg="warning">ARC</Badge>
                         )}
                       </Col>
                       <Col md='1' sm='1' xs='12'>
@@ -247,7 +247,7 @@ function MyProposal(props) {
                   }
                   <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Copy</Tooltip>  }><Button variant="primary mx-2" onClick={() => props.handleCopy(proposal)} ><i className="bi bi-clipboard-plus-fill"/></Button></OverlayTrigger>
                   {proposal.status==1?
-                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Delete</Tooltip>  }><Button variant="danger mx-2" onClick={() => handleDelete(proposal)} ><i className="bi bi-trash3-fill"></i></Button></OverlayTrigger>:''
+                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Delete</Tooltip>  }><Button variant="danger mx-2 my-2" onClick={() => handleDelete(proposal)} ><i className="bi bi-trash3-fill"></i></Button></OverlayTrigger>:''
                   }
                 </Accordion.Body>
               </Accordion.Item>

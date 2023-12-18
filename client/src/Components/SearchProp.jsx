@@ -26,9 +26,9 @@ function SeacrhProp(props){
                                                         <Col md='2' sm='2' xs='12'>
                                                             <strong>Status:</strong>{' '}
                                                             {proposal.status === 1 ? (
-                                                                <Badge pill bg="success">P</Badge>
+                                                                <Badge pill bg="success">PUB</Badge>
                                                             ) : (
-                                                                <Badge pill bg="danger">A</Badge>
+                                                                <Badge pill bg="danger">ARC</Badge>
                                                             )}
                                                         </Col>
                                                         <Col md='1' sm='1' xs='12'>

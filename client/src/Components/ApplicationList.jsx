@@ -68,15 +68,15 @@ function ApplicationList(props) {
                                             <Col md='3' sm='3' xs='12'>
                                                 <strong>Status:</strong>{' '}
                                                 {application.status == '0' ? (
-                                                    <Badge pill bg="warning">P</Badge>
+                                                    <Badge pill bg="warning">PEN</Badge>
                                                 ) : (
                                                     application.status == '1' ? (
-                                                        <Badge pill bg="success">A</Badge>
+                                                        <Badge pill bg="success">ARC</Badge>
                                                     ) : (
                                                         application.status == '2' ? (
-                                                            <Badge pill bg="danger">R</Badge>
+                                                            <Badge pill bg="danger">REJ</Badge>
                                                         ) :
-                                                            <Badge pill bg="secondary">C</Badge>
+                                                            <Badge pill bg="secondary">CAN</Badge>
                                                     )
                                                 )}
                                             </Col>
