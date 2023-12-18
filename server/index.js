@@ -80,7 +80,7 @@ app.get("/applications/student_cv/:student_id", isLoggedIn, applicationControlle
 
 app.get("/applications/career/:student_id", isLoggedIn, applicationController.getCareerByStudentId)
 
-app.put("/thesis/secretary/:id_thesis", isLoggedIn, (req, res) => thesisController.thesisRequestHandling(req, res));
+app.put("/thesis/secretary/:student_id", isLoggedIn, (req, res) => thesisController.thesisRequestHandling(req, res)); // Secretary Approve Student Request story
 
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
 
