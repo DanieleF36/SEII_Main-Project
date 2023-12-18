@@ -224,7 +224,7 @@ function Homepage(props) {
                     </Col>
                     <Col xs={9}>
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <AddRequestForm user={props.user} copy={copy} setCopy={setCopy} setCopyD={setCopyD} setCopyT={setCopyT} copyD={copyD} copyT={copyT} mails={mails}/>
+                            <AddRequestForm user={props.user} mails={mails}/>
                         </div>
                     </Col>
                 </Row>
