@@ -62,7 +62,8 @@ function HandleRequest(props) {
 
 }
 HandleRequest.propTypes = {
-    user: PropTypes.object.isRequired,
+    user: PropTypes.oneOfType([PropTypes.string,
+        PropTypes.object]).isRequired,
 };
 
 

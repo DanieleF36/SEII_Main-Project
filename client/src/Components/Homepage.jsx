@@ -11,6 +11,7 @@ import ApplicationList from './ApplicationList';
 import StudentList from './StudentList';
 import MyProposal from './MyProposal';
 import HandleRequest from './HandleRequest';
+import ProfessorRequests from './ProfessorRequests';
 import toast, { Toaster } from 'react-hot-toast';
 import Clock from './Clock';
 import API from '../API';
@@ -23,6 +24,7 @@ function Homepage(props) {
     
     // states def
     const [add, setAdd] = useState(false);
+    const [req, setRequests] = useState(false);
     const [addRequest, setAddRequest] = useState(false);
     const [listA, setListA] = useState(false);
     const [propList, setPropList] = useState(true);
@@ -268,16 +270,17 @@ function Homepage(props) {
             </Row>
         </Container>
         </div>
-        : props.user.role === 'teacher' ? add === true && listA === false && myProp === false? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
+        : props.user.role === 'teacher' ? add === true && listA === false && myProp === false && req === false? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
             <TitleBar setIsAuth={props.setIsAuth} user={props.user} setUser={props.setUser} isAuth={props.isAuth} />
             <Container fluid style={{ marginTop: '20px' }}>
                 <Row>
                     <Col xs={3}>
                         <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                             <Nav className="flex-column">
-                                <Nav.Link active={myProp} onClick={() => { toast.remove(); setAdd(false); setListA(false); setMyProp(true) }}> My Proposals</Nav.Link>
-                                <Nav.Link active={add} onClick={() => {toast.remove(); setAdd(true); setListA(false); setMyProp(false) }}> Add Proposal</Nav.Link>
-                                <Nav.Link active={listA} onClick={() => {toast.remove(); setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
+                                <Nav.Link active={myProp} onClick={() => { toast.remove(); setAdd(false); setListA(false); setMyProp(true); setRequests(false)}}> My Proposals</Nav.Link>
+                                <Nav.Link active={add} onClick={() => {toast.remove(); setAdd(true); setListA(false); setMyProp(false); setRequests(false) }}> Add Proposal</Nav.Link>
+                                <Nav.Link active={listA} onClick={() => {toast.remove(); setAdd(false); setListA(true); setMyProp(false); setRequests(false) }}> Applications List</Nav.Link>
+                                <Nav.Link active={req} onClick={() => {toast.remove(); setAdd(false); setListA(false); setMyProp(false); setRequests(true) }}>Proposal Requests</Nav.Link>
                             </Nav>
                         </Navbar>
                         <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
@@ -297,9 +300,10 @@ function Homepage(props) {
                     <Col xs={3}>
                         <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                             <Nav className="flex-column">
-                                <Nav.Link active={myProp} onClick={() => {toast.remove(); setAdd(false); setListA(false); setMyProp(true) }}> My Proposals</Nav.Link>
-                                <Nav.Link active={add} onClick={() => {toast.remove(); setAdd(true); setListA(false); setMyProp(false) }}> Add Proposal</Nav.Link>
-                                <Nav.Link active={listA} onClick={() => {toast.remove(); setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
+                                <Nav.Link active={myProp} onClick={() => {toast.remove(); setAdd(false); setListA(false); setMyProp(true); setRequests(false) }}> My Proposals</Nav.Link>
+                                <Nav.Link active={add} onClick={() => {toast.remove(); setAdd(true); setListA(false); setMyProp(false); setRequests(false) }}> Add Proposal</Nav.Link>
+                                <Nav.Link active={listA} onClick={() => {toast.remove(); setAdd(false); setListA(true); setMyProp(false); setRequests(false) }}> Applications List</Nav.Link>
+                                <Nav.Link active={req} onClick={() => {toast.remove(); setAdd(false); setListA(false); setMyProp(false); setRequests(true) }}>Proposal Requests</Nav.Link>
                             </Nav>
                         </Navbar>
                         <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
@@ -312,6 +316,27 @@ function Homepage(props) {
                 </Row>
             </Container>
         </div>
+        :req === true ? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
+        <TitleBar setIsAuth={props.setIsAuth} user={props.user} setUser={props.setUser} isAuth={props.isAuth} />
+        <Container fluid style={{ marginTop: '20px' }}>
+            <Row>
+                <Col xs={3}>
+                    <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
+                        <Nav className="flex-column">
+                            <Nav.Link active={myProp} onClick={() => {toast.remove(); setAdd(false); setListA(false); setMyProp(true); setRequests(false) }}> My Proposals</Nav.Link>
+                            <Nav.Link active={add} onClick={() => {toast.remove(); setAdd(true); setListA(false); setMyProp(false); setRequests(false) }}> Add Proposal</Nav.Link>
+                            <Nav.Link active={listA} onClick={() => {toast.remove(); setAdd(false); setListA(true); setMyProp(false); setRequests(false) }}> Applications List</Nav.Link>
+                            <Nav.Link active={req} onClick={() => {toast.remove(); setAdd(false); setListA(false); setMyProp(false); setRequests(true) }}>Proposal Requests</Nav.Link>
+                        </Nav>
+                    </Navbar>
+                    <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
+                </Col>
+                <Col xs={9}>
+                 <ProfessorRequests user={props.user}/>
+                </Col>
+            </Row>
+        </Container>
+        </div>
         : <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
         <TitleBar setIsAuth={props.setIsAuth} user={props.user} setUser={props.setUser} isAuth={props.isAuth} />
         <Container fluid style={{ marginTop: '20px' }}>
@@ -319,9 +344,10 @@ function Homepage(props) {
                 <Col xs={3}>
                     <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                         <Nav className="flex-column">
-                            <Nav.Link active={myProp} onClick={() => {toast.remove(); setAdd(false); setListA(false); setMyProp(true) }}> My Proposals</Nav.Link>
-                            <Nav.Link active={add} onClick={() => {toast.remove(); setAdd(true); setListA(false); setMyProp(false) }}> Add Proposal</Nav.Link>
-                            <Nav.Link active={listA} onClick={() => {toast.remove(); setAdd(false); setListA(true); setMyProp(false) }}> Applications List</Nav.Link>
+                            <Nav.Link active={myProp} onClick={() => {toast.remove(); setAdd(false); setListA(false); setMyProp(true); setRequests(false) }}> My Proposals</Nav.Link>
+                            <Nav.Link active={add} onClick={() => {toast.remove(); setAdd(true); setListA(false); setMyProp(false); setRequests(false) }}> Add Proposal</Nav.Link>
+                            <Nav.Link active={listA} onClick={() => {toast.remove(); setAdd(false); setListA(true); setMyProp(false); setRequests(false) }}> Applications List</Nav.Link>
+                            <Nav.Link active={req} onClick={() => {toast.remove(); setAdd(false); setListA(false); setMyProp(false); setRequests(true) }}>Proposal Requests</Nav.Link>
                         </Nav>
                     </Navbar>
                     <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
