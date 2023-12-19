@@ -366,7 +366,7 @@ function Homepage(props) {
                 <Col xs={3}>
                     <Navbar style={{ backgroundColor: '#fff' }} className="flex-column rounded">
                         <Nav className="flex-column">
-                            <Nav.Link active={requestClerk} onClick={() => {toast.remove(); setRequestClerk(true) }}> Request from student</Nav.Link>
+                            <Nav.Link active={requestClerk} onClick={() => {toast.remove(); setRequestClerk(true) }}>Request From Student</Nav.Link>
                         </Nav>
                     </Navbar>
                     <Clock currentTime={props.currentTime} setCurrentTime={props.setCurrentTime}/>
