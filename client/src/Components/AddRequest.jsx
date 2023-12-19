@@ -10,8 +10,7 @@ function AddRequestForm(props) {
     const [proposalData, setProposalData] = useState({
         supervisor: '',
         cosupervisor: '',
-        description: 'Description of thesis request',
-        cds: props.user.cds,
+        description: 'Description of thesis request'
     });
 
     const [cosup_email] = useState(props.mails);
@@ -40,7 +39,7 @@ function AddRequestForm(props) {
         setProposalData({
             supervisor: '',
             cosupervisor: '',
-            cds: '',
+            description: '',
         });
     };
 
@@ -61,7 +60,7 @@ function AddRequestForm(props) {
         else {
             let co = proposalData.cosupervisor;
             if (co.includes(e)) {
-                toast.error('CoSupervisor already inserted');
+                toast.error('This CoSupervisor already inserted');
                 setSearchTerm('');
             }
             else {
@@ -111,9 +110,9 @@ function AddRequestForm(props) {
             let addP = proposalData;
             if(addP.cosupervisor.length === 0)
                 addP.cosupervisor='';
-            API.insertProposal(addP)
+            /*API.insertRequest(addP)
                 .then(() => { toast.success('Thesis Request successfully added'); handleResetChange();})
-                .catch((error) => toast.error(error.message));
+                .catch((error) => toast.error(error.message));*/
         }
     };
 
@@ -221,7 +220,7 @@ function AddRequestForm(props) {
                             readOnly
                             type="text"
                             name="cds"
-                            value={proposalData.cds}
+                            value={props.user.cds}
                         />
                     </Form.Group>
                     <Button style={{ marginTop: '5px' }} variant="primary" onClick={handleAddProposal}>

@@ -21,7 +21,22 @@ function HandleRequest(props) {
 
     }, [dirty]);*/
 
-
+const handleRequestResponse = (request_id, status) => {
+        
+        setList([{"id":1,"id_stud":1,"student_name":"Gianni", "student_surname": "Altobelli","id_prof":1,"prof_name":"Luca", "prof_surname": "Azzurro", "cosupervisor":['marco.collo@mail.com', 'marco.colli@mail.com'], 'description': 'Description sample...', 'status':status}])
+        /*
+        API.acceptRequest(request_id, status)
+            .then((res) => {
+                setDirty(true);
+                if (res == 1) {
+                    toast.success('Request successfully accepted')
+                } else if (res == 2) {
+                    toast.success('Request successfully rejected')
+                }
+            })
+            .catch((err) => { toast.error(err.message); });
+        */
+};
 
     return (
         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
@@ -88,7 +103,7 @@ function HandleRequest(props) {
 
 }
 HandleRequest.propTypes = {
-    user: PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired
 };
 
 
