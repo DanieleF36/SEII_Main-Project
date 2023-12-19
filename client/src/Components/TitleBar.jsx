@@ -88,7 +88,7 @@ function TitleBar(props) {
                             className="img-responsive"
                             style={{ marginRight: '2px' }}
 
-                            />{<><strong>role:</strong> {props.user.role} {props.user.role === 'student'?<><strong>ID: </strong>s{props.user.id}</>:<><strong>ID: </strong> t{props.user.id}</>} </>}
+                            />{<><strong>role:</strong> {props.user.role} {props.user.role === 'student'?<><strong>ID: </strong>s{props.user.id}</>:props.user.role ===  'teacher'?<><strong>ID: </strong> t{props.user.id}</>: <><strong>ID: </strong> c{props.user.id}</>} </>}
                             </Dropdown.Toggle>
 
                             <Dropdown.Menu style={{ width: '100%' }}>
@@ -96,9 +96,12 @@ function TitleBar(props) {
                                 <Dropdown.Item className="custom-disabled-item" disabled><strong>Name:</strong> {props.user.name}</Dropdown.Item>
                                 {props.user.role === 'student' ? <><Dropdown.Item className="custom-disabled-item" disabled><strong>Surname:</strong> {props.user.surname}</Dropdown.Item>
                                 <Dropdown.Item className="custom-disabled-item" disabled style={customDropdownItemStyle}><strong>Cds:</strong> {props.user.cds}</Dropdown.Item></> :
+                                props.user.role ==='teacher' ?
                                 <>
                                 <Dropdown.Item className="custom-disabled-item" disabled><strong>Surname:</strong> {props.user.surname}</Dropdown.Item>
-                                <Dropdown.Item className="custom-disabled-item" disabled style={customDropdownItemStyle}><strong>Group:</strong> {props.user.group}</Dropdown.Item></>}
+                                <Dropdown.Item className="custom-disabled-item" disabled style={customDropdownItemStyle}><strong>Group:</strong> {props.user.group}</Dropdown.Item></>:
+                                <Dropdown.Item className="custom-disabled-item" disabled style={customDropdownItemStyle}><strong>Surname:</strong> {props.user.surname}</Dropdown.Item>
+                                }
                                 <Dropdown.Item className='custom-dropdown d-flex align-items-center' onClick={() => handleShow()}><img src="./box-arrow-left.svg"
                                     alt="Logo"
                                     className="mr-2" style={{marginTop:'7px'}}></img></Dropdown.Item>

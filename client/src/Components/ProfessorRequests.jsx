@@ -85,7 +85,7 @@ function ProfessorRequests(props) {
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                     {request.status == '0' ? <Button onClick={()=>{handleRequestResponse(request.id, 2)}}variant='danger'>Reject</Button> : ''}
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    {request.status == '0' ? <Button onClick={()=>{handleRequestResponse(request.id, 3)}}variant='primary'>Request Change</Button> : ''}
+                                    {request.status == '0' ? <Button onClick={()=>{handleRequestResponse(request.id, 3)}} className='my-2' variant='primary'>Request Change</Button> : ''}
                                 </Accordion.Body>
                             </Accordion.Item>
                         </Accordion>
