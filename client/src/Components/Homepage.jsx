@@ -193,7 +193,7 @@ function Homepage(props) {
 
 
     return (
-        props.user.role !== 'student' ? 
+        props.user.role === 'student' ? 
         propList === true && addRequest === false && listApplicationStud === false? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
             <TitleBar setIsAuth={props.setIsAuth} user={props.user} setUser={props.setUser} isAuth={props.isAuth}/>
             <Toaster
