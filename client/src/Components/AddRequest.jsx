@@ -15,7 +15,7 @@ function AddRequestForm(props) {
     });
 
     const [cosup_email] = useState(props.mails);
-    const [sup_list] = useState(['lucca', 'azzurro']);
+    const [sup_list] = useState(['luca.azzurro@professori.polito.it', 'francesco.lucca@professori.polito.it']);
     const [filt_cosup, setFilt_cosup] = useState([]);
     const [filt_sup, setFilt_sup] = useState([]);
     const [searchSup, setSearchSup] = useState('');
@@ -139,7 +139,7 @@ function AddRequestForm(props) {
                                 <Col sm="12" md="12" lg="6" className="d-flex align-items-center">
                                     <Dropdown style={{ marginTop: '5px' }}>
                                         <Dropdown.Toggle variant="primary" id="dropdown-basic">
-                                            {searchSup === '' ? 'Select supervisor' : searchSup}
+                                            {searchSup === '' ? 'Select mail' : searchSup}
                                         </Dropdown.Toggle>
 
                                         <Dropdown.Menu show={searchSup !== ''}>
