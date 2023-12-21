@@ -186,6 +186,7 @@ function Homepage(props) {
         
             setTimeout(()=>{ setAdd(false);
             setListA(false);
+            setRequests(false);
             setMyProp(true);}, 2000);
 
     };
