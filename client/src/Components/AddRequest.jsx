@@ -236,7 +236,8 @@ function AddRequestForm(props) {
 }
 
 AddRequestForm.propTypes = {
-    user : PropTypes.object.isRequired,
+    user : PropTypes.oneOfType([PropTypes.string,
+        PropTypes.object]).isRequired,
     mails : PropTypes.array.isRequired
   };
 

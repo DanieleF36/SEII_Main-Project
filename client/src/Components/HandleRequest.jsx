@@ -62,12 +62,11 @@ const handleRequestResponse = (request_id, status) => {
                                                 ) : (
                                                     request.status == '1' ? (
                                                         <Badge pill bg="success">ACC</Badge>
-                                                    ) : (
-                                                        request.status == '2' ? (
+                                                    ) :
+                                                         (
                                                             <Badge pill bg="danger">REJ</Badge>
-                                                        ) : 
-                                                        <Badge pill bg="primary">CHA</Badge>
-                                                    )
+                                                        ) 
+                                                    
                                                     )
                                                 }
                                             </Col>
@@ -103,7 +102,8 @@ const handleRequestResponse = (request_id, status) => {
 
 }
 HandleRequest.propTypes = {
-    user: PropTypes.object.isRequired
+    user : PropTypes.oneOfType([PropTypes.string,
+        PropTypes.object]).isRequired
 };
 
 
