@@ -183,11 +183,13 @@ function Homepage(props) {
     };
 
     const navigateH = () =>{
-        
-            setTimeout(()=>{ setAdd(false);
+
+            setMyProp(true);
+            setAdd(false);
             setListA(false);
             setRequests(false);
-            setMyProp(true);}, 2000);
+            toast.success('Thesis Proposal successfully added');
+            
 
     };
 
@@ -340,6 +342,10 @@ function Homepage(props) {
         </div>
         : <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
         <TitleBar setIsAuth={props.setIsAuth} user={props.user} setUser={props.setUser} isAuth={props.isAuth} />
+        <Toaster
+                position="top-center"
+                reverseOrder={false}
+            />
         <Container fluid style={{ marginTop: '20px' }}>
             <Row>
                 <Col xs={3}>

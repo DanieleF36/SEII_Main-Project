@@ -165,7 +165,7 @@ function AddProposalForm(props) {
             if(addP.cosupervisor.length === 0)
                 addP.cosupervisor='';
             API.insertProposal(correctSpace(addP))
-                .then(() => { toast.success('Thesis Proposal successfully added'); handleResetChange(); props.setCopy(undefined); props.setCopyT(undefined); props.setCopyD(undefined); setWarned(0); props.navigateH();})
+                .then(() => {handleResetChange(); props.setCopy(undefined); props.setCopyT(undefined); props.setCopyD(undefined); setWarned(0); props.navigateH();})
                 .catch((error) => toast.error(error.message));
         }
     };
