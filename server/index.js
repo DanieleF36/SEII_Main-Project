@@ -16,6 +16,7 @@ const fs = require('fs');
 const addFormats = require('ajv-formats').default;
 const thesisSchema = JSON.parse(fs.readFileSync('./json_schema/thesisSchema.json').toString());
 const querySearch = JSON.parse(fs.readFileSync('./json_schema/querySearch.json').toString());
+const requestSchema = JSON.parse(fs.readFileSync('./json_schema/requestSchema.json').toString())
 const validator = new Validator({ allErrors: true });
 validator.ajv.addSchema(thesisSchema);
 addFormats(validator.ajv);
@@ -58,6 +59,7 @@ const isLoggedIn = (req, res, next) => {
 const thesisController = require("./controllers/ThesisController");
 const coSupervisorController = require("./controllers/CoSupervisorController");
 const applicationController = require("./controllers/ApplicationController");
+const requestController =  require("./controllers/RequestController");
 const vc = require('./dayjsvc/index.dayjsvc')
 
 app.get("/thesis", isLoggedIn, (req, res) => thesisController.searchThesis(req, res, validate({ query: querySearch })));
@@ -82,11 +84,13 @@ app.get("/applications/career/:student_id", isLoggedIn, applicationController.ge
 
 app.put("/thesis/secretary/:student_id", isLoggedIn, (req, res) => thesisController.thesisRequestHandling(req, res)); // Secretary Approve Student Request story
 
+app.post("/requests", requestController.addRequest);
+
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
 
 app.post("/testing/vc/restore", (req, res) => vc.vc_restore(req, res))
 
-app.get("/testing/vc/get", (req, res) => vc.vc_current(req, res))
+app.get("/testing/vc/get", validate({ body: requestSchema }),(req, res) => vc.vc_current(req, res))
 
 /******************************************************************Login*********************************************************************************************/
 
