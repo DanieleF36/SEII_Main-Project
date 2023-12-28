@@ -1,8 +1,8 @@
 'use strict'
-const cosupervisorService = require("../services/CoSupervisorService");
+const supervisorService = require("../services/TeacherService");
 
 exports.getAllCoSupervisorsEmails = function (req, res) {
-  cosupervisorService.getAllCoSupervisorsEmailsService()
+  supervisorService.getAllSupervisorsEmailsService()
     .then((result) => {
       res.status(200).json(result);
     })

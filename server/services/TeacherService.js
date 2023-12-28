@@ -158,6 +158,16 @@ exports.getCareerByStudentId = async function (id_student) {
     return await studentRepo.getCareerByStudentId(id_student)
 }
 
+/**
+ * Retrive the all the email of all the Cosupervisor
+ * @returns array of CoSupervisorsEmail (string)
+*/
+exports.getAllCoSupervisorsEmailsService = async function () {
+    const result = await teacherRepo.getAllEmails();
+    return result
+  };
+  
+
 // Esporta funzioni Private solo per i test
 if (process.env.NODE_ENV === 'test') {
     module.exports._sendRejectedEmail = _sendRejectedEmail;

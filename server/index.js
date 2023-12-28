@@ -78,13 +78,15 @@ app.put("/applications/:id_application", isLoggedIn, (req, res) => applicationCo
 
 app.get("/cosupervisors/email", isLoggedIn, (req, res) => coSupervisorController.getAllCoSupervisorsEmails(req, res));
 
+app.get("/supervisors/email", isLoggedIn, (req, res) => supervisorController.getAllSupervisorsEmails(req, res));
+
 app.get("/applications/student_cv/:student_id", isLoggedIn, applicationController.getStudentCv);
 
 app.get("/applications/career/:student_id", isLoggedIn, applicationController.getCareerByStudentId)
 
 app.put("/thesis/secretary/:student_id", isLoggedIn, (req, res) => thesisController.thesisRequestHandling(req, res)); // Secretary Approve Student Request story
 
-app.post("/requests", requestController.addRequest);
+app.post("/requests",isLoggedIn,validate({ body: requestSchema }), requestController.addRequest);
 
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
 
