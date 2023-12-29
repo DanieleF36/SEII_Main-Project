@@ -14,11 +14,13 @@ function AddRequestForm(props) {
     });
 
     const [cosup_email] = useState(props.mails);
-    const [sup_list] = useState(['luca.azzurro@professori.polito.it', 'francesco.lucca@professori.polito.it']);
+    const [sup_list,setSup_list] = useState(props.sup/*['luca.azzurro@professori.polito.it', 'francesco.lucca@professori.polito.it']*/);
     const [filt_cosup, setFilt_cosup] = useState([]);
     const [filt_sup, setFilt_sup] = useState([]);
     const [searchSup, setSearchSup] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
+
+    
 
     useEffect(() => {
         setFilt_cosup(cosup_email.filter((item) =>
@@ -109,7 +111,8 @@ function AddRequestForm(props) {
             // Implement the logic to add the proposal using the proposalData state- API
             let addP = proposalData;
             if(addP.cosupervisor.length === 0)
-                addP.cosupervisor='';
+                addP.cosupervisor=[];
+            console.log(addP)
             /*API.insertRequest(addP)
                 .then(() => { toast.success('Thesis Request successfully added'); handleResetChange();})
                 .catch((error) => toast.error(error.message));*/
@@ -238,7 +241,8 @@ function AddRequestForm(props) {
 AddRequestForm.propTypes = {
     user : PropTypes.oneOfType([PropTypes.string,
         PropTypes.object]).isRequired,
-    mails : PropTypes.array.isRequired
+    mails : PropTypes.array.isRequired,
+    sup : PropTypes.array.isRequired
   };
 
 export default AddRequestForm;

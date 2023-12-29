@@ -35,6 +35,7 @@ function Homepage(props) {
     const [copyT, setCopyT] = useState(undefined);
     const [copyD, setCopyD] = useState(undefined);
     const [mails, setMails] = useState([]);
+    const [sup, setSup] = useState([]);
     const [application, setApplication] = useState({
         id_thesis: '',
         cv: ''
@@ -90,9 +91,14 @@ function Homepage(props) {
     }, [props.currentTime]);
 
     useEffect(()=>{
-        if(props.user.role==='teacher')
-            API.getCoSupervisorsEmails().then((res)=>{setMails(res);})
+        API.getCoSupervisorsEmails().then((res)=>{setMails(res);})
     }, [props.user]);
+
+    useEffect(()=>{
+        API.getCoSupervisorsEmails().then((res)=>{setSup(res);})
+        //API.getAllSupervisorsEmails().then((res)=>{setSup(res);})  API for merge
+    }, [props.user]);
+
 
     //handleFunctions
 
@@ -245,7 +251,7 @@ function Homepage(props) {
                     </Col>
                     <Col xs={9}>
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <AddRequestForm user={props.user} mails={mails}/>
+                            <AddRequestForm user={props.user} mails={mails} sup={sup}/>
                         </div>
                     </Col>
                 </Row>
