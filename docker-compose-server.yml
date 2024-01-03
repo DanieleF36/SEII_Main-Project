@@ -1,0 +1,28 @@
+services:
+  server:
+    build:
+      context: ./
+      dockerfile: Dockerfile-server 
+    ports:
+      - "3001:3001/tcp"
+    networks:
+     softengnetwork:
+      ipv4_address: 192.168.10.3
+  mailServer:
+    image: "rnwood/smtp4dev"
+    ports:
+      - "25:25/tcp"
+      - "80:80/tcp"
+      - "587:587/tcp"
+      - "2525:2525/tcp"
+    networks:
+     softengnetwork:
+      ipv4_address: 192.168.10.2
+
+networks:
+  softengnetwork:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 192.168.10.0/24
+         gateway: 192.168.10.1
