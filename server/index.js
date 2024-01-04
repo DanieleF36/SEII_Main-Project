@@ -6,6 +6,8 @@ const cors = require("cors");
 const passport = require('./config/passport').passport;
 const metadata = require('./config/passport').metadata;
 const app = express();
+const cron = require('node-cron')
+const crontasks = require('./cron/cronJobs')
 app.disable("x-powered-by");
 require('dotenv').config({ path: './variable.env' })
 
@@ -120,4 +122,13 @@ if (!process.env.test) {
     console.log(`Server running on http://localhost:${PORT}`)
   );
 }
+
+// first call when the server is runned
+crontasks.setExpired()
+
+/**
+ * Node cron scheduled task for updating the DB to be executed each day at 23:59
+ */
+cron.schedule('59 23 * * *', crontasks.setExpired);
+
 module.exports = { app, login_as };
