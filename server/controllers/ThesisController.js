@@ -1,7 +1,6 @@
 "use strict";
 
 const thesisService = require("../services/ThesisService");
-const secretaryService = require("../services/SecretaryService");
 /**
  * FOR TEACHER ONLY side
  * Wrapper function for recovering the whole set of ACTIVE thesis for the current logged in 
@@ -168,34 +167,4 @@ exports.deleteThesis = function deleteThesis(req, res) {
       else
         res.status(500).json(err);
     });
-}
-
-/**
- * Wrapper function to accept or reject a thesis request done by a student (secretary side)
- * @param {*} req 
- * @param {*} res 
- * @returns 
- */
-exports.thesisRequestHandling = function (req, res) {
-  if (req.user.role != "secretary") {
-    res.status(401).json({ message: 'You can not access to this route' });
-    return
-  }
-  if (!req.params.student_id || req.params.student_id < 0) {
-    res.status(400).json({ message: 'Bad request: student id is missing or minor than 0' });
-    return;
-  }
-  if (!req.body.status || req.body.status < 0 || req.body.status > 1) {
-    res.status(400).json({ message: 'Thesis status missing or invalid' });
-    return;
-  }
-  if (!req.body.id_thesis || req.body.id_thesis < 0) {
-    return res.status(400).json({ message: 'Thesis id missing or invalid' });
-  }
-  if (!req.body.teacher_id || !req.body.teacher_id < 0) {
-    return res.status(400).json({ message: "Teacher id missing or invalid" })
-  }
-  secretaryService.thesisRequestHandling(req.body.id_thesis, req.body.status, req.params.id_student, req.body.teacher_id)
-    .then(response => res.status(200).json(response))
-    .catch((err) => res.status(500).json(err))
 }

@@ -300,6 +300,22 @@ async function deleteThesis(id){
   .catch(err=> {throw new Error(err.message)})
 }
 
+async function thesisRequestHandling(student_id,status,request_id,id_thesis,teacher_id){
+  const requestBody = {
+    status: status,
+    request_id: request_id,
+    id_thesis: id_thesis,
+    teacher_id: teacher_id
+  };
+  return getJson(fetch(URL + `/thesis/secretary/${student_id}`,{
+    method: 'PUT',
+    credentials: "include",
+    body : JSON.stringify(requestBody)
+  })).then(json => { return json })
+  .catch(err=> {throw new Error(err.message)})
+}
+
+
 // =================== Virtual clock API ===================
 
 function vc_set(date) {
@@ -339,7 +355,7 @@ function vc_restore() {
   })
 }
 
-const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis };
+const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis,thesisRequestHandling };
 
 
 
