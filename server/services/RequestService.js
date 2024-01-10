@@ -64,3 +64,21 @@ exports.thesisRequestHandling = async function (thesisId, status, id_student, re
     await requestRepository.thesisRequestStatusUpdate(request_id, status)
     return status
 }
+
+/**
+ * Service function for a professor to change the status of a thesis request
+ * @param {*} request_id 
+ * @param {*} statusTeacher 
+ * @returns the updated status
+ */
+exports.professorThesisHandling = async function (request_id, statusTeacher) {
+    const request = await requestRepository.getRequest(request_id);
+
+    if (!request) {
+        throw new Error("Request not found");
+    }
+
+    await requestRepository.profReqStatusUpdate(request_id, statusTeacher);
+
+    return statusTeacher;
+};

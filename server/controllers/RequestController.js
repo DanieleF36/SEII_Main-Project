@@ -51,3 +51,29 @@ exports.thesisRequestHandling = function (req, res) {
         .then(response => res.status(200).json(response))
         .catch((err) => res.status(500).json(err))
 }
+
+/**
+ * Wrapper function for a professor to change the status of a thesis request
+ * @param {*} req with req.body.request_id, req.body.statusTeacher
+ * @param {*} res 
+ * @returns 
+ */
+exports.professorThesisHandling = function (req, res) {
+    if (req.user.role !== "teacher") {
+        res.status(401).json({ message: 'You can not access this route' });
+        return;
+    }
+    if (!req.body.request_id || req.body.request_id < 0) {
+        res.status(400).json({ message: "Request id missing or invalid" });
+        return;
+    }
+    if (!req.body.statusTeacher || req.body.statusTeacher < 0 || req.body.statusTeacher > 3) {
+        res.status(400).json({ message: 'Thesis status (statusTeacher) missing or invalid' });
+        return;
+    }
+
+    // Assuming there is a service function for professor thesis handling
+    requestService.professorThesisHandling(req.body.request_id, req.body.status)
+        .then(response => res.status(200).json(response))
+        .catch(err => res.status(500).json(err));
+};

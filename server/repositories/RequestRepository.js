@@ -79,3 +79,35 @@ exports.thesisRequestStatusUpdate = function (request_id, status) {
         })
     })
 }
+
+/**
+ * Repository function to update the status of a thesis request
+ * @param {*} request_id 
+ * @param {*} status : 0 reject, 1 accept
+ * @returns {Promise<number>} The number of rows updated
+ */
+exports.profReqStatusUpdate = function (request_id, status) {
+    if (request_id < 0) {
+        throw new Error("Request must be positive");
+    }
+    if (status < 0 || status > 3) {
+        throw new Error("Status must be between 1 and 3 inclusive");
+    }
+
+    const sql = "UPDATE Request SET statusT = ? WHERE id = ?";
+    return new Promise((resolve, reject) => {
+        db.run(sql, [status, request_id], function (err) {
+            if (err) {
+                reject(new Error(err.message));
+                return;
+            }
+
+            if (this.changes === 0) {
+                reject(new Error('No rows updated. Request ID not found.'));
+                return;
+            }
+
+            resolve(this.changes);
+        });
+    });
+};
