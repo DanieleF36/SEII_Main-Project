@@ -17,6 +17,9 @@ function ApplicationList(props) {
                 applications.map((e)=>{e.student_carreer=[]; API.getCareerByStudentId(e.id_student).then((carrier)=>{
                     e.student_carreer=carrier; 
                     setApplications(applications);
+                    if (e.isNew) {
+                        showNotification('New Application Received', 'A new application has been received. Please review it.');
+                    }
                     console.log(e);})});
                 setDirty(false);
                
@@ -24,6 +27,19 @@ function ApplicationList(props) {
             .catch((err) => { toast.error(err.message); });
 
     }, [dirty]);
+
+    const showNotification = (title, body) => {
+        if (Notification.permission === 'granted') {
+            new Notification(title, { body });
+        } else if (Notification.permission !== 'denied') {
+            Notification.requestPermission().then((permission) => {
+                if (permission === 'granted') {
+                    new Notification(title, { body });
+                }
+            });
+        }
+    };
+    
     const acceptPropByProf = (status, id_app) => {
 
         API.acceptApplication(status, id_app)
