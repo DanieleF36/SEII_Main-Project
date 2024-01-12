@@ -61,4 +61,11 @@ describe('thesisRequestHandling', () => {
         expect(mockRes.status).toHaveBeenCalledWith(400);
         expect(mockRes.json).toHaveBeenCalledWith({ message: 'Teacher id missing or invalid' });
     })
+    test("thesisRequestHandling success", async () => {
+        jest.spyOn(require('../../services/RequestService.js'), "thesisRequestHandling").mockResolvedValue("success");
+        controller.thesisRequestHandling(mockReq, mockRes);
+        await Promise.resolve()
+        expect(mockRes.status).toHaveBeenCalledWith(200);
+        expect(mockRes.json).toHaveBeenCalledWith("success");
+      });
 })
