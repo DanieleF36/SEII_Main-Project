@@ -50,6 +50,22 @@ exports.getRequest = function (request_id) {
     })
 }
 
+exports.getActiveByStudentId = (studentId) => {
+    if (!(studentId && studentId >= 0)) {
+      throw new Error('Student ID must be greater than or equal to 0');
+    }
+    const fetchActiveApplicationSQL = 'SELECT * FROM Request WHERE id_student = ? AND (statusS=1 OR statusS=0) AND (statusT=1 OR statusT=0)';
+    return new Promise((resolve, reject) => {
+      db.get(fetchActiveApplicationSQL, [studentId], (err, result) => {
+        if (err) {
+          reject(new Error(err.message));
+          return;
+        }
+        resolve(result);
+      });
+    });
+  };
+
 //==================================Set==================================
 
 /**

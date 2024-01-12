@@ -25,6 +25,10 @@ exports.addRequest = async function (request, studentId) {
     return req;
 }
 
+exports.getActiveByStudentId = async function (studentId){
+    
+}
+
 /**
  * Function to accept a thesis request by the secretary. If the secreatary accepts the request the professor is also notified
  * @param {*} thesisId 
