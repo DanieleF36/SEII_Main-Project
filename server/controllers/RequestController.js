@@ -4,7 +4,6 @@ const requestRepository = require("../repositories/RequestRepository");
 const applicationRepository = require('../repositories/ApplicationRepository');
 
 exports.addRequest = function (req, res) {
-    console.log(req.body)
     if(req.user.role != 'student'){
         res.status(401).json({message: "Only student can access to this API"})
     }

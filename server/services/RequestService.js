@@ -8,9 +8,7 @@ const thesisRepository = require("../repositories/ThesisRepository")
 const studentRepository = require("../repositories/StudentRepository")
 
 exports.addRequest = async function (request, studentId) {
-    console.log("here")
     request.supervisor = (await teacherRepository.getByEmail(request.supervisor)).id;
-    console.log(request)
     const req = await requestRepository.addRequest(request, studentId);
     for (let i = 0; i < request.cosupervisor.length; i++) {
         const cosupervisor = await coSupervisorRepository.getByEmail(request.cosupervisor[i])
