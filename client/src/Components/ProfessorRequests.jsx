@@ -8,7 +8,7 @@ function ProfessorRequests(props) {
     
     const [dirty, setDirty] = useState(true);
    
-    const [requests, setRequests] = useState([{"id":1,"id_stud":1,"student_name":"Gianni", "student_surname": "Altobelli", "cosupervisor":['marco.collo@mail.com', 'marco.colli@mail.com'], 'description': 'Description sample...', 'status':0}]);
+    const [requests, setRequests] = useState([]);
     
     useEffect(() => {
 
