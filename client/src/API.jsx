@@ -315,7 +315,33 @@ async function thesisRequestHandling(student_id,status,request_id,id_thesis,teac
   .catch(err=> {throw new Error(err.message)})
 }
 
+async function getRequestAll(status) { 
+  const res = await fetch(URL + `/request/all`, {
+    credentials:'include'
+  });
+  if(res.status == 200){
+    const thesis = await res.json();
+    return thesis.thesis;
+  }
+  else{
+    const err = await res.json();
+    throw new Error(err.message)
+  }
+}
 
+async function getRequestByProfessor(status) { 
+  const res = await fetch(URL + `/request`, {
+    credentials:'include'
+  });
+  if(res.status == 200){
+    const thesis = await res.json();
+    return thesis.thesis;
+  }
+  else{
+    const err = await res.json();
+    throw new Error(err.message)
+  }
+}
 // =================== Virtual clock API ===================
 
 function vc_set(date) {
@@ -355,7 +381,7 @@ function vc_restore() {
   })
 }
 
-const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis,thesisRequestHandling };
+const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis,thesisRequestHandling, getRequestAll, getRequestByProfessor };
 
 
 

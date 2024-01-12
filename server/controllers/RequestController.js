@@ -51,3 +51,27 @@ exports.thesisRequestHandling = function (req, res) {
         .then(response => res.status(200).json(response))
         .catch((err) => res.status(500).json(err))
 }
+
+exports.getRequestsByProfessor = function (req, res) {
+    if(req.user.role !== 'teacher') {
+        res.status(401).json({ message: 'You can not access to this route' });
+        return
+    }
+    requestService.getRequestsByProfessor(1)
+        .then( resp => {
+            res.status(200).json(resp)
+        })
+        .catch( err => res.status(500).json(err))
+}
+
+exports.getRequestAll = function (req, res) {
+    if(req.user.role !== 'secretary') {
+        res.status(401).json({ message: 'You can not access to this route' });
+        return
+    }
+    requestService.getRequestAll()
+        .then( resp => {
+            res.status(200).json(resp)
+        })
+        .catch( err => res.status(500).json(err))
+}

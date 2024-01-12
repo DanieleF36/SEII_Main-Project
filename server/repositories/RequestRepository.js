@@ -33,7 +33,7 @@ exports.addRequest = function (request, studentId) {
 /**
  * Given a request id retrive all the request info
  * @param {*} request_id 
- * @returns all the request's info
+ * @returns all the request's info or an empty object if the request has not been found
  */
 exports.getRequest = function (request_id) {
     if (request_id < 0)
@@ -44,6 +44,9 @@ exports.getRequest = function (request_id) {
             if (err) {
                 reject(new Error(err.message));
                 return;
+            }
+            if(!row) {
+                resolve({})
             }
             resolve(newRequest(row.studentId, row.supervisorId, row.description, row.statusStatus, row.statusT));
         })
@@ -76,6 +79,37 @@ exports.thesisRequestStatusUpdate = function (request_id, status) {
                 return;
             }
             resolve(this.changes);
+        })
+    })
+}
+
+exports.getRequestsByProfessor = function(professor_id) {
+    if(professor_id < 0)
+        throw new Error("Request must be positive")
+
+    const sql = "SELECT R.id, description, statusS, statusT, S.surname, S.name FROM Request R, Student S WHERE supervisorId = ? AND statusS = 1 AND studentId = S.id"
+    return new Promise((resolve, reject) => {
+        db.all(sql, [professor_id], (err, rows) => {
+            if (err) {
+                reject(new Error(err.message));
+                return;
+            }
+            resolve(rows);
+        })
+    })
+}
+
+exports.getRequestAll = function() {
+    
+    const sql = "SELECT R.id, description, statusS, statusT, S.surname AS studentSurname, S.name AS studentName, T.surname, T.name FROM Request R, Student S, Teacher T  WHERE statusS = 1 AND studentId = S.id AND supervisorId = T.id"
+    return new Promise((resolve, reject) => {
+        db.all(sql, [], (err, rows) => {
+            if (err) {
+                console.log(err)
+                reject(new Error(err.message));
+                return;
+            }
+            resolve(rows);
         })
     })
 }

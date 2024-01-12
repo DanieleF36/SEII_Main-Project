@@ -88,6 +88,10 @@ app.get("/applications/career/:student_id", isLoggedIn, applicationController.ge
 
 app.put("/thesis/secretary/:student_id", isLoggedIn, (req, res) => requestController.thesisRequestHandling(req, res)); // Secretary Approve Student Request story
 
+app.get("/requests", isLoggedIn, requestController.getRequestsByProfessor)
+
+app.get("/requests/all", isLoggedIn, requestController.getRequestAll)
+
 app.post("/requests", isLoggedIn, validate({ body: requestSchema }), requestController.addRequest);
 
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
