@@ -169,7 +169,7 @@ exports.getAllCoSupervisorsEmailsService = async function () {
   
 
 // Esporta funzioni Private solo per i test
-if (process.env.NODE_ENV === 'test') {
+if (process.env.test) {
     module.exports._sendRejectedEmail = _sendRejectedEmail;
     module.exports._sendCancelledEmails = _sendCancelledEmails;
     module.exports._sendAcceptedEmail = _sendAcceptedEmail;

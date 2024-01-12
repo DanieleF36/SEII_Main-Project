@@ -32,10 +32,12 @@ exports.addApplication = function (studentId, thesisId, cv, supervisorId) {
       }
       else {
         await applicationRepository.addApplication(studentId, thesisId, newPath, supervisorId)
-          .then(res => resolve(res))
+          .then(async res => {
+            //! Function to send the mail to the professor when an application is made. Test needs to be changed when this function is added
+            await teacherService._sendTeacherEmail(supervisorId, thesisId, studentId).catch(err => reject(new Error(err.message)))
+            resolve(res) 
+          })
           .catch(err => reject(new Error(err.message)))
-        //! Function to send the mail to the professor when an application is made. Test needs to be changed when this function is added
-        //await teacherService._sendTeacherEmail(supervisorId, thesisId, studentId)
       }
     });
   });
