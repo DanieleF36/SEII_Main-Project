@@ -82,7 +82,7 @@ const handleRequestResponse = (student_id, status, request_id, teacher_id) => {
                                 <Accordion.Body>
                                 <strong className="mb-2 text-danger">Request Info:</strong> 
                                     <br />
-                                    <strong>Cosupervisors:</strong> {request.cosupervisor.join(', ')}
+                                    <strong>Cosupervisors:</strong>
                                     <br />
                                     <strong>Description:</strong> {request.description}
                                     <br />

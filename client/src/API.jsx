@@ -315,8 +315,6 @@ async function deleteThesis(id){
 }
 function addRequest(request) {
   
-  console.log(request)
-  //request.cosupervisor = request.cosupervisor === '' ? [''] : request.cosupervisor
   return getJson(fetch(URL + '/requests', {
     method: "POST",
     headers: {
@@ -363,7 +361,6 @@ async function professorReqHandling(status, request_id){
     status: status,
     request_id: request_id
   };
-  console.log(requestBody)
   return getJson(fetch(URL + `/requests/professor`,{
     method: 'PUT',
     credentials: "include",
