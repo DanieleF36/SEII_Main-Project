@@ -12,7 +12,7 @@ function ProfessorRequests(props) {
     
     useEffect(() => {
 
-        API.Requestsrequest(props.user.role)
+        API.getRequestByProfessor(props.user.role)
             .then((Requests) => {
                 setRequests(Requests);
                 setDirty(false);

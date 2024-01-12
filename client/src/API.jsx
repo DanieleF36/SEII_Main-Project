@@ -317,7 +317,7 @@ function addRequest(request) {
 
 }
 
-async function thesisRequestHandling(student_id,status,request_id,id_thesis,teacher_id){
+async function thesisRequestHandling(student_id,status,request_id,teacher_id){
   const requestBody = {
     status: status,
     request_id: request_id,
@@ -331,7 +331,7 @@ async function thesisRequestHandling(student_id,status,request_id,id_thesis,teac
   })).then(json => { return json })
   .catch(err=> {throw new Error(err.message)})
 }
-async function getRequestAll(status) { 
+async function getRequestAll() { 
   const res = await fetch(URL + `/request/all`, {
     credentials:'include'
   });
@@ -357,7 +357,7 @@ async function professorReqHandling(status, request_id){
   .catch(err=> {throw new Error(err.message)})
 }
 
-async function getRequestByProfessor(status) { 
+async function getRequestByProfessor() { 
   const res = await fetch(URL + `/request`, {
     credentials:'include'
   });

@@ -31,7 +31,7 @@ exports.addRequest = function (req, res) {
 
 /**
  * Wrapper function to accept or reject a thesis request done by a student (secretary side)
- * @param {*} req with req.params.student_id, req.body.status (new request status), req.body.request_id, req.body.id_thesis, req.body.teacher_id
+ * @param {*} req with req.params.student_id, req.body.status (new request status), req.body.request_id, req.body.teacher_id
  * @param {*} res 
  * @returns 
  */
@@ -48,16 +48,13 @@ exports.thesisRequestHandling = function (req, res) {
         res.status(400).json({ message: 'Thesis status missing or invalid' });
         return;
     }
-    if (!req.body.id_thesis || req.body.id_thesis < 0) {
-        return res.status(400).json({ message: 'Thesis id missing or invalid' });
-    }
     if (!req.body.request_id || req.body.request_id < 0) {
         return res.status(400).json({ message: "Request id missing or invalid" })
     }
     if (!req.body.teacher_id || req.body.teacher_id < 0) {
         return res.status(400).json({ message: "Teacher id missing or invalid" })
     }
-    requestService.thesisRequestHandling(req.body.id_thesis, req.body.status, req.params.id_student, req.body.request_id, req.body.teacher_id)
+    requestService.thesisRequestHandling(req.body.status, req.params.id_student, req.body.request_id, req.body.teacher_id)
         .then(response => res.status(200).json(response))
         .catch((err) => res.status(500).json(err))
 }
@@ -104,9 +101,12 @@ exports.professorThesisHandling = function (req, res) {
         res.status(400).json({ message: 'Thesis status (statusTeacher) missing or invalid' });
         return;
     }
+    if (!req.body.teacher_id || req.body.teacher_id < 0) {
+        return res.status(400).json({ message: "Teacher id missing or invalid" })
+    }
 
     // Assuming there is a service function for professor thesis handling
-    requestService.professorThesisHandling(req.body.request_id, req.body.status)
+    requestService.professorThesisHandling(req.body.request_id, req.body.status,req.body.teacher_id)
         .then(response => res.status(200).json(response))
         .catch(err => res.status(500).json(err));
 };
