@@ -315,7 +315,7 @@ async function deleteThesis(id){
 }
 function addRequest(request) {
   
-  request.status = 1;
+  console.log(request)
   //request.cosupervisor = request.cosupervisor === '' ? [''] : request.cosupervisor
   return getJson(fetch(URL + '/requests', {
     method: "POST",
@@ -359,30 +359,29 @@ async function getRequestAll() {
   }
 }
 async function professorReqHandling(status, request_id){
-  const req = {
+  const requestBody = {
     status: status,
     request_id: request_id
   };
+  console.log(requestBody)
   return getJson(fetch(URL + `/requests/professor`,{
     method: 'PUT',
     credentials: "include",
-    body : JSON.stringify(req)
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body : JSON.stringify(requestBody)
   })).then(json => { return json })
   .catch(err=> {throw new Error(err.message)})
 }
 
-async function getRequestByProfessor() { 
-  const res = await fetch(URL + `/request`, {
-    credentials:'include'
-  });
-  if(res.status == 200){
-    const thesis = await res.json();
-    return thesis.thesis;
-  }
-  else{
-    const err = await res.json();
-    throw new Error(err.message)
-  }
+async function getRequestByProfessor() {
+
+  return getJson(fetch(URL + `/requests`, {
+    method: 'GET',
+    credentials: "include"
+  })).then(json => { return json })
+    .catch(err => { throw new Error(err.message) })
 }
 // =================== Virtual clock API ===================
 

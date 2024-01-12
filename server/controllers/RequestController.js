@@ -4,7 +4,8 @@ const requestRepository = require("../repositories/RequestRepository");
 const applicationRepository = require('../repositories/ApplicationRepository');
 
 exports.addRequest = function (req, res) {
-    if(req.user!='student'){
+    console.log(req.body)
+    if(req.user.role != 'student'){
         res.status(401).json({message: "Only student can access to this API"})
     }
     applicationRepository.getActiveByStudentId(req.user.id).then(app => {
@@ -64,7 +65,7 @@ exports.getRequestsByProfessor = function (req, res) {
         res.status(401).json({ message: 'You can not access to this route' });
         return
     }
-    requestService.getRequestsByProfessor(1)
+    requestService.getRequestsByProfessor(req.user.id)
         .then( resp => {
             res.status(200).json(resp)
         })
@@ -93,20 +94,21 @@ exports.professorThesisHandling = function (req, res) {
         res.status(401).json({ message: 'You can not access this route' });
         return;
     }
+    console.log(req.body)
     if (!req.body.request_id || req.body.request_id < 0) {
-        res.status(400).json({ message: "Request id missing or invalid" });
+        res.status(400).json({ message: "Request id missing or invalid2" });
         return;
     }
-    if (!req.body.statusTeacher || req.body.statusTeacher < 0 || req.body.statusTeacher > 3) {
+    if (!req.body.status || req.body.status < 0 || req.body.status > 3) {
         res.status(400).json({ message: 'Thesis status (statusTeacher) missing or invalid' });
         return;
     }
-    if (!req.body.teacher_id || req.body.teacher_id < 0) {
+    if (!req.user.id || req.user.id < 0) {
         return res.status(400).json({ message: "Teacher id missing or invalid" })
     }
 
     // Assuming there is a service function for professor thesis handling
-    requestService.professorThesisHandling(req.body.request_id, req.body.status,req.body.teacher_id)
+    requestService.professorThesisHandling(req.body.request_id, req.body.status,req.user.id)
         .then(response => res.status(200).json(response))
         .catch(err => res.status(500).json(err));
 };

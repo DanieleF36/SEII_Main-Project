@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button , Container, Row, Col, Accordion, Card, Badge } from 'react-bootstrap';
 import toast, { Toaster } from 'react-hot-toast';
 import PropTypes from 'prop-types';
+import API from '../API';
 
 
 function ProfessorRequests(props) {
@@ -12,19 +13,22 @@ function ProfessorRequests(props) {
     
     useEffect(() => {
 
-        API.getRequestByProfessor(props.user.role)
+        API.getRequestByProfessor()
             .then((Requests) => {
                 setRequests(Requests);
+                console.log(Requests)
                 setDirty(false);
             })
             .catch((err)=>{toast.error(err.message)})
 
     }, [dirty]);
+    
 
 
     const handleRequestResponse = (request_id, status) => {
         
-     API.professorReqHandling(status, request_id).then(()=>{
+     API.professorReqHandling(status, request_id)
+        .then(()=>{
         setDirty(true); toast.success('Thesis Request successfully handled')})
         .catch((err)=>{toast.error(err.message)})
 
@@ -44,20 +48,20 @@ function ProfessorRequests(props) {
                                     <Container fluid>
                                         <Row className="d-md-flex justify-content-center align-items-center">
                                             <Col md='4' sm='4' xs='12'>
-                                                <strong>Student:</strong> {request.student_name +" "+ request.student_surname}
+                                                <strong>Student:</strong> {request.name +" "+ request.surname}
                                             </Col>                                  
                                             <Col md='4' sm='4' xs='12'>
                                                 <strong>Supervisor:</strong> {props.user.name +" "+ props.user.surname}
                                             </Col>
                                             <Col md='3' sm='3' xs='12'>
                                                 <strong>Status:</strong>{' '}
-                                                {request.status == '0' ? (
+                                                {request.statusT == '0' ? (
                                                     <Badge pill bg="warning">PEN</Badge>
                                                 ) : (
-                                                    request.status == '1' ? (
+                                                    request.statusT == '1' ? (
                                                         <Badge pill bg="success">ACC</Badge>
                                                     ) : (
-                                                        request.status == '2' ? (
+                                                        request.statusT == '2' ? (
                                                             <Badge pill bg="danger">REJ</Badge>
                                                         ) : 
                                                         <Badge pill bg="primary">CHA</Badge>
@@ -77,17 +81,17 @@ function ProfessorRequests(props) {
                                 <Accordion.Body>
                                 <strong className="mb-2 text-danger">Request Info:</strong> 
                                     <br />
-                                    <strong>Cosupervisors:</strong> {request.cosupervisor.join(', ')}
+                                    <strong>Cosupervisors:</strong>
                                     <br />
                                     <strong>Description:</strong> {request.description}
                                     <br />
                                     <br />
                                     <br />
-                                    {request.status == '0' ? <Button  onClick={()=>{handleRequestResponse(request.id, 1)}} variant='success'>Accept</Button> : ''}
+                                    {request.statusT == '0' ? <Button  onClick={()=>{handleRequestResponse(request.id, 1)}} variant='success'>Accept</Button> : ''}
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    {request.status == '0' ? <Button onClick={()=>{handleRequestResponse(request.id, 2)}}variant='danger'>Reject</Button> : ''}
+                                    {request.statusT == '0' ? <Button onClick={()=>{handleRequestResponse(request.id, 2)}}variant='danger'>Reject</Button> : ''}
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    {request.status == '0' ? <Button onClick={()=>{handleRequestResponse(request.id, 3)}} className='my-2' variant='primary'>Request Change</Button> : ''}
+                                    {request.statusT == '0' ? <Button onClick={()=>{handleRequestResponse(request.id, 3)}} className='my-2' variant='primary'>Request Change</Button> : ''}
                                 </Accordion.Body>
                             </Accordion.Item>
                         </Accordion>

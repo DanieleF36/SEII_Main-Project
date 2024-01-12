@@ -115,7 +115,7 @@ exports._sendTeacherEmail = async function (teacherID, id_thesis, id_student) {
     teacherEmail = teacherEmail.email;
     studentEmail = studentEmail.email;
     thesisTitle = thesisTitle.title;
-    await transporter.sendEmail(teacherEmail, studentEmail, 'New Application request received', `The thesis ${thesisTitle} has a new application request.`)
+    await transporter.sendEmail(studentEmail, teacherEmail, 'New Application request received', `The thesis ${thesisTitle} has a new application request.`)
     return true;
 }
 
@@ -134,7 +134,7 @@ exports._sendTeacherEmailThesisRequest = async function (teacherID, id_student) 
     studentEmail = student.email;
     studentName = student.name
     studentSurname = student.surname
-    await transporter.sendEmail(teacherEmail, studentEmail, 'New Thesis request received', `You have a new thesis request from ${studentName} ${studentSurname} .`)
+    await transporter.sendEmail(studentEmail, teacherEmail, 'New Thesis request received', `You have a new thesis request from ${studentName} ${studentSurname} .`)
     return true;
 }
 
