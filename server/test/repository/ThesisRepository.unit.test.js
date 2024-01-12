@@ -101,8 +101,8 @@ describe('getActiveBySupervisor', () => {
     }
 
     const errors = [
-        'Supervisor ID must be greater than or equal to 0',
-        'Supervisor ID must be greater than or equal to 0'
+        'Supervisor ID must be greater than or equal to 0 or Status must be 0 or 1',
+        'Supervisor ID must be greater than or equal to 0 or Status must be 0 or 1',
     ]
 
     general(thesisRepository.getActiveBySupervisor,

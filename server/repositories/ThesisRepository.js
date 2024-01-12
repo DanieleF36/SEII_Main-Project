@@ -86,11 +86,7 @@ exports.getById = (idThesis) => {
 exports.getActiveBySupervisor = (supervisorId, queryParam) => {
   
   if (supervisorId == undefined || supervisorId < 0) {
-    throw new Error('Supervisor ID must be greater than or equal to 0');
-  }
-
-  if (queryParam == undefined || queryParam < 0) {
-    throw new Error('Status must be 0 or 1');
+    throw new Error('Supervisor ID must be greater than or equal to 0 or Status must be 0 or 1');
   }
 
   const fetchActiveThesesBySupervisorSQL = 'SELECT * FROM Thesis WHERE status = ? AND supervisor = ?';
