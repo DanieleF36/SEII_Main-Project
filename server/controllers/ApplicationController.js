@@ -45,68 +45,68 @@ const fs = require('fs');
  * }
  */
 exports.listApplication = function listApplication(req, res) {
-    if (req.user.role != "teacher" && req.user.role != "student") {
-        return res.status(401).json({ message: "You can't access to this route. You're not a student or a professor" });
+  if (req.user.role != "teacher" && req.user.role != "student") {
+    return res.status(401).json({ message: "You can't access to this route. You're not a student or a professor" });
+  }
+  if (req.user.role == 'teacher') {
+    if (!req.user.id) {
+      res.status(500).json({ message: "Given supervisor's id is not valid" })
+      return
     }
-    if (req.user.role == 'teacher') {
-        if (!req.user.id) {
-            res.status(500).json({ message: "Given supervisor's id is not valid" })
-            return
-        }
-        teacherService
-            .browseApplicationProfessor(req.user.id)
-            .then(function (response) {
-                res.status(200).json(response)
-            })
-            .catch(function (response) {
-              res.status(500).json(response);
-            });
-    }else if (req.user.role == 'student') {
-        if (!req.user.id) {
-          res.status(500).json({ message: "Given student's id is not valid" })
-          return
-        }
-        studentService
-            .browserApplicationStudent(req.user.id)
-            .then(function (response) {
-                res.status(200).json(response)
-            })
-            .catch(function (response) {
-                res.status(500).json(response);
-            });
+    teacherService
+      .browseApplicationProfessor(req.user.id)
+      .then(function (response) {
+        res.status(200).json(response)
+      })
+      .catch(function (response) {
+        res.status(500).json(response);
+      });
+  } else if (req.user.role == 'student') {
+    if (!req.user.id) {
+      res.status(500).json({ message: "Given student's id is not valid" })
+      return
     }
+    studentService
+      .browserApplicationStudent(req.user.id)
+      .then(function (response) {
+        res.status(200).json(response)
+      })
+      .catch(function (response) {
+        res.status(500).json(response);
+      });
+  }
 };
 
 exports.acceptApplication = function acceptApplication(req, res) {
-    if (req.user.role !== 'teacher') {
-        res.status(401).json({ message: "You can not access to this route" })
-        return;
-    }
-    if (!req.params.id_application || req.params.id_application < 0) {
-        res.status(400).json({ message: "Wronged id application" });
-        return;
-    }
-    if (req.body === undefined) {
-        res.status(400).json({ message: "Body is missing" });
-        return;
-    }
-    if (req.body.status == undefined) {
-        res.status(400).json({ message: "Missing new status acceptApplication" });
-        return;
-    }
-    if (req.body.status == 1 || req.body.status == 2) {
-        teacherService
-            .acceptApplication(req.body.status, req.user.id, req.params.id_application)
-            .then(function (response) {
-                res.status(200).json(response);
-            })
-            .catch(function (response) {
-              res.status(500).json({message: response.message});
-            });
-    }
-    else {
-        res.status(400).json({ message: "Invalid new status entered" })
-    }
+  if (req.user.role !== 'teacher') {
+    res.status(401).json({ message: "You can not access to this route" })
+    return;
+  }
+  if (!req.params.id_application || req.params.id_application < 0) {
+    res.status(400).json({ message: "Wronged id application" });
+    return;
+  }
+  if (req.body === undefined) {
+    res.status(400).json({ message: "Body is missing" });
+    return;
+  }
+  if (req.body.status == undefined) {
+    res.status(400).json({ message: "Missing new status acceptApplication" });
+    return;
+  }
+  if (req.body.status == 1 || req.body.status == 2) {
+    teacherService
+      .acceptApplication(req.body.status, req.user.id, req.params.id_application)
+      .then(function (response) {
+        res.status(200).json(response);
+      })
+      .catch(function (response) {
+        res.status(500).json({ message: response.message });
+      });
+  }
+  else {
+    res.status(400).json({ message: "Invalid new status entered" })
+  }
 };
 
 /**
@@ -124,24 +124,24 @@ exports.applyForProposal = function (req, res) {
     res.status(400).json({ message: "Body is missing" });
     return;
   }
-  applicationRepository.getActiveByStudentId(req.user.id).then(checkApp=>{
-    const err = chceckError(checkApp, req);
-    if(err)
-      res.status(400).json(err)
-    teacherRepository.getIdByThesisId(req.params.id_thesis).then(supervisorId=>{
+  applicationRepository.getActiveByStudentId(req.user.id).then(checkApp => {
+    const err = checkError(checkApp, req);
+    if (err)
+      return res.status(400).json(err)
+    teacherRepository.getIdByThesisId(req.params.id_thesis).then(supervisorId => {
       if (supervisorId == undefined) {
         res.status(400).json({ message: "Supervisor not found" });
         return;
       }
       //Initializes an object that is used to handle the input file in the multipart/form-data format 
-      const form = new formidable.IncomingForm({maxFileSize: 32*1024*1024});
+      const form = new formidable.IncomingForm({ maxFileSize: 32 * 1024 * 1024 });
       //Translate the file into a js object and call it files
       form.parse(req, function (err, fields, files) {
-        if (err){
+        if (err) {
           res.status(500).json({ message: "Internal Error" });
           return;
         }
-        if (!files?.cv?.length > 1){
+        if (!files?.cv?.length > 1) {
           res.status(400).json({ message: "Missing file or multiple" });
           return;
         }
@@ -153,21 +153,21 @@ exports.applyForProposal = function (req, res) {
           .catch(function (response) {
             res.status(500).json(response);
           });
-        })
-      
-    }).catch((e)=>res.status(500).json({message:e.message}))
-  }).catch((e)=>res.status(500).json({message:e.message}))
+      })
+
+    }).catch((e) => res.status(500).json({ message: e.message }))
+  }).catch((e) => res.status(500).json({ message: e.message }))
 };
 
-const chceckError = function(checkApp, req){
+const checkError = function (checkApp, req) {
   if (checkApp != undefined) {
     return { message: "You already have an application for a thesis" };
   }
-  
+
   if (req.params.id_thesis == null) {
-    return {message: "Missing required parameters" };
+    return { message: "Missing required parameters" };
   }
-} 
+}
 
 /**
  * wrapper function to retrieve the cv of a student (professor side)
@@ -180,27 +180,27 @@ exports.getStudentCv = function (req, res) {
   if (req.user.role != 'teacher' && req.user.role != 'student') {
     return res.status(401).json({ message: "You can not access to this route" })
   }
-    applicationRepository.getByStudentId(req.params.student_id).then(studentInfo=>{
-      if(studentInfo instanceof Error) {
-        throw studentInfo
-      }
-      const studentCv = studentInfo[0].path_cv;
-      let fileName = path.basename(studentCv);
-
-      fs.access(studentCv, (err) => {
-        if (err) {
-          throw new Error(err.message);
-        } else {
-          res.status(200).download(studentCv, fileName)
-        }
-      });
-    })
-  .catch (error=>{
-    if(error instanceof Error) {
-      return res.status(500).json(error)
+  applicationRepository.getByStudentId(req.params.student_id).then(studentInfo => {
+    if (studentInfo instanceof Error) {
+      throw studentInfo
     }
-    return res.status(500).json(new Error(error.message));
+    const studentCv = studentInfo[0].path_cv;
+    let fileName = path.basename(studentCv);
+
+    fs.access(studentCv, (err) => {
+      if (err) {
+        throw new Error(err.message);
+      } else {
+        res.status(200).download(studentCv, fileName)
+      }
+    });
   })
+    .catch(error => {
+      if (error instanceof Error) {
+        return res.status(500).json(error)
+      }
+      return res.status(500).json(new Error(error.message));
+    })
 }
 
 /**
@@ -209,19 +209,19 @@ exports.getStudentCv = function (req, res) {
  * @returns array of object {title : string, grade: integer}
  */
 exports.getCareerByStudentId = function (req, res) {
-  if(req.user.role != "teacher"){
-    res.status(401).json({message : "You can not access to this route"});
+  if (req.user.role != "teacher") {
+    res.status(401).json({ message: "You can not access to this route" });
     return;
   }
-  if(!req.params.student_id || req.params.student_id < 0) {
-    res.status(400).json({message : "Missing student id or negative id"});
+  if (!req.params.student_id || req.params.student_id < 0) {
+    res.status(400).json({ message: "Missing student id or negative id" });
     return;
   }
   teacherService.getCareerByStudentId(req.params.student_id)
-  .then(function (response) {
+    .then(function (response) {
       res.status(200).json(response);
-  })
-  .catch(function (response) {
+    })
+    .catch(function (response) {
       res.status(500).json(response);
-  });
+    });
 }

@@ -107,10 +107,11 @@ describe('Apply for proposal', () => {
         controller.applyForProposal(mockReq, mockRes);
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
-    
+
     test('Case4: Supervisor not found', async () => {
         mockReq.body = "cv.pdf";
         mockReq.user.role = 'student';
+        mockReq.params = { id_thesis: 1 };
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(undefined);
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(undefined);
         controller.applyForProposal(mockReq, mockRes);
@@ -256,7 +257,7 @@ describe("Accept Application", () => {
     test("U4: Missing body", async () => {
         mockReq.user.role = 'teacher';
         mockReq.params.id_application = 1;
-        mockReq.body= undefined;
+        mockReq.body = undefined;
         controller.acceptApplication(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(400);
         expect(mockRes.json).toHaveBeenCalledWith({ message: "Body is missing" });
@@ -303,31 +304,31 @@ describe('Get student CV', () => {
     let mockReq
     let mockValidate
     beforeEach(() => {
-      mockRes = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-      mockReq = {
-        body:  {},
-        user: {
-              id: 1,
-              name: "Gianni",
-              surname: "Altobelli",
-              nameID: "gianni.altobelli@email.it",
-              role: "teacher",
-              group: "group1"
-        },
-        params: {
-            student_id: 1
-        }
-      };
-      mockValidate = jest.fn()
+        mockRes = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn(),
+        };
+        mockReq = {
+            body: {},
+            user: {
+                id: 1,
+                name: "Gianni",
+                surname: "Altobelli",
+                nameID: "gianni.altobelli@email.it",
+                role: "teacher",
+                group: "group1"
+            },
+            params: {
+                student_id: 1
+            }
+        };
+        mockValidate = jest.fn()
     })
-  
+
     afterEach(() => {
-      mockRes.status.mockClear();
-      mockRes.json.mockClear();
-      mockValidate.mockClear()
+        mockRes.status.mockClear();
+        mockRes.json.mockClear();
+        mockValidate.mockClear()
     })
 
     test('U1: student is not logged in', async () => {
@@ -354,8 +355,8 @@ describe('Get student CV', () => {
 
     test('U4: error during the download', async () => {
         jest.spyOn(applicationRepository, 'getByStudentId').mockResolvedValue({
-                path_cv: 'path/to/cv'
-            })
+            path_cv: 'path/to/cv'
+        })
         jest.spyOn(fs, 'access').mockRejectedValue(new Error('error during download'))
         await controller.getStudentCv(mockReq, mockRes)
         await new Promise(resolve => setImmediate(resolve));
@@ -364,7 +365,7 @@ describe('Get student CV', () => {
 
     test.skip('U5: successful download of student CV', async () => {
         const studentInfo = { path_cv: '/path/to/CV.pdf' };
-    
+
         jest.spyOn(applicationRepository, 'getByStudentId').mockResolvedValue(studentInfo);
         jest.spyOn(fs, 'access').mockImplementation((path, callback) => {
             callback(null); // Simulating that the file exists
@@ -372,38 +373,38 @@ describe('Get student CV', () => {
 
         await controller.getStudentCv(mockReq, mockRes);
         expect(mockRes.status).toHaveBeenCalledWith(200);
-      });
+    });
 })
 
 describe('Get student career', () => {
     let mockReq
     let mockValidate
     beforeEach(() => {
-      mockRes = {
-        status: jest.fn().mockReturnThis(),
-        json: jest.fn(),
-      };
-      mockReq = {
-        body:  {},
-        user: {
-              id: 1,
-              name: "Gianni",
-              surname: "Altobelli",
-              nameID: "gianni.altobelli@email.it",
-              role: "teacher",
-              group: "group1"
-        },
-        params: {
-            student_id: 1
-        }
-      };
-      mockValidate = jest.fn()
+        mockRes = {
+            status: jest.fn().mockReturnThis(),
+            json: jest.fn(),
+        };
+        mockReq = {
+            body: {},
+            user: {
+                id: 1,
+                name: "Gianni",
+                surname: "Altobelli",
+                nameID: "gianni.altobelli@email.it",
+                role: "teacher",
+                group: "group1"
+            },
+            params: {
+                student_id: 1
+            }
+        };
+        mockValidate = jest.fn()
     })
-  
+
     afterEach(() => {
-      mockRes.status.mockClear();
-      mockRes.json.mockClear();
-      mockValidate.mockClear()
+        mockRes.status.mockClear();
+        mockRes.json.mockClear();
+        mockValidate.mockClear()
     })
 
     test('U1: teacher is not logged in', async () => {
@@ -421,9 +422,9 @@ describe('Get student career', () => {
     })
 
     test('U3: internal error occurs', async () => {
-        jest.spyOn(teacherService, 'getCareerByStudentId').mockRejectedValue({message: 'error'})
+        jest.spyOn(teacherService, 'getCareerByStudentId').mockRejectedValue({ message: 'error' })
         controller.getCareerByStudentId(mockReq, mockRes)
-        
+
         await new Promise(resolve => setImmediate(resolve));
 
         expect(mockRes.status).toHaveBeenCalledWith(500)
@@ -431,12 +432,12 @@ describe('Get student career', () => {
     })
 
     test('U4: success', async () => {
-        jest.spyOn(teacherService, 'getCareerByStudentId').mockResolvedValue([{title: 'exam1', grade: 18}])
+        jest.spyOn(teacherService, 'getCareerByStudentId').mockResolvedValue([{ title: 'exam1', grade: 18 }])
         controller.getCareerByStudentId(mockReq, mockRes)
         await Promise.resolve()
 
         expect(mockRes.status).toHaveBeenCalledWith(200)
-        expect(mockRes.json).toHaveBeenCalledWith([{title: 'exam1', grade: 18}]);
+        expect(mockRes.json).toHaveBeenCalledWith([{ title: 'exam1', grade: 18 }]);
     })
 
 })

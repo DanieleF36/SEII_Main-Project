@@ -1,4 +1,4 @@
-SEII_Main-Project RETROSPECTIVE (Demo 1)
+SEII_Main-Project RETROSPECTIVE (Demo 2)
 =====================================
 
 - [process measures](#process-measures)
@@ -26,10 +26,10 @@ SEII_Main-Project RETROSPECTIVE (Demo 1)
 | Story  | # Tasks | Points | Hours est. | Hours actual |
 |--------|---------|--------|------------|--------------|
 | _#0_   |    18   |        |    66h     |   69h 40m    |
-| _#1_   |    4    |   3    |    9h      |   9h 15m     |
-| _#2_   |    4    |   3    |    11h     |   10h 45m    |
-| _#3_   |    4    |   5    |    8h      |   8h 15m     |
-| _#4_   |    5    |   8    |    17h     |   16h 30m    |
+| _#6_   |    4    |   3    |    9h      |   9h 15m     |
+| _#7_   |    4    |   3    |    11h     |   10h 45m    |
+| _#8_   |    4    |   5    |    8h      |   8h 15m     |
+| _#9_   |    5    |   8    |    17h     |   16h 30m    |
 
 
 - Hours per task average, standard deviation (estimate and actual): estimate task average: 3.2, actual task average: 3.26, standard deviation estimate: 0.47, standard deviation actual: 0.48

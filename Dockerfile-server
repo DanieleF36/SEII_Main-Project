@@ -1,0 +1,15 @@
+# syntax=docker/dockerfile:1
+
+FROM node:14
+
+WORKDIR /app
+
+COPY ./server ./server
+
+COPY ./start.sh .
+
+RUN cd ./server; npm install
+
+CMD ./start.sh 0
+
+EXPOSE 3001

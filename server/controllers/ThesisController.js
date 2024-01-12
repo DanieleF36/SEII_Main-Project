@@ -1,7 +1,6 @@
 "use strict";
 
 const thesisService = require("../services/ThesisService");
-
 /**
  * FOR TEACHER ONLY side
  * Wrapper function for recovering the whole set of ACTIVE thesis for the current logged in 
@@ -33,11 +32,11 @@ const thesisService = require("../services/ThesisService");
  */
 const { ValidationError } = require('express-json-validator-middleware');
 exports.searchThesis = function searchThesis(req, res, validate) {
-  if(req.user.role == 'student'){
+  if (req.user.role == 'student') {
     let validationResult;
-    validate(req, res, (a)=>{validationResult = a});
-    if (validationResult instanceof ValidationError){
-      res.status(400).json({message: validationResult.validationErrors});
+    validate(req, res, (a) => { validationResult = a });
+    if (validationResult instanceof ValidationError) {
+      res.status(400).json({ message: validationResult.validationErrors });
       return;
     }
     //checks if order is defined or not, otherwise titleD is setted as defaul value
@@ -54,24 +53,24 @@ exports.searchThesis = function searchThesis(req, res, validate) {
             });
         });
         res.status(200).json({ nPage: nPage, thesis: response });
-    }).catch(e=>{
-      res.status(500).json({message: e.message})
-    });
-  }else if(req.user.role == 'teacher'){
-    const queryParam= req.query.status;
-    if(queryParam!=0 && queryParam!=1){
-      res.status(400).json({message: "status not valid"});
+      }).catch(e => {
+        res.status(500).json({ message: e.message })
+      });
+  } else if (req.user.role == 'teacher') {
+    const queryParam = req.query.status;
+    if (queryParam != 0 && queryParam != 1) {
+      res.status(400).json({ message: "status not valid" });
 
     }
     thesisService.getActiveBySupervisor(req.user.id, queryParam)
-    .then(response=>{
-      res.status(200).json({ nPage: 1, thesis: response })
-    })
-    .catch(response=>{
-      res.status(500).json(response);
-    })
-  }else{
-    res.status(401).json({message: "Only student or teacher can access list of thesis"})
+      .then(response => {
+        res.status(200).json({ nPage: 1, thesis: response })
+      })
+      .catch(response => {
+        res.status(500).json(response);
+      })
+  } else {
+    res.status(401).json({ message: "Only student or teacher can access list of thesis" })
   }
 };
 
@@ -84,8 +83,8 @@ exports.searchThesis = function searchThesis(req, res, validate) {
  * @returns thesis object
  */
 exports.addThesis = function addThesis(req, res, validate) {
-  if(req.user.role !== 'teacher'){
-    res.status(401).json({message:"You can not access to this route"});
+  if (req.user.role !== 'teacher') {
+    res.status(401).json({ message: "You can not access to this route" });
     return;
   }
   if (req.body === undefined) {
@@ -93,13 +92,13 @@ exports.addThesis = function addThesis(req, res, validate) {
     return;
   }
 
-  if(!req.body.groups.includes(String(req.user.group))){
-    res.status(400).json({message:"You are not allowed to add for this group"});
+  if (!req.body.groups.includes(String(req.user.group))) {
+    res.status(400).json({ message: "You are not allowed to add for this group" });
     return;
   }
   req.body.groups = [req.user.group]
 
-  if( req.body.level === 'Master')
+  if (req.body.level === 'Master')
     req.body.level = 1;
   else
     req.body.level = 0;
@@ -107,7 +106,7 @@ exports.addThesis = function addThesis(req, res, validate) {
   req.body.supervisor = req.user.id
   thesisService.addThesis(req.body)
     .then(response => {
-      if(response.message) {
+      if (response.message) {
         res.status(response.status).json(response.message);
       }
       else {
@@ -118,23 +117,23 @@ exports.addThesis = function addThesis(req, res, validate) {
 };
 
 exports.updateThesis = function updateThesis(req, res) {
-  if(req.user.role!=='teacher'){
-    res.status(401).json({message:"You can not access to this route"})
+  if (req.user.role !== 'teacher') {
+    res.status(401).json({ message: "You can not access to this route" })
     return;
   }
   if (!req.params.id) {
-    res.status(400).json({message: "Thesis id is not valid"})
+    res.status(400).json({ message: "Thesis id is not valid" })
     return
   }
-  if( req.body.level === 'Master')
+  if (req.body.level === 'Master')
     req.body.level = 1;
   else
     req.body.level = 0;
 
   req.body.supervisor = req.user.id
 
-  if(!req.body.groups.includes(String(req.user.group))){
-    res.status(400).json({message:"You are not allowed to add for this group"});
+  if (!req.body.groups.includes(String(req.user.group))) {
+    res.status(400).json({ message: "You are not allowed to add for this group" });
     return;
   }
   req.body.groups = [req.user.group]
@@ -142,14 +141,14 @@ exports.updateThesis = function updateThesis(req, res) {
   // Call the updateThesis method from the thesisService
   thesisService.updateThesis(req.body, req.params.id)
     .then(response => {
-      if(response.message) {
+      if (response.message) {
         res.status(response.status).json(response.message);
       }
       else {
         res.status(200).json(response);
       }
     })
-    .catch((err) =>{res.status(500).json(err)})
+    .catch((err) => { res.status(500).json(err) })
 };
 
 exports.deleteThesis = function deleteThesis(req, res) {
@@ -161,9 +160,9 @@ exports.deleteThesis = function deleteThesis(req, res) {
     res.status(400).json({ message: 'bad request: id is missing or minor than 0' });
     return;
   }
-  thesisService.delete(req.params.id,req.user.id).then(response => res.status(200).json(response))
-    .catch((err) =>{
-      if(err.message == "You can't delete this thesis, an application is already accepted")
+  thesisService.delete(req.params.id, req.user.id).then(response => res.status(200).json(response))
+    .catch((err) => {
+      if (err.message == "You can't delete this thesis, an application is already accepted")
         res.status(400).json(err);
       else
         res.status(500).json(err);

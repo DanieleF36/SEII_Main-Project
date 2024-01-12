@@ -354,7 +354,7 @@ describe("UPDATE PROPOSAL INTEGRATION TEST", () => {
             creation_date: "2023-01-01",
             level: "Master",
             cds: ["ingInf"],
-            status: 1
+            status: 0
         }
         login_as.user = {
             id: 1,

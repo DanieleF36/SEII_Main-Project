@@ -1,16 +1,16 @@
 'use strict';
 const db = require("./db");
 
-function newStudent(id, name, surname, email, gender, nationality, cod_degree, enrol_year){
+function newStudent(id, name, surname, email, gender, nationality, cod_degree, enrol_year) {
   return {
-    id: id, 
-    name:name,
-    surname:surname, 
-    email:email,
-    gender:gender,
-    nationality:nationality, 
-    cod_degree:cod_degree,
-    enrol_year:enrol_year
+    id: id,
+    name: name,
+    surname: surname,
+    email: email,
+    gender: gender,
+    nationality: nationality,
+    cod_degree: cod_degree,
+    enrol_year: enrol_year
   }
 }
 
@@ -18,9 +18,9 @@ function newStudent(id, name, surname, email, gender, nationality, cod_degree, e
 
 //==================================Get==================================
 /**
- * Given a teacher's id, returns all the stored information
- * @param {*} id teacher's id
- * @returns all the teacher's information
+ * Given a student's id, returns all the stored information
+ * @param {*} id student's id
+ * @returns all the student's information
  */
 exports.getById = (id) => {
   if (!(id && id >= 0)) {
@@ -151,7 +151,7 @@ exports.getCareerByStudentId = async function (id_student) {
         reject(new Error(err.message));
         return;
       }
-      if(rows.lenght ==0){
+      if (rows.lenght == 0) {
         resolve([{}])
       }
       else {
