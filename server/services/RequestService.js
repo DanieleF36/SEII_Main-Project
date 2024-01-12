@@ -25,6 +25,10 @@ exports.addRequest = async function (request, studentId) {
     return req;
 }
 
+exports.getActiveByStudentId = async function (studentId){
+    
+}
+
 /**
  * Function to accept a thesis request by the secretary. If the secreatary accepts the request the professor is also notified
  * @param {*} thesisId 
@@ -67,6 +71,24 @@ exports.thesisRequestHandling = async function (thesisId, status, id_student, re
     }
     return status
 }
+
+/**
+ * Service function for a professor to change the status of a thesis request
+ * @param {*} request_id 
+ * @param {*} statusTeacher 
+ * @returns the updated status
+ */
+exports.professorThesisHandling = async function (request_id, statusTeacher) {
+    const request = await requestRepository.getRequest(request_id);
+
+    if (!request) {
+        throw new Error("Request not found");
+    }
+
+    await requestRepository.profReqStatusUpdate(request_id, statusTeacher);
+
+    return statusTeacher;
+};
 
 exports.getRequestsByProfessor = async function(professor_id) {
     const result = await requestRepository.getRequestsByProfessor(professor_id);

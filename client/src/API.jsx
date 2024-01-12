@@ -328,6 +328,18 @@ async function getRequestAll(status) {
     throw new Error(err.message)
   }
 }
+async function professorReqHandling(status, request_id){
+  const req = {
+    status: status,
+    request_id: request_id
+  };
+  return getJson(fetch(URL + `/requests/professor`,{
+    method: 'PUT',
+    credentials: "include",
+    body : JSON.stringify(req)
+  })).then(json => { return json })
+  .catch(err=> {throw new Error(err.message)})
+}
 
 async function getRequestByProfessor(status) { 
   const res = await fetch(URL + `/request`, {
@@ -381,7 +393,7 @@ function vc_restore() {
   })
 }
 
-const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis,thesisRequestHandling, getRequestAll, getRequestByProfessor };
+const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis,thesisRequestHandling, getRequestAll, getRequestByProfessor, professorReqHandling };
 
 
 

@@ -94,6 +94,8 @@ app.get("/requests/all", isLoggedIn, requestController.getRequestAll)
 
 app.post("/requests", isLoggedIn, validate({ body: requestSchema }), requestController.addRequest);
 
+app.put("/requests/professor", isLoggedIn, (req, res) => requestController.professorThesisHandling(req, res));
+
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
 
 app.post("/testing/vc/restore", (req, res) => vc.vc_restore(req, res))

@@ -76,7 +76,7 @@ async function _sendCancelledEmails(teacherID, id_thesis, id_application, id_stu
     let [teacherEmail, thesisTitle, studentEmailCancelledArray] = await Promise.all([
         teacherRepo.getById(teacherID),
         thesisRepository.getById(id_thesis),
-        studentRepo.getStudentEmailCancelled(id_student, id_application, id_thesis)]);
+        studentRepo.getStudentEmailCancelled(id_application, id_thesis)]);
     teacherEmail = teacherEmail.email;
     thesisTitle = thesisTitle.title;
     for (let i of studentEmailCancelledArray) {

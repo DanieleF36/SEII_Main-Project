@@ -53,6 +53,22 @@ exports.getRequest = function (request_id) {
     })
 }
 
+exports.getActiveByStudentId = (studentId) => {
+    if (!(studentId && studentId >= 0)) {
+      throw new Error('Student ID must be greater than or equal to 0');
+    }
+    const fetchActiveApplicationSQL = 'SELECT * FROM Request WHERE id_student = ? AND (statusS=1 OR statusS=0) AND (statusT=1 OR statusT=0)';
+    return new Promise((resolve, reject) => {
+      db.get(fetchActiveApplicationSQL, [studentId], (err, result) => {
+        if (err) {
+          reject(new Error(err.message));
+          return;
+        }
+        resolve(result);
+      });
+    });
+  };
+
 //==================================Set==================================
 
 /**
@@ -90,6 +106,7 @@ exports.getRequestsByProfessor = function(professor_id) {
     const sql = "SELECT R.id, description, statusS, statusT, S.surname, S.name FROM Request R, Student S WHERE supervisorId = ? AND statusS = 1 AND studentId = S.id"
     return new Promise((resolve, reject) => {
         db.all(sql, [professor_id], (err, rows) => {
+
             if (err) {
                 reject(new Error(err.message));
                 return;
@@ -113,3 +130,29 @@ exports.getRequestAll = function() {
         })
     })
 }
+/**
+ * Repository function to update the status of a thesis request
+ * @param {*} request_id 
+ * @param {*} status : 0 reject, 1 accept
+ * @returns {Promise<number>} The number of rows updated
+ */
+exports.profReqStatusUpdate = function (request_id, status) {
+    if (request_id < 0) {
+        throw new Error("Request must be positive");
+    }
+    if (status < 0 || status > 3) {
+        throw new Error("Status must be between 1 and 3 inclusive");
+    }
+
+    const sql = "UPDATE Request SET statusT = ? WHERE id = ?";
+    return new Promise((resolve, reject) => {
+        db.run(sql, [status, request_id], function (err) {
+            if (this.changes === 0) {
+                reject(new Error('No rows updated. Request ID not found.'));
+                return;
+            }
+
+            resolve(this.changes);
+        });
+    });
+};
