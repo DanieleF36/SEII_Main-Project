@@ -35,7 +35,7 @@ exports.addApplication = function (studentId, thesisId, cv, supervisorId) {
           .then(res => resolve(res))
           .catch(err => reject(new Error(err.message)))
         //! Function to send the mail to the professor when an application is made. Test needs to be changed when this function is added
-        //await teacherService._sendTeacherEmail(supervisorId, thesisId, studentId)
+        await teacherService._sendTeacherEmail(supervisorId, thesisId, studentId)
       }
     });
   });

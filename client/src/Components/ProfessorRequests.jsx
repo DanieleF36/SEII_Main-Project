@@ -8,11 +8,11 @@ function ProfessorRequests(props) {
     
     const [dirty, setDirty] = useState(true);
    
-    const [requests, setRequests] = useState([{"id":1,"id_stud":1,"student_name":"Gianni", "student_surname": "Altobelli", "cosupervisor":['marco.collo@mail.com', 'marco.colli@mail.com'], 'description': 'Description sample...', 'status':0}]);
+    const [requests, setRequests] = useState([]);
     
-    /*useEffect(() => {
+    useEffect(() => {
 
-        API.RequestsRequest(props.user.role)
+        API.Requestsrequest(props.user.role)
             .then((Requests) => {
                 setRequests(Requests);
                 setDirty(false);
@@ -20,11 +20,13 @@ function ProfessorRequests(props) {
             .catch((err)=>{toast.error(err.message)})
 
     }, [dirty]);
-    */
+
 
     const handleRequestResponse = (request_id, status) => {
         
-        setRequests([{"id":1,"id_stud":1,"student_name":"Gianni", "student_surname": "Altobelli", "cosupervisor":['marco.collo@mail.com', 'marco.colli@mail.com'], 'description': 'Description sample...', 'status':status}])
+     API.professorReqHandling(status, request_id).then(()=>{
+        setDirty(true); toast.success('Thesis Request successfully handled')})
+        .catch((err)=>{toast.error(err.message)})
 
     };
 

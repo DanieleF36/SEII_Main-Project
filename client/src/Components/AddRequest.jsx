@@ -111,11 +111,11 @@ function AddRequestForm(props) {
             // Implement the logic to add the proposal using the proposalData state- API
             let addP = proposalData;
             if(addP.cosupervisor.length === 0)
-                addP.cosupervisor=[];
+                addP.cosupervisor=[]; 
             console.log(addP)
-            /*API.insertRequest(addP)
+            API.addRequest(addP)
                 .then(() => { toast.success('Thesis Request successfully added'); handleResetChange();})
-                .catch((error) => toast.error(error.message));*/
+                .catch((error) => toast.error(error.message));
         }
     };
 

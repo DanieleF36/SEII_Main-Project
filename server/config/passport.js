@@ -32,6 +32,10 @@ const samlStrategy = new saml(samlConfig, async (profile, done) => {
         user = await coSupervisorRepository.getByEmail(profile.nameID)
         role = "cosupervisor";
     }
+    else if(profile.nameID.includes('secretary')){
+        user = await coSupervisorRepository.getByEmail(profile.nameID)
+        role = "secretary";
+    }
     if(role==='student')
         user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, cds:user.cds, cdsCode:user.cdsCode.includes('LM')?1:0 }
     else if(role==='teacher') {
