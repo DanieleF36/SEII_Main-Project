@@ -60,6 +60,7 @@ const isLoggedIn = (req, res, next) => {
 
 const thesisController = require("./controllers/ThesisController");
 const coSupervisorController = require("./controllers/CoSupervisorController");
+const supervisorController = require("./controllers/SupervisorController");
 const applicationController = require("./controllers/ApplicationController");
 const requestController = require("./controllers/RequestController");
 const vc = require('./dayjsvc/index.dayjsvc')

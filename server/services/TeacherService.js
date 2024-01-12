@@ -161,7 +161,7 @@ exports.getCareerByStudentId = async function (id_student) {
  * Retrive the all the email of all the Cosupervisor
  * @returns array of CoSupervisorsEmail (string)
 */
-exports.getAllCoSupervisorsEmailsService = async function () {
+exports.getAllSupervisorsEmailsService = async function () {
     const result = await teacherRepo.getAllEmails();
     return result
   };

@@ -11,14 +11,14 @@ function HandleRequest(props) {
     const [list, setList] = useState([/*{"id":1,"id_stud":1,"student_name":"Gianni", "student_surname": "Altobelli","id_prof":1,"prof_name":"Luca", "prof_surname": "Azzurro", "cosupervisor":['marco.collo@mail.com', 'marco.colli@mail.com'], 'description': 'Description sample...', 'status':0}*/]);
     
     useEffect(() => {
-
+        if(props.user=="secretary"){
         API.getRequestAll(props.user.role)
             .then((list) => {
                 setList(list);
                 setDirty(false);
             })
             .catch((err)=>{toast.error(err.message)})
-
+        }
     }, [dirty]);
 
 const handleRequestResponse = (student_id, status, request_id, teacher_id) => {

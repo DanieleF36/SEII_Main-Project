@@ -266,6 +266,20 @@ async function getCoSupervisorsEmails() {
   }
 }
 
+async function getAllSupervisorsEmails() {
+  try {
+    const response = await fetch(URL + '/supervisors/email', {credentials:'include'});
+    const SupervisorsEmails = await response.json();
+    if (response.ok) {
+      return SupervisorsEmails;
+    } else {
+      throw new Error(response.message);
+    }
+  } catch (error) {
+    throw new Error(error.message, { cause: error });
+  }
+}
+
 async function getStudentCv(path_cv,id_student){
   const response = await fetch(URL + `/applications/student_cv/${id_student}`, {
     credentials: "include",
@@ -332,7 +346,7 @@ async function thesisRequestHandling(student_id,status,request_id,teacher_id){
   .catch(err=> {throw new Error(err.message)})
 }
 async function getRequestAll() { 
-  const res = await fetch(URL + `/request/all`, {
+  const res = await fetch(URL + `/requests/all`, {
     credentials:'include'
   });
   if(res.status == 200){
@@ -408,7 +422,7 @@ function vc_restore() {
     return res
   })
 }
-const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis,addRequest, thesisRequestHandling, getRequestAll, getRequestByProfessor, professorReqHandling };
+const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, getAllSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis,addRequest, thesisRequestHandling, getRequestAll, getRequestByProfessor, professorReqHandling };
 
 
 
