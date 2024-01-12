@@ -25,6 +25,10 @@ exports.addRequest = async function (request, studentId) {
     return req;
 }
 
+exports.getActiveByStudentId = async function (studentId){
+    
+}
+
 /**
  * Function to accept a thesis request by the secretary. If the secreatary accepts the request the professor is also notified
  * @param {*} thesisId 
@@ -32,7 +36,7 @@ exports.addRequest = async function (request, studentId) {
  * @param {*} id_student 
  * @param {*} request_id 
  * @param {*} teacher_id 
- * @returns status that is the request status
+ * @returns status that is the request status or error is thrown if the request process has not been completed 
  */
 exports.thesisRequestHandling = async function (thesisId, status, id_student, request_id, teacher_id) {
     const thesis = await thesisRepository.getById(thesisId)
@@ -44,11 +48,11 @@ exports.thesisRequestHandling = async function (thesisId, status, id_student, re
         throw new Error("Student not found")
     }
     const teacher = await teacherRepository.getById(teacher_id)
-    if (!teacher) {
+    if (!teacher || Object.keys(teacher).length === 0) {
         throw new Error("Teacher not found")
     }
     const request = await requestRepository.getRequest(request_id)
-    if (!request) {
+    if (!request || Object.keys(request).length === 0) {
         throw new Error("Request not found")
     }
     if (request.id_student != id_student) {
@@ -61,7 +65,10 @@ exports.thesisRequestHandling = async function (thesisId, status, id_student, re
     if (status == 1) {
         await teacherService._sendTeacherEmailThesisRequest(teacher_id, thesisId, id_student)
     }
-    await requestRepository.thesisRequestStatusUpdate(request_id, status)
+    const res = await requestRepository.thesisRequestStatusUpdate(request_id, status)
+    if(res instanceof Error) {
+        throw new Error(res)
+    }
     return status
 }
 
@@ -82,3 +89,12 @@ exports.professorThesisHandling = async function (request_id, statusTeacher) {
 
     return statusTeacher;
 };
+
+exports.getRequestsByProfessor = async function(professor_id) {
+    const result = await requestRepository.getRequestsByProfessor(professor_id);
+    return result
+}
+exports.getRequestAll = async function() {
+    const result = await requestRepository.getRequestAll();
+    return result
+}
