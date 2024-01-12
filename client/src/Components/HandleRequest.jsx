@@ -8,24 +8,24 @@ function HandleRequest(props) {
     
     const [dirty, setDirty] = useState(true);
    
-    const [list, setList] = useState([{"id":1,"id_stud":1,"student_name":"Gianni", "student_surname": "Altobelli","id_prof":1,"prof_name":"Luca", "prof_surname": "Azzurro", "cosupervisor":['marco.collo@mail.com', 'marco.colli@mail.com'], 'description': 'Description sample...', 'status':0}]);
+    const [list, setList] = useState([/*{"id":1,"id_stud":1,"student_name":"Gianni", "student_surname": "Altobelli","id_prof":1,"prof_name":"Luca", "prof_surname": "Azzurro", "cosupervisor":['marco.collo@mail.com', 'marco.colli@mail.com'], 'description': 'Description sample...', 'status':0}*/]);
     
-    /*useEffect(() => {
+    useEffect(() => {
 
-        API.listRequest(props.user.role)
+        API.getRequestAll(props.user.role)
             .then((list) => {
                 setList(list);
                 setDirty(false);
             })
             .catch((err)=>{toast.error(err.message)})
 
-    }, [dirty]);*/
+    }, [dirty]);
 
-const handleRequestResponse = (request_id, status) => {
+const handleRequestResponse = (student_id, status, request_id, teacher_id) => {
         
-        setList([{"id":1,"id_stud":1,"student_name":"Gianni", "student_surname": "Altobelli","id_prof":1,"prof_name":"Luca", "prof_surname": "Azzurro", "cosupervisor":['marco.collo@mail.com', 'marco.colli@mail.com'], 'description': 'Description sample...', 'status':status}])
-        /*
-        API.acceptRequest(request_id, status)
+        //setList([{"id":1,"id_stud":1,"student_name":"Gianni", "student_surname": "Altobelli","id_prof":1,"prof_name":"Luca", "prof_surname": "Azzurro", "cosupervisor":['marco.collo@mail.com', 'marco.colli@mail.com'], 'description': 'Description sample...', 'status':status}])
+        
+        API.thesisRequestHandling(student_id, status, request_id, teacher_id)
             .then((res) => {
                 setDirty(true);
                 if (res == 1) {
@@ -35,7 +35,7 @@ const handleRequestResponse = (request_id, status) => {
                 }
             })
             .catch((err) => { toast.error(err.message); });
-        */
+    
 };
 
     return (
@@ -88,9 +88,9 @@ const handleRequestResponse = (request_id, status) => {
                                     <br />
                                     <br />
                                     <br />
-                                    {request.status == '0' ? <Button  onClick={()=>{handleRequestResponse(request.id, 1)}} variant='success'>Accept</Button> : ''}
+                                    {request.status == '0' ? <Button  onClick={()=>{handleRequestResponse(request.studentId, 1, request.id, request.supervisorId)}} variant='success'>Accept</Button> : ''}
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    {request.status == '0' ? <Button onClick={()=>{handleRequestResponse(request.id, 2)}}variant='danger'>Reject</Button> : ''}
+                                    {request.status == '0' ? <Button onClick={()=>{handleRequestResponse(request.studentId, 2, request.id, request.supervisorId)}}variant='danger'>Reject</Button> : ''}
                                 </Accordion.Body>
                             </Accordion.Item>
                         </Accordion>

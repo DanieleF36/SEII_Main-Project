@@ -5,7 +5,7 @@ const thesisRepository = require('../repositories/ThesisRepository.js');
 const transporter = require('../email/transporter');
 const teacherRepo = require('../repositories/TeacherRepository');
 const studentRepo = require('../repositories/StudentRepository');
-
+const requestRepo = require('../repositories/RequestRepository.js')
 /**
  * Get all the application for the professor
  *
@@ -122,20 +122,19 @@ exports._sendTeacherEmail = async function (teacherID, id_thesis, id_student) {
 /**
  * Send a mail to the teacher when a student thesis request is made for his thesis
  * @param {*} teacherID 
- * @param {*} id_thesis 
  * @param {*} id_student 
  * @returns 
  */
-exports._sendTeacherEmailThesisRequest = async function (teacherID, id_thesis, id_student) {
-    let [teacherEmail, studentEmail, thesisTitle] = await Promise.all([
+exports._sendTeacherEmailThesisRequest = async function (teacherID, id_student) {
+    let [teacherEmail, student] = await Promise.all([
         teacherRepo.getById(teacherID),
-        studentRepo.getById(id_student),
-        thesisRepository.getById(id_thesis)]);
+        studentRepo.getById(id_student)])
 
     teacherEmail = teacherEmail.email;
-    studentEmail = studentEmail.email;
-    thesisTitle = thesisTitle.title;
-    await transporter.sendEmail(teacherEmail, studentEmail, 'New Thesis request received', `You have a new thesis request for the ${thesisTitle} thesis.`)
+    studentEmail = student.email;
+    studentName = student.name
+    studentSurname = student.surname
+    await transporter.sendEmail(teacherEmail, studentEmail, 'New Thesis request received', `You have a new thesis request from ${studentName} ${studentSurname} .`)
     return true;
 }
 
