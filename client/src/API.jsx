@@ -299,6 +299,23 @@ async function deleteThesis(id){
   })).then(json => { return json })
   .catch(err=> {throw new Error(err.message)})
 }
+function addRequest(request) {
+  
+  request.status = 1;
+  //request.cosupervisor = request.cosupervisor === '' ? [''] : request.cosupervisor
+  return getJson(fetch(URL + '/requests', {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials:'include',
+    body: JSON.stringify(request)
+
+  })).then(json => {
+    return json
+  }).catch(err=> {throw new Error(err.message)})
+
+}
 
 async function thesisRequestHandling(student_id,status,request_id,id_thesis,teacher_id){
   const requestBody = {
@@ -314,7 +331,7 @@ async function thesisRequestHandling(student_id,status,request_id,id_thesis,teac
   })).then(json => { return json })
   .catch(err=> {throw new Error(err.message)})
 }
-
+ 
 async function professorReqHandling(status, request_id){
   const req = {
     status: status,
@@ -367,7 +384,7 @@ function vc_restore() {
   })
 }
 
-const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis,thesisRequestHandling, professorReqHandling };
+const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis, addRequest, thesisRequestHandling, professorReqHandling };
 
 
 
