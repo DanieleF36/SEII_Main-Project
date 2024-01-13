@@ -79,10 +79,9 @@ exports.getActiveByStudentId = (studentId) => {
  * @returns "Done": the function is completed without problems 
  */
 exports.thesisRequestStatusUpdate = function (request_id, status) {
-    if (request_id < 0)
-        throw new Error("Request must be positive")
-    if (status < 0 || status > 2)
-        throw new Error("Status must be 0 or 1 or 2")
+    if (request_id == undefined || status == undefined)
+        throw new Error("Parameters are wrong")
+    
     const sql = "UPDATE Request SET statusS = ? WHERE id = ?"
     return new Promise((resolve, reject) => {
         db.run(sql, [status, request_id], function (err) {
