@@ -69,3 +69,30 @@ describe('thesisRequestHandling', () => {
         expect(mockRes.json).toHaveBeenCalledWith("success");
       });
 })
+
+describe('getRequestAll', () => {
+  test('Secretary user is not logged in', async () => {
+      mockReq.user.role = undefined;
+      controller.getRequestAll(mockReq, mockRes);
+      expect(mockRes.status).toHaveBeenCalledWith(401);
+      expect(mockRes.json).toHaveBeenCalledWith({ message: 'You can not access to this route' });
+  })
+
+  
+  test("thesisRgetRequestAllequestHandling success", async () => {
+    jest.spyOn(require('../../services/RequestService.js'), "getRequestAll").mockResolvedValue("success");
+    controller.getRequestAll(mockReq, mockRes);
+    await Promise.resolve()
+    expect(mockRes.status).toHaveBeenCalledWith(200);
+    expect(mockRes.json).toHaveBeenCalledWith("success");
+  });
+
+
+  test("thesisRgetRequestAllequestHandling error", async () => {
+    jest.spyOn(require('../../services/RequestService.js'), "getRequestAll").mockRejectedValue("error");
+    controller.getRequestAll(mockReq, mockRes);
+    await new Promise(resolve => setImmediate(resolve));
+    expect(mockRes.status).toHaveBeenCalledWith(500);
+    expect(mockRes.json).toHaveBeenCalledWith("error");
+  });
+})
