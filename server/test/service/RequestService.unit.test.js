@@ -156,3 +156,19 @@ describe('thesisRequestHandling', () => {
 
     })
 })
+
+describe('getRequestAll', () => {
+    test('getRequestAll call is done', async () => {
+        jest.spyOn(repository, 'getRequestAll').mockImplementation(() => true)
+        const resp = await repository.getRequestAll() 
+        expect(resp).toBe(true)
+    })
+})
+
+describe('getRequestsByProfessor', () => {
+    test('getRequestsByProfessor call is done', async () => {
+        jest.spyOn(repository, 'getRequestsByProfessor').mockImplementation(() => true)
+        const resp = await repository.getRequestsByProfessor() 
+        expect(resp).toBe(true)
+    })
+})

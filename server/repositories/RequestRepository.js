@@ -99,8 +99,8 @@ exports.thesisRequestStatusUpdate = function (request_id, status) {
 }
 
 exports.getRequestsByProfessor = function(professor_id) {
-    if(professor_id < 0)
-        throw new Error("Request must be positive")
+    if(professor_id == undefined)
+        throw new Error("Parameter is wrong")
     
     const sql = "SELECT R.id, description, statusS, statusT, S.surname, S.name FROM Request R, Student S WHERE supervisorId = ? AND R.statusS = 1 AND R.studentId = S.id"
     return new Promise((resolve, reject) => {

@@ -79,7 +79,7 @@ describe('getRequestAll', () => {
   })
 
   
-  test("thesisRgetRequestAllequestHandling success", async () => {
+  test("getRequestAll success", async () => {
     jest.spyOn(require('../../services/RequestService.js'), "getRequestAll").mockResolvedValue("success");
     controller.getRequestAll(mockReq, mockRes);
     await Promise.resolve()
@@ -88,9 +88,38 @@ describe('getRequestAll', () => {
   });
 
 
-  test("thesisRgetRequestAllequestHandling error", async () => {
+  test("getRequestAll error", async () => {
     jest.spyOn(require('../../services/RequestService.js'), "getRequestAll").mockRejectedValue("error");
     controller.getRequestAll(mockReq, mockRes);
+    await new Promise(resolve => setImmediate(resolve));
+    expect(mockRes.status).toHaveBeenCalledWith(500);
+    expect(mockRes.json).toHaveBeenCalledWith("error");
+  });
+})
+
+describe('getRequestsByProfessor', () => {
+  test('Secretary user is not logged in', async () => {
+      mockReq.user.role = undefined;
+      controller.getRequestsByProfessor(mockReq, mockRes);
+      expect(mockRes.status).toHaveBeenCalledWith(401);
+      expect(mockRes.json).toHaveBeenCalledWith({ message: 'You can not access to this route' });
+  })
+
+  
+  test("getRequestsByProfessor success", async () => {
+    mockReq.user.role = 'teacher'
+    jest.spyOn(require('../../services/RequestService.js'), "getRequestsByProfessor").mockResolvedValue("success");
+    controller.getRequestsByProfessor(mockReq, mockRes);
+    await Promise.resolve()
+    expect(mockRes.status).toHaveBeenCalledWith(200);
+    expect(mockRes.json).toHaveBeenCalledWith("success");
+  });
+
+
+  test("getRequestsByProfessor error", async () => {
+    mockReq.user.role = 'teacher'
+    jest.spyOn(require('../../services/RequestService.js'), "getRequestsByProfessor").mockRejectedValue("error");
+    controller.getRequestsByProfessor(mockReq, mockRes);
     await new Promise(resolve => setImmediate(resolve));
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toHaveBeenCalledWith("error");
