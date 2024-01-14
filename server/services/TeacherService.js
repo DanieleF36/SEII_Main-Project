@@ -131,9 +131,10 @@ exports._sendTeacherEmailThesisRequest = async function (teacherID, id_student) 
         studentRepo.getById(id_student)])
 
     teacherEmail = teacherEmail.email;
-    studentEmail = student.email;
-    studentName = student.name
-    studentSurname = student.surname
+    const studentEmail = student.email;
+    const studentName = student.name
+    const studentSurname = student.surname
+    
     await transporter.sendEmail(studentEmail, teacherEmail, 'New Thesis request received', `You have a new thesis request from ${studentName} ${studentSurname} .`)
     return true;
 }
