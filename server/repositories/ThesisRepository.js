@@ -86,11 +86,7 @@ exports.getById = (idThesis) => {
 exports.getActiveBySupervisor = (supervisorId, queryParam) => {
   
   if (supervisorId == undefined || supervisorId < 0) {
-    throw new Error('Supervisor ID must be greater than or equal to 0');
-  }
-
-  if (queryParam == undefined || queryParam < 0) {
-    throw new Error('Status must be 0 or 1');
+    throw new Error('Supervisor ID must be greater than or equal to 0 or Status must be 0 or 1');
   }
 
   const fetchActiveThesesBySupervisorSQL = 'SELECT * FROM Thesis WHERE status = ? AND supervisor = ?';
@@ -130,12 +126,12 @@ exports.getActiveBySupervisor = (supervisorId, queryParam) => {
  * @param {*} level 0 (bachelor) | 1 (master)
  * @returns list of thesis objects
  */
-exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
+exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status) => {
   if (from == undefined || to == undefined || specific == undefined) {
     throw new Error('"from", "to", "order" and "specific" parameters must be defined');
   }
 
-  let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+  let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
   const params = sql[1];
   sql = sql[0];
   
@@ -260,8 +256,8 @@ exports.setStatus = (id, status) => {
  * @returns SUCCESS: object defined as {nPage: 1}
  * @returns ERROR: sqlite error is returned in the form {error: "message"}
  */
-exports.numberOfPage = (specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) => {
-  let sql = sqlQueryCreator(undefined, undefined, 'titleD', specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+exports.numberOfPage = (specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status) => {
+  let sql = sqlQueryCreator(undefined, undefined, 'titleD', specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
 
   const params = sql[1];
   sql = sql[0];
@@ -350,12 +346,12 @@ function transformOrder(order) {
  * @param {*} level 0 (bachelor) | 1 (master)
  * @returns list of thesis objects
  */
-function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) {
-  let sql = "SELECT * FROM Thesis WHERE status=1 AND level=" + level + " ";
+function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status) {
+  let sql = "SELECT * FROM Thesis WHERE level=" + level + " ";
   let params = [];
   specific = !specific;
   
-  let input = {from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level};
+  let input = {from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status};
 
   const op = specific ? 'LIKE' : '=';
   const conditions = [
@@ -369,6 +365,7 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
     { name: 'expiration_date', column: 'expiration_date', operator: specific ? '<=' : '=' },
     { name: 'cds', column: 'cds', operator: op },
     { name: 'creation_date', column: 'creation_date', operator: specific ? '>=' : '=' },
+    { name: 'status', column: 'status', operator: '=' },
   ];
   const cb = (arg)=>{return specific ? `%${arg}%` : arg}
   conditions.forEach((condition) => {

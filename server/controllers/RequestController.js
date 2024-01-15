@@ -6,6 +6,7 @@ const applicationRepository = require('../repositories/ApplicationRepository');
 exports.addRequest = function (req, res) {
     if(req.user.role != 'student'){
         res.status(401).json({message: "Only student can access to this API"})
+        return;
     }
     applicationRepository.getActiveByStudentId(req.user.id).then(app => {
         if (app != undefined) {
@@ -14,9 +15,11 @@ exports.addRequest = function (req, res) {
         }
         requestRepository.getActiveByStudentId(req.user.id).then(request => {
             if(request){
-                res.status(400).json({message: "You already have done a request for a new thesis"})
-                return;
+                console.log(request);
+                return res.status(400).json({message: "You already have done a request for a new thesis"})
+                
             }
+            console.log("object 4");
             requestService.addRequest(req.body, req.user.id)
             .then(request => res.status(200).json(request))
             .catch(err => { console.log(err); res.status(500).json({ message: err.message }) })
