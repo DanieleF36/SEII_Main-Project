@@ -1,3 +1,15 @@
+'use strict';
+const db = require("./db");
+
+function newSecretary(id, name, surname, email) {
+  return {
+    id: id,
+    name: name,
+    surname: surname,
+    email: email,
+  }
+}
+
 exports.getByEmail = (email) => {
     if (!email) {
       throw new Error('Email must be provided');
@@ -14,7 +26,7 @@ exports.getByEmail = (email) => {
         if (!row) {
           resolve({});
         } else {
-          resolve(newStudent(row.id, row.name, row.surname, row.email));
+          resolve(newSecretary(row.id, row.name, row.surname, row.email));
         }
       });
     });

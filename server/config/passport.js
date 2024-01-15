@@ -5,6 +5,7 @@ const fs = require('fs');
 const studentRepository = require('../repositories/StudentRepository');
 const teacherRepository = require('../repositories/TeacherRepository');
 const coSupervisorRepository = require('../repositories/CoSupervisorRepository');
+const SecretaryRepository = require('../repositories/Secretary.js')
 
 const samlConfig = {
     entryPoint: "https://trial-6639405.okta.com/app/trial-6639405_seii_1/exkaqdefnak4K8Uer697/sso/saml", // URL del punto di ingresso dell'IDP
@@ -33,7 +34,7 @@ const samlStrategy = new saml(samlConfig, async (profile, done) => {
         role = "cosupervisor";
     }
     else if(profile.nameID.includes('secretary')){
-        user = await coSupervisorRepository.getByEmail(profile.nameID)
+        user = await SecretaryRepository.getByEmail(profile.nameID)
         role = "secretary";
     }
     if(role==='student')
