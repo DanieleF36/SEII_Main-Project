@@ -133,6 +133,7 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
 
   let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
   const params = sql[1];
+  console.log(params)
   sql = sql[0];
   
   return new Promise((resolve, reject) => {
@@ -141,7 +142,6 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
         reject(new Error(err.message));
         return;
       }
-
       const res = rows.map((e) => newThesis(e.id, e.title, e.supervisor, [], e.keywords, e.type, e.groups, e.description, e.knowledge, e.note, e.expiration_date, e.level, e.cds, e.creation_date, e.status));
       resolve(res);
     });
@@ -367,7 +367,7 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
     { name: 'creation_date', column: 'creation_date', operator: specific ? '>=' : '=' },
     { name: 'status', column: 'status', operator: '=' },
   ];
-  const cb = (arg)=>{return specific ? `%${arg}%` : arg}
+  const cb = (arg)=>{return specific && !Number.isInteger(arg) ? `%${arg}%` : arg}
   conditions.forEach((condition) => {
     const value = input[condition.name];
     if (value != null) {
@@ -389,7 +389,6 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
 
   sql += "ORDER BY " + transformOrder(order);
   if (to !== undefined && from !== undefined) sql += ` LIMIT ${to - from} OFFSET ${from}`;
-
   return [sql, params];
 }
 
@@ -397,6 +396,7 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
 
 const applicationRepository = require('./ApplicationRepository.js');
 const { query } = require("express");
+const { parse } = require("dotenv");
 /**
  * Designed for Virtual clock
  * @param {*} date 

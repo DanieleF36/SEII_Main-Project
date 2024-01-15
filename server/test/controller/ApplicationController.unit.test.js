@@ -1,5 +1,6 @@
 const controller = require("../../controllers/ApplicationController.js");
 const applicationRepository = require('../../repositories/ApplicationRepository.js')
+const requestRepository = require('../../repositories/RequestRepository.js');
 const fs = require('fs');
 const teacherService = require('../../services/TeacherService.js')
 let mockReq;
@@ -107,13 +108,22 @@ describe('Apply for proposal', () => {
         controller.applyForProposal(mockReq, mockRes);
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
-
+    test('Case3: You have an already a pending or accepted request', async () => {
+        mockReq.user.role = 'student';
+        mockReq.body = "cv.pdf";
+        jest.spyOn(requestRepository, "getRequestByStudentId").mockResolvedValue(true);
+        controller.applyForProposal(mockReq, mockRes);
+        await new Promise(resolve => setImmediate(resolve));
+        expect(mockRes.status).toHaveBeenCalledWith(400);
+        expect(mockRes.json).toHaveBeenCalledWith({ message: "You have an already a pending or accepted request" });
+    });
     test('Case4: Supervisor not found', async () => {
         mockReq.body = "cv.pdf";
         mockReq.user.role = 'student';
         mockReq.params = { id_thesis: 1 };
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(undefined);
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(undefined);
+        jest.spyOn(requestRepository, "getRequestByStudentId").mockResolvedValue(undefined);
         controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -122,6 +132,7 @@ describe('Apply for proposal', () => {
     test('Case5: Missing required parameters', async () => {
         mockReq.body = "cv.pdf";
         mockReq.user.role = 'student';
+        jest.spyOn(requestRepository, "getRequestByStudentId").mockResolvedValue(undefined);
         controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(mockRes.status).toHaveBeenCalledWith(400);
@@ -138,21 +149,23 @@ describe('Apply for proposal', () => {
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(undefined);
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
+        jest.spyOn(requestRepository, "getRequestByStudentId").mockResolvedValue(undefined);
         controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
-    test('Case3: Application for another thesis already send', async () => {
+    test('Case7: Application for another thesis already send', async () => {
         mockReq.user.role = 'student';
         mockReq.body = "cv.pdf";
         mockReq.params = { id_thesis: 1 };
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(["123"]);
+        jest.spyOn(requestRepository, "getRequestByStudentId").mockResolvedValue(undefined);
         controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(mockRes.status).toHaveBeenCalledWith(400);
         expect(mockRes.json).toHaveBeenCalledWith({ message: "You already have an application for a thesis" });
     });
-    test('Case7: Missing file error', async () => {
+    test('Case8: Missing file error', async () => {
         mockReq.user.role = 'student';
         mockReq.body = "cv.pdf";
         mockReq.params = { id_thesis: 1 };
@@ -163,11 +176,12 @@ describe('Apply for proposal', () => {
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(undefined);
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
+        jest.spyOn(requestRepository, "getRequestByStudentId").mockResolvedValue(undefined);
         controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
-    test('Case8: Multiple file error', async () => {
+    test('Case9: Multiple file error', async () => {
         mockReq.user.role = 'student';
         mockReq.body = "cv.pdf";
         mockReq.params = { id_thesis: 1 };
@@ -178,11 +192,12 @@ describe('Apply for proposal', () => {
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getActiveByStudentId").mockResolvedValue(undefined);
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
+        jest.spyOn(requestRepository, "getRequestByStudentId").mockResolvedValue(undefined);
         controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
-    test('Case9: Success', async () => {
+    test('Case10: Success', async () => {
         mockReq.user.role = 'student';
         mockReq.body = "cv.pdf";
         mockReq.params = { id_thesis: 1 };
@@ -195,11 +210,12 @@ describe('Apply for proposal', () => {
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
         jest.spyOn(require("../../services/ApplicationService"), "addApplication").mockResolvedValue(true)
+        jest.spyOn(requestRepository, "getRequestByStudentId").mockResolvedValue(undefined);
         controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(isSuccessful(mockRes.status.mock.calls)).toBe(true);
     });
-    test('Case10: student and thesisId must be grater than 0', async () => {
+    test('Case11: student and thesisId must be grater than 0', async () => {
         mockReq.user.role = 'student';
         mockReq.body = "cv.pdf";
         mockReq.params = { id_thesis: -1 };
@@ -212,11 +228,13 @@ describe('Apply for proposal', () => {
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
         jest.spyOn(require("../../services/ApplicationService"), "addApplication").mockRejectedValue({ message: "student and theis's id must exist and be greater than 0" })
+        jest.spyOn(requestRepository, "getRequestByStudentId").mockResolvedValue(undefined);
+
         controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
     });
-    test('Case11: path_cv must exists', async () => {
+    test('Case12: path_cv must exists', async () => {
         mockReq.user.role = 'student';
         mockReq.body = "notcv.pdf";
         mockReq.params = { id_thesis: 1 };
@@ -229,6 +247,7 @@ describe('Apply for proposal', () => {
         jest.spyOn(require("../../repositories/TeacherRepository"), "getIdByThesisId").mockResolvedValue(true);
         jest.spyOn(require('formidable'), 'IncomingForm').mockImplementation(() => mockForm);
         jest.spyOn(require("../../services/ApplicationService"), "addApplication").mockRejectedValue({ message: "path_cv must exists" })
+        jest.spyOn(requestRepository, "getRequestByStudentId").mockResolvedValue(undefined);
         controller.applyForProposal(mockReq, mockRes);
         await new Promise(resolve => setImmediate(resolve));
         expect(isFailure(mockRes.status.mock.calls, mockRes.json.mock.calls[0][0])).toBe(true);
