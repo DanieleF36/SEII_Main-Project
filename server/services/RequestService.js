@@ -31,18 +31,13 @@ exports.getActiveByStudentId = async function (studentId){
 
 /**
  * Function to accept a thesis request by the secretary. If the secreatary accepts the request the professor is also notified
- * @param {*} thesisId 
  * @param {*} status 
  * @param {*} id_student 
  * @param {*} request_id 
  * @param {*} teacher_id 
  * @returns status that is the request status or error is thrown if the request process has not been completed 
  */
-exports.thesisRequestHandling = async function (thesisId, status, id_student, request_id, teacher_id) {
-    const thesis = await thesisRepository.getById(thesisId)
-    if (!thesis) {
-        throw new Error("Thesis not found")
-    }
+exports.thesisRequestHandling = async function (status, id_student, request_id, teacher_id) {
     const student = await studentRepository.getById(id_student)
     if (!student) {
         throw new Error("Student not found")
@@ -63,7 +58,7 @@ exports.thesisRequestHandling = async function (thesisId, status, id_student, re
     }
     //Status = 1 -> request accepted so I send the email to the teacher to notify him
     if (status == 1) {
-        await teacherService._sendTeacherEmailThesisRequest(teacher_id, thesisId, id_student)
+        await teacherService._sendTeacherEmailThesisRequest(teacher_id, id_student)
     }
     const res = await requestRepository.thesisRequestStatusUpdate(request_id, status)
     if(res instanceof Error) {
@@ -78,8 +73,12 @@ exports.thesisRequestHandling = async function (thesisId, status, id_student, re
  * @param {*} statusTeacher 
  * @returns the updated status
  */
-exports.professorThesisHandling = async function (request_id, statusTeacher) {
+exports.professorThesisHandling = async function (request_id, statusTeacher,teacher_id) {
     const request = await requestRepository.getRequest(request_id);
+
+    if (request.supervisorId != teacher_id) {
+        throw new Error("Teacher id in the request db is different from the teacher id of the request sent")
+    }
 
     if (!request) {
         throw new Error("Request not found");

@@ -14,7 +14,7 @@ function AddRequestForm(props) {
     });
 
     const [cosup_email] = useState(props.mails);
-    const [sup_list,setSup_list] = useState(props.sup/*['luca.azzurro@professori.polito.it', 'francesco.lucca@professori.polito.it']*/);
+    const [sup_list] = useState(props.sup);
     const [filt_cosup, setFilt_cosup] = useState([]);
     const [filt_sup, setFilt_sup] = useState([]);
     const [searchSup, setSearchSup] = useState('');
@@ -43,13 +43,6 @@ function AddRequestForm(props) {
             cosupervisor: '',
             description: '',
         });
-    };
-
-
-    const handleList = (e) => {
-        let name = e.target.name;
-        let cosup_arr = e.target.value.split(",");
-        setProposalData({ ...proposalData, [name]: cosup_arr });
     };
 
     const handleCoSup = (e) => {
@@ -108,7 +101,6 @@ function AddRequestForm(props) {
         } else if (proposalData.description === '') {
             toast.error('Description field cannot be empty')
         } else {
-            // Implement the logic to add the proposal using the proposalData state- API
             let addP = proposalData;
             if(addP.cosupervisor.length === 0)
                 addP.cosupervisor=[]; 

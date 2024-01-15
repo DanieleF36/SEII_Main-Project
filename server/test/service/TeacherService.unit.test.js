@@ -284,6 +284,32 @@ describe('_sendRejectedEmail', ()=>{
     })
 })
 
+describe('_sendTeacherEmailThesisRequest', () => { 
+    test('case 1: success', async () => {
+
+        jest.spyOn(require("../../repositories/TeacherRepository"), "getById").mockResolvedValue({email: "teacher email"})
+        jest.spyOn(require("../../repositories/StudentRepository"), "getById").mockResolvedValue({email: 'student mail', name: 'name', surname: 'surname'})
+        jest.spyOn(require('../../email/transporter'), 'sendEmail').mockResolvedValue(true)
+
+        const res = await teacherService._sendTeacherEmailThesisRequest(mockTeacherID, mockIdStudent);
+        expect(res).toBe(true)
+    })
+
+    test('case 2: error', async () => {
+
+        jest.spyOn(require("../../repositories/TeacherRepository"), "getById").mockResolvedValue({email: "teacher email"})
+        jest.spyOn(require("../../repositories/StudentRepository"), "getById").mockResolvedValue({email: 'student mail', name: 'name', surname: 'surname'})
+        jest.spyOn(require('../../email/transporter'), 'sendEmail').mockRejectedValue('error')
+
+        try {
+            await teacherService._sendTeacherEmailThesisRequest(mockTeacherID, mockIdStudent);
+        }
+        catch(err) {
+            expect(err).toBe('error')
+        }
+    })
+})
+
 describe('acceptApplication Service',()=>{
     test('case0: Application is missing', async()=>{
         jest.spyOn(require("../../repositories/ApplicationRepository"), "getById").mockResolvedValue(undefined)

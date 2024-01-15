@@ -95,8 +95,7 @@ function Homepage(props) {
     }, [props.user]);
 
     useEffect(()=>{
-        API.getCoSupervisorsEmails().then((res)=>{setSup(res);})
-        //API.getAllSupervisorsEmails().then((res)=>{setSup(res);})  API for merge
+        API.getAllSupervisorsEmails().then((res)=>{setSup(res);})
     }, [props.user]);
 
 

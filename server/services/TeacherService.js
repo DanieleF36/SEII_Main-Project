@@ -5,7 +5,7 @@ const thesisRepository = require('../repositories/ThesisRepository.js');
 const transporter = require('../email/transporter');
 const teacherRepo = require('../repositories/TeacherRepository');
 const studentRepo = require('../repositories/StudentRepository');
-
+const requestRepo = require('../repositories/RequestRepository.js')
 /**
  * Get all the application for the professor
  *
@@ -115,27 +115,27 @@ exports._sendTeacherEmail = async function (teacherID, id_thesis, id_student) {
     teacherEmail = teacherEmail.email;
     studentEmail = studentEmail.email;
     thesisTitle = thesisTitle.title;
-    await transporter.sendEmail(teacherEmail, studentEmail, 'New Application request received', `The thesis ${thesisTitle} has a new application request.`)
+    await transporter.sendEmail(studentEmail, teacherEmail, 'New Application request received', `The thesis ${thesisTitle} has a new application request.`)
     return true;
 }
 
 /**
  * Send a mail to the teacher when a student thesis request is made for his thesis
  * @param {*} teacherID 
- * @param {*} id_thesis 
  * @param {*} id_student 
  * @returns 
  */
-exports._sendTeacherEmailThesisRequest = async function (teacherID, id_thesis, id_student) {
-    let [teacherEmail, studentEmail, thesisTitle] = await Promise.all([
+exports._sendTeacherEmailThesisRequest = async function (teacherID, id_student) {
+    let [teacherEmail, student] = await Promise.all([
         teacherRepo.getById(teacherID),
-        studentRepo.getById(id_student),
-        thesisRepository.getById(id_thesis)]);
+        studentRepo.getById(id_student)])
 
     teacherEmail = teacherEmail.email;
-    studentEmail = studentEmail.email;
-    thesisTitle = thesisTitle.title;
-    await transporter.sendEmail(teacherEmail, studentEmail, 'New Thesis request received', `You have a new thesis request for the ${thesisTitle} thesis.`)
+    const studentEmail = student.email;
+    const studentName = student.name
+    const studentSurname = student.surname
+    
+    await transporter.sendEmail(studentEmail, teacherEmail, 'New Thesis request received', `You have a new thesis request from ${studentName} ${studentSurname} .`)
     return true;
 }
 
@@ -162,14 +162,14 @@ exports.getCareerByStudentId = async function (id_student) {
  * Retrive the all the email of all the Cosupervisor
  * @returns array of CoSupervisorsEmail (string)
 */
-exports.getAllCoSupervisorsEmailsService = async function () {
+exports.getAllSupervisorsEmailsService = async function () {
     const result = await teacherRepo.getAllEmails();
     return result
   };
   
 
 // Esporta funzioni Private solo per i test
-if (process.env.NODE_ENV === 'test') {
+if (process.env.test) {
     module.exports._sendRejectedEmail = _sendRejectedEmail;
     module.exports._sendCancelledEmails = _sendCancelledEmails;
     module.exports._sendAcceptedEmail = _sendAcceptedEmail;

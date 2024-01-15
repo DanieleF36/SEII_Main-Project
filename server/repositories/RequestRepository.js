@@ -40,7 +40,7 @@ exports.getRequest = function (request_id) {
         throw new Error("Request must be positive")
     const sql = "SELECT * FROM Request WHERE id = ?"
     return new Promise((resolve, reject) => {
-        db.run(sql, [request_id], function (err, row) {
+        db.get(sql, [request_id], function (err, row) {
             if (err) {
                 reject(new Error(err.message));
                 return;
@@ -48,7 +48,7 @@ exports.getRequest = function (request_id) {
             if(!row) {
                 resolve({})
             }
-            resolve(newRequest(row.studentId, row.supervisorId, row.description, row.statusStatus, row.statusT));
+            resolve(newRequest(row.studentId, row.supervisorId, row.description, row.statusS, row.statusT));
         })
     })
 }
@@ -57,7 +57,7 @@ exports.getActiveByStudentId = (studentId) => {
     if (!(studentId && studentId >= 0)) {
       throw new Error('Student ID must be greater than or equal to 0');
     }
-    const fetchActiveApplicationSQL = 'SELECT * FROM Request WHERE id_student = ? AND (statusS=1 OR statusS=0) AND (statusT=1 OR statusT=0)';
+    const fetchActiveApplicationSQL = 'SELECT * FROM Request WHERE studentId = ? AND (statusS=1 OR statusS=0) AND (statusT=1 OR statusT=0 OR statusT=3)';
     return new Promise((resolve, reject) => {
       db.get(fetchActiveApplicationSQL, [studentId], (err, result) => {
         if (err) {
@@ -79,10 +79,9 @@ exports.getActiveByStudentId = (studentId) => {
  * @returns "Done": the function is completed without problems 
  */
 exports.thesisRequestStatusUpdate = function (request_id, status) {
-    if (request_id < 0)
-        throw new Error("Request must be positive")
-    if (status < 0 || status > 1)
-        throw new Error("Status must be 0 or 1")
+    if (request_id == undefined || status == undefined)
+        throw new Error("Parameters are wrong")
+    
     const sql = "UPDATE Request SET statusS = ? WHERE id = ?"
     return new Promise((resolve, reject) => {
         db.run(sql, [status, request_id], function (err) {
@@ -100,10 +99,10 @@ exports.thesisRequestStatusUpdate = function (request_id, status) {
 }
 
 exports.getRequestsByProfessor = function(professor_id) {
-    if(professor_id < 0)
-        throw new Error("Request must be positive")
-
-    const sql = "SELECT R.id, description, statusS, statusT, S.surname, S.name FROM Request R, Student S WHERE supervisorId = ? AND statusS = 1 AND studentId = S.id"
+    if(professor_id == undefined)
+        throw new Error("Parameter is wrong")
+    
+    const sql = "SELECT R.id, description, statusS, statusT, S.surname, S.name FROM Request R, Student S WHERE supervisorId = ? AND R.statusS = 1 AND R.studentId = S.id"
     return new Promise((resolve, reject) => {
         db.all(sql, [professor_id], (err, rows) => {
 

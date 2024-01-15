@@ -60,6 +60,7 @@ const isLoggedIn = (req, res, next) => {
 
 const thesisController = require("./controllers/ThesisController");
 const coSupervisorController = require("./controllers/CoSupervisorController");
+const supervisorController = require("./controllers/SupervisorController");
 const applicationController = require("./controllers/ApplicationController");
 const requestController = require("./controllers/RequestController");
 const vc = require('./dayjsvc/index.dayjsvc')
@@ -92,15 +93,15 @@ app.get("/requests", isLoggedIn, requestController.getRequestsByProfessor)
 
 app.get("/requests/all", isLoggedIn, requestController.getRequestAll)
 
-app.post("/requests", isLoggedIn, validate({ body: requestSchema }), requestController.addRequest);
+app.post("/requests", isLoggedIn, requestController.addRequest);
 
-app.put("/requests/professor", isLoggedIn, (req, res) => requestController.professorThesisHandling(req, res));
+app.put("/requests/professor", isLoggedIn, requestController.professorThesisHandling);
 
 app.post("/testing/vc/set", (req, res) => vc.vc_set(req, res))
 
 app.post("/testing/vc/restore", (req, res) => vc.vc_restore(req, res))
 
-app.get("/testing/vc/get", validate({ body: requestSchema }), (req, res) => vc.vc_current(req, res))
+app.get("/testing/vc/get", (req, res) => vc.vc_current(req, res))
 
 /******************************************************************Login*********************************************************************************************/
 
