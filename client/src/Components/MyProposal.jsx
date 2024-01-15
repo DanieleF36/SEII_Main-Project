@@ -54,10 +54,12 @@ function MyProposal(props) {
     if (archived === 0){
       
       setArchived(1);
+      props.setSwitch(1);
       setDirty(true);
       
     }else{
       setArchived(0);
+      props.setSwitch(0);
       setDirty(true);
     }
 
@@ -95,9 +97,9 @@ function MyProposal(props) {
    
     useEffect(() => {
       if(props.user.role === 'teacher'){
-          API.browseProposal(archived)
-          .then((proposals) => {
-              setProposals(proposals);
+        API.advancedSearchThesis({ ...props.filters, page: 1, status:archived})
+          .then((res) => {
+              setProposals(res[1]);
               setDirty(false);
           })
           .catch((err)=>{toast.error(err.message)})
@@ -162,7 +164,7 @@ function MyProposal(props) {
         toast.error('Description field cannot be empty');
       } else if (selectedProposal.know === '') {
         toast.error('Knowledge field cannot be empty');
-      } else if (selectedProposal.expiration_date === '') {
+      } else if (selectedProposal.expDate === '') {
         toast.error('Expiration Date field cannot be empty');
       } else if (selectedProposal.level === '') {
         toast.error('Level field cannot be unset');
@@ -200,7 +202,7 @@ function MyProposal(props) {
                         <strong>Title:</strong> {proposal.title}
                       </Col>
                       <Col md='4' sm='4' xs='12'>
-                        <strong>Expiration date:</strong> {proposal.expiration_date}
+                        <strong>Expiration date:</strong> {proposal.expDate}
                       </Col>
                       <Col md='3' sm='3' xs='12'>
                         <strong>Status:</strong>{' '}
@@ -279,8 +281,8 @@ function MyProposal(props) {
                 <Form.Label><strong>Expiration Date</strong></Form.Label>
                 <Form.Control
                   type="date"
-                  name="expiration_date"
-                  value={selectedProposal.expiration_date} // cambiare con proposal dinamica
+                  name="expDate"
+                  value={selectedProposal.expDate} // cambiare con proposal dinamica
                   onChange={handleInputChange}
                 />
               </Form.Group>

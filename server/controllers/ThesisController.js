@@ -45,7 +45,8 @@ exports.searchThesis = function searchThesis(req, res, validate) {
   }
     //checks if order is defined or not, otherwise titleD is setted as defaul value
     const order = req.query.order ? req.query.order : "titleD";
-    thesisService.advancedResearchThesis(req.query.page, order, req.query.title, req.query.supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, req.user.cds, req.query.creation_date, req.user.cdsCode, req.query.status)
+    
+    thesisService.advancedResearchThesis(req.query.page, order, req.query.title, req.query.supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, req.user.cds, req.query.creation_date, req.user.cdsCode, 1)
       .then(function (response) {
         let nPage = response[1];
         response = response[0];
@@ -61,13 +62,14 @@ exports.searchThesis = function searchThesis(req, res, validate) {
         res.status(500).json({ message: e.message })
       });
   } else if (req.user.role == 'teacher') {
-    const queryParam = req.query.status;
+    const queryParam = parseInt(req.query.status);
     if (queryParam != 0 && queryParam != 1) {
       res.status(400).json({ message: "status not valid" });
-
+      return;
     }
     thesisService.getActiveBySupervisor(req.user.id, queryParam)
       .then(response => {
+        console.log(response)
         res.status(200).json({ nPage: 1, thesis: response })
       })
       .catch(response => {
