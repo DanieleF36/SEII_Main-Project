@@ -38,6 +38,7 @@ exports.getActiveByStudentId = async function (studentId){
  * @returns status that is the request status or error is thrown if the request process has not been completed 
  */
 exports.thesisRequestHandling = async function (status, id_student, request_id, teacher_id) {
+    
     const student = await studentRepository.getById(id_student)
     if (!student) {
         throw new Error("Student not found")
@@ -50,7 +51,8 @@ exports.thesisRequestHandling = async function (status, id_student, request_id, 
     if (!request || Object.keys(request).length === 0) {
         throw new Error("Request not found")
     }
-    if (request.id_student != id_student) {
+
+    if (request.studentId != id_student) {
         throw new Error("Student id in the request db is different from the student id of the request sent")
     }
     if (request.supervisorId != teacher_id) {

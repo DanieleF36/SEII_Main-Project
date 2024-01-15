@@ -11,10 +11,11 @@ function HandleRequest(props) {
     const [list, setList] = useState([/*{"id":1,"id_stud":1,"student_name":"Gianni", "student_surname": "Altobelli","id_prof":1,"prof_name":"Luca", "prof_surname": "Azzurro", "cosupervisor":['marco.collo@mail.com', 'marco.colli@mail.com'], 'description': 'Description sample...', 'status':0}*/]);
     
     useEffect(() => {
-        if(props.user=="secretary"){
+        if(props.user.role == "secretary"){
         API.getRequestAll(props.user.role)
             .then((list) => {
                 setList(list);
+                console.log(list)
                 setDirty(false);
             })
             .catch((err)=>{toast.error(err.message)})
@@ -50,17 +51,17 @@ const handleRequestResponse = (student_id, status, request_id, teacher_id) => {
                                     <Container fluid>
                                         <Row className="d-md-flex justify-content-center align-items-center">
                                             <Col md='4' sm='4' xs='12'>
-                                                <strong>Student:</strong> {request.student_name +" "+ request.student_surname}
+                                                <strong>Student:</strong> {request.studentName +" "+ request.studentSurname}
                                             </Col>                                  
                                             <Col md='4' sm='4' xs='12'>
-                                                <strong>Supervisor:</strong> {request.prof_name +" "+ request.prof_surname}
+                                                <strong>Supervisor:</strong> {request.name +" "+ request.surname}
                                             </Col>
                                             <Col md='3' sm='3' xs='12'>
                                                 <strong>Status:</strong>{' '}
-                                                {request.status == '0' ? (
+                                                {request.statusS == '0' ? (
                                                     <Badge pill bg="warning">PEN</Badge>
                                                 ) : (
-                                                    request.status == '1' ? (
+                                                    request.statusS == '1' ? (
                                                         <Badge pill bg="success">ACC</Badge>
                                                     ) :
                                                          (
@@ -88,9 +89,9 @@ const handleRequestResponse = (student_id, status, request_id, teacher_id) => {
                                     <br />
                                     <br />
                                     <br />
-                                    {request.status == '0' ? <Button  onClick={()=>{handleRequestResponse(request.studentId, 1, request.id, request.supervisorId)}} variant='success'>Accept</Button> : ''}
+                                    {request.statusS == '0' ? <Button  onClick={()=>{handleRequestResponse(request.studentId, 1, request.id, request.supervisorId)}} variant='success'>Accept</Button> : ''}
                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    {request.status == '0' ? <Button onClick={()=>{handleRequestResponse(request.studentId, 2, request.id, request.supervisorId)}}variant='danger'>Reject</Button> : ''}
+                                    {request.statusS == '0' ? <Button onClick={()=>{handleRequestResponse(request.studentId, 2, request.id, request.supervisorId)}}variant='danger'>Reject</Button> : ''}
                                 </Accordion.Body>
                             </Accordion.Item>
                         </Accordion>
