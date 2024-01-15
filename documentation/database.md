@@ -39,6 +39,12 @@
 - surname string
 - company string
 
+### *CoSupervisorRequest*
+    This table represents the relationship between request and cosupervisor.
+- id integer ***primary key***
+- id_request integer ***not null***, ***foreign key***
+- id_cosupervisor integer ***foreign key***
+
 ### *CoSupervisorThesis*
     This table represents the relationship between thesis and cosupervisor.
     One between id_cosupervisor and id_teacher has to be null because one row of this table rapresent one co-supervisor for that thesis, so if id_teacher is not null means that co supervisor is internal, in the other case is external
@@ -52,6 +58,12 @@
 - code integer ***not null*** ***unique***
     - it is like LM-32
 - title string ***not null*** ***unique***
+
+### *Secretary*
+- id integer ***primary key***
+- email string ***unique***
+- name string
+- surname string
 
 ### *Student*
 - id integer ***primary key***
@@ -96,3 +108,18 @@
 - status integer ***not null***
     - Archived: 0
     - Public: 1
+
+### *Request*
+    This table represents list of request
+- id integer ***primary key***
+- studentId integer ***not null***, ***foreign key(student.id)***
+- supervisorId integer ***not null***, ***foreign key(teacher.id)***
+- description string
+- statusS integer ***not null***
+    - Pending: 0
+    - Accepted: 1
+    - Rejected: 2
+- statusT integer ***not null***
+    - Pending: 0
+    - Accepted: 1
+    - Rejected: 2
