@@ -5,6 +5,7 @@ const studentService = require('../services/StudentService')
 const teacherRepository = require("../repositories/TeacherRepository");
 const formidable = require('formidable');
 const applicationRepository = require('../repositories/ApplicationRepository')
+const requestRepository = require('../repositories/RequestRepository')
 const path = require('path');
 const fs = require('fs');
 /**
@@ -115,13 +116,19 @@ exports.acceptApplication = function acceptApplication(req, res) {
  *                in req.body.cv there is the cv in a PDF form
  * @returns object = {applicationID : integer, studentId: integer,date : date, status: 0, professorId: integer}
  */
-exports.applyForProposal = function (req, res) {
+exports.applyForProposal = async function (req, res) {
   if (req.user.role !== 'student') {
     res.status(401).json({ message: "You can not access to this route" })
     return;
   }
   if (!req.body) {
     res.status(400).json({ message: "Body is missing" });
+    return;
+  }
+  const request = await requestRepository.getRequestByStudentId(req.user.id);
+  console.log(request)
+  if(request != undefined){
+    res.status(400).json({ message: "You have an already a pending or accepted request" });
     return;
   }
   applicationRepository.getActiveByStudentId(req.user.id).then(checkApp => {

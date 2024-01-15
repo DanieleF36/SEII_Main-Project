@@ -375,7 +375,7 @@ function Homepage(props) {
             </Row>
         </Container>
         </div>
-        : <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
+        : props.user.role === 'secretary' ? <div id="background-div" style={{ backgroundColor: '#FAFAFA' }}>
         <TitleBar setIsAuth={props.setIsAuth} user={props.user} setUser={props.setUser} isAuth={props.isAuth} />
         <Container fluid style={{ marginTop: '20px' }}>
             <Row>
@@ -393,6 +393,7 @@ function Homepage(props) {
             </Row>
         </Container>
         </div>
+        : <div></div>
 
 
     )

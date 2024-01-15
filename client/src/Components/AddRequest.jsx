@@ -104,7 +104,6 @@ function AddRequestForm(props) {
             let addP = proposalData;
             if(addP.cosupervisor.length === 0)
                 addP.cosupervisor=[]; 
-            console.log(addP)
             API.addRequest(addP)
                 .then(() => { toast.success('Thesis Request successfully added'); handleResetChange();})
                 .catch((error) => toast.error(error.message));

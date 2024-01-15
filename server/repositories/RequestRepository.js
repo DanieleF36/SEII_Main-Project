@@ -154,3 +154,19 @@ exports.profReqStatusUpdate = function (request_id, status) {
         });
     });
 };
+exports.getRequestByStudentId = function (studentId){
+    if(studentId == undefined)
+        throw new Error("Parameter is wrong")
+    
+    const sql = "SELECT * FROM Request R WHERE R.studentId = ? AND (statusS = 0 OR (statusS=1 AND statusT=0) OR (statusS=1 AND statusT=1) OR (statusS=1 AND statusT=3)) "
+    return new Promise((resolve, reject) => {
+        db.get(sql, [studentId], (err, rows) => {
+
+            if (err) {
+                reject(new Error(err.message));
+                return;
+            }
+            resolve(rows);
+        })
+    })
+};

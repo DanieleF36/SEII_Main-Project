@@ -16,7 +16,6 @@ function ProfessorRequests(props) {
         API.getRequestByProfessor()
             .then((Requests) => {
                 setRequests(Requests);
-                console.log(Requests)
                 setDirty(false);
             })
             .catch((err)=>{toast.error(err.message)})

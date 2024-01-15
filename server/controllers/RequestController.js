@@ -46,7 +46,7 @@ exports.thesisRequestHandling = function (req, res) {
         res.status(400).json({ message: 'Bad request: student id is missing or minor than 0' });
         return;
     }
-    if (!req.body.status || req.body.status < 0 || req.body.status > 1) {
+    if (!req.body.status || req.body.status < 0 || req.body.status > 2) {
         res.status(400).json({ message: 'Request status missing or invalid' });
         return;
     }
