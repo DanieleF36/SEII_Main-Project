@@ -7,7 +7,7 @@ const teacherRepository = require('../repositories/TeacherRepository');
 const coSupervisorRepository = require('../repositories/CoSupervisorRepository');
 
 const samlConfig = {
-    entryPoint: "https://trial-4857036.okta.com/app/trial-4857036_seiigroup14_1/exk9if2411VvR5eOK697/sso/saml", // URL del punto di ingresso dell'IDP
+    entryPoint: "https://trial-6639405.okta.com/app/trial-6639405_seii_1/exkaqdefnak4K8Uer697/sso/saml", // URL del punto di ingresso dell'IDP
     logoutUrl: "https://trial-4857036.okta.com/app/trial-4857036_seiigroup14_1/exk9if2411VvR5eOK697/slo/saml",
     logoutCallbackUrl: "http://localhost:3001/logout/callback",
     issuer: 'http://localhost:3001', // Nome del tuo SP
