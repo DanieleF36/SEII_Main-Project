@@ -132,12 +132,8 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
   }
 
   let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
-<<<<<<< HEAD
   const params = sql[1];
   console.log(params)
-=======
-  const params = [sql[1][0], sql[1][1][1]];
->>>>>>> ca88eb3cbf501adbd32636359b6e15580dabe12f
   sql = sql[0];
   
   return new Promise((resolve, reject) => {
