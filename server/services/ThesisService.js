@@ -24,7 +24,7 @@ const applicationRepository = require('../repositories/ApplicationRepository');
  * @param creation_date String  (optional)
  * @returns thesis
  **/
-exports.advancedResearchThesis = async function (page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level) {
+exports.advancedResearchThesis = async function (page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status) {
   // If we don't find any supervisor or cosupervisors or any thesis linked to these the research can stop
   let ok = !(supervisor || coSupervisor);
   //find information about id of supervisor
@@ -43,11 +43,11 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   if (!ok)
     return [[], 0];
   //find all thesis
-  let res = await thesisRepository.advancedResearch(nItem * (page - 1), nItem * page, order, false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+  let res = await thesisRepository.advancedResearch(nItem * (page - 1), nItem * page, order, false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
   
   // res contains a list of thesis objects which are okay with given filters
   //find number of page
-  let npage = await thesisRepository.numberOfPage(false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+  let npage = await thesisRepository.numberOfPage(false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
   npage = Math.ceil(npage.nRows / nItem);
   //find information about teacher
   
