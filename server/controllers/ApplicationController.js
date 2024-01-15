@@ -126,8 +126,7 @@ exports.applyForProposal = async function (req, res) {
     return;
   }
   const request = await requestRepository.getRequestByStudentId(req.user.id);
-  console.log(request)
-  if(request != undefined){
+  if (request != undefined) {
     res.status(400).json({ message: "You have an already a pending or accepted request" });
     return;
   }

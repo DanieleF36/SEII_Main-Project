@@ -45,7 +45,7 @@ exports.getRequest = function (request_id) {
                 reject(new Error(err.message));
                 return;
             }
-            if(!row) {
+            if (!row) {
                 resolve({})
             }
             resolve(newRequest(row.studentId, row.supervisorId, row.description, row.statusS, row.statusT));
@@ -55,19 +55,19 @@ exports.getRequest = function (request_id) {
 
 exports.getActiveByStudentId = (studentId) => {
     if (!(studentId && studentId >= 0)) {
-      throw new Error('Student ID must be greater than or equal to 0');
+        throw new Error('Student ID must be greater than or equal to 0');
     }
     const fetchActiveApplicationSQL = 'SELECT * FROM Request WHERE studentId = ? AND (statusS=1 OR statusS=0) AND (statusT=1 OR statusT=0 OR statusT=3)';
     return new Promise((resolve, reject) => {
-      db.get(fetchActiveApplicationSQL, [studentId], (err, result) => {
-        if (err) {
-          reject(new Error(err.message));
-          return;
-        }
-        resolve(result);
-      });
+        db.get(fetchActiveApplicationSQL, [studentId], (err, result) => {
+            if (err) {
+                reject(new Error(err.message));
+                return;
+            }
+            resolve(result);
+        });
     });
-  };
+};
 
 //==================================Set==================================
 
@@ -81,7 +81,7 @@ exports.getActiveByStudentId = (studentId) => {
 exports.thesisRequestStatusUpdate = function (request_id, status) {
     if (request_id == undefined || status == undefined)
         throw new Error("Parameters are wrong")
-    
+
     const sql = "UPDATE Request SET statusS = ? WHERE id = ?"
     return new Promise((resolve, reject) => {
         db.run(sql, [status, request_id], function (err) {
@@ -98,10 +98,10 @@ exports.thesisRequestStatusUpdate = function (request_id, status) {
     })
 }
 
-exports.getRequestsByProfessor = function(professor_id) {
-    if(professor_id == undefined)
+exports.getRequestsByProfessor = function (professor_id) {
+    if (professor_id == undefined)
         throw new Error("Parameter is wrong")
-    
+
     const sql = "SELECT R.id, description, statusS, statusT, S.surname, S.name FROM Request R, Student S WHERE supervisorId = ? AND R.statusS = 1 AND R.studentId = S.id"
     return new Promise((resolve, reject) => {
         db.all(sql, [professor_id], (err, rows) => {
@@ -115,8 +115,8 @@ exports.getRequestsByProfessor = function(professor_id) {
     })
 }
 
-exports.getRequestAll = function() {
-    
+exports.getRequestAll = function () {
+
     const sql = "SELECT R.id, description, supervisorId, studentId, statusS, statusT, S.surname AS studentSurname, S.name AS studentName, T.surname, T.name FROM Request R, Student S, Teacher T  WHERE studentId = S.id AND supervisorId = T.id"
     return new Promise((resolve, reject) => {
         db.all(sql, [], (err, rows) => {
@@ -154,10 +154,11 @@ exports.profReqStatusUpdate = function (request_id, status) {
         });
     });
 };
-exports.getRequestByStudentId = function (studentId){
-    if(studentId == undefined)
-        throw new Error("Parameter is wrong")
-    
+
+exports.getRequestByStudentId = function (studentId) {
+    if (studentId < 0) {
+        throw new Error("Student ID not valid")
+    }
     const sql = "SELECT * FROM Request R WHERE R.studentId = ? AND (statusS = 0 OR (statusS=1 AND statusT=0) OR (statusS=1 AND statusT=1) OR (statusS=1 AND statusT=3)) "
     return new Promise((resolve, reject) => {
         db.get(sql, [studentId], (err, rows) => {

@@ -5,7 +5,7 @@ const teacherRepository = require('../../repositories/TeacherRepository')
 
 describe('thesisRequestHandling', () => {
     let param
-    beforeEach( () => {
+    beforeEach(() => {
         param = {
             status: 1,
             id_student: 1,
@@ -15,16 +15,16 @@ describe('thesisRequestHandling', () => {
 
 
         jest.clearAllMocks();
-        
+
     })
     test('Student not found', async () => {
         jest.spyOn(studentRepository, 'getById').mockImplementation(() => false)
         jest.spyOn(teacherRepository, 'getById').mockImplementation(() => true)
         jest.spyOn(repository, 'getRequest').mockImplementation(() => true)
-        try{
+        try {
             await service.thesisRequestHandling(param.status, param.id_student, param.request_id, param.teacher_id)
         }
-        catch(error) {
+        catch (error) {
             expect(error.message).toBe("Student not found")
         }
 
@@ -34,15 +34,15 @@ describe('thesisRequestHandling', () => {
         jest.spyOn(studentRepository, 'getById').mockImplementation(() => true)
         jest.spyOn(teacherRepository, 'getById').mockImplementation(() => { return {} })
         jest.spyOn(repository, 'getRequest').mockImplementation(() => false)
-        try{
+        try {
             await service.thesisRequestHandling(param.status, param.id_student, param.request_id, param.teacher_id)
         }
-        catch(error) {
+        catch (error) {
             expect(error.message).toBe("Teacher not found")
         }
 
     })
-    
+
     test('Request not found', async () => {
         jest.spyOn(studentRepository, 'getById').mockImplementation(() => true)
         jest.spyOn(teacherRepository, 'getById').mockImplementation(() => {
@@ -50,11 +50,11 @@ describe('thesisRequestHandling', () => {
                 teacher_id: param.teacher_id
             }
         })
-        jest.spyOn(repository, 'getRequest').mockImplementation(() => {return {}})
-        try{
+        jest.spyOn(repository, 'getRequest').mockImplementation(() => { return {} })
+        try {
             await service.thesisRequestHandling(param.status, param.id_student, param.request_id, param.teacher_id)
         }
-        catch(error) {
+        catch (error) {
             expect(error.message).toBe("Request not found")
         }
 
@@ -71,13 +71,13 @@ describe('thesisRequestHandling', () => {
         })
         jest.spyOn(repository, 'getRequest').mockImplementation(() => {
             return {
-                id_student: 2
+                studentId: 2
             }
         })
-        try{
+        try {
             await service.thesisRequestHandling(param.status, param.id_student, param.request_id, param.teacher_id)
         }
-        catch(error) {
+        catch (error) {
             expect(error.message).toBe("Student id in the request db is different from the student id of the request sent")
         }
 
@@ -92,14 +92,14 @@ describe('thesisRequestHandling', () => {
         })
         jest.spyOn(repository, 'getRequest').mockImplementation(() => {
             return {
+                studentId: 1,
                 supervisorId: 2,
-                id_student: 1
             }
         })
-        try{
+        try {
             await service.thesisRequestHandling(param.status, param.id_student, param.request_id, param.teacher_id)
         }
-        catch(error) {
+        catch (error) {
             expect(error.message).toBe("Teacher id in the request db is different from the teacher id of the request sent")
         }
 
@@ -115,17 +115,17 @@ describe('thesisRequestHandling', () => {
         jest.spyOn(repository, 'getRequest').mockImplementation(() => {
             return {
                 supervisorId: 1,
-                id_student: 1
+                studentId: 1
             }
         })
         jest.spyOn(repository, 'thesisRequestStatusUpdate').mockImplementation(() => {
             return 'error'
         })
-        try{
+        try {
             await service.thesisRequestHandling(param.status, param.id_student, param.request_id, param.teacher_id)
         }
-        catch(error) {
-            expect(error.message).toBe("studentEmail is not defined")
+        catch (error) {
+            expect(error.message).toBe("from is missing")
         }
 
     })
@@ -141,16 +141,16 @@ describe('thesisRequestHandling', () => {
         jest.spyOn(repository, 'getRequest').mockImplementation(() => {
             return {
                 supervisorId: 1,
-                id_student: 1
+                studentId: 1
             }
         })
         jest.spyOn(repository, 'thesisRequestStatusUpdate').mockImplementation(() => {
             return 'error'
         })
-        try{
+        try {
             await service.thesisRequestHandling(0, param.id_student, param.request_id, param.teacher_id)
         }
-        catch(error) {
+        catch (error) {
             expect(error.message).toBe("error")
         }
 
@@ -160,7 +160,7 @@ describe('thesisRequestHandling', () => {
 describe('getRequestAll', () => {
     test('getRequestAll call is done', async () => {
         jest.spyOn(repository, 'getRequestAll').mockImplementation(() => true)
-        const resp = await repository.getRequestAll() 
+        const resp = await repository.getRequestAll()
         expect(resp).toBe(true)
     })
 })
@@ -168,7 +168,7 @@ describe('getRequestAll', () => {
 describe('getRequestsByProfessor', () => {
     test('getRequestsByProfessor call is done', async () => {
         jest.spyOn(repository, 'getRequestsByProfessor').mockImplementation(() => true)
-        const resp = await repository.getRequestsByProfessor() 
+        const resp = await repository.getRequestsByProfessor()
         expect(resp).toBe(true)
     })
 })
