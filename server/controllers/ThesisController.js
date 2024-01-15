@@ -39,9 +39,13 @@ exports.searchThesis = function searchThesis(req, res, validate) {
       res.status(400).json({ message: validationResult.validationErrors });
       return;
     }
+    if (req.query.status < 0 || req.query.status > 1) {
+      res.status(400).json({ message: "Status must be between 0 and 1 inclusive" });
+      return;
+  }
     //checks if order is defined or not, otherwise titleD is setted as defaul value
     const order = req.query.order ? req.query.order : "titleD";
-    thesisService.advancedResearchThesis(req.query.page, order, req.query.title, req.query.supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, req.user.cds, req.query.creation_date, req.user.cdsCode)
+    thesisService.advancedResearchThesis(req.query.page, order, req.query.title, req.query.supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, req.user.cds, req.query.creation_date, req.user.cdsCode, req.query.status)
       .then(function (response) {
         let nPage = response[1];
         response = response[0];

@@ -90,7 +90,7 @@ exports.profReqStatusUpdate = function (request_id, status) {
     if (request_id < 0) {
         throw new Error("Request must be positive");
     }
-    if (status < 0 || status > 3) {
+    if (status < 0 || status > 2) {
         throw new Error("Status must be between 1 and 3 inclusive");
     }
 
