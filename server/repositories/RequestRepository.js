@@ -117,11 +117,10 @@ exports.getRequestsByProfessor = function(professor_id) {
 
 exports.getRequestAll = function() {
     
-    const sql = "SELECT R.id, description, statusS, statusT, S.surname AS studentSurname, S.name AS studentName, T.surname, T.name FROM Request R, Student S, Teacher T  WHERE statusS = 1 AND studentId = S.id AND supervisorId = T.id"
+    const sql = "SELECT R.id, description, supervisorId, studentId, statusS, statusT, S.surname AS studentSurname, S.name AS studentName, T.surname, T.name FROM Request R, Student S, Teacher T  WHERE studentId = S.id AND supervisorId = T.id"
     return new Promise((resolve, reject) => {
         db.all(sql, [], (err, rows) => {
             if (err) {
-                console.log(err)
                 reject(new Error(err.message));
                 return;
             }

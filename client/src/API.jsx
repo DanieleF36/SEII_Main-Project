@@ -333,28 +333,27 @@ async function thesisRequestHandling(student_id,status,request_id,teacher_id){
   const requestBody = {
     status: status,
     request_id: request_id,
-    id_thesis: id_thesis,
     teacher_id: teacher_id
   };
   return getJson(fetch(URL + `/thesis/secretary/${student_id}`,{
     method: 'PUT',
     credentials: "include",
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body : JSON.stringify(requestBody)
   })).then(json => { return json })
   .catch(err=> {throw new Error(err.message)})
 }
 async function getRequestAll() { 
-  const res = await fetch(URL + `/requests/all`, {
-    credentials:'include'
-  });
-  if(res.status == 200){
-    const thesis = await res.json();
-    return thesis.thesis;
-  }
-  else{
-    const err = await res.json();
-    throw new Error(err.message)
-  }
+  return getJson(fetch(URL + `/requests/all`,{
+    method: 'GET',
+    credentials: "include",
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })).then(json => { return json })
+  .catch(err=> {throw new Error(err.message)})
 }
 async function professorReqHandling(status, request_id){
   const requestBody = {

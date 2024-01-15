@@ -91,11 +91,15 @@ function Homepage(props) {
     }, [props.currentTime]);
 
     useEffect(()=>{
-        API.getCoSupervisorsEmails().then((res)=>{setMails(res);})
+        if(props.user.role === "student" || props.user.role === "teacher"){
+            API.getCoSupervisorsEmails().then((res)=>{setMails(res);})
+        }
     }, [props.user]);
 
     useEffect(()=>{
-        API.getAllSupervisorsEmails().then((res)=>{setSup(res);})
+        if(props.user.role === "student" || props.user.role === "teacher"){
+            API.getAllSupervisorsEmails().then((res)=>{setSup(res);})
+        }
     }, [props.user]);
 
 
