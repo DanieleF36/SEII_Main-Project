@@ -22,10 +22,10 @@ beforeEach(() => {
 
 describe('getAllCoSupervisorsEmails', () => {
   test("case1: role != teacher", async () => {
-    mockReq.user.role = 'student';
+    mockReq.user.role = 'secretary';
     controller.getAllCoSupervisorsEmails(mockReq, mockRes);
     expect(mockRes.status).toHaveBeenCalledWith(401);
-    expect(mockRes.json).toHaveBeenCalledWith({ message: "Only teacher can access to this API" });
+    expect(mockRes.json).toHaveBeenCalledWith({ message: "Only teacher or student can access to this API" });
   });
   test("case2: getAllCoSupervisorsEmailsService err", async () => {
     mockReq.user.role = 'teacher';

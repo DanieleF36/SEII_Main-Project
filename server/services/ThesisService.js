@@ -47,7 +47,7 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   
   // res contains a list of thesis objects which are okay with given filters
   //find number of page
-  let npage = await thesisRepository.numberOfPage(false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+  let npage = await thesisRepository.numberOfPage(false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
   npage = Math.ceil(npage.nRows / nItem);
   //find information about teacher
   

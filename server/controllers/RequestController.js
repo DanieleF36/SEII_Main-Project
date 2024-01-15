@@ -1,25 +1,33 @@
 'use strict'
 const requestService = require("../services/RequestService");
+const requestRepository = require("../repositories/RequestRepository");
 const applicationRepository = require('../repositories/ApplicationRepository');
 
 exports.addRequest = function (req, res) {
     if(req.user!='student'){
-        console.log("object 1");
         res.status(401).json({message: "Only student can access to this API"})
         return;
     }
-
-    applicationRepository.getActiveByStudentId(3).then(app => {
-        console.log("heeey1");
+    applicationRepository.getActiveByStudentId(req.user.id).then(app => {
         if (app != undefined) {
-            console.log("heeey");
             res.status(400).json({ message: "You already have an application for a thesis" });
             return;
         }
-        
-        requestService.addRequest(req.body, 3)
+        requestRepository.getActiveByStudentId(req.user.id).then(request => {
+            if(request){
+                console.log(request);
+                return res.status(400).json({message: "You already have done a request for a new thesis"})
+                
+            }
+            console.log("object 4");
+            requestService.addRequest(req.body, req.user.id)
             .then(request => res.status(200).json(request))
             .catch(err => { console.log(err); res.status(500).json({ message: err.message }) })
+        }).catch(err=>{
+            res.status(500).json({message: err.message});
+        })
+    }).catch(err=>{
+        res.status(500).json({message: err.message})
     })
 
 }
@@ -57,6 +65,29 @@ exports.thesisRequestHandling = function (req, res) {
         .catch((err) => res.status(500).json(err))
 }
 
+exports.getRequestsByProfessor = function (req, res) {
+    if(req.user.role !== 'teacher') {
+        res.status(401).json({ message: 'You can not access to this route' });
+        return
+    }
+    requestService.getRequestsByProfessor(1)
+        .then( resp => {
+            res.status(200).json(resp)
+        })
+        .catch( err => res.status(500).json(err))
+}
+
+exports.getRequestAll = function (req, res) {
+    if(req.user.role !== 'secretary') {
+        res.status(401).json({ message: 'You can not access to this route' });
+        return
+    }
+    requestService.getRequestAll()
+        .then( resp => {
+            res.status(200).json(resp)
+        })
+        .catch( err => res.status(500).json(err))
+}
 /**
  * Wrapper function for a professor to change the status of a thesis request
  * @param {*} req with req.body.request_id, req.body.statusTeacher
