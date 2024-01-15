@@ -60,6 +60,7 @@ passport.logoutSaml = function(req, res) {
     if (req.user == null) {
         return res.redirect('http://localhost:5173/');
     }
+    console.log(req.user)
     return samlStrategy.logout(req, function(err, uri) {
         return res.redirect(uri);
     });
