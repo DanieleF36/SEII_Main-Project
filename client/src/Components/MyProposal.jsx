@@ -54,10 +54,12 @@ function MyProposal(props) {
     if (archived === 0){
       
       setArchived(1);
+      props.setSwitch(1);
       setDirty(true);
       
     }else{
       setArchived(0);
+      props.setSwitch(0);
       setDirty(true);
     }
 
@@ -95,7 +97,7 @@ function MyProposal(props) {
    
     useEffect(() => {
       if(props.user.role === 'teacher'){
-          API.browseProposal(archived)
+        API.browseProposal(archived)
           .then((proposals) => {
               setProposals(proposals);
               setDirty(false);

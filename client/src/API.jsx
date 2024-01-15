@@ -137,6 +137,7 @@ function getJson(httpResponsePromise) {
 
 async function advancedSearchThesis(params){
   let ur="/thesis?";
+
   if(params.page && params.page !== "")
     ur+="page="+params.page;
   else
@@ -152,6 +153,10 @@ async function advancedSearchThesis(params){
   });
   if(params.expDate && params.expDate != "")
     ur+="&expiration_date="+params.expDate;
+ 
+  if(params.status>=0 && params.status<=1){
+    ur+="&status="+params.status;
+  }
   if(params.keywords && params.keywords != "")
     params.keywords.forEach((e, i, a)=>{
       ur+="&keyword="+a[i];

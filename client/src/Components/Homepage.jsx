@@ -36,6 +36,8 @@ function Homepage(props) {
     const [copyD, setCopyD] = useState(undefined);
     const [mails, setMails] = useState([]);
     const [sup, setSup] = useState([]);
+    const [swit, setSwitch] = useState(1);
+    const [teacherProp, setTP] = useState();
     const [application, setApplication] = useState({
         id_thesis: '',
         cv: ''
@@ -70,7 +72,7 @@ function Homepage(props) {
             }
           });
         if(props.user.role === 'student'){
-        API.advancedSearchThesis({...filters, page: props.active}).then(res => {
+        API.advancedSearchThesis({...filters, page: props.active, status: 1}).then(res => {
             props.setProposals(res[1]);
             props.setPage(res[0]);
         });}
@@ -82,7 +84,7 @@ function Homepage(props) {
             props.setUser(user);
             props.setIsAuth(1);
             if(user.role === 'student'){
-            API.advancedSearchThesis({...filters, page: props.active}).then(res=>{
+            API.advancedSearchThesis({...filters, page: props.active, status: 1}).then(res=>{
                 props.setProposals(res[1]);
                 props.setPage(res[0]);
               });
@@ -157,12 +159,11 @@ function Homepage(props) {
     const handleApplyFilters = () => {
         if (filterCond(filters)) {
             if(props.user.role === 'teacher')
-                API.advancedSearchThesis({ ...filters, page: 1}).then(res => {
-                props.setProposals(res[1]);
-                props.setPage(res[0]);
+                API.advancedSearchThesis({ ...filters, page: 1, status:swit}).then(res => {
+                setTP(res[1]);
                 });
             else    
-                API.advancedSearchThesis({ ...filters, page: props.active}).then(res => {
+                API.advancedSearchThesis({ ...filters, page: props.active, status:1}).then(res => {
                 props.setProposals(res[1]);
                 props.setPage(res[0]);
                 });
@@ -370,7 +371,7 @@ function Homepage(props) {
                 </Col>
                 <Col xs={9}>
                  <FilterContainer handleApplyFilters={handleApplyFilters} filters={filters} handleFilterChange={handleFilterChange} handleFilterCoSupChange={handleFilterCoSupChange} handleResetChange={handleResetChange}></FilterContainer>
-                 <MyProposal user={props.user} handleCopy={handleCopy}/>
+                 <MyProposal user={props.user} setSwitch={setSwitch} proposals={teacherProp} setProposals={setTP} filters={filters} handleCopy={handleCopy}/>
                 </Col>
             </Row>
         </Container>
