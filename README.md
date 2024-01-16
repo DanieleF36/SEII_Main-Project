@@ -54,7 +54,7 @@ otherwise [install](https://docs.docker.com/compose/install/).
 > - subnet=192.168.10.0/24
 > - gateway=192.168.10.1
 > If another network exists with the same configuration, these parameters should be changed inside the [Docker compose yml file](./docker-compose.yml)
-> or the other network must be deleted using `docker networm rm [network_name]`
+> or the other network must be deleted using `docker network rm [network_name]`
 
 For building the whole system run inside the root folder:
 ```docker-compose up -d```
