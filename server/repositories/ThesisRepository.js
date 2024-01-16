@@ -130,10 +130,8 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
   if (from == undefined || to == undefined || specific == undefined) {
     throw new Error('"from", "to", "order" and "specific" parameters must be defined');
   }
-
   let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
   const params = sql[1];
-  console.log(params)
   sql = sql[0];
   
   return new Promise((resolve, reject) => {

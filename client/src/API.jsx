@@ -231,7 +231,6 @@ async function acceptApplication(status,id_application) {
   }
 }
 
-
 async function applyForProposal(application) { 
     const formData = new FormData();
     formData.append('cv', application.cv);
@@ -410,7 +409,6 @@ function vc_get() {
   })
 }
 
-
 function vc_restore() {
   return getJson(fetch(URL + '/testing/vc/restore', {
     headers: {
@@ -423,8 +421,5 @@ function vc_restore() {
   })
 }
 const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, getAllSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis,addRequest, thesisRequestHandling, getRequestAll, getRequestByProfessor, professorReqHandling };
-
-
-
 
 export default API;

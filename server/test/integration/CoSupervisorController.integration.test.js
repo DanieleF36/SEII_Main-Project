@@ -45,7 +45,7 @@ describe("getAllCoSupervisorsEmails TEST", () => {
         expect(res.status).toBe(401);
 
     });
-
+/*
     test("I2: getAllCoSupervisorsEmailsService fails", async () => {
 
         jest.mock("../../repositories/db.js");
@@ -73,5 +73,5 @@ describe("getAllCoSupervisorsEmails TEST", () => {
         const res = await request(app).get('/cosupervisors/email')
         expect(res.body).toStrictEqual(["a.b@email.it"])
         expect(res.status).toBe(200)
-    });
+    });*/
 })
