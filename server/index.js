@@ -65,7 +65,7 @@ const applicationController = require("./controllers/ApplicationController");
 const requestController = require("./controllers/RequestController");
 const vc = require('./dayjsvc/index.dayjsvc')
 
-app.get("/thesis", isLoggedIn,(req, res) => thesisController.searchThesis(req, res, validate({ query: querySearch })));
+app.get("/thesis", isLoggedIn, validate({ query: querySearch }), (req, res) => thesisController.searchThesis(req, res));
 
 app.post("/thesis", isLoggedIn, validate({ body: thesisSchema }), (req, res) => thesisController.addThesis(req, res));
 

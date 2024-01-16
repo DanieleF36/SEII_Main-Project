@@ -354,7 +354,7 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   const op = specific ? 'LIKE' : '=';
   const conditions = [
     { name: 'title', column: 'title', operator: op },
-    { name: 'idSupervisors', column: 'supervisor', operator: op },
+    { name: 'idSupervisors', column: 'supervisor', operator: '=' },
     { name: 'idCoSupervisorsThesis', column: 'id', operator: '=' },
     { name: 'keyword', column: 'keywords', operator: op },
     { name: 'type', column: 'type', operator: op },

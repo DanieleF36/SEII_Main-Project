@@ -32,24 +32,22 @@ const thesisService = require("../services/ThesisService");
  */
 const { ValidationError } = require('express-json-validator-middleware');
 exports.searchThesis = function searchThesis(req, res, validate) {
-  if (req.user.role == 'student') {
-    let validationResult;
-    validate(req, res, (a) => { validationResult = a });
-    if (validationResult instanceof ValidationError) {
-      res.status(400).json({ message: validationResult.validationErrors });
-      return;
-    }
-    //Need to check if status is set to 1
-
+  if (req.user.role == 'student' || req.user.role == 'teacher') {
     //checks if order is defined or not, otherwise titleD is setted as defaul value
     const order = req.query.order ? req.query.order : "titleD";
-    
-    thesisService.advancedResearchThesis(req.query.page, order, req.query.title, req.query.supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, req.user.cds, req.query.creation_date, req.user.cdsCode, 1)
+    const supervisor = req.user.role == 'teacher'? req.user.id : req.query.supervisor;
+    const cds = req.user.role == 'teacher'? req.query.cds : req.user.cds;
+    const level = req.user.role == 'teacher'? req.query.level: req.user.cdsCode;
+    const status = req.user.role == 'teacher'? req.query.status: 1;
+    thesisService.advancedResearchThesis(req.query.page, order, req.query.title, supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, cds, req.query.creation_date, level, status)
       .then(function (response) {
         let nPage = response[1];
         response = response[0];
         response.forEach((e) => {
-          e.supervisor = e.supervisor.name + " " + e.supervisor.surname;
+          if (req.user.role == 'student')
+            e.supervisor = e.supervisor.name + " " + e.supervisor.surname;
+          else
+            e.supervisor = e.supervisor.id
           if (e.coSupervisors)
             e.coSupervisors.forEach((e1, index, v) => {
               v[index] = e1.name + " " + e1.surname;
@@ -59,7 +57,7 @@ exports.searchThesis = function searchThesis(req, res, validate) {
       }).catch(e => {
         res.status(500).json({ message: e.message })
       });
-  } else if (req.user.role == 'teacher') {
+  } /*else if (req.user.role == 'teacher') {
     const queryParam = parseInt(req.query.status);
     if (queryParam != 0 && queryParam != 1) {
       res.status(400).json({ message: "status not valid" });
@@ -73,7 +71,7 @@ exports.searchThesis = function searchThesis(req, res, validate) {
       .catch(response => {
         res.status(500).json(response);
       })
-  } else {
+  } */else {
     res.status(401).json({ message: "Only student or teacher can access list of thesis" })
   }
 };
