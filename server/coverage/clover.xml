@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1705403600628" clover="3.2.0">
-  <project timestamp="1705403600629" name="All files">
-    <metrics statements="1579" coveredstatements="1220" conditionals="762" coveredconditionals="544" methods="412" coveredmethods="298" elements="2753" coveredelements="2062" complexity="0" loc="1579" ncloc="1579" packages="10" files="28" classes="28"/>
+<coverage generated="1705410916429" clover="3.2.0">
+  <project timestamp="1705410916429" name="All files">
+    <metrics statements="1580" coveredstatements="1208" conditionals="764" coveredconditionals="539" methods="412" coveredmethods="294" elements="2756" coveredelements="2041" complexity="0" loc="1580" ncloc="1580" packages="10" files="28" classes="28"/>
     <package name="server">
-      <metrics statements="79" coveredstatements="74" conditionals="8" coveredconditionals="3" methods="18" coveredmethods="8"/>
+      <metrics statements="80" coveredstatements="73" conditionals="10" coveredconditionals="4" methods="18" coveredmethods="8"/>
       <file name="index.js" path="C:\Users\danie\Documents\GitHub\SEII_Main-Project\server\index.js">
-        <metrics statements="79" coveredstatements="74" conditionals="8" coveredconditionals="3" methods="18" coveredmethods="8"/>
+        <metrics statements="80" coveredstatements="73" conditionals="10" coveredconditionals="4" methods="18" coveredmethods="8"/>
         <line num="2" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
         <line num="4" count="3" type="stmt"/>
@@ -38,11 +38,11 @@
         <line num="45" count="3" type="stmt"/>
         <line num="48" count="3" type="stmt"/>
         <line num="49" count="3" type="stmt"/>
-        <line num="50" count="56" type="cond" truecount="1" falsecount="1"/>
-        <line num="51" count="56" type="stmt"/>
+        <line num="50" count="53" type="cond" truecount="1" falsecount="1"/>
+        <line num="51" count="53" type="stmt"/>
         <line num="53" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="54" count="0" type="stmt"/>
-        <line num="56" count="56" type="stmt"/>
+        <line num="56" count="53" type="stmt"/>
         <line num="61" count="3" type="stmt"/>
         <line num="62" count="3" type="stmt"/>
         <line num="63" count="3" type="stmt"/>
@@ -56,7 +56,7 @@
         <line num="76" count="3" type="stmt"/>
         <line num="78" count="6" type="stmt"/>
         <line num="80" count="11" type="stmt"/>
-        <line num="82" count="4" type="stmt"/>
+        <line num="82" count="3" type="stmt"/>
         <line num="84" count="3" type="stmt"/>
         <line num="86" count="3" type="stmt"/>
         <line num="88" count="3" type="stmt"/>
@@ -82,9 +82,10 @@
         <line num="127" count="3" type="cond" truecount="1" falsecount="1"/>
         <line num="128" count="0" type="stmt"/>
         <line num="129" count="0" type="stmt"/>
-        <line num="134" count="3" type="stmt"/>
-        <line num="139" count="3" type="stmt"/>
-        <line num="141" count="3" type="stmt"/>
+        <line num="133" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="135" count="0" type="stmt"/>
+        <line num="140" count="0" type="stmt"/>
+        <line num="142" count="3" type="stmt"/>
       </file>
     </package>
     <package name="server.config">
@@ -255,12 +256,12 @@
         <metrics statements="8" coveredstatements="8" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3"/>
         <line num="2" count="4" type="stmt"/>
         <line num="4" count="4" type="stmt"/>
-        <line num="5" count="7" type="cond" truecount="4" falsecount="0"/>
+        <line num="5" count="4" type="cond" truecount="4" falsecount="0"/>
         <line num="6" count="2" type="stmt"/>
         <line num="7" count="2" type="stmt"/>
-        <line num="9" count="5" type="stmt"/>
-        <line num="11" count="3" type="stmt"/>
-        <line num="14" count="2" type="stmt"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="14" count="1" type="stmt"/>
       </file>
       <file name="RequestController.js" path="C:\Users\danie\Documents\GitHub\SEII_Main-Project\server\controllers\RequestController.js">
         <metrics statements="65" coveredstatements="60" conditionals="44" coveredconditionals="43" methods="19" coveredmethods="16"/>
@@ -423,28 +424,28 @@
       </file>
     </package>
     <package name="server.cron">
-      <metrics statements="13" coveredstatements="9" conditionals="4" coveredconditionals="2" methods="5" coveredmethods="3"/>
+      <metrics statements="13" coveredstatements="3" conditionals="4" coveredconditionals="0" methods="5" coveredmethods="0"/>
       <file name="cronJobs.js" path="C:\Users\danie\Documents\GitHub\SEII_Main-Project\server\cron\cronJobs.js">
-        <metrics statements="13" coveredstatements="9" conditionals="4" coveredconditionals="2" methods="5" coveredmethods="3"/>
+        <metrics statements="13" coveredstatements="3" conditionals="4" coveredconditionals="0" methods="5" coveredmethods="0"/>
         <line num="2" count="3" type="stmt"/>
         <line num="3" count="3" type="stmt"/>
         <line num="15" count="3" type="stmt"/>
-        <line num="16" count="3" type="stmt"/>
-        <line num="17" count="3" type="stmt"/>
-        <line num="19" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="16" count="0" type="stmt"/>
+        <line num="17" count="0" type="stmt"/>
+        <line num="19" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="20" count="0" type="stmt"/>
-        <line num="22" count="3" type="stmt"/>
-        <line num="24" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="22" count="0" type="stmt"/>
+        <line num="24" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="25" count="0" type="stmt"/>
-        <line num="28" count="3" type="stmt"/>
+        <line num="28" count="0" type="stmt"/>
         <line num="32" count="0" type="stmt"/>
         <line num="36" count="0" type="stmt"/>
       </file>
     </package>
     <package name="server.dayjsvc">
-      <metrics statements="53" coveredstatements="10" conditionals="24" coveredconditionals="1" methods="12" coveredmethods="1"/>
+      <metrics statements="53" coveredstatements="7" conditionals="24" coveredconditionals="0" methods="12" coveredmethods="0"/>
       <file name="index.dayjsvc.js" path="C:\Users\danie\Documents\GitHub\SEII_Main-Project\server\dayjsvc\index.dayjsvc.js">
-        <metrics statements="53" coveredstatements="10" conditionals="24" coveredconditionals="1" methods="12" coveredmethods="1"/>
+        <metrics statements="53" coveredstatements="7" conditionals="24" coveredconditionals="0" methods="12" coveredmethods="0"/>
         <line num="3" count="3" type="stmt"/>
         <line num="4" count="3" type="stmt"/>
         <line num="6" count="3" type="stmt"/>
@@ -453,10 +454,10 @@
         <line num="16" count="0" type="stmt"/>
         <line num="17" count="0" type="stmt"/>
         <line num="18" count="0" type="stmt"/>
-        <line num="28" count="3" type="cond" truecount="1" falsecount="1"/>
-        <line num="29" count="3" type="stmt"/>
+        <line num="28" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="29" count="0" type="stmt"/>
         <line num="30" count="0" type="stmt"/>
-        <line num="31" count="3" type="stmt"/>
+        <line num="31" count="0" type="stmt"/>
         <line num="43" count="3" type="stmt"/>
         <line num="44" count="0" type="cond" truecount="0" falsecount="4"/>
         <line num="45" count="0" type="stmt"/>
@@ -524,9 +525,9 @@
       </file>
     </package>
     <package name="server.repositories">
-      <metrics statements="665" coveredstatements="516" conditionals="420" coveredconditionals="305" methods="181" coveredmethods="149"/>
+      <metrics statements="665" coveredstatements="514" conditionals="420" coveredconditionals="302" methods="181" coveredmethods="149"/>
       <file name="ApplicationRepository.js" path="C:\Users\danie\Documents\GitHub\SEII_Main-Project\server\repositories\ApplicationRepository.js">
-        <metrics statements="113" coveredstatements="113" conditionals="73" coveredconditionals="71" methods="34" coveredmethods="34"/>
+        <metrics statements="113" coveredstatements="113" conditionals="73" coveredconditionals="70" methods="34" coveredmethods="34"/>
         <line num="3" count="13" type="stmt"/>
         <line num="5" count="13" type="stmt"/>
         <line num="16" count="13" type="stmt"/>
@@ -623,13 +624,13 @@
         <line num="276" count="1" type="stmt"/>
         <line num="278" count="8" type="stmt"/>
         <line num="289" count="13" type="stmt"/>
-        <line num="290" count="4" type="stmt"/>
-        <line num="291" count="4" type="stmt"/>
-        <line num="293" count="4" type="stmt"/>
-        <line num="294" count="4" type="stmt"/>
-        <line num="295" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="290" count="3" type="stmt"/>
+        <line num="291" count="1" type="stmt"/>
+        <line num="293" count="1" type="stmt"/>
+        <line num="294" count="1" type="stmt"/>
+        <line num="295" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="296" count="1" type="stmt"/>
-        <line num="297" count="4" type="stmt"/>
+        <line num="297" count="1" type="stmt"/>
         <line num="306" count="13" type="stmt"/>
         <line num="307" count="3" type="stmt"/>
         <line num="308" count="1" type="stmt"/>
@@ -642,7 +643,7 @@
         <line num="320" count="13" type="stmt"/>
       </file>
       <file name="CoSupervisorRepository.js" path="C:\Users\danie\Documents\GitHub\SEII_Main-Project\server\repositories\CoSupervisorRepository.js">
-        <metrics statements="69" coveredstatements="62" conditionals="38" coveredconditionals="32" methods="16" coveredmethods="16"/>
+        <metrics statements="69" coveredstatements="61" conditionals="38" coveredconditionals="31" methods="16" coveredmethods="16"/>
         <line num="3" count="10" type="stmt"/>
         <line num="14" count="10" type="stmt"/>
         <line num="15" count="3" type="cond" truecount="4" falsecount="0"/>
@@ -702,16 +703,16 @@
         <line num="128" count="1" type="stmt"/>
         <line num="130" count="1" type="stmt"/>
         <line num="145" count="10" type="stmt"/>
-        <line num="146" count="5" type="stmt"/>
-        <line num="147" count="5" type="stmt"/>
-        <line num="148" count="5" type="stmt"/>
-        <line num="149" count="5" type="cond" truecount="2" falsecount="0"/>
-        <line num="150" count="2" type="stmt"/>
-        <line num="151" count="2" type="stmt"/>
-        <line num="153" count="3" type="cond" truecount="2" falsecount="0"/>
-        <line num="154" count="1" type="stmt"/>
-        <line num="157" count="3" type="stmt"/>
-        <line num="158" count="2" type="stmt"/>
+        <line num="146" count="2" type="stmt"/>
+        <line num="147" count="2" type="stmt"/>
+        <line num="148" count="2" type="stmt"/>
+        <line num="149" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="150" count="1" type="stmt"/>
+        <line num="151" count="1" type="stmt"/>
+        <line num="153" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="154" count="0" type="stmt"/>
+        <line num="157" count="2" type="stmt"/>
+        <line num="158" count="1" type="stmt"/>
       </file>
       <file name="CoSupervisorThesisRepository.js" path="C:\Users\danie\Documents\GitHub\SEII_Main-Project\server\repositories\CoSupervisorThesisRepository.js">
         <metrics statements="35" coveredstatements="25" conditionals="27" coveredconditionals="18" methods="10" coveredmethods="7"/>
@@ -1016,7 +1017,7 @@
         <line num="179" count="0" type="stmt"/>
       </file>
       <file name="ThesisRepository.js" path="C:\Users\danie\Documents\GitHub\SEII_Main-Project\server\repositories\ThesisRepository.js">
-        <metrics statements="194" coveredstatements="159" conditionals="144" coveredconditionals="111" methods="52" coveredmethods="51"/>
+        <metrics statements="194" coveredstatements="158" conditionals="144" coveredconditionals="110" methods="52" coveredmethods="51"/>
         <line num="3" count="11" type="stmt"/>
         <line num="10" count="12" type="stmt"/>
         <line num="35" count="11" type="stmt"/>
@@ -1164,16 +1165,16 @@
         <line num="396" count="11" type="stmt"/>
         <line num="397" count="11" type="stmt"/>
         <line num="402" count="11" type="stmt"/>
-        <line num="403" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="403" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="404" count="1" type="stmt"/>
-        <line num="406" count="5" type="stmt"/>
-        <line num="408" count="5" type="stmt"/>
-        <line num="409" count="5" type="stmt"/>
-        <line num="410" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="406" count="2" type="stmt"/>
+        <line num="408" count="2" type="stmt"/>
+        <line num="409" count="2" type="stmt"/>
+        <line num="410" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="411" count="1" type="stmt"/>
-        <line num="412" count="4" type="cond" truecount="2" falsecount="0"/>
-        <line num="413" count="3" type="stmt"/>
-        <line num="414" count="4" type="stmt"/>
+        <line num="412" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="413" count="0" type="stmt"/>
+        <line num="414" count="3" type="stmt"/>
         <line num="423" count="11" type="stmt"/>
         <line num="424" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="425" count="1" type="stmt"/>
@@ -1186,15 +1187,15 @@
         <line num="434" count="0" type="stmt"/>
         <line num="435" count="3" type="stmt"/>
         <line num="444" count="11" type="stmt"/>
-        <line num="445" count="6" type="cond" truecount="2" falsecount="0"/>
+        <line num="445" count="3" type="cond" truecount="2" falsecount="0"/>
         <line num="446" count="1" type="stmt"/>
         <line num="448" count="6" type="stmt"/>
-        <line num="449" count="5" type="stmt"/>
-        <line num="451" count="5" type="stmt"/>
-        <line num="452" count="5" type="stmt"/>
-        <line num="453" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="449" count="2" type="stmt"/>
+        <line num="451" count="2" type="stmt"/>
+        <line num="452" count="2" type="stmt"/>
+        <line num="453" count="2" type="cond" truecount="2" falsecount="0"/>
         <line num="454" count="1" type="stmt"/>
-        <line num="456" count="4" type="stmt"/>
+        <line num="456" count="1" type="stmt"/>
         <line num="458" count="1" type="stmt"/>
         <line num="468" count="11" type="stmt"/>
         <line num="469" count="3" type="cond" truecount="2" falsecount="0"/>
@@ -1244,8 +1245,8 @@
         <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
         <line num="2" count="5" type="stmt"/>
         <line num="7" count="5" type="stmt"/>
-        <line num="8" count="6" type="stmt"/>
-        <line num="9" count="5" type="stmt"/>
+        <line num="8" count="3" type="stmt"/>
+        <line num="9" count="3" type="stmt"/>
       </file>
       <file name="RequestService.js" path="C:\Users\danie\Documents\GitHub\SEII_Main-Project\server\services\RequestService.js">
         <metrics statements="54" coveredstatements="31" conditionals="26" coveredconditionals="17" methods="6" coveredmethods="1"/>
@@ -1541,12 +1542,12 @@
         <line num="232" count="0" type="stmt"/>
         <line num="235" count="0" type="stmt"/>
         <line num="242" count="3" type="stmt"/>
-        <line num="243" count="101" type="stmt"/>
-        <line num="245" count="101" type="stmt"/>
-        <line num="246" count="101" type="stmt"/>
-        <line num="247" count="101" type="cond" truecount="1" falsecount="1"/>
+        <line num="243" count="98" type="stmt"/>
+        <line num="245" count="98" type="stmt"/>
+        <line num="246" count="98" type="stmt"/>
+        <line num="247" count="98" type="cond" truecount="1" falsecount="1"/>
         <line num="248" count="0" type="stmt"/>
-        <line num="250" count="101" type="stmt"/>
+        <line num="250" count="98" type="stmt"/>
         <line num="256" count="3" type="stmt"/>
         <line num="257" count="51" type="stmt"/>
         <line num="259" count="51" type="stmt"/>
@@ -1562,19 +1563,19 @@
         <line num="276" count="0" type="stmt"/>
         <line num="278" count="5" type="stmt"/>
         <line num="284" count="3" type="stmt"/>
-        <line num="285" count="80" type="stmt"/>
-        <line num="287" count="80" type="stmt"/>
-        <line num="288" count="80" type="stmt"/>
-        <line num="289" count="80" type="cond" truecount="1" falsecount="1"/>
+        <line num="285" count="77" type="stmt"/>
+        <line num="287" count="77" type="stmt"/>
+        <line num="288" count="77" type="stmt"/>
+        <line num="289" count="77" type="cond" truecount="1" falsecount="1"/>
         <line num="290" count="0" type="stmt"/>
-        <line num="292" count="80" type="stmt"/>
+        <line num="292" count="77" type="stmt"/>
         <line num="298" count="3" type="stmt"/>
-        <line num="299" count="88" type="stmt"/>
-        <line num="301" count="88" type="stmt"/>
-        <line num="302" count="88" type="stmt"/>
-        <line num="303" count="88" type="cond" truecount="1" falsecount="1"/>
+        <line num="299" count="79" type="stmt"/>
+        <line num="301" count="79" type="stmt"/>
+        <line num="302" count="79" type="stmt"/>
+        <line num="303" count="79" type="cond" truecount="1" falsecount="1"/>
         <line num="304" count="0" type="stmt"/>
-        <line num="306" count="88" type="stmt"/>
+        <line num="306" count="79" type="stmt"/>
         <line num="312" count="3" type="stmt"/>
         <line num="313" count="0" type="stmt"/>
         <line num="315" count="0" type="stmt"/>
@@ -1590,12 +1591,12 @@
         <line num="332" count="0" type="stmt"/>
         <line num="334" count="33" type="stmt"/>
         <line num="340" count="3" type="stmt"/>
-        <line num="341" count="91" type="stmt"/>
-        <line num="343" count="91" type="stmt"/>
-        <line num="344" count="91" type="stmt"/>
-        <line num="345" count="91" type="cond" truecount="1" falsecount="1"/>
+        <line num="341" count="88" type="stmt"/>
+        <line num="343" count="88" type="stmt"/>
+        <line num="344" count="88" type="stmt"/>
+        <line num="345" count="88" type="cond" truecount="1" falsecount="1"/>
         <line num="346" count="0" type="stmt"/>
-        <line num="348" count="91" type="stmt"/>
+        <line num="348" count="88" type="stmt"/>
         <line num="365" count="3" type="stmt"/>
         <line num="366" count="20" type="stmt"/>
         <line num="369" count="20" type="stmt"/>
@@ -1604,12 +1605,12 @@
         <line num="372" count="0" type="stmt"/>
         <line num="374" count="20" type="stmt"/>
         <line num="388" count="3" type="stmt"/>
-        <line num="389" count="19" type="stmt"/>
-        <line num="392" count="19" type="stmt"/>
-        <line num="393" count="19" type="stmt"/>
-        <line num="394" count="19" type="cond" truecount="1" falsecount="1"/>
+        <line num="389" count="18" type="stmt"/>
+        <line num="392" count="18" type="stmt"/>
+        <line num="393" count="18" type="stmt"/>
+        <line num="394" count="18" type="cond" truecount="1" falsecount="1"/>
         <line num="395" count="0" type="stmt"/>
-        <line num="397" count="19" type="stmt"/>
+        <line num="397" count="18" type="stmt"/>
         <line num="403" count="3" type="stmt"/>
         <line num="404" count="0" type="stmt"/>
         <line num="407" count="0" type="stmt"/>

@@ -130,6 +130,7 @@ if (!process.env.test) {
   );
 }
 
+if(!process.env.test){
 // first call when the server is runned
 crontasks.setExpired()
 
@@ -137,5 +138,5 @@ crontasks.setExpired()
  * Node cron scheduled task for updating the DB to be executed each day at 23:59
  */
 cron.schedule('59 23 * * *', crontasks.setExpired);
-
+}
 module.exports = { app, login_as };
