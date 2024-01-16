@@ -423,13 +423,13 @@ describe('updateThesis unit tests', () => {
 })
 
 describe('advancedResearchThesis', () => {
-    let page = 1, order = 'titleD', title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level;
+    let page = 1, order = 'titleD', title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status;
 
     test('case1: supervisorCheck err ', async () => {
         supervisor = "nameS"
         const spy = jest.spyOn(require('../../services/ThesisService.js'),'supervisorCheck').mockRejectedValue({error:"error"})
         try{
-            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status)
         }
         catch(e){
             expect(spy).toHaveBeenCalledWith('nameS')
@@ -441,7 +441,7 @@ describe('advancedResearchThesis', () => {
         const spysu = jest.spyOn(require('../../services/ThesisService.js'),'supervisorCheck').mockResolvedValue([1])
         const spyco = jest.spyOn(require('../../services/ThesisService.js'),'coSupervisorCheck').mockRejectedValue({error:"error"})
         try{
-            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status)
         }
         catch(e){
             expect(spysu).toHaveBeenCalledWith('nameS');
@@ -453,7 +453,7 @@ describe('advancedResearchThesis', () => {
         const spysu = jest.spyOn(require('../../services/ThesisService.js'),'supervisorCheck').mockResolvedValue()
         const spyco = jest.spyOn(require('../../services/ThesisService.js'),'coSupervisorCheck').mockResolvedValue([])
         
-        const res = await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+        const res = await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status)
         expect(res).toStrictEqual([[],0])
         expect(spysu).toHaveBeenCalledWith('nameS');
         expect(spyco).toHaveBeenCalledWith('nameC');
@@ -464,12 +464,12 @@ describe('advancedResearchThesis', () => {
         const spyco = jest.spyOn(require('../../services/ThesisService.js'),'coSupervisorCheck').mockResolvedValue([1])
         const spyad = jest.spyOn(require('../../repositories/ThesisRepository.js'),'advancedResearch').mockRejectedValue({error:"error"})
         try{
-            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status)
         }
         catch(e){
             expect(spysu).toHaveBeenCalledWith('nameS');
             expect(spyco).toHaveBeenCalledWith('nameC');
-            expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false, title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+            expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false, title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
             expect(e).toStrictEqual({ error: "error" });
         }
         
@@ -480,13 +480,13 @@ describe('advancedResearchThesis', () => {
         const spyad = jest.spyOn(require('../../repositories/ThesisRepository.js'),'advancedResearch').mockResolvedValue([{id:1, supervisor:1, coSupervisor:[]}])
         const spynp = jest.spyOn(require('../../repositories/ThesisRepository.js'),'numberOfPage').mockRejectedValue({error:"error"})
         try{
-            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status)
         }
         catch(e){
             expect(spysu).toHaveBeenCalledWith('nameS');
         expect(spyco).toHaveBeenCalledWith('nameC');
-        expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false,title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-        expect(spynp).toHaveBeenCalledWith( false, title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+        expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false,title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
+        expect(spynp).toHaveBeenCalledWith( false, title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
             expect(e).toStrictEqual({ error: "error" });
         }
     });
@@ -497,13 +497,13 @@ describe('advancedResearchThesis', () => {
         const spynp = jest.spyOn(require('../../repositories/ThesisRepository.js'),'numberOfPage').mockResolvedValue({nRows:1})
         const spysi = jest.spyOn(require('../../services/ThesisService.js'),'supervisorInfo').mockRejectedValue({error:"error"})
         try{
-            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status)
         }
         catch(e){
             expect(spysu).toHaveBeenCalledWith('nameS');
         expect(spyco).toHaveBeenCalledWith('nameC');
-        expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false,title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-        expect(spynp).toHaveBeenCalledWith( false, title,[1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+        expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false,title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
+        expect(spynp).toHaveBeenCalledWith( false, title,[1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
         expect(spysi).toHaveBeenCalledWith([{id:1, supervisor:1, coSupervisor:[]}]);
             expect(e).toStrictEqual({ error: "error" });
         }
@@ -517,14 +517,14 @@ describe('advancedResearchThesis', () => {
         const spysi = jest.spyOn(require('../../services/ThesisService.js'),'supervisorInfo').mockResolvedValue()
         const spyci = jest.spyOn(require('../../services/ThesisService.js'),'coSupervisorInfo').mockRejectedValue({error:"error"})
         try{
-            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+            await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status)
             Promise.resolve();
         }
         catch(e){
             expect(spysu).toHaveBeenCalledWith('nameS');
             expect(spyco).toHaveBeenCalledWith('nameC');
-            expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false,title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-            expect(spynp).toHaveBeenCalledWith( false, title,[1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+            expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false,title, [1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
+            expect(spynp).toHaveBeenCalledWith( false, title,[1], [1], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
             expect(spysi).toHaveBeenCalledWith([{id:1, supervisor:1, coSupervisor:[]}]);
             expect(spyci).toHaveBeenCalledWith([{id:1, supervisor:1, coSupervisor:[]}]);
             expect(e).toStrictEqual({ error: "error" });
@@ -538,15 +538,15 @@ describe('advancedResearchThesis', () => {
         const spysi = jest.spyOn(require('../../services/ThesisService.js'),'supervisorInfo').mockResolvedValue()
         const spyci = jest.spyOn(require('../../services/ThesisService.js'),'coSupervisorInfo').mockResolvedValue()
         
-        const res = await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level)
+        const res = await service.advancedResearchThesis(page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status)
         expect(res).toStrictEqual([[{id:1, supervisor:1, coSupervisor:[]}], 1])
         expect(spysu).toHaveBeenCalledWith('nameS');
         expect(spyco).toHaveBeenCalledWith('nameC');
-        expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false,title, [1], [2], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
-        expect(spynp).toHaveBeenCalledWith( false, title,[1], [2], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level);
+        expect(spyad).toHaveBeenCalledWith(10*(page-1), 10*page, order, false,title, [1], [2], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
+        expect(spynp).toHaveBeenCalledWith( false, title,[1], [2], keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
         expect(spysi).toHaveBeenCalledWith([{id:1, supervisor:1, coSupervisor:[]}]);
         expect(spyci).toHaveBeenCalledWith([{id:1, supervisor:1, coSupervisor:[]}]);
-    });    
+    });  
 });
 
 describe('delete thesis', () => {

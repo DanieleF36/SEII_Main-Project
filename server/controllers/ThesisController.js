@@ -39,10 +39,8 @@ exports.searchThesis = function searchThesis(req, res, validate) {
       res.status(400).json({ message: validationResult.validationErrors });
       return;
     }
-    if (req.query.status < 0 || req.query.status > 1) {
-      res.status(400).json({ message: "Status must be between 0 and 1 inclusive" });
-      return;
-  }
+    //Need to check if status is set to 1
+
     //checks if order is defined or not, otherwise titleD is setted as defaul value
     const order = req.query.order ? req.query.order : "titleD";
     
