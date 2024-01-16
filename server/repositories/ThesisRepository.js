@@ -133,7 +133,6 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
   let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
   const params = sql[1];
   sql = sql[0];
-  
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {
       if (err) {
@@ -345,9 +344,9 @@ function transformOrder(order) {
  * @returns list of thesis objects
  */
 function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status) {
-  let sql = "SELECT * FROM Thesis WHERE level=" + level + " ";
+  let sql = "SELECT * FROM Thesis WHERE 1=1 ";
   let params = [];
-  specific = !specific;
+  //specific = !specific;
   
   let input = {from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status};
 
@@ -364,8 +363,9 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
     { name: 'cds', column: 'cds', operator: op },
     { name: 'creation_date', column: 'creation_date', operator: specific ? '>=' : '=' },
     { name: 'status', column: 'status', operator: '=' },
+    { name: 'level', column: 'level', operator: '=' },
   ];
-  const cb = (arg)=>{return specific && !Number.isInteger(arg) ? `%${arg}%` : arg}
+  const cb = (arg)=>{return specific || parseInt(arg)!=NaN  ? arg : `%${arg}%` }
   conditions.forEach((condition) => {
     const value = input[condition.name];
     if (value != null) {

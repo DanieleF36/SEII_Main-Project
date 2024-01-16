@@ -243,11 +243,12 @@ async function applyForProposal(application) {
 }
 
 async function browseProposal(status) { 
-  const res = await fetch(URL + `/thesis?status=${status}`, {
+  const res = await fetch(URL + `/thesis?page=1&status=${status}`, {
     credentials:'include'
   });
   if(res.status == 200){
     const thesis = await res.json();
+    console.log(thesis)
     return thesis.thesis;
   }
   else{
