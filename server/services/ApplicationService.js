@@ -31,11 +31,10 @@ exports.addApplication = function (studentId, thesisId, cv, supervisorId) {
         reject(new Error(err.message));
       }
       else {
-        await applicationRepository.addApplication(studentId, thesisId, newPath, supervisorId)
-          .then(async res => {
+        applicationRepository.addApplication(studentId, thesisId, newPath, supervisorId)
+          .then(res => {
             //! Function to send the mail to the professor when an application is made. Test needs to be changed when this function is added
-            await teacherService._sendTeacherEmail(supervisorId, thesisId, studentId).catch(err => reject(new Error(err.message)))
-            resolve(res) 
+            teacherService._sendTeacherEmail(supervisorId, thesisId, studentId).then(()=>resolve(res)).catch(err => reject(new Error(err.message))) 
           })
           .catch(err => reject(new Error(err.message)))
       }

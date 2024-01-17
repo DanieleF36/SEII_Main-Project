@@ -125,42 +125,43 @@ exports.applyForProposal = async function (req, res) {
     res.status(400).json({ message: "Body is missing" });
     return;
   }
-  const request = await requestRepository.getRequestByStudentId(req.user.id);
-  if (request != undefined) {
-    res.status(400).json({ message: "You have an already a pending or accepted request" });
-    return;
-  }
-  applicationRepository.getActiveByStudentId(req.user.id).then(checkApp => {
-    const err = checkError(checkApp, req);
-    if (err)
-      return res.status(400).json(err)
-    teacherRepository.getIdByThesisId(req.params.id_thesis).then(supervisorId => {
-      if (supervisorId == undefined) {
-        res.status(400).json({ message: "Supervisor not found" });
-        return;
-      }
-      //Initializes an object that is used to handle the input file in the multipart/form-data format 
-      const form = new formidable.IncomingForm({ maxFileSize: 32 * 1024 * 1024 });
-      //Translate the file into a js object and call it files
-      form.parse(req, function (err, fields, files) {
-        if (err) {
-          res.status(500).json({ message: "Internal Error" });
+  requestRepository.getRequestByStudentId(req.user.id).then((request)=>{
+    if (request != undefined) {
+      res.status(400).json({ message: "You have an already a pending or accepted request" });
+      return;
+    }
+    applicationRepository.getActiveByStudentId(req.user.id).then(checkApp => {
+      const err = checkError(checkApp, req);
+      if (err)
+        return res.status(400).json(err)
+      teacherRepository.getIdByThesisId(req.params.id_thesis).then(supervisorId => {
+        if (supervisorId == undefined) {
+          res.status(400).json({ message: "Supervisor not found" });
           return;
         }
-        if (!files?.cv?.length > 1) {
-          res.status(400).json({ message: "Missing file or multiple" });
-          return;
-        }
-        const file = files.cv[0];
-        applicationsService.addApplication(req.user.id, req.params.id_thesis, file, supervisorId)
-          .then(function (response) {
-            res.status(201).json(response);
-          })
-          .catch(function (response) {
-            res.status(500).json(response);
-          });
-      })
-
+        //Initializes an object that is used to handle the input file in the multipart/form-data format 
+        const form = new formidable.IncomingForm({ maxFileSize: 32 * 1024 * 1024 });
+        //Translate the file into a js object and call it files
+        form.parse(req, function (err, fields, files) {
+          if (err) {
+            res.status(500).json({ message: "Internal Error" });
+            return;
+          }
+          if (!files?.cv?.length > 1) {
+            res.status(400).json({ message: "Missing file or multiple" });
+            return;
+          }
+          const file = files.cv[0];
+          applicationsService.addApplication(req.user.id, req.params.id_thesis, file, supervisorId)
+            .then(function (response) {
+              res.status(201).json(response);
+            })
+            .catch(function (response) {
+              res.status(500).json(response);
+            });
+        })
+  
+      }).catch((e) => res.status(500).json({ message: e.message }))
     }).catch((e) => res.status(500).json({ message: e.message }))
   }).catch((e) => res.status(500).json({ message: e.message }))
 };
