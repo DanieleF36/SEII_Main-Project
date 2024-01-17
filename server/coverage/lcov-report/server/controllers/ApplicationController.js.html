@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.82% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>99/109</span>
+                <span class='fraction'>99/110</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.66% </span>
+                <span class="strong">88.46% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>22/24</span>
+                <span class='fraction'>23/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.82% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>99/109</span>
+                <span class='fraction'>99/110</span>
             </div>
         
             
@@ -295,7 +295,8 @@
 <a name='L230'></a><a href='#L230'>230</a>
 <a name='L231'></a><a href='#L231'>231</a>
 <a name='L232'></a><a href='#L232'>232</a>
-<a name='L233'></a><a href='#L233'>233</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L233'></a><a href='#L233'>233</a>
+<a name='L234'></a><a href='#L234'>234</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
@@ -459,6 +460,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -645,7 +647,7 @@ exports.acceptApplication = function acceptApplication(req, res) {
  *                in req.body.cv there is the cv in a PDF form
  * @returns object = {applicationID : integer, studentId: integer,date : date, status: 0, professorId: integer}
  */
-exports.applyForProposal = async function (req, res) {
+exports.applyForProposal = function (req, res) {
   if (req.user.role !== 'student') {
     res.status(401).json({ message: "You can not access to this route" })
     return;
@@ -654,43 +656,44 @@ exports.applyForProposal = async function (req, res) {
     res.status(400).json({ message: "Body is missing" });
     return;
   }
-  const request = await requestRepository.getRequestByStudentId(req.user.id);
-  if (request != undefined) {
-    res.status(400).json({ message: "You have an already a pending or accepted request" });
-    return;
-  }
-  applicationRepository.getActiveByStudentId(req.user.id).then(checkApp =&gt; {
-    const err = checkError(checkApp, req);
-    if (err)
-      return res.status(400).json(err)
-    teacherRepository.getIdByThesisId(req.params.id_thesis).then(supervisorId =&gt; {
-      if (supervisorId == undefined) {
-        res.status(400).json({ message: "Supervisor not found" });
-        return;
-      }
-      //Initializes an object that is used to handle the input file in the multipart/form-data format 
-      const form = new formidable.IncomingForm({ maxFileSize: 32 * 1024 * 1024 });
-      //Translate the file into a js object and call it files
-      form.parse(req, function (err, fields, files) {
-        if (err) {
-          res.status(500).json({ message: "Internal Error" });
+  requestRepository.getRequestByStudentId(req.user.id).then((request)=&gt;{
+    if (request != undefined) {
+      res.status(400).json({ message: "You have an already a pending or accepted request" });
+      return;
+    }
+    applicationRepository.getActiveByStudentId(req.user.id).then(checkApp =&gt; {
+      const err = checkError(checkApp, req);
+      if (err)
+        return res.status(400).json(err)
+      teacherRepository.getIdByThesisId(req.params.id_thesis).then(supervisorId =&gt; {
+        if (supervisorId == undefined) {
+          res.status(400).json({ message: "Supervisor not found" });
           return;
         }
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (!files?.cv?.length &gt; 1) {
-<span class="cstat-no" title="statement not covered" >          res.status(400).json({ message: "Missing file or multiple" });</span>
-<span class="cstat-no" title="statement not covered" >          return;</span>
-        }
-        const file = files.cv[0];
-        applicationsService.addApplication(req.user.id, req.params.id_thesis, file, supervisorId)
-          .then(function (response) {
-            res.status(201).json(response);
-          })
-          .catch(function (response) {
-            res.status(500).json(response);
-          });
-      })
-&nbsp;
-    }).catch((e) =&gt; res.status(500).json({ message: e.message }))
+        //Initializes an object that is used to handle the input file in the multipart/form-data format 
+        const form = new formidable.IncomingForm({ maxFileSize: 32 * 1024 * 1024 });
+        //Translate the file into a js object and call it files
+        form.parse(req, function (err, fields, files) {
+          if (err) {
+            res.status(500).json({ message: "Internal Error" });
+            return;
+          }
+          <span class="missing-if-branch" title="if path not taken" >I</span>if (!files?.cv?.length &gt; 1) {
+<span class="cstat-no" title="statement not covered" >            res.status(400).json({ message: "Missing file or multiple" });</span>
+<span class="cstat-no" title="statement not covered" >            return;</span>
+          }
+          const file = files.cv[0];
+          applicationsService.addApplication(req.user.id, req.params.id_thesis, file, supervisorId)
+            .then(function (response) {
+              res.status(201).json(response);
+            })
+            .catch(function (response) {
+              res.status(500).json(response);
+            });
+        })
+  
+      }).catch((e) =&gt; res.status(500).json({ message: e.message }))
+    }).catch(<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >res.status(500).json({ message: e.message }))</span>
   }).catch(<span class="fstat-no" title="function not covered" >(e</span>) =&gt; <span class="cstat-no" title="statement not covered" >res.status(500).json({ message: e.message }))</span>
 };
 &nbsp;
@@ -766,7 +769,7 @@ exports.getCareerByStudentId = function (req, res) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-01-17T15:14:36.079Z
+                at 2024-01-17T16:57:51.892Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -4,9 +4,9 @@ const db = require("./db");
 exports.addCoSupervisor = function(requestId, coSupervisorId, teacherId){
     if(requestId == undefined || requestId < 0)
         throw new Error("Request id must be defined and greater or equal to 0");
-    if(coSupervisorId != undefined && coSupervisorId <0)
+    if(coSupervisorId == undefined || coSupervisorId <0)
         throw new Error("coSupervisorId must be defined")
-    if(teacherId != undefined && teacherId < 0)
+    if(teacherId == undefined || teacherId < 0)
         throw new Error("teacherId must be defined and greater or equal to 0");
     const sql = "INSERT INTO CoSupervisorRequest(requestId, coSupervisorId, teacherId) VALUES(?,?,?)"
     return new Promise((resolve, reject)=>{

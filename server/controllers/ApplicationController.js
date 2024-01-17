@@ -116,7 +116,7 @@ exports.acceptApplication = function acceptApplication(req, res) {
  *                in req.body.cv there is the cv in a PDF form
  * @returns object = {applicationID : integer, studentId: integer,date : date, status: 0, professorId: integer}
  */
-exports.applyForProposal = async function (req, res) {
+exports.applyForProposal = function (req, res) {
   if (req.user.role !== 'student') {
     res.status(401).json({ message: "You can not access to this route" })
     return;
