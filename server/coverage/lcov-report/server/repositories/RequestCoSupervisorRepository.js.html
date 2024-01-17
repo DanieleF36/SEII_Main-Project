@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/15</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">0% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/3</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">13.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/15</span>
+                <span class='fraction'>15/15</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -84,43 +84,43 @@
 <a name='L19'></a><a href='#L19'>19</a>
 <a name='L20'></a><a href='#L20'>20</a>
 <a name='L21'></a><a href='#L21'>21</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">'use strict';
 const db = require("./db");
 &nbsp;
-exports.addCoSupervisor = <span class="fstat-no" title="function not covered" >fu</span>nction(requestId, coSupervisorId, teacherId){
-<span class="cstat-no" title="statement not covered" >    if(requestId == undefined || requestId &lt; 0)</span>
-<span class="cstat-no" title="statement not covered" >        throw new Error("Request id must be defined and greater or equal to 0");</span>
-<span class="cstat-no" title="statement not covered" >    if(coSupervisorId != undefined &amp;&amp; coSupervisorId &lt;0)</span>
-<span class="cstat-no" title="statement not covered" >        throw new Error("coSupervisorId must be defined")</span>
-<span class="cstat-no" title="statement not covered" >    if(teacherId != undefined &amp;&amp; teacherId &lt; 0)</span>
-<span class="cstat-no" title="statement not covered" >        throw new Error("teacherId must be defined and greater or equal to 0");</span>
-    const sql = <span class="cstat-no" title="statement not covered" >"INSERT INTO CoSupervisorRequest(requestId, coSupervisorId, teacherId) VALUES(?,?,?)"</span>
-<span class="cstat-no" title="statement not covered" >    return new Promise(<span class="fstat-no" title="function not covered" >(r</span>esolve, reject)=&gt;{</span>
-<span class="cstat-no" title="statement not covered" >        db.run(sql, [requestId, coSupervisorId, teacherId], <span class="fstat-no" title="function not covered" >fu</span>nction(err){</span>
-<span class="cstat-no" title="statement not covered" >            if(err){</span>
-<span class="cstat-no" title="statement not covered" >                reject(new Error(err.message));</span>
-<span class="cstat-no" title="statement not covered" >                return;</span>
+exports.addCoSupervisor = function(requestId, coSupervisorId, teacherId){
+    if(requestId == undefined || requestId &lt; 0)
+        throw new Error("Request id must be defined and greater or equal to 0");
+    if(coSupervisorId == undefined || coSupervisorId &lt;0)
+        throw new Error("coSupervisorId must be defined")
+    if(teacherId == undefined || teacherId &lt; 0)
+        throw new Error("teacherId must be defined and greater or equal to 0");
+    const sql = "INSERT INTO CoSupervisorRequest(requestId, coSupervisorId, teacherId) VALUES(?,?,?)"
+    return new Promise((resolve, reject)=&gt;{
+        db.run(sql, [requestId, coSupervisorId, teacherId], function(err){
+            if(err){
+                reject(new Error(err.message));
+                return;
             }
-<span class="cstat-no" title="statement not covered" >            resolve(this.lastID)</span>
+            resolve(this.lastID)
         })
     })
 }</pre></td></tr></table></pre>
@@ -130,7 +130,7 @@ exports.addCoSupervisor = <span class="fstat-no" title="function not covered" >f
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-01-17T15:14:36.079Z
+                at 2024-01-17T16:57:51.892Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

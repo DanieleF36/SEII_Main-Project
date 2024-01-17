@@ -19,6 +19,7 @@ exports.setExpired = function(){
             if(!Array.isArray(result)) {
                 return {error: 'server error'}
             }
+            console.log("ciao")
             thesisRepository.setExpiredAccordingToIds(result)
                 .then((result) => {
                     if(!result) {
@@ -29,10 +30,11 @@ exports.setExpired = function(){
                     }
                 })
                 .catch(err => {
+                    console.log("xiao")
                     return {error: err}
                 })
         })
         .catch(err => {
-            return {error: err}
+            return {message: err}
         })
 }

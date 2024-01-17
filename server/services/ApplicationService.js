@@ -26,7 +26,7 @@ exports.addApplication = function (studentId, thesisId, cv, supervisorId) {
     let oldPath = cv.filepath;
     let newPath = './/file//' + cv.originalFilename;
     //move the file from the old path to the new 
-    fs.rename(oldPath, newPath, async (err) => {
+    fs.rename(oldPath, newPath, (err) => {
       if (err) {
         reject(new Error(err.message));
       }
