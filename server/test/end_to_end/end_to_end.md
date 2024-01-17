@@ -115,65 +115,56 @@
 ### Story 14, Notify Application
 
 ###### Front-end
-![Frontend]()
-
-###### Response
-![Response]()
-
+![Frontend](./img/applicationEmail_Front.png)
 
 ### Story 15, Proposal Expiration
 
 ###### Front-end
-![Frontend]()
+![Frontend](./img/expiration_front.png)
 
-###### Response
-![Response]()
-
-### Story 16,Search Archive
+### Story 16, Search Archive
 
 ###### Front-end
-![Frontend]()
+![Frontend](./img/searchArchive_front.png)
 
 ###### Response
-![Response]()
+![Response](./img/searchArchive_headers.png)
+![Response](./img/searchArchive_response.png)
 
 
-### Story 129,Insert Student Request
+### Story 29, Insert Student Request
 
 ###### Front-end
-![Frontend]()
+![Frontend](./img/front_add.png)
 
 ###### Response
-![Response]()
+![Response](./img/headers_add.png)
+![Response](./img/response_add.png)
 
 
 
-### Story 130,Secretary Approve Student Requests
+### Story 30, Secretary Approve Student Requests
 
 ###### Front-end
-![Frontend]()
+![Frontend](./img/handle_front.png)
 
 ###### Response
-![Response]()
+![Response](./img/handle_headers.png)
 
 
-### Story 131,professor Approve Student Requests
+### Story 31, Professor Approve Student Requests
 
 ###### Front-end
-![Frontend]()
+![Frontend](./img/profRequest_front.png)
 
 ###### Response
-![Response]()
+![Response](./img/profRequest_headers.png)
 
 
 
-### Story 132,Notify Professor  Student Request
+### Story 32, Notify Professor Thesis Request
 
 ###### Front-end
-![Frontend]()
-
-###### Response
-![Response]()
-
+![Frontend](./img/notify_request.png)
 
 
