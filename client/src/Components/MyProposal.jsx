@@ -11,7 +11,6 @@ function MyProposal(props) {
   const [dirty, setDirty] = useState(true);
   const [archived, setArchived] = useState(1);
   const [selectedProposal, setSelectedProposal] = useState('');
-  const [proposals, setProposals] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   const [showModal3, setShowModal3] = useState(false);
@@ -97,12 +96,8 @@ function MyProposal(props) {
    
     useEffect(() => {
       if(props.user.role === 'teacher'){
-        API.browseProposal(archived)
-          .then((proposals) => {
-              setProposals(proposals);
-              setDirty(false);
-          })
-          .catch((err)=>{toast.error(err.message)})
+          props.handleApplyFilters();
+          setDirty(false);
         }
        
     }, [dirty, props.user]);
@@ -190,7 +185,7 @@ function MyProposal(props) {
     <>
       <BootstrapSwitchButton onChange={() => handleSwitch()} checked={archived === 1} size="sm" onlabel='published' offlabel='archived' width={100} onstyle="success" offstyle="warning" style="border" />
       <div style={{ marginTop: '10px' }}>
-        {proposals.map((proposal) => (
+        {props.proposals.map((proposal) => (
           <Card key={proposal.id} style={{ marginBottom: '10px' }}>
             <Toaster position="top-center" reverseOrder={false} />
             <Accordion>

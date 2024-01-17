@@ -194,12 +194,12 @@ async function advancedSearchThesis(params){
       type:e.type ,
       groups:e.groups ,
       description:e.description ,
-      know:e.knowledge ,
+      knowledge:e.knowledge ,
       note:e.note ,
-      expDate:e.expiration_date ,
+      expiration_date:e.expiration_date ,
       level:e.level ,
       cds:e.cds ,
-      creatDate:e.creation_date ,
+      creation_date:e.creation_date ,
       status:e.status, 
       nPage:e.nPage
     }))]
