@@ -7,7 +7,9 @@
 1. [Docker Manual Run](#docker)
 2. [Docker Compose](#docker-compose)
 3. [Client](#client)
-4. [Server](#api_server)
+4. [API Server](#api_server)
+5. [Database Tables](#database-tables)
+6. [Users credentials](#users-credentials)
 
 
 ### Docker
@@ -80,13 +82,24 @@ I can add a new proposal choosing possible cosupervisor from a list or adding th
 I can see the list of applications for my proposals. To accept or reject an application I have to click on the application itself.
 It's also possible to download a student's CV to evaluate his application.
 
+##### Proposal Requests
+I can see the list of request that students have sent to me. I can accept them, reject them or ask for some changes if I do not agree with the description provided by the students
+
 #### LIKE A STUDENT
 
 ##### Proposal List
 I can see the list of proposals related to my course of study. Once I've clicked on a proposal I can apply for it with the apply button and upload a PDF of my CV.
 
+##### Add Request
+I can send a new request of thesis to a professor. I have to add his email and if I need I can add the emails of other cosupervisor. For a valid request I must write a description about the thesis that I want to propose 
+
 ##### My Application
 I can see the list of my applications and information about the linked proposal. The status of applications can be accepted (in green), pending (in yellow), rejected (in red) or canceled (in grey). I can see my academic career and my CV linked to the application.
+
+#### LIKE A SECRETARY
+
+##### Request From Student
+I can see the list of the students' request. I can accept or reject them. Once I have accepted a new thesis request, I automatically send an email and the request to the relevant professor. 
 
 ### React Client Application Routes
 
