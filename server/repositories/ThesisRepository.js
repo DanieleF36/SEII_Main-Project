@@ -132,7 +132,9 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
   }
   let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
   const params = sql[1];
+  console.log(sql)
   sql = sql[0];
+  
   return new Promise((resolve, reject) => {
     db.all(sql, params, (err, rows) => {
       if (err) {
@@ -350,7 +352,7 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   
   let input = {from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status};
 
-  const op = specific ? 'LIKE' : '=';
+  const op = specific ? '=' : 'LIKE';
   const conditions = [
     { name: 'title', column: 'title', operator: op },
     { name: 'idSupervisors', column: 'supervisor', operator: '=' },
@@ -360,26 +362,26 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
     { name: 'groups', column: 'groups', operator: op },
     { name: 'knowledge', column: 'knowledge', operator: op },
     { name: 'expiration_date', column: 'expiration_date', operator: specific ? '<=' : '=' },
-    { name: 'cds', column: 'cds', operator: op },
+    { name: 'cds', column: 'cds', operator: '=' },
     { name: 'creation_date', column: 'creation_date', operator: specific ? '>=' : '=' },
     { name: 'status', column: 'status', operator: '=' },
     { name: 'level', column: 'level', operator: '=' },
   ];
-  const cb = (arg)=>{return specific || parseInt(arg)!=NaN  ? arg : `%${arg}%` }
+  const cb = (arg, cnd)=>{return cnd == '=' ? arg : `%${arg}%` }
   conditions.forEach((condition) => {
     const value = input[condition.name];
     if (value != null) {
       if (Array.isArray(value) && value.length>0) {
         sql += 'AND ('+condition.column+" "+condition.operator+"? ";
-        params.push(cb(value[0]));
+        params.push(cb(value[0], condition.operator));
         value.slice(1).forEach((item) => {
           sql += `OR ${condition.column} ${condition.operator} ? `;
-          params.push(cb(item));
+          params.push(cb(item, condition.operator));
         });
         sql+=") ";
       } else {
         sql += `AND ${condition.column} ${condition.operator} ? `;
-        params.push(cb(value));
+        params.push(cb(value, condition.operator));
       }
     }
   });
