@@ -22,28 +22,28 @@ const samlConfig = {
 const samlStrategy = new saml(samlConfig, (profile, done) => {
     let user, role;
     if (profile.nameID.includes('studenti')) {
-        user = studentRepository.getStudentAndCDSByEmail(profile.nameID).then(() => {
+        studentRepository.getStudentAndCDSByEmail(profile.nameID).then((user) => {
             role = "student";
             user = { id: user.id, name: user.name, surname: user.surname, role: role, nameID: profile.nameID, cds: user.cds, cdsCode: user.cdsCode.includes('LM') ? 1 : 0 }
             done(null, user);
         })
     }
     else if (profile.nameID.includes('professori')) {
-        user = teacherRepository.getByEmail(profile.nameID).then(() => {
+        teacherRepository.getByEmail(profile.nameID).then((user) => {
             role = "teacher";
             user = { id: user.id, name: user.name, surname: user.surname, role: role, nameID: profile.nameID, group: user.codGroup }
             done(null, user);
         });
     }
     else if (profile.nameID.includes('cosupervisor')) {
-        user = coSupervisorRepository.getByEmail(profile.nameID).then(() => {
+        coSupervisorRepository.getByEmail(profile.nameID).then((user) => {
             role = "cosupervisor";
             user = { id: user.id, name: user.name, surname: user.surname, role: role, nameID: profile.nameID }
             done(null, user);
         })
     }
     else if (profile.nameID.includes('secretary')) {
-        user = SecretaryRepository.getByEmail(profile.nameID).then(() => {
+        SecretaryRepository.getByEmail(profile.nameID).then((user) => {
             role = "secretary";
             user = { id: user.id, name: user.name, surname: user.surname, nameID: profile.nameID }
             done(null, user);

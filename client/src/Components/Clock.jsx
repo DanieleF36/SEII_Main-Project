@@ -50,7 +50,7 @@ const Clock = (props) => {
 
     useEffect(() => {
 
-        const interval = setInterval(updateClock, 10000);
+        const interval = setInterval(updateClock, 60000);
         return () => clearInterval(interval);
 
 

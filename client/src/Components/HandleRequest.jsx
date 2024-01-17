@@ -14,7 +14,6 @@ function HandleRequest(props) {
         API.getRequestAll(props.user.role)
             .then((list) => {
                 setList(list);
-                console.log(list)
                 setDirty(false);
             })
             .catch((err)=>{toast.error(err.message)})

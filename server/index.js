@@ -115,7 +115,9 @@ app.post('/logout/callback', passport.logoutSamlCallback);
 
 app.get("/metadata", (req, res) => res.type("application/xml").status(200).send(metadata()));
 
-app.get("/session/current", isLoggedIn, (req, res) => { let u = { name: req.user.name, surname: req.user.surname, id: req.user.id, email: req.user.nameID, cds: req.user.cds, role: req.user.role, group: req.user.group }; res.status(200).send(u) })
+app.get("/session/current", isLoggedIn, (req, res) => {
+  let u = { name: req.user.name, surname: req.user.surname, id: req.user.id, email: req.user.nameID, cds: req.user.cds, role: req.user.role, group: req.user.group }; res.status(200).send(u)
+})
 
 app.use(function (err, req, res, next) {
   if (err instanceof ValidationError) {
@@ -130,13 +132,13 @@ if (!process.env.test) {
   );
 }
 
-if(!process.env.test){
-// first call when the server is runned
-crontasks.setExpired()
+if (!process.env.test) {
+  // first call when the server is runned
+  crontasks.setExpired()
 
-/**
- * Node cron scheduled task for updating the DB to be executed each day at 23:59
- */
-cron.schedule('59 23 * * *', crontasks.setExpired);
+  /**
+   * Node cron scheduled task for updating the DB to be executed each day at 23:59
+   */
+  cron.schedule('59 23 * * *', crontasks.setExpired);
 }
 module.exports = { app, login_as };

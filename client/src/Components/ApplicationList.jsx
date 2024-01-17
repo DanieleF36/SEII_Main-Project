@@ -17,7 +17,7 @@ function ApplicationList(props) {
                 applications.map((e)=>{e.student_carreer=[]; API.getCareerByStudentId(e.id_student).then((carrier)=>{
                     e.student_carreer=carrier; 
                     setApplications(applications);
-                    console.log(e);})});
+                    })});
                 setDirty(false);
                
             })
