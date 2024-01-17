@@ -19,7 +19,7 @@ const samlConfig = {
     signatureAlgorithm: 'sha256',
     options: { failureRedirect: '/login', failureFlash: true }
 };
-const samlStrategy = new saml(samlConfig, async (profile, done) => {
+const samlStrategy = new saml(samlConfig, (profile, done) => {
     let user, role;
     if (profile.nameID.includes('studenti')) {
         user = studentRepository.getStudentAndCDSByEmail(profile.nameID).then(() => {
