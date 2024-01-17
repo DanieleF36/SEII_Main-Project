@@ -126,13 +126,13 @@ exports.getActiveBySupervisor = (supervisorId, queryParam) => {
  * @param {*} level 0 (bachelor) | 1 (master)
  * @returns list of thesis objects
  */
+
 exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status) => {
   if (from == undefined || to == undefined || specific == undefined) {
     throw new Error('"from", "to", "order" and "specific" parameters must be defined');
   }
   let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
   const params = sql[1];
-  console.log(sql)
   sql = sql[0];
   
   return new Promise((resolve, reject) => {
@@ -362,7 +362,7 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
     { name: 'groups', column: 'groups', operator: op },
     { name: 'knowledge', column: 'knowledge', operator: op },
     { name: 'expiration_date', column: 'expiration_date', operator: specific ? '=':'<=' },
-    { name: 'cds', column: 'cds', operator: '=' },
+    { name: 'cds', column: 'cds', operator: 'LIKE' },
     { name: 'creation_date', column: 'creation_date', operator: specific ? '=':'>=' },
     { name: 'status', column: 'status', operator: '=' },
     { name: 'level', column: 'level', operator: '=' },

@@ -30,15 +30,19 @@ const thesisService = require("../services/ThesisService");
  * @returns ERROR: common error handling object
  * @returns ERROR: not authorized, only student can call this
  */
-const { ValidationError } = require('express-json-validator-middleware');
+
 exports.searchThesis = function searchThesis(req, res, validate) {
   if (req.user.role == 'student' || req.user.role == 'teacher') {
     //checks if order is defined or not, otherwise titleD is setted as defaul value
+    if (req.user.role == 'student' && req.query.status==0){
+      res.status(400).json("Student can only access to published thesis");
+    }
     const order = req.query.order ? req.query.order : "titleD";
     const supervisor = req.user.role == 'teacher'? req.user.id : req.query.supervisor;
     const cds = req.user.role == 'teacher'? req.query.cds : req.user.cds;
     const level = req.user.role == 'teacher'? req.query.level: req.user.cdsCode;
     const status = req.user.role == 'teacher'? req.query.status: 1;
+    
     thesisService.advancedResearchThesis(req.query.page, order, req.query.title, supervisor, req.query.coSupervisor, req.query.keywords, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, cds, req.query.creation_date, level, status)
       .then(function (response) {
         let nPage = response[1];

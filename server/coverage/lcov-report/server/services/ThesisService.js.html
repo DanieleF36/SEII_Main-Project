@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.69% </span>
+                <span class="strong">93.91% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>107/113</span>
+                <span class='fraction'>108/115</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.47% </span>
+                <span class="strong">88.63% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>38/42</span>
+                <span class='fraction'>39/44</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.29% </span>
+                <span class="strong">95.45% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>104/108</span>
+                <span class='fraction'>105/110</span>
             </div>
         
             
@@ -338,7 +338,15 @@
 <a name='L273'></a><a href='#L273'>273</a>
 <a name='L274'></a><a href='#L274'>274</a>
 <a name='L275'></a><a href='#L275'>275</a>
-<a name='L276'></a><a href='#L276'>276</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L276'></a><a href='#L276'>276</a>
+<a name='L277'></a><a href='#L277'>277</a>
+<a name='L278'></a><a href='#L278'>278</a>
+<a name='L279'></a><a href='#L279'>279</a>
+<a name='L280'></a><a href='#L280'>280</a>
+<a name='L281'></a><a href='#L281'>281</a>
+<a name='L282'></a><a href='#L282'>282</a>
+<a name='L283'></a><a href='#L283'>283</a>
+<a name='L284'></a><a href='#L284'>284</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
@@ -366,6 +374,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -384,7 +395,12 @@
 <span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
@@ -640,26 +656,34 @@ const applicationRepository = require('../repositories/ApplicationRepository');
  * @returns thesis
  **/
 exports.advancedResearchThesis = async function (page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status) {
-&nbsp;
-  // If we don't find any supervisor or cosupervisors or any thesis linked to these the research can stop
-  let ok = !(supervisor || coSupervisor);
-  //find information about id of supervisor
-  
-  let idSupervisors = await exports.supervisorCheck(supervisor);
-  if (idSupervisors != null &amp;&amp; idSupervisors.length &gt; 0)
-    ok = true;
-  // find information about id of coSupervisors 
-  let idCoSupervisorsThesis = await exports.coSupervisorCheck(coSupervisor);
-  // if no. idCoSupervisorsThesis.length &gt; 0 some data have been found
-  if (idCoSupervisorsThesis?.length &gt; 0) ok = true;
+  //If supervisor is a number it's mean that it's his id
+  let idSupervisors;
+  let idCoSupervisorsThesis;
+  if(!parseInt(supervisor)){
+    // If we don't find any supervisor or cosupervisors or any thesis linked to these the research can stop
+    let ok = !(supervisor || coSupervisor);
+    //find information about id of supervisor
     
-  //idSupervisors: [id1, id2, ...] list of ids with common lastname/name pair
-  //idCoSupervisorsThesis [idThesis1, idThesis2, ...] list of thesis ids managed by the cosupervisor
-  //Check if has sense make others queries
-  if (!ok)
-    return [[], 0];
+    idSupervisors = await exports.supervisorCheck(supervisor);
+    if (idSupervisors != null &amp;&amp; idSupervisors.length &gt; 0)
+      ok = true;
+    // find information about id of coSupervisors 
+    idCoSupervisorsThesis = await exports.coSupervisorCheck(coSupervisor);
+    // if no. idCoSupervisorsThesis.length &gt; 0 some data have been found
+    if (idCoSupervisorsThesis?.length &gt; 0) ok = true;
+      
+    //idSupervisors: [id1, id2, ...] list of ids with common lastname/name pair
+    //idCoSupervisorsThesis [idThesis1, idThesis2, ...] list of thesis ids managed by the cosupervisor
+    //Check if has sense make others queries
+    if (!ok)
+      return [[], 0];
+  }
+  else<span class="missing-if-branch" title="else path not taken" >E</span>{
+<span class="cstat-no" title="statement not covered" >    idSupervisors=supervisor;</span>
+  }
   //find all thesis
   let res = await thesisRepository.advancedResearch(nItem * (page - 1), nItem * page, order, false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
+  
   // res contains a list of thesis objects which are okay with given filters
   //find number of page
   let npage = await thesisRepository.numberOfPage(false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
@@ -895,7 +919,7 @@ exports.delete = async function (id) {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2024-01-16T13:15:16.143Z
+                at 2024-01-17T15:14:36.079Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

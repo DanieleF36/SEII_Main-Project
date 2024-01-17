@@ -20,7 +20,7 @@ exports.addRequest = function (req, res) {
             }
             requestService.addRequest(req.body, req.user.id)
                 .then(request => res.status(200).json(request))
-                .catch(err => { console.log(err); res.status(500).json({ message: err.message }) })
+                .catch(err => { res.status(500).json({ message: err.message }) })
         }).catch(err => {
             res.status(500).json({ message: err.message });
         })
