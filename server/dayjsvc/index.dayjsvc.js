@@ -3,6 +3,7 @@
 const dayjs = require('dayjs')
 const thesisRepository = require('../repositories/ThesisRepository.js')
 
+let archivedArray = []
 let offset = 0
 /**
  * Called by API for retriving the current date according to the state of the server
@@ -23,7 +24,7 @@ exports.vc_current = function (req, res) {
  * Return current time according to the OFFSET_TIME stored into the environment
  * @returns a dayjs object
 */
-function vc () {
+function vc() {
     let result
     if (offset >= 0)
         result = dayjs().add(offset, 'second')
@@ -54,25 +55,26 @@ exports.vc_set = function (req, res) {
     console.log(duration)
 
     offset = duration;
-    
+
     thesisRepository.selectExpiredAccordingToDate(act.format('YYYY-MM-DD').toString())
         .then((result) => {
-            if(!Array.isArray(result)) {
-                offset=0
-                return res.status(500).json({error: 'server error'})
+            archivedArray.push(...result)
+            if (!Array.isArray(result)) {
+                offset = 0
+                return res.status(500).json({ error: 'server error' })
             }
 
             thesisRepository.setExpiredAccordingToIds(result)
                 .then((result) => {
-                    if(!result) {
-                        offset=0
-                        return res.status(500).json({error: 'server error'})
+                    if (!result) {
+                        offset = 0
+                        return res.status(500).json({ error: 'server error' })
                     }
-                    else return res.status(200).json({value: req.body.value})
+                    else return res.status(200).json({ value: req.body.value })
                 })
-                .catch(err => res.status(500).json({error: err}))
+                .catch(err => res.status(500).json({ error: err }))
         })
-        .catch(err => res.status(500).json({error: err}))
+        .catch(err => res.status(500).json({ error: err }))
 }
 
 /**
@@ -89,29 +91,16 @@ exports.vc_restore = function (req, res) {
         return res.status(400).json({ error: "wrong parameter" })
 
     offset = 0
-    const act = vc().format('YYYY-MM-DD').toString()
-    console.log(act)
-    
-    thesisRepository.selectRestoredExpiredAccordingToDate(act)
+    thesisRepository.restoreExpiredAccordingToIds(archivedArray)
         .then((result) => {
-            if(!Array.isArray(result)) {
-                offset=0
-                return res.status(500).json({error: 'server error'})
+            if (!result) {
+                offset = 0
+                return res.status(500).json({ error: 'server error' })
             }
-            thesisRepository.restoreExpiredAccordingToIds(result)
-                .then((result) => {
-                    if(!result) {
-                        offset=0
-                        return res.status(500).json({error: 'server error'})
-                    }
-                    else return res.status(200).json({value: req.body.value})
-
-                })
-                .catch(err => res.status(500).json({error: err}))
+            else return res.status(200).json({ value: req.body.value })
 
         })
-        .catch(err => res.status(500).json({error: err}))
-
+        .catch(err => res.status(500).json({ error: err }))
 }
 
 exports.vc = vc;
