@@ -52,7 +52,7 @@ exports.advancedResearchThesis = async function (page, order, title, supervisor,
   }
   //find all thesis
   let res = await thesisRepository.advancedResearch(nItem * (page - 1), nItem * page, order, false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
-  console.log(res)
+  
   // res contains a list of thesis objects which are okay with given filters
   //find number of page
   let npage = await thesisRepository.numberOfPage(false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);

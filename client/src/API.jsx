@@ -159,7 +159,7 @@ async function advancedSearchThesis(params){
   }
   if(params.keywords && params.keywords != "")
     params.keywords.forEach((e, i, a)=>{
-      ur+="&keyword="+a[i];
+      ur+="&keywords="+a[i];
   });
   if(params.type && params.type != "")
     params.type.forEach((e, i, a)=>{

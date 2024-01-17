@@ -351,7 +351,7 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
   //specific = !specific;
   
   let input = {from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status};
-
+  
   const op = specific ? '=' : 'LIKE';
   const conditions = [
     { name: 'title', column: 'title', operator: op },
@@ -361,13 +361,13 @@ function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSu
     { name: 'type', column: 'type', operator: op },
     { name: 'groups', column: 'groups', operator: op },
     { name: 'knowledge', column: 'knowledge', operator: op },
-    { name: 'expiration_date', column: 'expiration_date', operator: specific ? '<=' : '=' },
+    { name: 'expiration_date', column: 'expiration_date', operator: specific ? '=':'<=' },
     { name: 'cds', column: 'cds', operator: '=' },
-    { name: 'creation_date', column: 'creation_date', operator: specific ? '>=' : '=' },
+    { name: 'creation_date', column: 'creation_date', operator: specific ? '=':'>=' },
     { name: 'status', column: 'status', operator: '=' },
     { name: 'level', column: 'level', operator: '=' },
   ];
-  const cb = (arg, cnd)=>{return cnd == '=' ? arg : `%${arg}%` }
+  const cb = (arg, cnd)=>{return cnd == '=' || cnd == '<=' || cnd == '>=' ? arg : `%${arg}%` }
   conditions.forEach((condition) => {
     const value = input[condition.name];
     if (value != null) {

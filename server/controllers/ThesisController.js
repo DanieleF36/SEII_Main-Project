@@ -39,7 +39,7 @@ exports.searchThesis = function searchThesis(req, res, validate) {
     const cds = req.user.role == 'teacher'? req.query.cds : req.user.cds;
     const level = req.user.role == 'teacher'? req.query.level: req.user.cdsCode;
     const status = req.user.role == 'teacher'? req.query.status: 1;
-    thesisService.advancedResearchThesis(req.query.page, order, req.query.title, supervisor, req.query.coSupervisor, req.query.keyword, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, cds, req.query.creation_date, level, status)
+    thesisService.advancedResearchThesis(req.query.page, order, req.query.title, supervisor, req.query.coSupervisor, req.query.keywords, req.query.type, req.query.groups, req.query.knowledge, req.query.expiration_date, cds, req.query.creation_date, level, status)
       .then(function (response) {
         let nPage = response[1];
         response = response[0];
