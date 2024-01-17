@@ -36,8 +36,8 @@ exports.addRequest = function (request, studentId) {
  * @returns all the request's info or an empty object if the request has not been found
  */
 exports.getRequest = function (request_id) {
-    if (request_id < 0)
-        throw new Error("Request must be positive")
+    if (request_id == undefined)
+        throw new Error("Request id must be provided")
     const sql = "SELECT * FROM Request WHERE id = ?"
     return new Promise((resolve, reject) => {
         db.get(sql, [request_id], function (err, row) {
@@ -54,7 +54,7 @@ exports.getRequest = function (request_id) {
 }
 
 exports.getActiveByStudentId = (studentId) => {
-    if (!(studentId && studentId >= 0)) {
+    if (studentId == undefined) {
         throw new Error('Student ID must be greater than or equal to 0');
     }
     const fetchActiveApplicationSQL = 'SELECT * FROM Request WHERE studentId = ? AND (statusS=1 OR statusS=0) AND (statusT=1 OR statusT=0 OR statusT=3)';
@@ -135,16 +135,16 @@ exports.getRequestAll = function () {
  * @returns {Promise<number>} The number of rows updated
  */
 exports.profReqStatusUpdate = function (request_id, status) {
-    if (request_id < 0) {
-        throw new Error("Request must be positive");
+    if (request_id == undefined || status == undefined) {
+        throw new Error("Request and status must be defined");
     }
-    if (status < 0 || status > 2) {
-        throw new Error("Status must be between 1 and 3 inclusive");
-    }
-
     const sql = "UPDATE Request SET statusT = ? WHERE id = ?";
     return new Promise((resolve, reject) => {
         db.run(sql, [status, request_id], function (err) {
+            if(err) {
+                reject(new Error(err.message));
+                return;
+            }
             if (this.changes === 0) {
                 reject(new Error('No rows updated. Request ID not found.'));
                 return;
@@ -156,7 +156,7 @@ exports.profReqStatusUpdate = function (request_id, status) {
 };
 
 exports.getRequestByStudentId = function (studentId) {
-    if (studentId < 0) {
+    if (studentId == undefined) {
         throw new Error("Student ID not valid")
     }
     const sql = "SELECT * FROM Request R WHERE R.studentId = ? AND (statusS = 0 OR (statusS=1 AND statusT=0) OR (statusS=1 AND statusT=1) OR (statusS=1 AND statusT=3)) "

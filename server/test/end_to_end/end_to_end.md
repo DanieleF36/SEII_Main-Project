@@ -111,3 +111,69 @@
 
 ###### Response
 ![Response](./img/studentcv_status.png)
+
+### Story 14, Notify Application
+
+###### Front-end
+![Frontend]()
+
+###### Response
+![Response]()
+
+
+### Story 15, Proposal Expiration
+
+###### Front-end
+![Frontend]()
+
+###### Response
+![Response]()
+
+### Story 16,Search Archive
+
+###### Front-end
+![Frontend]()
+
+###### Response
+![Response]()
+
+
+### Story 129,Insert Student Request
+
+###### Front-end
+![Frontend]()
+
+###### Response
+![Response]()
+
+
+
+### Story 130,Secretary Approve Student Requests
+
+###### Front-end
+![Frontend]()
+
+###### Response
+![Response]()
+
+
+### Story 131,professor Approve Student Requests
+
+###### Front-end
+![Frontend]()
+
+###### Response
+![Response]()
+
+
+
+### Story 132,Notify Professor  Student Request
+
+###### Front-end
+![Frontend]()
+
+###### Response
+![Response]()
+
+
+

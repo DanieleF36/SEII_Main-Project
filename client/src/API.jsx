@@ -159,7 +159,7 @@ async function advancedSearchThesis(params){
   }
   if(params.keywords && params.keywords != "")
     params.keywords.forEach((e, i, a)=>{
-      ur+="&keyword="+a[i];
+      ur+="&keywords="+a[i];
   });
   if(params.type && params.type != "")
     params.type.forEach((e, i, a)=>{
@@ -194,12 +194,12 @@ async function advancedSearchThesis(params){
       type:e.type ,
       groups:e.groups ,
       description:e.description ,
-      know:e.knowledge ,
+      knowledge:e.knowledge ,
       note:e.note ,
-      expDate:e.expiration_date ,
+      expiration_date:e.expiration_date ,
       level:e.level ,
       cds:e.cds ,
-      creatDate:e.creation_date ,
+      creation_date:e.creation_date ,
       status:e.status, 
       nPage:e.nPage
     }))]
@@ -231,7 +231,6 @@ async function acceptApplication(status,id_application) {
   }
 }
 
-
 async function applyForProposal(application) { 
     const formData = new FormData();
     formData.append('cv', application.cv);
@@ -244,11 +243,12 @@ async function applyForProposal(application) {
 }
 
 async function browseProposal(status) { 
-  const res = await fetch(URL + `/thesis?status=${status}`, {
+  const res = await fetch(URL + `/thesis?page=1&status=${status}`, {
     credentials:'include'
   });
   if(res.status == 200){
     const thesis = await res.json();
+    console.log(thesis)
     return thesis.thesis;
   }
   else{
@@ -410,7 +410,6 @@ function vc_get() {
   })
 }
 
-
 function vc_restore() {
   return getJson(fetch(URL + '/testing/vc/restore', {
     headers: {
@@ -423,8 +422,5 @@ function vc_restore() {
   })
 }
 const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, getAllSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis,addRequest, thesisRequestHandling, getRequestAll, getRequestByProfessor, professorReqHandling };
-
-
-
 
 export default API;

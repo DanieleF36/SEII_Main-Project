@@ -130,10 +130,9 @@ exports.advancedResearch = (from, to, order, specific, title, idSupervisors, idC
   if (from == undefined || to == undefined || specific == undefined) {
     throw new Error('"from", "to", "order" and "specific" parameters must be defined');
   }
-
   let sql = sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
   const params = sql[1];
-  console.log(params)
+  console.log(sql)
   sql = sql[0];
   
   return new Promise((resolve, reject) => {
@@ -347,41 +346,42 @@ function transformOrder(order) {
  * @returns list of thesis objects
  */
 function sqlQueryCreator(from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status) {
-  let sql = "SELECT * FROM Thesis WHERE level=" + level + " ";
+  let sql = "SELECT * FROM Thesis WHERE 1=1 ";
   let params = [];
-  specific = !specific;
+  //specific = !specific;
   
   let input = {from, to, order, specific, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status};
-
-  const op = specific ? 'LIKE' : '=';
+  
+  const op = specific ? '=' : 'LIKE';
   const conditions = [
     { name: 'title', column: 'title', operator: op },
-    { name: 'idSupervisors', column: 'supervisor', operator: op },
+    { name: 'idSupervisors', column: 'supervisor', operator: '=' },
     { name: 'idCoSupervisorsThesis', column: 'id', operator: '=' },
     { name: 'keyword', column: 'keywords', operator: op },
     { name: 'type', column: 'type', operator: op },
     { name: 'groups', column: 'groups', operator: op },
     { name: 'knowledge', column: 'knowledge', operator: op },
-    { name: 'expiration_date', column: 'expiration_date', operator: specific ? '<=' : '=' },
-    { name: 'cds', column: 'cds', operator: op },
-    { name: 'creation_date', column: 'creation_date', operator: specific ? '>=' : '=' },
+    { name: 'expiration_date', column: 'expiration_date', operator: specific ? '=':'<=' },
+    { name: 'cds', column: 'cds', operator: '=' },
+    { name: 'creation_date', column: 'creation_date', operator: specific ? '=':'>=' },
     { name: 'status', column: 'status', operator: '=' },
+    { name: 'level', column: 'level', operator: '=' },
   ];
-  const cb = (arg)=>{return specific && !Number.isInteger(arg) ? `%${arg}%` : arg}
+  const cb = (arg, cnd)=>{return cnd == '=' || cnd == '<=' || cnd == '>=' ? arg : `%${arg}%` }
   conditions.forEach((condition) => {
     const value = input[condition.name];
     if (value != null) {
       if (Array.isArray(value) && value.length>0) {
         sql += 'AND ('+condition.column+" "+condition.operator+"? ";
-        params.push(cb(value[0]));
+        params.push(cb(value[0], condition.operator));
         value.slice(1).forEach((item) => {
           sql += `OR ${condition.column} ${condition.operator} ? `;
-          params.push(cb(item));
+          params.push(cb(item, condition.operator));
         });
         sql+=") ";
       } else {
         sql += `AND ${condition.column} ${condition.operator} ? `;
-        params.push(cb(value));
+        params.push(cb(value, condition.operator));
       }
     }
   });

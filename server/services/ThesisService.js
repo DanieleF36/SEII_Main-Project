@@ -25,23 +25,31 @@ const applicationRepository = require('../repositories/ApplicationRepository');
  * @returns thesis
  **/
 exports.advancedResearchThesis = async function (page, order, title, supervisor, coSupervisor, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status) {
-  // If we don't find any supervisor or cosupervisors or any thesis linked to these the research can stop
-  let ok = !(supervisor || coSupervisor);
-  //find information about id of supervisor
-  
-  let idSupervisors = await exports.supervisorCheck(supervisor);
-  if (idSupervisors != null && idSupervisors.length > 0)
-    ok = true;
-  // find information about id of coSupervisors 
-  let idCoSupervisorsThesis = await exports.coSupervisorCheck(coSupervisor);
-  // if no. idCoSupervisorsThesis.length > 0 some data have been found
-  if (idCoSupervisorsThesis?.length > 0) ok = true;
+  //If supervisor is a number it's mean that it's his id
+  let idSupervisors;
+  let idCoSupervisorsThesis;
+  if(!parseInt(supervisor)){
+    // If we don't find any supervisor or cosupervisors or any thesis linked to these the research can stop
+    let ok = !(supervisor || coSupervisor);
+    //find information about id of supervisor
     
-  //idSupervisors: [id1, id2, ...] list of ids with common lastname/name pair
-  //idCoSupervisorsThesis [idThesis1, idThesis2, ...] list of thesis ids managed by the cosupervisor
-  //Check if has sense make others queries
-  if (!ok)
-    return [[], 0];
+    idSupervisors = await exports.supervisorCheck(supervisor);
+    if (idSupervisors != null && idSupervisors.length > 0)
+      ok = true;
+    // find information about id of coSupervisors 
+    idCoSupervisorsThesis = await exports.coSupervisorCheck(coSupervisor);
+    // if no. idCoSupervisorsThesis.length > 0 some data have been found
+    if (idCoSupervisorsThesis?.length > 0) ok = true;
+      
+    //idSupervisors: [id1, id2, ...] list of ids with common lastname/name pair
+    //idCoSupervisorsThesis [idThesis1, idThesis2, ...] list of thesis ids managed by the cosupervisor
+    //Check if has sense make others queries
+    if (!ok)
+      return [[], 0];
+  }
+  else{
+    idSupervisors=supervisor;
+  }
   //find all thesis
   let res = await thesisRepository.advancedResearch(nItem * (page - 1), nItem * page, order, false, title, idSupervisors, idCoSupervisorsThesis, keyword, type, groups, knowledge, expiration_date, cds, creation_date, level, status);
   

@@ -7,13 +7,16 @@
 if [ "$1" = "0"  ] || [ "$1" = "2" ]; then
     cd ./server || exit
     if [ "$1" = "2" ]; then
+        echo 'running server detached...'
         npx nodemon index.js &
     else
+        echo 'running server...'
         npx nodemon index.js
     fi
 fi
 
 if [ "$1" = "1"  ] || [ "$1" = "2" ]; then
     cd ../client || exit
+    echo 'running client...'
     npm run dev
 fi

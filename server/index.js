@@ -65,7 +65,7 @@ const applicationController = require("./controllers/ApplicationController");
 const requestController = require("./controllers/RequestController");
 const vc = require('./dayjsvc/index.dayjsvc')
 
-app.get("/thesis", isLoggedIn, (req, res) => thesisController.searchThesis(req, res, validate({ query: querySearch })));
+app.get("/thesis", isLoggedIn, validate({ query: querySearch }), (req, res) => thesisController.searchThesis(req, res));
 
 app.post("/thesis", isLoggedIn, validate({ body: thesisSchema }), (req, res) => thesisController.addThesis(req, res));
 
@@ -130,6 +130,7 @@ if (!process.env.test) {
   );
 }
 
+if(!process.env.test){
 // first call when the server is runned
 crontasks.setExpired()
 
@@ -137,5 +138,5 @@ crontasks.setExpired()
  * Node cron scheduled task for updating the DB to be executed each day at 23:59
  */
 cron.schedule('59 23 * * *', crontasks.setExpired);
-
+}
 module.exports = { app, login_as };
