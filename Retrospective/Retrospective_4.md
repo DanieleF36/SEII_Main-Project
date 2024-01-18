@@ -52,49 +52,48 @@ sections:
 ## QUALITY MEASURES 
 
 - Unit Testing:
-  - Total hours estimated: 5h 
-  - Total hours spent: 5h 30m
-  - Nr of automated unit test cases: 282 + 56
-  - Coverage (if available): 87.2%
+  - Total hours estimated: 17h 
+  - Total hours spent: 16h 15m
+  - Nr of automated unit test cases: 351 + 56 (integration)
+  - Coverage (if available): 85.0%
 - E2E testing:
-  - Total hours estimated: 4h
-  - Total hours spent: 4h
+  - Total hours estimated: 2h
+  - Total hours spent: 2h
 - Code review 
-  - Total hours estimated: 5h  
-  - Total hours spent: 5h
+  - Total hours estimated: 7h 30m 
+  - Total hours spent: 7h 30m
 - Technical Debt Management:
-  - Total hours estimated: 41h (Sonar Estimation + TD team management = 39h + 2h)
-  - Total hours spent: 42h  (Sonar Estimation + TD team management = 39h + 3h)
-  - Hours estimated for remediation by SonarQube: 39h
-  - Hours estimated for remediation by SonarQube only for the selected and planned issues: 39h
-  - Hours spent on remediation: 42h
-  - debt ratio (as reported by SonarQube under "Measures-Maintainability"): 1.6% -> 0.4%
+  - Total hours estimated: 2h
+  - Total hours spent: 2h
+  - Hours estimated for remediation by SonarQube:  6h 17m 
+  - Hours estimated for remediation by SonarQube only for the selected and planned issues: 2h
+  - Hours spent on remediation: 2h
+  - debt ratio (as reported by SonarQube under "Measures-Maintainability"): 0.4% -> 0.4%
   - rating for each quality characteristic reported in SonarQube under "Measures" (namely reliability, security, maintainability): 
-    - Reliability: _C_
+    - Reliability: _A_
     - Maintainability: _A_
     - Security: _A_
-    - Security Review: _E_
+    - Security Review: _A_
   
 
 
 ## ASSESSMENT
 
 - What caused your errors in estimation (if any)?
-  - We observed that the planning was more precise but the standard deviation has changed moderately since our last analysis due to our choice to accomplish a few tasks shared with many people. 
+  - This sprint we overstimate the tasks because last time we have done a refactoring of all the code and now it is much better and easier to implement and modify already existing features.
 
 - What lessons did you learn (both positive and negative) in this sprint?
-  - We learned how to do 'well-done' programming according to Sonarcloud guide and this advice let us be more flexible when facing new problems during development.
+  - We learned that if the code is clean and extensible it's easier to implement the new features and modify the codebase. A negative aspect is that remote communication can cause misunderstanding between the team members.
 
 - Which improvement goals set in the previous retrospective were you able to achieve? 
-  - This time WE DID the integration tests to have more coverage, a milestone for us. Furthermore, we learned how to configure Sonarcloud over different branches and we have totally refactored the whole backend which now accomplishes the principles of software engineering.
+  - We separately assigned the SonarCloud's tasks which caused to better performance. We have been very careful about the FAQ review checking for new messages on telegram chat continuosly
   
 - Which ones you were not able to achieve? Why?
   - None
 
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
-
-> 1. Not assign the Sonarcloud's tasks for all of us based on the topic
-> 2. Be careful on the FAQ review
+  - We can icrease the number of stories because this time we overstimate the tasks.
+  - We should improve online communication in case of most of us work remotely. 
 
 - One thing you are proud of as a Team
-  - We are proud of our work on Sonarcloud
+  - We are proud of our final web application which works smoothly and our group work.
