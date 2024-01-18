@@ -45,7 +45,7 @@ const samlStrategy = new saml(samlConfig, (profile, done) => {
     else if (profile.nameID.includes('secretary')) {
         SecretaryRepository.getByEmail(profile.nameID).then((user) => {
             role = "secretary";
-            user = { id: user.id, name: user.name, surname: user.surname, nameID: profile.nameID }
+            user = { id: user.id, name: user.name, surname: user.surname, role: role, nameID: profile.nameID }
             done(null, user);
         })
     }
