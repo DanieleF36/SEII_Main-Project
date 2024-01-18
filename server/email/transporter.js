@@ -1,14 +1,16 @@
 'use strict';
 const nodemailer = require('nodemailer');
-require('dotenv').config({path: "../../docker.env"})
+// require('dotenv').config({path: '../docker.env'})
 const transporter = nodemailer.createTransport({
-    host: process.env.INUSE === 'docker' ? '192.168.10.2' : '127.0.0.1',
+    // host: process.env.INUSE === 'docker' ? '192.168.10.2' : '127.0.0.1',
+    host: '192.168.10.2',
     port: 25,
     auth: {
         user: 'project.1',
         pass: 'secret.1'
     }
 });
+console.log(transporter)
 
 exports.sendEmail = (from, to, subject, text) => {
     if (!from)
