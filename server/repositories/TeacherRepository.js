@@ -159,3 +159,25 @@ exports.fromTeacherToCoSupervisor= (teacher)=>{
     return {email:teacher.email, name:teacher.name, surname:teacher.surname, company:"PoliTo"};
 }
 
+/**
+ * Support function that retrive all the CoSupervisors email
+ * @returns array of CoSupervisorsEmail (string)
+ */
+exports.getAllEmails = () => {
+  return new Promise((resolve, reject) => {
+    const coSupervisorSql = 'SELECT email FROM Teacher';
+    db.all(coSupervisorSql, [], (coSupervisorErr, coSupervisors) => {
+      if (coSupervisorErr) {
+        reject(coSupervisorErr);
+        return;
+      }
+      if(coSupervisors.length === 0) {
+        resolve([])
+      }
+      else {
+        const coSupervisorEmails = coSupervisors.map((coSupervisor) => coSupervisor.email);
+        resolve(coSupervisorEmails);
+      }
+    });
+  });
+}

@@ -1,0 +1,20 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Thesis Request",
+    "description": "JSON Schema for Thesis request data structures",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "supervisor": { 
+          "type": "string"
+        },
+        "cosupervisors": {
+          "type": "array",
+          "items": {"type": "string"}
+        },
+        "description": { 
+            "type": "string"
+        }
+    },
+    "required": ["supervisor", "cosupervisors", "description"]
+}

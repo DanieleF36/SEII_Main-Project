@@ -1,9 +1,22 @@
 #!/bin/bash
-HOSTIP=$(ping -c 1 host.docker.internal | head -n 1 | cut -d ' ' -f 3)
-echo "HOSTIP=$HOSTIP" > docker.env
+# $1: first parameter for building different part of the service as follow:
+# $1 == 0 --> build only server
+# $1 == 1 --> build only client
+# $1 == 2 --> build the system
 
-cd ./server
-npx nodemon index.js &
+if [ "$1" = "0"  ] || [ "$1" = "2" ]; then
+    cd ./server || exit
+    if [ "$1" = "2" ]; then
+        echo 'running server detached...'
+        npx nodemon index.js &
+    else
+        echo 'running server...'
+        npx nodemon index.js
+    fi
+fi
 
-cd ../client
-npm run dev
+if [ "$1" = "1"  ] || [ "$1" = "2" ]; then
+    cd ../client || exit
+    echo 'running client...'
+    npm run dev
+fi

@@ -111,3 +111,60 @@
 
 ###### Response
 ![Response](./img/studentcv_status.png)
+
+### Story 14, Notify Application
+
+###### Front-end
+![Frontend](./img/applicationEmail_Front.png)
+
+### Story 15, Proposal Expiration
+
+###### Front-end
+![Frontend](./img/expiration_front.png)
+
+### Story 16, Search Archive
+
+###### Front-end
+![Frontend](./img/searchArchive_front.png)
+
+###### Response
+![Response](./img/searchArchive_headers.png)
+![Response](./img/searchArchive_response.png)
+
+
+### Story 26, Insert Student Request
+
+###### Front-end
+![Frontend](./img/front_add.png)
+
+###### Response
+![Response](./img/headers_add.png)
+![Response](./img/response_add.png)
+
+
+
+### Story 27, Secretary Approve Student Requests
+
+###### Front-end
+![Frontend](./img/handle_front.png)
+
+###### Response
+![Response](./img/handle_headers.png)
+
+
+### Story 28, Professor Approve Student Requests
+
+###### Front-end
+![Frontend](./img/profRequest_front.png)
+
+###### Response
+![Response](./img/profRequest_headers.png)
+
+
+
+### Story 29, Notify Professor Thesis Request
+
+###### Front-end
+![Frontend](./img/notify_request.png)
+
+

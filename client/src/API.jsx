@@ -137,6 +137,7 @@ function getJson(httpResponsePromise) {
 
 async function advancedSearchThesis(params){
   let ur="/thesis?";
+
   if(params.page && params.page !== "")
     ur+="page="+params.page;
   else
@@ -152,9 +153,13 @@ async function advancedSearchThesis(params){
   });
   if(params.expDate && params.expDate != "")
     ur+="&expiration_date="+params.expDate;
+ 
+  if(params.status>=0 && params.status<=1){
+    ur+="&status="+params.status;
+  }
   if(params.keywords && params.keywords != "")
     params.keywords.forEach((e, i, a)=>{
-      ur+="&keyword="+a[i];
+      ur+="&keywords="+a[i];
   });
   if(params.type && params.type != "")
     params.type.forEach((e, i, a)=>{
@@ -189,12 +194,12 @@ async function advancedSearchThesis(params){
       type:e.type ,
       groups:e.groups ,
       description:e.description ,
-      know:e.knowledge ,
+      knowledge:e.knowledge ,
       note:e.note ,
-      expDate:e.expiration_date ,
+      expiration_date:e.expiration_date ,
       level:e.level ,
       cds:e.cds ,
-      creatDate:e.creation_date ,
+      creation_date:e.creation_date ,
       status:e.status, 
       nPage:e.nPage
     }))]
@@ -226,7 +231,6 @@ async function acceptApplication(status,id_application) {
   }
 }
 
-
 async function applyForProposal(application) { 
     const formData = new FormData();
     formData.append('cv', application.cv);
@@ -239,11 +243,12 @@ async function applyForProposal(application) {
 }
 
 async function browseProposal(status) { 
-  const res = await fetch(URL + `/thesis?status=${status}`, {
+  const res = await fetch(URL + `/thesis?page=1&status=${status}`, {
     credentials:'include'
   });
   if(res.status == 200){
     const thesis = await res.json();
+    console.log(thesis)
     return thesis.thesis;
   }
   else{
@@ -258,6 +263,20 @@ async function getCoSupervisorsEmails() {
     const coSupervisorsEmails = await response.json();
     if (response.ok) {
       return coSupervisorsEmails;
+    } else {
+      throw new Error(response.message);
+    }
+  } catch (error) {
+    throw new Error(error.message, { cause: error });
+  }
+}
+
+async function getAllSupervisorsEmails() {
+  try {
+    const response = await fetch(URL + '/supervisors/email', {credentials:'include'});
+    const SupervisorsEmails = await response.json();
+    if (response.ok) {
+      return SupervisorsEmails;
     } else {
       throw new Error(response.message);
     }
@@ -299,7 +318,72 @@ async function deleteThesis(id){
   })).then(json => { return json })
   .catch(err=> {throw new Error(err.message)})
 }
+function addRequest(request) {
+  
+  return getJson(fetch(URL + '/requests', {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials:'include',
+    body: JSON.stringify(request)
 
+  })).then(json => {
+    return json
+  }).catch(err=> {throw new Error(err.message)})
+
+}
+
+async function thesisRequestHandling(student_id,status,request_id,teacher_id){
+  const requestBody = {
+    status: status,
+    request_id: request_id,
+    teacher_id: teacher_id
+  };
+  return getJson(fetch(URL + `/thesis/secretary/${student_id}`,{
+    method: 'PUT',
+    credentials: "include",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body : JSON.stringify(requestBody)
+  })).then(json => { return json })
+  .catch(err=> {throw new Error(err.message)})
+}
+async function getRequestAll() { 
+  return getJson(fetch(URL + `/requests/all`,{
+    method: 'GET',
+    credentials: "include",
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })).then(json => { return json })
+  .catch(err=> {throw new Error(err.message)})
+}
+async function professorReqHandling(status, request_id){
+  const requestBody = {
+    status: status,
+    request_id: request_id
+  };
+  return getJson(fetch(URL + `/requests/professor`,{
+    method: 'PUT',
+    credentials: "include",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body : JSON.stringify(requestBody)
+  })).then(json => { return json })
+  .catch(err=> {throw new Error(err.message)})
+}
+
+async function getRequestByProfessor() {
+
+  return getJson(fetch(URL + `/requests`, {
+    method: 'GET',
+    credentials: "include"
+  })).then(json => { return json })
+    .catch(err => { throw new Error(err.message) })
+}
 // =================== Virtual clock API ===================
 
 function vc_set(date) {
@@ -326,7 +410,6 @@ function vc_get() {
   })
 }
 
-
 function vc_restore() {
   return getJson(fetch(URL + '/testing/vc/restore', {
     headers: {
@@ -338,9 +421,6 @@ function vc_restore() {
     return res
   })
 }
-
-const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis };
-
-
+const API = { listApplication, insertProposal, advancedSearchThesis, updateProposal, acceptApplication, applyForProposal, browseProposal, getCoSupervisorsEmails, getAllSupervisorsEmails, vc_set, vc_restore, vc_get, userAuthenticated, login, logout, getStudentCv, getCareerByStudentId, deleteThesis,addRequest, thesisRequestHandling, getRequestAll, getRequestByProfessor, professorReqHandling };
 
 export default API;

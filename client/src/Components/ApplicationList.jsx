@@ -17,16 +17,18 @@ function ApplicationList(props) {
                 applications.map((e)=>{e.student_carreer=[]; API.getCareerByStudentId(e.id_student).then((carrier)=>{
                     e.student_carreer=carrier; 
                     setApplications(applications);
-                    console.log(e);})});
+                    })});
                 setDirty(false);
                
             })
             .catch((err) => { toast.error(err.message); });
 
     }, [dirty]);
+
+    
     const acceptPropByProf = (status, id_app) => {
 
-        API.acceptApplication(status, props.user.id, id_app)
+        API.acceptApplication(status, id_app)
             .then((res) => {
                 setDirty(true);
                 if (res == 1) {
@@ -68,15 +70,15 @@ function ApplicationList(props) {
                                             <Col md='3' sm='3' xs='12'>
                                                 <strong>Status:</strong>{' '}
                                                 {application.status == '0' ? (
-                                                    <Badge pill bg="warning">P</Badge>
+                                                    <Badge pill bg="warning">PEN</Badge>
                                                 ) : (
                                                     application.status == '1' ? (
-                                                        <Badge pill bg="success">A</Badge>
+                                                        <Badge pill bg="success">ARC</Badge>
                                                     ) : (
                                                         application.status == '2' ? (
-                                                            <Badge pill bg="danger">R</Badge>
+                                                            <Badge pill bg="danger">REJ</Badge>
                                                         ) :
-                                                            <Badge pill bg="secondary">C</Badge>
+                                                            <Badge pill bg="secondary">CAN</Badge>
                                                     )
                                                 )}
                                             </Col>

@@ -11,7 +11,6 @@ function MyProposal(props) {
   const [dirty, setDirty] = useState(true);
   const [archived, setArchived] = useState(1);
   const [selectedProposal, setSelectedProposal] = useState('');
-  const [proposals, setProposals] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [showModal2, setShowModal2] = useState(false);
   const [showModal3, setShowModal3] = useState(false);
@@ -54,10 +53,12 @@ function MyProposal(props) {
     if (archived === 0){
       
       setArchived(1);
+      props.setSwitch(1);
       setDirty(true);
       
     }else{
       setArchived(0);
+      props.setSwitch(0);
       setDirty(true);
     }
 
@@ -95,12 +96,8 @@ function MyProposal(props) {
    
     useEffect(() => {
       if(props.user.role === 'teacher'){
-          API.browseProposal(archived)
-          .then((proposals) => {
-              setProposals(proposals);
-              setDirty(false);
-          })
-          .catch((err)=>{toast.error(err.message)})
+          props.handleApplyFilters();
+          setDirty(false);
         }
        
     }, [dirty, props.user]);
@@ -188,7 +185,7 @@ function MyProposal(props) {
     <>
       <BootstrapSwitchButton onChange={() => handleSwitch()} checked={archived === 1} size="sm" onlabel='published' offlabel='archived' width={100} onstyle="success" offstyle="warning" style="border" />
       <div style={{ marginTop: '10px' }}>
-        {proposals.map((proposal) => (
+        {props.proposals.map((proposal) => (
           <Card key={proposal.id} style={{ marginBottom: '10px' }}>
             <Toaster position="top-center" reverseOrder={false} />
             <Accordion>
@@ -206,9 +203,9 @@ function MyProposal(props) {
                         <strong>Status:</strong>{' '}
                       
                         {proposal.status == 1 ? (
-                          <Badge pill bg="success">P</Badge>
+                          <Badge pill bg="success">PUB</Badge>
                         ) : (
-                          <Badge pill bg="warning">A</Badge>
+                          <Badge pill bg="warning">ARC</Badge>
                         )}
                       </Col>
                       <Col md='1' sm='1' xs='12'>
@@ -247,7 +244,7 @@ function MyProposal(props) {
                   }
                   <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Copy</Tooltip>  }><Button variant="primary mx-2" onClick={() => props.handleCopy(proposal)} ><i className="bi bi-clipboard-plus-fill"/></Button></OverlayTrigger>
                   {proposal.status==1?
-                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Delete</Tooltip>  }><Button variant="danger mx-2" onClick={() => handleDelete(proposal)} ><i className="bi bi-trash3-fill"></i></Button></OverlayTrigger>:''
+                  <OverlayTrigger placement="top" delay={{ show: 250, hide: 300 }} overlay={<Tooltip>Delete</Tooltip>  }><Button variant="danger mx-2 my-2" onClick={() => handleDelete(proposal)} ><i className="bi bi-trash3-fill"></i></Button></OverlayTrigger>:''
                   }
                 </Accordion.Body>
               </Accordion.Item>

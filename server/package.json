@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "npx nodemon index.js",
-    "test": "set test=true && jest --runInBand --colors",
+    "test": "set test=true && jest --detectOpenHandles --runInBand --colors",
     "test:unit": "jest --runInBand --colors test/controller/* test/email/* test/repository/* test/service/*",
     "test:unitcoverage": "jest --runInBand --coverage --colors test/controller/* test/email/* test/repository/* test/service/*",
     "test:coverage": "set test=true && jest --runInBand --coverage --colors"
@@ -22,8 +22,9 @@
     "js-yaml": "^3.3.0",
     "jsonschema": "^1.4.1",
     "morgan": "^1.10.0",
+    "node-cron": "^3.0.3",
     "nodemailer": "^6.9.7",
-    "nodemon": "^3.0.1",
+    "nodemon": "^3.0.2",
     "oas3-tools": "^2.2.3",
     "passport": "^0.6.0",
     "passport-saml": "^3.2.4",

@@ -256,6 +256,7 @@ describe("SEARCH PROPOSAL INTEGRATION TEST", () => {
         }
 
         const res = await request(app).get('/thesis?page=1');
+        await new Promise(resolve => setImmediate(resolve));
         expect(res.body.nPage).toEqual(1)
         expect(res.body.thesis.length).toEqual(no_thesis)
     })

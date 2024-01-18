@@ -14,7 +14,7 @@ RUN cd ./client; npm install
 
 RUN cd ./server; npm install
 
-CMD ./start.sh
+CMD ./start.sh 2
 
 EXPOSE 3001
 EXPOSE 5173

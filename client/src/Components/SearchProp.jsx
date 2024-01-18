@@ -21,14 +21,14 @@ function SeacrhProp(props){
                                                             <strong>Supervisor:</strong> {proposal.supervisor}
                                                         </Col>
                                                         <Col md='3' sm='3' xs='12'>
-                                                            <strong>Expiration date:</strong> {proposal.expDate}
+                                                            <strong>Expiration date:</strong> {proposal.expiration_date}
                                                         </Col>
                                                         <Col md='2' sm='2' xs='12'>
                                                             <strong>Status:</strong>{' '}
                                                             {proposal.status === 1 ? (
-                                                                <Badge pill bg="success">P</Badge>
+                                                                <Badge pill bg="success">PUB</Badge>
                                                             ) : (
-                                                                <Badge pill bg="danger">A</Badge>
+                                                                <Badge pill bg="danger">ARC</Badge>
                                                             )}
                                                         </Col>
                                                         <Col md='1' sm='1' xs='12'>
@@ -49,7 +49,7 @@ function SeacrhProp(props){
                                                 <br />
                                                 <strong>Description:</strong> {proposal.description}
                                                 <br />
-                                                <strong>Knowledge:</strong> {proposal.know}
+                                                <strong>Knowledge:</strong> {proposal.knowledge}
                                                 <br />
                                                 <strong>Note:</strong> {proposal.note}
                                                 <br />
@@ -57,7 +57,7 @@ function SeacrhProp(props){
                                                 <br />
                                                 <strong>CdS:</strong> {proposal.cds}
                                                 <br />
-                                                <strong>Creation Date:</strong> {proposal.creatDate}
+                                                <strong>Creation Date:</strong> {proposal.creation_date}
                                                 <br />
                                                 <br />
                                                 {proposal.status === 1 ? <>

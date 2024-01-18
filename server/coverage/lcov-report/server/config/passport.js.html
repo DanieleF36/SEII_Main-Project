@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">37.5% </span>
+                <span class="strong">36.36% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>15/40</span>
+                <span class='fraction'>16/44</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/14</span>
+                <span class='fraction'>0/16</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">38.46% </span>
+                <span class="strong">37.2% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>15/39</span>
+                <span class='fraction'>16/43</span>
             </div>
         
             
@@ -137,13 +137,19 @@
 <a name='L72'></a><a href='#L72'>72</a>
 <a name='L73'></a><a href='#L73'>73</a>
 <a name='L74'></a><a href='#L74'>74</a>
-<a name='L75'></a><a href='#L75'>75</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a>
+<a name='L78'></a><a href='#L78'>78</a>
+<a name='L79'></a><a href='#L79'>79</a>
+<a name='L80'></a><a href='#L80'>80</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -158,6 +164,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -218,10 +228,11 @@ const fs = require('fs');
 const studentRepository = require('../repositories/StudentRepository');
 const teacherRepository = require('../repositories/TeacherRepository');
 const coSupervisorRepository = require('../repositories/CoSupervisorRepository');
+const SecretaryRepository = require('../repositories/SecretaryRepository.js')
 &nbsp;
 const samlConfig = {
-    entryPoint: "https://trial-4857036.okta.com/app/trial-4857036_seiigroup14_1/exk9if2411VvR5eOK697/sso/saml", // URL del punto di ingresso dell'IDP
-    logoutUrl: "https://trial-4857036.okta.com/app/trial-4857036_seiigroup14_1/exk9if2411VvR5eOK697/slo/saml",
+    entryPoint: "https://trial-6639405.okta.com/app/trial-6639405_seii_1/exkaqdefnak4K8Uer697/sso/saml", // URL del punto di ingresso dell'IDP
+    logoutUrl: "https://trial-6639405.okta.com/app/trial-6639405_seii_1/exkaqdefnak4K8Uer697/slo/saml",
     logoutCallbackUrl: "http://localhost:3001/logout/callback",
     issuer: 'http://localhost:3001', // Nome del tuo SP
     callbackUrl: "/login/callback",
@@ -244,6 +255,10 @@ const samlStrategy = new saml(samlConfig, <span class="fstat-no" title="function
     else <span class="cstat-no" title="statement not covered" >if(profile.nameID.includes('cosupervisor') ){</span>
 <span class="cstat-no" title="statement not covered" >        user = await coSupervisorRepository.getByEmail(profile.nameID)</span>
 <span class="cstat-no" title="statement not covered" >        role = "cosupervisor";</span>
+    }
+    else <span class="cstat-no" title="statement not covered" >if(profile.nameID.includes('secretary')){</span>
+<span class="cstat-no" title="statement not covered" >        user = await SecretaryRepository.getByEmail(profile.nameID)</span>
+<span class="cstat-no" title="statement not covered" >        role = "secretary";</span>
     }
 <span class="cstat-no" title="statement not covered" >    if(role==='student')</span>
 <span class="cstat-no" title="statement not covered" >        user = { id:user.id, name:user.name, surname:user.surname, role:role, nameID:profile.nameID, cds:user.cds, cdsCode:user.cdsCode.includes('LM')?1:0 }</span>
@@ -292,7 +307,7 @@ exports.passport = passport;</pre></td></tr></table></pre>
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-12-14T19:42:12.280Z
+                at 2024-01-17T16:57:51.892Z
             </div>
         <script src="../../prettify.js"></script>
         <script>

@@ -50,7 +50,7 @@ const Clock = (props) => {
 
     useEffect(() => {
 
-        const interval = setInterval(updateClock, 10000);
+        const interval = setInterval(updateClock, 60000);
         return () => clearInterval(interval);
 
 
@@ -76,13 +76,13 @@ const Clock = (props) => {
 
                         <ButtonGroup aria-label="Basic example">
 
-                            <Button onClick={() => addTime('year', 1)} variant='success' className="my-2">
+                            <Button onClick={() => addTime('year', 1)} variant='primary' className="my-2">
                                 + YYYY
                             </Button>
-                            <Button onClick={() => addTime('month', 1)} variant='success' className="my-2">
+                            <Button onClick={() => addTime('month', 1)} variant='primary' className="my-2">
                                 + MM
                             </Button>
-                            <Button onClick={() => addTime('day', 1)} variant='success' className="my-2">
+                            <Button onClick={() => addTime('day', 1)} variant='primary' className="my-2">
                                 + DD
                             </Button>
 
@@ -91,10 +91,10 @@ const Clock = (props) => {
                         <br />
 
                         <ButtonGroup aria-label="Basic example">
-                            <Button onClick={() => addTime('hour', 1)} variant='success' className="my-2">
+                            <Button onClick={() => addTime('hour', 1)} variant='primary' className="my-2">
                                 + hh
                             </Button>
-                            <Button onClick={() => addTime('minute', 1)} variant='success' className="my-2">
+                            <Button onClick={() => addTime('minute', 1)} variant='primary' className="my-2">
                                 + mm
                             </Button>
 

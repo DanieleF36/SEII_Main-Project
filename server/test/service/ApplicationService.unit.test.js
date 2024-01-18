@@ -35,13 +35,29 @@ describe("Add Application Service", ()=>{
           expect(spyRename).toHaveBeenCalledWith(mockCv.filepath, expect.any(String), expect.any(Function));     
           expect(spyAddApplication).toHaveBeenCalledWith(mockStudentId, mockThesisId, expect.any(String),mockSupervisor);
         }
-    })
-    test("case3: success", async ()=>{
+    });
+    
+    test("case3: error during teacherService._sendTeacherEmail", async ()=>{
+      const spyRename = jest.spyOn(require("fs"), 'rename').mockImplementation((oldPath, newPath, cb)=> cb(false));
+      const spyAddApplication = jest.spyOn(require("../../repositories/ApplicationRepository"), "addApplication").mockResolvedValue({success:"Success"})
+      const spySendTeacherEmail = jest.spyOn(require("../../services/TeacherService"), "_sendTeacherEmail").mockRejectedValue({error: "bho1"}) 
+      try{
+        await applicationsService.addApplication(mockStudentId, mockThesisId, mockCv, mockSupervisor);
+      }
+      catch(error){
+        expect(spyRename).toHaveBeenCalledWith(mockCv.filepath, expect.any(String), expect.any(Function));     
+        expect(spyAddApplication).toHaveBeenCalledWith(mockStudentId, mockThesisId, expect.any(String), mockSupervisor);
+        expect(spySendTeacherEmail).toHaveBeenCalledWith(mockSupervisor, mockThesisId, mockStudentId);
+      }
+  })
+    test("case4: success", async ()=>{
         const spyRename = jest.spyOn(require("fs"), 'rename').mockImplementation((oldPath, newPath, cb)=> cb(false));
         const spyAddApplication = jest.spyOn(require("../../repositories/ApplicationRepository"), "addApplication").mockResolvedValue({success:"Success"})
+        const spySendTeacherEmail = jest.spyOn(require("../../services/TeacherService"), "_sendTeacherEmail").mockResolvedValue({success:"Success"}) 
         const mockRes = await applicationsService.addApplication(mockStudentId, mockThesisId, mockCv, mockSupervisor);
         expect(mockRes).toEqual({success:"Success"});
         expect(spyRename).toHaveBeenCalledWith(mockCv.filepath, expect.any(String), expect.any(Function));     
         expect(spyAddApplication).toHaveBeenCalledWith(mockStudentId, mockThesisId, expect.any(String), mockSupervisor);
+        expect(spySendTeacherEmail).toHaveBeenCalledWith(mockSupervisor, mockThesisId, mockStudentId);
     })
 });
