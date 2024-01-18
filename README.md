@@ -288,10 +288,8 @@ I can see the list of the students' request. I can accept or reject them. Once I
 - Bianchi Andrea, andrea.bianchi@secretary.polito.it, Password1234
 
 ## License
-CC BY-NC-SA
-
-This license enables reusers to distribute, remix, adapt, and build upon the material in any medium or format for noncommercial purposes only, and only so long as attribution is given to the creator. If you remix, adapt, or build upon the material, you must license the modified material under identical terms. CC BY-NC-SA includes the following elements:
+CC BY-SA
+This license enables reusers to distribute, remix, adapt, and build upon the material in any medium or format, so long as attribution is given to the creator. The license allows for commercial use. If you remix, adapt, or build upon the material, you must license the modified material under identical terms. CC BY-SA includes the following elements:
 
 - BY: credit must be given to the creator.
-- NC: Only noncommercial uses of the work are permitted.
--  SA: Adaptations must be shared under the same terms.
+- SA: Adaptations must be shared under the same terms.

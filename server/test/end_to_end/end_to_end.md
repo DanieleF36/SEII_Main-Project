@@ -132,7 +132,7 @@
 ![Response](./img/searchArchive_response.png)
 
 
-### Story 29, Insert Student Request
+### Story 26, Insert Student Request
 
 ###### Front-end
 ![Frontend](./img/front_add.png)
@@ -143,7 +143,7 @@
 
 
 
-### Story 30, Secretary Approve Student Requests
+### Story 27, Secretary Approve Student Requests
 
 ###### Front-end
 ![Frontend](./img/handle_front.png)
@@ -152,7 +152,7 @@
 ![Response](./img/handle_headers.png)
 
 
-### Story 31, Professor Approve Student Requests
+### Story 28, Professor Approve Student Requests
 
 ###### Front-end
 ![Frontend](./img/profRequest_front.png)
@@ -162,7 +162,7 @@
 
 
 
-### Story 32, Notify Professor Thesis Request
+### Story 29, Notify Professor Thesis Request
 
 ###### Front-end
 ![Frontend](./img/notify_request.png)
