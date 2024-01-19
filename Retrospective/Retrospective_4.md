@@ -36,7 +36,7 @@ sections:
 | _#26_  |    4    |    8   |    11h     |    10h       |
 | _#27_  |    4    |    3   |    7h 30m  |    7h 45m    |
 | _#28_  |    4    |    3   |    9h      |    9h 30m    |
-| _#13_  |    4    |    3   |    9h      |    9h 30m    |
+| _#29_  |    4    |    3   |    9h      |    9h 30m    |
    
 
 > place technical tasks corresponding to story `#0` and leave out story points (not applicable in this case)
