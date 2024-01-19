@@ -148,12 +148,12 @@ function AddRequestForm(props) {
                                             )).slice(0, 3)}
                                         </Dropdown.Menu>
                                     </Dropdown>
-                                    <Button onClick={() => { handleSup(searchSup); }} variant="primary" style={{ width: '40px', height: '38px', marginTop: '5px', marginRight: '3px', marginLeft: '10px' }}>
-                                        +
-                                    </Button>
-                                    <Button onClick={handleDeleteSup} variant="danger" style={{ width: '40px', height: '38px', marginTop: '5px' }}>
-                                        -
-                                    </Button>
+                                    {proposalData.supervisor===''?<Button onClick={() => { handleSup(searchSup); }} variant="primary" style={{ width: '100px', height: '38px', marginTop: '5px', marginRight: '3px', marginLeft: '10px' }}>
+                                        Add
+                                    </Button>:<Button onClick={handleDeleteSup} variant="danger" style={{ width: '100px', height: '38px', marginTop: '5px', marginLeft: '10px' }}>
+                                        Remove
+                                    </Button>}
+                                    
                                 </Col>
                             </Row>
                         </Container>

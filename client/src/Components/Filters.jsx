@@ -4,11 +4,15 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import PropTypes from 'prop-types';
 import Form from 'react-bootstrap/Form';
+import { Container, Row, Col } from 'react-bootstrap';
 
 function FilterContainer(props) {
 
   return (
-    <Card style={{ width: '234px', maxHeight: '400px', overflowY: 'auto', marginBottom: '20px' }}>
+    <Container>
+    <Row className="d-flex align-items-center justify-content-center">
+    <Col md={6}>
+    <Card style={{marginBottom: '20px'}}>
       <Accordion>
         <Accordion.Item eventKey="0">
           <Accordion.Header>
@@ -134,6 +138,9 @@ function FilterContainer(props) {
         </Accordion.Item>
       </Accordion>
     </Card>
+    </Col> 
+    </Row>
+    </Container>
   );
 }
 
