@@ -2,6 +2,8 @@
 const requestService = require("../services/RequestService");
 const requestRepository = require("../repositories/RequestRepository");
 const applicationRepository = require('../repositories/ApplicationRepository');
+const teacherRepository = require('../repositories/TeacherRepository');
+
 
 exports.addRequest = function (req, res) {
     if (req.user.role != 'student') {
@@ -9,9 +11,13 @@ exports.addRequest = function (req, res) {
         return;
     }
     applicationRepository.getActiveByStudentId(req.user.id).then(app => {
-        if (app != undefined) {
-            res.status(400).json({ message: "You already have an application for a thesis" });
-            return;
+        if (app != undefined ) {
+            teacherRepository.getByEmail(req.body.supervisor).then(sup=>{
+                if(sup.id != app.id_teacher ){
+                    res.status(400).json({ message: "You already have an application for a thesis" });
+                    return;
+                }
+            })
         }
         requestRepository.getActiveByStudentId(req.user.id).then(request => {
             if (request) {

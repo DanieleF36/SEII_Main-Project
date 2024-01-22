@@ -73,7 +73,7 @@ function ApplicationList(props) {
                                                     <Badge pill bg="warning">PEN</Badge>
                                                 ) : (
                                                     application.status == '1' ? (
-                                                        <Badge pill bg="success">ARC</Badge>
+                                                        <Badge pill bg="success">ACC</Badge>
                                                     ) : (
                                                         application.status == '2' ? (
                                                             <Badge pill bg="danger">REJ</Badge>
