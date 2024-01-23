@@ -70,6 +70,7 @@ function AddRequestForm(props) {
         if (proposalData.supervisor === '') {
             setProposalData({ ...proposalData, supervisor: e });
             setSearchTerm('');
+            setSearchSup('');
         }
         else {
             toast.error('Supervisor already inserted');      
