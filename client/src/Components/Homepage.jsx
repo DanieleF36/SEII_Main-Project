@@ -324,7 +324,7 @@ function Homepage(props) {
                     </Col>
                     <Col xs={9}>
                         <div className="flex-column rounded" style={{ backgroundColor: '#fff' }} >
-                            <ApplicationList user={props.user}/>
+                            <ApplicationList user={props.user} currentTime={props.currentTime}/>
                         </div>
                     </Col>
                 </Row>

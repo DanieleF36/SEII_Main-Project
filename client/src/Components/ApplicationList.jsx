@@ -23,7 +23,7 @@ function ApplicationList(props) {
             })
             .catch((err) => { toast.error(err.message); });
 
-    }, [dirty]);
+    }, [dirty, props.currentTime]);
 
     
     const acceptPropByProf = (status, id_app) => {
