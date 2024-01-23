@@ -279,16 +279,21 @@ I can see the list of the students' request. I can accept or reject them. Once I
 - Rossi Giovanni, giovanni.rossi@studenti.polito.it, Password12345
 - Altobelli Gianni, gianni.altobelli@studenti.polito.it, Password1234
 - Sculli Giuseppe, giuseppe.sculli@studenti.polito.it, Password1234
+- Moss Elmo, elmo.moss@studenti.polito.it, Password1234
+- Woods Bryan, bryan.woods@studenti.polito.it, Password1234
 
 ### Professors
-- Azzurro Luca, luca.azzurro@studenti.polito.it, Password1234
-- Lucca Francesco, francesco.lucca@studenti.polito.it, Password1234
+- Azzurro Luca, luca.azzurro@professori.polito.it, Password1234
+- Lucca Francesco, francesco.lucca@professori.polito.it, Password1234
+- Pauli Juan Stefano, stefano.pauli@professori.polito.it, Paaword1234
 
 ### Secretaries
 - Bianchi Andrea, andrea.bianchi@secretary.polito.it, Password1234
+- Beesley Pam, pam.beesley@secretary.polito.it, Password1234
 
 ## License
 CC BY-SA
+
 This license enables reusers to distribute, remix, adapt, and build upon the material in any medium or format, so long as attribution is given to the creator. The license allows for commercial use. If you remix, adapt, or build upon the material, you must license the modified material under identical terms. CC BY-SA includes the following elements:
 
 - BY: credit must be given to the creator.
