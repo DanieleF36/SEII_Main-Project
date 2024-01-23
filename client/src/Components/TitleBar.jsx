@@ -22,6 +22,7 @@ function TitleBar(props) {
 
     const customDropdownItemStyle = {
         borderBottom: '1px solid #d3d3d3',  // Colore blu come esempio, sostituisci con il colore desiderato
+        whiteSpace: 'normal'
       };
 
     const [show, setShow] = useState(false);
