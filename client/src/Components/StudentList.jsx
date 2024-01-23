@@ -82,7 +82,7 @@ function StudentList(props) {
                                     <br />
                                     <strong>Note:</strong> {application.note}
                                     <br />
-                                    <strong>Level:</strong> {application.level}
+                                    <strong>Level:</strong> {application.level === 1 ? 'Master' : 'Bachelor'}
                                     <br />
                                     <strong>Expiration Date:</strong> {application.expiration_date}                                    
                                     <br />
