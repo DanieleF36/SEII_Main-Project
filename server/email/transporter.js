@@ -10,7 +10,6 @@ const transporter = nodemailer.createTransport({
         pass: 'secret.1'
     }
 });
-console.log(transporter)
 
 exports.sendEmail = (from, to, subject, text) => {
     if (!from)
