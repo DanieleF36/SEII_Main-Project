@@ -1,6 +1,7 @@
 const controller = require("../../controllers/RequestController.js");
 const requestRepository = require("../../repositories/RequestRepository");
 const applicationRepository = require('../../repositories/ApplicationRepository.js')
+const teacherRepository = require('../../repositories/TeacherRepository.js')
 const requestService = require('../../services/RequestService.js')
 
 let mockReq;
@@ -38,18 +39,18 @@ describe('addRequest', () => {
     expect(mockRes.json).toHaveBeenCalledWith({ message: "Only student can access to this API" });
   });
 
-  test("case2: student already has an active application", async () => {
+  test("case2: student already has an active application with same supervisor as request", async () => {
     mockReq.user.role = 'student';
     mockReq.params = { id_thesis: 1 };
-
-    jest.spyOn(applicationRepository, 'getActiveByStudentId').mockResolvedValue(true);
+    jest.spyOn(applicationRepository, 'getActiveByStudentId').mockResolvedValue({id:1});
+    jest.spyOn(teacherRepository, 'getByEmail').mockResolvedValue({id:1});
     controller.addRequest(mockReq, mockRes);
     await new Promise(resolve => setImmediate(resolve));
     expect(mockRes.status).toHaveBeenCalledWith(400);
     expect(mockRes.json).toHaveBeenCalledWith({ message: "You already have an application for a thesis" });
   });
 
-  test("case3: student already has an active application", async () => {
+  test("case3: student already has not an active application", async () => {
     mockReq.user.role = 'student';
     mockReq.params = { id_thesis: 1 };
 
